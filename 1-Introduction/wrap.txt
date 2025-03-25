@@ -1,0 +1,35 @@
+*** 2. Course Welcome and What Is Deep Learning ***
+- Defining Machine Learning
+Machine Learning (ML): Turning data (images, text, numbers, etc.) into numbers
+and finding patterns within those numbers using algorithms.
+
+Deep Learning: A subset of machine learning focused on more complex algorithms,
+particularly neural networks.
+
+- Machine Learning vs. Deep Learning:
+Artificial Intelligence (AI): The broadest category, encompassing everything related to machines performing tasks that would normally require human intelligence.
+Machine Learning (ML): A subset of AI, focusing on algorithms that learn patterns from data.
+Deep Learning: A more specific subset of ML, usually involving neural networks and more advanced algorithms.
+
+
+- Traditional Programming vs. Machine Learning
+Traditional Programming: You explicitly write rules for how to process data. 
+Example: Writing a program to replicate your grandmother’s famous roast chicken recipe.
+Inputs: Vegetables, chicken, seasoning, etc.
+Rules: Instructions on how to prepare and cook.
+Output: A beautifully cooked roast chicken.
+
+Machine Learning: Instead of writing explicit rules, you provide input-output data, and the algorithm figures out the rules on its own.
+Supervised Learning: The algorithm learns from labeled data (inputs and corresponding outputs).
+Example: Given a set of ingredients (inputs) and finished dishes (outputs), the algorithm learns the relationship between them.
+-------------------code----------------------
+Traditional Programming
+Inputs --> Rules --> Output
+
+Machine Learning algorithm
+Inputs --> Output --> Rules (Figures out)
+-------------------code----------------------
+
+- Supervised Learning
+In supervised learning, the algorithm learns to map inputs (features) to outputs (labels) using labeled data.
+Example: A machine learning algorithm for predicting the correct recipe steps based on ingredients.
