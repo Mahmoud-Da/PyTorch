@@ -229,3 +229,38 @@ Sequence-to-Sequence (Seq2Seq)	Translation, Speech-to-Text	               Conver
 Classification	                Spam detection, Image recognition	         Predicts a category (e.g., Spam/Not Spam)
 Regression	                    Object detection (bounding boxes)          Predicts a number (e.g., coordinates of objects)
 -------------------code----------------------
+
+*** 14. What Is and Why PyTorch ***
+- What is PyTorch?
+PyTorch is a deep learning framework that allows users to write fast, flexible, and scalable machine learning code using Python.
+Developed by Facebook (Meta), now open-source.
+Used for research, production, and real-world AI applications.
+Accelerates deep learning models using GPUs (Graphics Processing Units).
+
+Why Use PyTorch?
+1.Most Popular Deep Learning Research Framework
+According to Papers with Code, 58% of research papers use PyTorch.
+Companies like Tesla, Microsoft, OpenAI, and Meta rely on it.
+
+2.Easy to Use & Pythonic
+Designed for fast prototyping and debugging.
+Works seamlessly with Python libraries like NumPy.
+
+3.Built-in Support for Pre-trained Models
+Torch Hub and TorchVision Models provide access to pre-trained networks.
+Great for transfer learning (using an existing model for a new task).
+
+4.Seamless GPU Acceleration
+Uses CUDA (NVIDIA’s computing platform) to run models on GPUs.
+Also supports TPUs (Tensor Processing Units) for high-speed computation.
+
+- Who Uses PyTorch?
+Tesla: Uses PyTorch for Autopilot and self-driving AI.
+OpenAI: Standardized on PyTorch for AI research and large models.
+Meta (Facebook AI): Uses PyTorch for a wide range of AI applications.
+Microsoft: A major contributor to PyTorch development.
+
+- GPUs, TPUs, and PyTorch
+GPU (Graphics Processing Unit): Originally designed for gaming, now used for deep learning due to its fast parallel computing.
+TPU (Tensor Processing Unit): Specialized hardware designed by Google for faster AI model training.
+CUDA: A framework that allows PyTorch to run models on NVIDIA GPUs.
