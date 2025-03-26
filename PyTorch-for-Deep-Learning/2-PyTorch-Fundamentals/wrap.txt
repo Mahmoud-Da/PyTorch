@@ -14,3 +14,37 @@ Algorithms identify patterns from input data and generate outputs.
 - When NOT to Use Machine Learning:
 Google's Rule #1: If a simple rule-based system solves the problem, use that instead.
 ML isn’t always the best solution—keep it simple when possible.
+
+*** 9. The Number 1 Rule of Machine Learning and What Is Deep Learning Good For ***
+- When to Use Machine Learning & Deep Learning
+1. Problems with Long Lists of Rules:
+Traditional rule-based systems fail when the rules become too complex (e.g., self-driving cars).
+ML/DL can handle problems where writing explicit rules is impractical.
+
+2.Continually Changing Environments:
+Deep learning models can adapt to new data and changing conditions.
+Example: Driving in an unfamiliar location requires adjusting to new rules and environments.
+
+3.Large Datasets
+Deep learning excels at analyzing massive amounts of data to extract insights.
+Example: Food 101 dataset—manually coding rules for 101 different foods would be overwhelming.
+
+- When Not to Use Deep Learning
+1.When Expandability is Required
+Deep learning models have millions or even billions of parameters (weights and biases).
+Understanding the decision-making process is difficult.
+
+2.When a Traditional Approach is Sufficient
+Google's Rule #1: If a simple rule-based system solves the problem, use that instead.
+
+3.When Errors Are Unacceptable
+Deep learning models make probabilistic predictions, meaning they are not always 100% correct.
+If a mistake is critical (e.g., medical diagnosis, financial transactions), rule-based systems might be safer.
+
+4.When There’s Limited Data
+Deep learning models typically require large datasets to perform well.
+However, techniques exist to work with smaller datasets effectively.
+
+Key Takeaway
+Machine learning and deep learning are powerful tools, but they are not always the best solution.
+Choosing the right approach depends on the problem, data availability, and the need for accuracy and expandability.
