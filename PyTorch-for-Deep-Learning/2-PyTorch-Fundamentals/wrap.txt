@@ -79,3 +79,59 @@ Use traditional ML (e.g., XGBoost) for structured data like financial records or
 Use deep learning (e.g., CNNs, transformers) for unstructured data like images, videos, and text.
 No strict rules—sometimes deep learning can be used for structured data and vice versa.
 Curiosity is key! The best approach depends on the specific problem and data available.
+
+
+*** 11. Anatomy of Neural Networks ***
+- Neural Networks: An Overview
+Definition & Purpose
+A neural network is a computational model inspired by the human brain that learns patterns in data.
+It processes inputs, transforms them into numerical representations, and outputs meaningful results.
+-------------------code----------------------
+
+     ●                  ==> input layers
+   / | \   
+  ●  ●  ●               ==> hidden layers
+   \ | /    
+     ●                  ==> output layers
+
+-------------------code----------------------
+
+- Key Components of a Neural Network
+1.Input Layer
+Accepts raw data (e.g., images, text, or audio).
+Must be converted into numerical form before processing.
+
+2.Hidden Layers
+These layers perform mathematical transformations on the input data.
+The more hidden layers a network has, the "deeper" it is (hence Deep Learning).
+Each layer consists of neurons (nodes) that process information using weights.
+
+3.Output Layer
+Converts the transformed data into a human-readable result (e.g., "This is an image of ramen").
+Can output probabilities (e.g., 90% chance this is ramen, 10% chance it's spaghetti).
+
+- How Neural Networks Learn
+1.Data Representation
+Raw data (text, images, etc.) → Converted into numbers (tensor representation).
+
+2.Training Process
+Pattern Recognition: The network learns by adjusting its weights based on data.
+Optimization: Uses mathematical operations to refine the network over time.
+
+3.Types of Neural Networks
+Fully Connected Neural Network (FCNN) → Basic deep learning model.
+Convolutional Neural Network (CNN) → Best for images.
+Recurrent Neural Network (RNN) → Best for sequential data (text, speech).
+Transformers → The foundation of modern NLP models like ChatGPT.
+
+- Neural Network Architecture
+Layers:
+-------------------code----------------------
+Input → Hidden Layers → Output
+Example: ResNet-152 has 152 layers!
+-------------------code----------------------
+
+Operations:
+Linear transformations (straight-line decisions).
+Nonlinear transformations (complex decision-making).
+These allow the network to detect intricate patterns.
