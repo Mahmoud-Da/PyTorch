@@ -264,3 +264,49 @@ Microsoft: A major contributor to PyTorch development.
 GPU (Graphics Processing Unit): Originally designed for gaming, now used for deep learning due to its fast parallel computing.
 TPU (Tensor Processing Unit): Specialized hardware designed by Google for faster AI model training.
 CUDA: A framework that allows PyTorch to run models on NVIDIA GPUs.
+
+
+*** 15. What Are Tensors ***
+Notes on Tensors and Neural Networks
+
+Introduction
+- The previous video introduced the concept of tensors and issued a challenge to research them.
+- The course is designed to encourage curiosity and self-exploration rather than just providing definitions.
+
+What is a Tensor?
+- A tensor is a numerical representation of data used in machine learning and deep learning.
+- It can be thought of as a multi-dimensional array of numbers.
+  - Scalar (0D tensor): Single number
+  - Vector (1D tensor): List of numbers
+  - Matrix (2D tensor): Table of numbers
+  - Higher-order tensors (3D, 4D, etc.): Multi-dimensional data structures
+
+Role of Tensors in Neural Networks
+1. Input Data: Can be images, text, or audio.
+2. Numerical Encoding: Converts raw data into numerical form (tensors).
+3. Neural Network Processing:
+   - Performs mathematical operations on tensors.
+   - Extracts patterns and representations from numerical data.
+   - PyTorch handles many of these mathematical operations behind the scenes.
+4. Output Tensor:
+   - Similar to input but manipulated to extract relevant information.
+   - Needs to be converted back into a human-understandable format.
+
+Practical Example: Image Classification
+- Suppose we are building an image classification model to distinguish between images of Raymond and spaghetti.
+  1. Input images are converted into numerical representations (tensors).
+  2. These tensors are passed to a neural network.
+  3. The neural network processes and learns from the tensors.
+  4. It outputs a tensor representing the classification (e.g., "Raymond" or "spaghetti").
+  5. The final result is converted into a human-readable form.
+
+Large-Scale Data Processing
+- Tensors allow processing large datasets efficiently.
+- Companies like Google and Facebook work with millions to billions of images at a time.
+- The principle remains the same: numerical encoding → tensor processing → output interpretation.
+
+Summary
+- Tensors are the fundamental building blocks of deep learning.
+- They allow numerical representation and processing of data.
+- PyTorch is a deep learning framework built around torch tensors.
+
