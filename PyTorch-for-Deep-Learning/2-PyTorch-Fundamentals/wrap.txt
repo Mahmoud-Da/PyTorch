@@ -48,3 +48,34 @@ However, techniques exist to work with smaller datasets effectively.
 Key Takeaway
 Machine learning and deep learning are powerful tools, but they are not always the best solution.
 Choosing the right approach depends on the problem, data availability, and the need for accuracy and expandability.
+
+
+*** 10. Machine Learning vs. Deep Learning ***
+Key Differences
+- Machine Learning (ML) - Best for Structured Data
+Structured data: Organized in rows and columns (e.g., tables, spreadsheets).
+Common ML algorithms:
+-------------------code----------------------
+Gradient Boosted Machines (XGBoost) – A favorite for structured data.
+Random Forest – Uses multiple decision trees.
+Naïve Bayes – Based on probability.
+Support Vector Machines (SVM) – Finds optimal decision boundaries.
+K-Nearest Neighbors (KNN) – Classifies based on nearest data points.
+-------------------code----------------------
+
+- Deep Learning (DL) - Best for Unstructured Data
+Unstructured data: Data without a fixed format (e.g., text, images, audio).
+
+Common DL algorithms:
+-------------------code----------------------
+Fully Connected Neural Networks (FCNNs) – Basic neural network structure.
+Convolutional Neural Networks (CNNs) – Best for image processing.
+Recurrent Neural Networks (RNNs) – Used for sequential data (e.g., speech, time series).
+Transformers – State-of-the-art models for NLP (e.g., ChatGPT, BERT).
+-------------------code----------------------
+
+Key Takeaways
+Use traditional ML (e.g., XGBoost) for structured data like financial records or sensor readings.
+Use deep learning (e.g., CNNs, transformers) for unstructured data like images, videos, and text.
+No strict rules—sometimes deep learning can be used for structured data and vice versa.
+Curiosity is key! The best approach depends on the specific problem and data available.
