@@ -135,3 +135,53 @@ Operations:
 Linear transformations (straight-line decisions).
 Nonlinear transformations (complex decision-making).
 These allow the network to detect intricate patterns.
+
+*** 12. Different Types of Learning Paradigms ***
+Machine Learning Paradigms
+Now that we've covered neural networks, let's break down different types of learning paradigms in machine learning.
+
+1. Supervised Learning (Most Common)
+- Definition:
+Learning from labeled data.
+- Example: 
+Teaching a model to distinguish between cats and dogs using thousands of labeled images.
+- How it works:
+Input: Image of a cat
+Output: "Cat" (correct label)
+The model learns by comparing predictions to actual labels and adjusting itself.
+- Common use cases:
+Image recognition, spam detection, speech-to-text.
+
+2. Unsupervised & Self-Supervised Learning
+- Definition:
+Learning from unlabeled data.
+- Example:
+The model groups images based on patterns but doesn't know the categories.
+- How it works:
+Clustering similar images (e.g., grouping cats together without knowing they are "cats").
+The model finds patterns but doesn’t assign meaning.
+-Common use cases:
+Customer segmentation, anomaly detection, recommendation systems.
+
+3. Transfer Learning (Supervised + Pre-trained Model)
+- Definition:
+Using a model trained on one task to help with another.
+- Example:
+A model trained on millions of images (like ImageNet) can be fine-tuned to recognize specific objects (e.g., "Japanese food").
+- Why it’s useful?
+Saves time and computation.
+Helps when you have limited labeled data.
+- Common use cases:
+ Fine-tuning pre-trained models for medical imaging, autonomous driving.
+
+4. Reinforcement Learning (RL) (Self-improving Models)
+- Definition:
+A model learns by interacting with an environment and receiving rewards/punishments for actions.
+- Example:
+Teaching a dog to pee outside using positive reinforcement.
+- How it works:
+Agent (AI): Takes action (e.g., moves in a game).
+Environment (World/Game): Responds with reward/punishment.
+Goal: The agent learns the best actions to maximize rewards.
+- Common use cases: 
+Robotics, game AI (AlphaGo, OpenAI Five), self-driving cars.
