@@ -310,3 +310,59 @@ Summary
 - They allow numerical representation and processing of data.
 - PyTorch is a deep learning framework built around torch tensors.
 
+
+*** 16. What We Are Going To Cover With PyTorch ***
+
+- Encouraging Research and Self-Learning
+Instead of simply providing answers, the course encourages self-research.
+Searching for questions and errors online is a fundamental skill for machine learning engineers.
+The course aims to instill a problem-solving mindset by encouraging exploration.
+
+- Course Structure and Learning Approach
+The course is designed to take a broad learning approach, combining multiple sources:
+University-level machine learning (ML) and deep learning (DL) concepts.
+Online courses and video tutorials.
+Written articles and documentation.
+Engaging formats like memes for conceptual understanding.
+
+- Topics Covered in This Module
+1.PyTorch Basics and Fundamentals
+Understanding tensors and tensor operations.
+Manipulating and transforming tensor data.
+
+2.Preprocessing Data
+Converting raw data (images, text, audio) into numerical tensors.
+
+3.Building and Using Pre-Trained Models
+Exploring neural networks and deep learning models.
+
+4.Fitting a Model to Data
+Training a model to recognize patterns in the dataset.
+
+5.Making Predictions with a Model
+Using trained models to predict outputs from new inputs.
+
+6.Evaluating Model Predictions
+Measuring accuracy and effectiveness of a model.
+
+7.Saving and Loading Models
+Exporting and reusing trained models for different applications.
+
+8.Using Trained Models for Custom Data
+Applying models to real-world datasets.
+
+- Machine Learning Approach: Cooks vs. Chemists
+ML involves both precision (like a chemist) and intuition (like a cook).
+Some steps require careful tuning, while others involve trial and experimentation.
+The course adopts a "cooking" approach to ML: experimenting with different components to find what works best.
+
+- Machine Learning Workflow
+1.Get Data Ready – Collect and preprocess data into tensor format.
+2.Choose a Pre-Trained Model – Select a model architecture suitable for the problem.
+- Step 2.1: Choose a loss function and optimizer.
+- Step 2.2: Build a training loop.
+3.Fit the Model to Data – Train the model using the prepared dataset.
+4.Make Predictions – Test the model on unseen data.
+5.Evaluate Performance – Measure accuracy and identify areas for improvement.
+6.Improve Through Experimentation – Tune hyper-parameters and optimize results.
+7.Save and Reload Model – Store trained models for deployment or further training.
