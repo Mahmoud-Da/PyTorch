@@ -1,0 +1,16 @@
+*** 8. Why Use Machine Learning or Deep Learning ***
+- Traditional Programming vs. Machine Learning:
+Traditional programming relies on explicitly defined rules.
+Machine learning finds patterns from data instead of manually writing rules.
+
+- Why Use Machine Learning?
+Some problems (e.g., self-driving cars) are too complex to define with fixed rules.
+ML helps when writing all possible rules is impractical.
+
+- Machine Learning is Versatile:
+ML can be used for almost anything if data can be converted into numbers.
+Algorithms identify patterns from input data and generate outputs.
+
+- When NOT to Use Machine Learning:
+Google's Rule #1: If a simple rule-based system solves the problem, use that instead.
+ML isn’t always the best solution—keep it simple when possible.
