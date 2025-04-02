@@ -170,7 +170,7 @@ Using a model trained on one task to help with another.
 A model trained on millions of images (like ImageNet) can be fine-tuned to recognize specific objects (e.g., "Japanese food").
 - Why it’s useful?
 Saves time and computation.
-Helps when you have limited labeled data.
+Helps when we have limited labeled data.
 - Common use cases:
  Fine-tuning pre-trained models for medical imaging, autonomous driving.
 
@@ -190,8 +190,8 @@ Robotics, game AI (AlphaGo, OpenAI Five), self-driving cars.
 Honestly, deep learning is everywhere
 Some Major Use Cases of Deep Learning
 1. Recommendation Systems (Netflix, YouTube, Spotify)
-Ever noticed how YouTube recommends exactly what you want to watch?
-It analyzes your past behavior.
+Ever noticed how YouTube recommends exactly what we want to watch?
+It analyzes our past behavior.
 It predicts what you’ll enjoy next.
 And voila, you’re binge-watching for hours!
 
@@ -203,7 +203,7 @@ Example: Converting “Deep Learning is epic” into Japanese:
 深層学習は素晴らしい！
 
 3. Speech Recognition (Siri, Google Assistant, Alexa) 🎙️
-You can now talk to your phone, and it understands you!
+You can now talk to our phone, and it understands we!
 AI converts sound waves into text.
 Uses sequence-to-sequence models just like translation.
 Example:
@@ -217,7 +217,7 @@ It recognizes faces, cars, license plates.
 Fun fact: A hit-and-run damaged someone's car, and if AI-powered cameras were in place, they could’ve identified the culprit!
 
 5. Natural Language Processing (NLP) (Spam Detection, Chatbots, Sentiment Analysis)
-Ever wondered why spam emails don’t make it to your inbox?
+Ever wondered why spam emails don’t make it to our inbox?
 Deep learning analyzes email patterns.
 Classifies them as spam or not spam.
 Uses classification models just like in computer vision.
@@ -366,3 +366,78 @@ The course adopts a "cooking" approach to ML: experimenting with different compo
 5.Evaluate Performance – Measure accuracy and identify areas for improvement.
 6.Improve Through Experimentation – Tune hyper-parameters and optimize results.
 7.Save and Reload Model – Store trained models for deployment or further training.
+
+
+*** 19. Getting Setup to Write PyTorch Code ***
+Google CoLab and PyTorch Fundamentals Lecture Notes
+
+### Introduction
+We have covered enough fundamentals, and now it's time to get into coding.
+This section introduces Google CoLab, which will be our primary tool throughout the course.
+
+### Getting Started with Google CoLab
+1. Open Google Chrome.
+2. Search for Google CoLab or go directly to [Google CoLab](https://colab.research.google.com/).
+3. Google CoLab allows us to create and run Jupyter Notebooks in a cloud-based environment.
+4. It supports Python and PyTorch, making it an ideal platform for deep learning projects.
+
+### Why Use Google CoLab?
+- No need for local setup; PyTorch and other essential libraries come pre-installed.
+- Provides free access to cloud-based GPUs and TPUs.
+- Best way to follow along with the course and practice coding.
+
+### Navigating Google CoLab
+1. Creating a New Notebook:
+   - Click File > New Notebook.
+   - Name it according to the module (e.g., `00_PyTorch_Fundamentals`).
+2. Running a Code Cell:
+   - Type Python code in a cell and press Shift + Enter to execute.
+   - Example:
+-------------------code----------------------
+print("Hello, I'm excited to learn PyTorch!")
+-------------------code----------------------
+3. Using Text Cells:
+   - Convert a code cell to a text cell using Command + M, M (Mac) or Ctrl + M, M (Windows).
+
+### Setting Up GPU in CoLab
+1. Go to Runtime > Change runtime type.
+2. Select Hardware Accelerator > GPU.
+3. Save and verify by running:
+-------------------code----------------------
+!nvidia-smi
+-------------------code----------------------
+   - Example output: `Tesla P100` (depends on availability and whether using free or pro version).
+
+### Installing and Importing PyTorch
+- PyTorch comes pre-installed in CoLab.
+- Check the version by running:
+  -------------------code----------------------
+  import torch
+  print(torch.__version__)
+  -------------------code----------------------
+- Other common libraries also available:
+-------------------code----------------------
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+-------------------code----------------------
+
+### Resources and Discussion Forum
+- Course reference materials available as CoLab notebooks in book format.
+- If we have questions:
+  - Visit the GitHub Discussions for the course.
+  - Navigate to `MrDebug/PyTorch-Deep-Learning/Discussions`.
+  - Click New Discussion to ask questions.
+
+### Alternative Local Setup
+- While CoLab is recommended, we can install PyTorch locally:
+  - Follow the official [PyTorch documentation](https://pytorch.org/get-started/locally/).
+  - Install dependencies like CUDA Toolkit for running PyTorch on GPUs.
+
+### Conclusion
+- Google CoLab is the easiest way to get started with PyTorch.
+- Provides access to GPUs for faster computations.
+- Entire course can be completed using CoLab.
+- Ensure we have PyTorch 1.10+ and CUDA 11.3+ for compatibility.
+
+By setting up Google CoLab correctly, we are now ready to start coding in PyTorch and working on deep learning projects efficiently.
