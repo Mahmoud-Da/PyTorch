@@ -591,3 +591,83 @@ in other word
 
 ---
 
+*** 21. Creating Random Tensors in PyTorch ***
+
+In the last video, we covered the basic building blocks of data representation in deep learning, specifically tensors in PyTorch. Within that discussion, we explored:
+-------------------code----------------------
+- Scalars
+- Vectors
+- Matrices
+- Tensors
+-------------------code----------------------
+
+we also make a challenge to create your own tensors, emphasizing their flexibility in representing data of various shapes, sizes, and values. Understanding these fundamental concepts is crucial when interacting with different types of tensors.
+
+For reference:
+- Scalar: A single number (0D tensor)
+- Vector: A number with direction (1D tensor)
+- Matrix: A 2D tensor
+- Tensor: A generalization to any number of dimensions
+
+### Naming Conventions
+A common convention in machine learning and deep learning:
+- Scalars and vectors: Represented using lowercase letters (e.g., `y`)
+- Matrices and tensors: Represented using uppercase letters (e.g., `T`)
+
+This is widely used in research papers and machine learning codebases.
+
+---
+
+## Random Tensors
+### Why Use Random Tensors?
+Random tensors play a crucial role in deep learning because many neural networks start with tensors filled with random values, adjusting these numbers over time based on data. The basic cycle of a neural network is:
+1. Start with random numbers
+2. Look at data
+3. Update random numbers
+4. Repeat
+
+This iterative process allows neural networks to learn meaningful patterns from data.
+
+### Creating Random Tensors in PyTorch
+In PyTorch, we can generate a random tensor using:
+-------------------code----------------------
+import torch
+random_tensor = torch.rand(3, 4)
+print(random_tensor)
+-------------------code----------------------
+
+This creates a tensor of shape `(3, 4)`, meaning it has 3 rows and 4 columns.
+
+We can check the number of dimensions:
+-------------------code----------------------
+print(random_tensor.ndim)  # Output: 2
+-------------------code----------------------
+
+We can generate higher-dimensional tensors as well:
+-------------------code----------------------
+random_tensor_3d = torch.rand(10, 10, 10)
+print(random_tensor_3d.ndim)  # Output: 3
+-------------------code----------------------
+
+The number of dimensions increases as more values are added.
+
+### Tensors for Image Representation
+A common use case for tensors is representing images. Typically, image tensors follow this structure:
+- Height × Width × Color Channels
+- Example: `224 × 224 × 3` (for a standard RGB image)
+
+Creating an image-like random tensor:
+-------------------code----------------------
+image_tensor = torch.rand(224, 224, 3)
+print(image_tensor.shape)  # Output: torch.Size([224, 224, 3])
+-------------------code----------------------
+
+Some models prefer channels-first representation (`Channels × Height × Width`), which can be rearranged in PyTorch easily.
+
+### Takeaways
+1. PyTorch simplifies tensor creation, including random tensors.
+2. Neural networks start with random values and iteratively adjust them based on data.
+3. Almost any type of data, including images, can be represented as a tensor.
+
+In the next lesson, we’ll dive deeper into tensor operations and their role in deep learning. Stay tuned!
+
