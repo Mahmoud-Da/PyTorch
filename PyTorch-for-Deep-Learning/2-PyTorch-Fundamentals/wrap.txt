@@ -884,3 +884,81 @@ print(tensor_gpu.device)  # Should output: cuda:0 (if GPU is available)
 - PyTorch handles some type conversions automatically but may throw errors in complex operations.
 
 
+*** 26. Manipulating Tensors (Tensor Operations) ***
+
+### Introduction
+In this lecture, we explore basic tensor operations in PyTorch, including addition, multiplication, and subtraction. These operations 
+form the foundation of data manipulation in neural networks.
+
+---
+
+### Basic Tensor Operations
+
+#### Creating a Tensor
+Before performing operations, we need to create a tensor:
+-------------------code---------------------- 
+import torch
+
+tensor = torch.tensor([1, 2, 3])
+-------------------code---------------------- 
+
+#### Addition
+We can add a scalar to a tensor using the `+` operator:
+-------------------code---------------------- 
+tensor + 10  # Output: tensor([11, 12, 13])
+-------------------code---------------------- 
+Alternatively, we can use PyTorch’s built-in `torch.add` function:
+-------------------code---------------------- 
+torch.add(tensor, 10)  # Output: tensor([11, 12, 13])
+-------------------code---------------------- 
+
+#### Multiplication
+Multiplication follows the same approach:
+-------------------code---------------------- 
+tensor * 10  # Output: tensor([10, 20, 30])
+-------------------code---------------------- 
+Using PyTorch’s built-in function:
+-------------------code---------------------- 
+torch.mul(tensor, 10)  # Output: tensor([10, 20, 30])
+-------------------code---------------------- 
+
+#### Subtraction
+Subtracting a scalar from a tensor:
+-------------------code---------------------- 
+tensor - 10  # Output: tensor([-9, -8, -7])
+-------------------code---------------------- 
+Using PyTorch’s built-in function:
+-------------------code---------------------- 
+torch.sub(tensor, 10)  # Output: tensor([-9, -8, -7])
+-------------------code---------------------- 
+
+---
+
+### Reassignment and In-Place Operations
+Operations do not modify the original tensor unless reassigned:
+-------------------code---------------------- 
+tensor = tensor * 10
+-------------------code---------------------- 
+
+Alternatively, using in-place operations:
+-------------------code---------------------- 
+tensor.mul_(10)  # Modifies the tensor in place
+-------------------code---------------------- 
+
+---
+
+### Element-wise vs Matrix Multiplication
+Multiplication using `*` or `torch.mul` performs element-wise multiplication. 
+Matrix multiplication is different and will be covered in the next lecture.
+
+Challenge: Before proceeding, research *matrix multiplication* and try to understand how it differs from element-wise multiplication.
+
+For a helpful resource, visit Math is Fun: Matrix Multiplication.
+
+---
+
+### Conclusion
+Understanding basic tensor operations is crucial for manipulating data in PyTorch.
+Using Python operators (`+`, `*`, `-`) is often more intuitive, 
+but PyTorch provides equivalent built-in functions for more control.
+
