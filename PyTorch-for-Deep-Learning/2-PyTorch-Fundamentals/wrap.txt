@@ -408,6 +408,29 @@ print("Hello, I'm excited to learn PyTorch!")
 -------------------code----------------------
    - Example output: `Tesla P100` (depends on availability and whether using free or pro version).
 
+-------------------code----------------------
+Wed Apr  2 00:35:22 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   53C    P8             12W /   70W |       0MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-------------------code----------------------
+
 ### Installing and Importing PyTorch
 - PyTorch comes pre-installed in CoLab.
 - Check the version by running:
@@ -441,3 +464,130 @@ import matplotlib.pyplot as plt
 - Ensure we have PyTorch 1.10+ and CUDA 11.3+ for compatibility.
 
 By setting up Google CoLab correctly, we are now ready to start coding in PyTorch and working on deep learning projects efficiently.
+
+*** 20. Introduction to PyTorch Tensors ***
+
+### Setting Up the Environment
+- Ensure access to PyTorch.
+- Use Google Colab with GPU acceleration (if needed) by going to Runtime > Change runtime type > Hardware Accelerator.
+- A GPU is not required for all exercises, but will be useful later.
+- If not using a GPU, it is recommended to disable it to conserve resources.
+- Google Colab sessions may reset after some hours, requiring re-running of cells.
+
+### Learning Approach
+- Recommended to use a split window: Video on one side, Colab notebook on the other.
+- Create a new notebook and follow along by manually writing code.
+- Reference notebooks and documentation when needed.
+- Engage with hands-on coding rather than passive learning.
+
+---
+
+## Introduction to Tensors in PyTorch
+
+Tensors are the fundamental data structures in PyTorch, used for representing multi-dimensional numerical data. PyTorch provides a built-in function `torch.tensor()` to create tensors.
+
+### Types of Tensors
+
+#### 1. Scalar (0-D Tensor)
+A scalar is a single number.
+
+-------------------code----------------------
+import torch
+scalar = torch.tensor(7)
+print(scalar)
+-------------------code----------------------
+
+- Output: `tensor(7)`
+- Attributes:
+  - `scalar.ndim` → `0` (Zero dimensions)
+  - `scalar.item()` → Converts tensor to a Python integer (`7`)
+
+#### 2. Vector (1-D Tensor)
+A vector consists of multiple numbers in a single dimension.
+
+-------------------code----------------------
+vector = torch.tensor([7, 8])
+print(vector)
+-------------------code----------------------
+
+- Output: `tensor([7, 8])`
+- Attributes:
+  - `vector.ndim` → `1` (One dimension)
+  - `vector.shape` → `(2,)` (Two elements)
+
+#### 3. Matrix (2-D Tensor)
+A matrix consists of multiple rows and columns.
+
+-------------------code----------------------
+matrix = torch.tensor([[7, 8], [9, 10]])
+print(matrix)
+-------------------code----------------------
+
+- Output: `tensor([[ 7,  8], [ 9, 10]])`
+- Attributes:
+  - `matrix.ndim` → `2` (Two dimensions)
+  - `matrix.shape` → `(2,2)` (Two rows, two columns)
+
+#### 4. Tensor (Multi-Dimensional Tensor)
+A tensor can have three or more dimensions.
+
+-------------------code----------------------
+tensor = torch.tensor([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]])
+print(tensor)
+-------------------code----------------------
+
+- Output:
+-------------------code----------------------
+tensor([[[1, 2, 3],
+          [4, 5, 6],
+          [7, 8, 9]]])
+-------------------code----------------------
+- Attributes:
+  - `tensor.ndim` → `3` (Three dimensions)
+  - `tensor.shape` → `(1, 3, 3)`
+
+---
+
+## Understanding Tensor Dimensions
+
+| Tensor Type | Example | Dimensions | Shape |
+|------------|---------|------------|--------|
+| Scalar | `torch.tensor(7)` | `0` | `()` |
+| Vector | `torch.tensor([7, 8])` | `1` | `(2,)` |
+| Matrix | `torch.tensor([[7, 8], [9, 10]])` | `2` | `(2, 2)` |
+| Tensor | `torch.tensor([[[1,2,3], [4,5,6], [7,8,9]]])` | `3` | `(1, 3, 3)` |
+
+in other word 
+-------------------code----------------------
+1st dimension → 1 batch/sample
+2nd dimension → 2 rows (or elements in 1st axis)
+3rd dimension → 5 columns (or elements in 2nd axis)
+-------------------code----------------------
+
+### Indexing & Accessing Elements
+
+- Accessing elements:
+  -------------------code----------------------
+  print(matrix[0])  # First row: tensor([7, 8])
+  -------------------code----------------------
+- Extracting numerical values:
+  -------------------code----------------------
+  print(scalar.item())  # Returns 7 as a Python int
+  -------------------code----------------------
+
+---
+
+## Colab Usage Tips
+- If the session resets, re-run all necessary cells using `Shift + Enter`.
+- Colab's autocomplete can sometimes behave unexpectedly.
+- To avoid unnecessary GPU usage, disable GPU when not needed.
+
+---
+
+## Practice Exercise
+- Create your own tensors with different dimensions.
+- Experiment with `.shape`, `.ndim`, and indexing.
+- Write a tensor with 4 dimensions and analyze its properties.
+
+---
+
