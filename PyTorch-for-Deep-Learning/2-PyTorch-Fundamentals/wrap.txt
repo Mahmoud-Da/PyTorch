@@ -752,3 +752,56 @@ zeros_like_tensor = torch.zeros_like(tensor_1_to_10)
 - Create a range tensor using `torch.arange()`.
 - Use `torch.zeros_like()` to create a tensor with the same shape but filled with zeros.
 
+*** 24. Dealing With Tensor Data Types ***
+
+1. Introduction to Tensor Data Types
+- PyTorch tensors have different data types that affect precision and memory usage.
+- Default data type is `float32`.
+
+2. Creating a Tensor with a Specific Data Type
+-------------------code---------------------- 
+float32_tensor = torch.tensor([3, 6, 9], dtype=None)  # Defaults to float32
+float16_tensor = torch.tensor([3, 6, 9], dtype=torch.float16)  # Explicit float16
+-------------------code---------------------- 
+
+3. Key Tensor Parameters
+- dtype: Specifies the data type (e.g., `float32`, `float16`, `int32`).
+- device: Determines whether the tensor is stored on `CPU` or `GPU`.
+- requires_grad: Enables gradient tracking for automatic differentiation.
+
+4. Checking Available Data Types
+- Data types can be found in PyTorch documentation under `torch.tensor`.
+- Common types:
+  - `float32` (Single Precision, default)
+  - `float16` (Half Precision, faster but less accurate)
+  - `float64` (Double Precision, more accurate but slower)
+
+5. Understanding Precision in Computing
+- Precision refers to how detailed a numerical value is stored in memory.
+- `float32` uses 32 bits per number, while `float16` uses 16 bits.
+- Lower precision reduces memory usage and increases speed, but sacrifices accuracy.
+
+6. Three Common PyTorch Errors
+1. Incorrect Tensor Data Type: Mixing different data types can cause errors.
+2. Incorrect Tensor Shape: Shapes must be compatible for operations like matrix multiplication.
+3. Incorrect Device Placement: Mixing `CPU` and `GPU` tensors leads to errors.
+
+7. Device Management in PyTorch
+- Default device is `CPU`.
+- Tensors can be moved to `GPU` (CUDA) for faster computations:
+-------------------code---------------------- 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+tensor_on_gpu = tensor.to(device)
+-------------------code---------------------- 
+
+8. Converting Between Data Types
+-------------------code---------------------- 
+float16_tensor = float32_tensor.to(dtype=torch.float16)  # Convert float32 to float16
+float16_tensor_alt = float32_tensor.half()  # Alternative method
+-------------------code---------------------- 
+
+9. Practice Challenge
+- Create tensors of different data types.
+- Experiment with `dtype`, `device`, and `requires_grad`.
+- Try multiplying `float16_tensor` by `float32_tensor` and observe any errors.
+
