@@ -805,3 +805,82 @@ float16_tensor_alt = float32_tensor.half()  # Alternative method
 - Experiment with `dtype`, `device`, and `requires_grad`.
 - Try multiplying `float16_tensor` by `float32_tensor` and observe any errors.
 
+*** 25. Getting Tensor Attributes ***
+
+### Recap from the Previous Lecture
+- Discussed tensor data types.
+- Explored common parameters used in the `torch.tensor` method.
+- Challenge: Created tensors with different data types and observed their behavior when multiplied.
+
+### Understanding Tensor Data Types
+- Multiplying a `float16` tensor with a `float32` tensor works without errors.
+- PyTorch is sometimes lenient with data type mismatches, but issues may arise in large neural networks.
+- Important to be aware of potential data type errors during model training.
+
+### Experimenting with Different Data Types
+1. Integer Tensors
+   - `int32_tensor = torch.tensor(3, dtype=torch.int32)`
+   - Multiplying `int32_tensor` with a float tensor does not throw an error.
+2. Higher Precision Integers
+   - `int64_tensor = torch.tensor(3, dtype=torch.int64)`
+   - Still works fine when multiplied with a float tensor.
+3. Long Tensors
+   - `torch.long()` is not a valid method.
+   - The correct syntax is `torch.tensor(3, dtype=torch.long)`, which is equivalent to `int64`.
+
+### Key Takeaway:
+- PyTorch handles type conversions internally but can sometimes throw errors when training models.
+- If a tensor-related error occurs, check if the data type needs to be explicitly set.
+
+### Extracting Information from Tensors
+One of the common issues in deep learning is related to tensor attributes:
+1. Incorrect data type
+2. Incorrect shape
+3. Incorrect device (CPU/GPU)
+
+#### Checking Tensor Attributes
+| Attribute  | Method               | Description |
+|------------|----------------------|-------------|
+| Data Type  | `tensor.dtype`       | Returns the tensor’s data type. |
+| Shape      | `tensor.shape`       | Returns the shape (dimensions) of the tensor. |
+| Device     | `tensor.device`      | Returns the device (CPU/GPU) where the tensor is stored. |
+
+### Example Code
+-------------------code---------------------- 
+import torch
+
+# Create a random tensor
+some_tensor = torch.rand(3, 4)
+print("Tensor:", some_tensor)
+
+# Get tensor attributes
+print(f"Data Type: {some_tensor.dtype}")
+print(f"Shape: {some_tensor.shape}")
+print(f"Device: {some_tensor.device}")
+-------------------code---------------------- 
+
+### Shape vs. Size in PyTorch
+- `tensor.shape` and `tensor.size()` return the same result.
+- Difference:
+  - `shape` is an attribute (no parentheses needed).
+  - `size()` is a function (requires parentheses).
+
+### Tensor Device Placement
+- By default, PyTorch tensors are stored on the CPU.
+- Explicitly moving a tensor to a GPU:
+-------------------code---------------------- 
+tensor_gpu = some_tensor.to('cuda')
+print(tensor_gpu.device)  # Should output: cuda:0 (if GPU is available)
+-------------------code---------------------- 
+
+### Challenges for Practice
+1. Create a random tensor with `float16` instead of `float32`.
+2. Explore how to transfer tensors between CPU and GPU.
+3. Experiment with different tensor data types and check their behaviors.
+
+### Conclusion
+- Understanding tensor attributes is crucial for debugging deep learning models.
+- Always check `dtype`, `shape`, and `device` when encountering tensor-related issues.
+- PyTorch handles some type conversions automatically but may throw errors in complex operations.
+
+
