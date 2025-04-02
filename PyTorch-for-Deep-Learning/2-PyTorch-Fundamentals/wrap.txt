@@ -669,5 +669,45 @@ Some models prefer channels-first representation (`Channels × Height × Width`)
 2. Neural networks start with random values and iteratively adjust them based on data.
 3. Almost any type of data, including images, can be represented as a tensor.
 
-In the next lesson, we’ll dive deeper into tensor operations and their role in deep learning. Stay tuned!
+
+*** 22. Creating Tensors With Zeros and Ones in PyTorch ***
+
+### Random Tensors in PyTorch
+
+1. Creating Random Tensors  
+   - Tensor Size:
+     - PyTorch allows creating tensors with specific sizes, e.g., `torch.rand(3, 3)` creates a tensor of shape (3, 3).
+     - If you omit the size parameter, PyTorch defaults to a tensor of similar shape with random numbers.
+
+2. Zero and One Tensors
+   - Zero Tensor:
+     - Use `torch.zeros(size)` to create a tensor filled with zeros, e.g., `torch.zeros(3, 4)`.
+     - This is useful for creating masks or zeroing out values in specific columns of a tensor (e.g., for masking operations in neural networks).
+     - Example:
+-------------------code----------------------
+zeros_tensor = torch.zeros(3, 4)
+
+# tensor([[0., 0., 0., 0.],
+[0., 0., 0., 0.],
+[0., 0., 0., 0.]])
+-------------------code----------------------
+
+-------------------code----------------------
+result = zeros_tensor * random_tensor
+-------------------code----------------------       
+This will result in all zeros, effectively masking the values of `random_tensor`.
+
+   - One Tensor:
+     - Use `torch.ones(size)` to create a tensor filled with ones, e.g., `torch.ones(3, 4)`.
+     - This is useful in situations where you need a tensor with all values equal to 1.
+
+3. Default Data Type  
+   - Tensors in PyTorch default to `torch.float32` data type unless specified otherwise.  
+     - This means most tensors are created as floating-point numbers (32-bit).
+
+4. Practical Use Cases  
+   - Zero Tensor Example (Masking):  
+     If you want to mask certain values in a tensor, you can multiply it by a tensor of zeros. For instance, if you want to ignore values in a certain column, create a zero tensor with the same shape and multiply it element-wise by the target tensor.
+   - One Tensor:  
+     Although less common than zero tensors, tensors filled with ones might be used for specific operations where all values should be initialized as one.
 
