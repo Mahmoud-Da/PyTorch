@@ -711,3 +711,44 @@ This will result in all zeros, effectively masking the values of `random_tensor`
    - One Tensor:  
      Although less common than zero tensors, tensors filled with ones might be used for specific operations where all values should be initialized as one.
 
+*** 23. Creating a Tensor Range and Tensors Like Other Tensors ***
+
+1. Creating Ranges of Tensors
+- Two common methods:
+  - `torch.range(start, end, step)`: Deprecated in PyTorch 1.10.0 and later.
+  - `torch.arange(start, end, step)`: Recommended alternative.
+
+- Example:
+-------------------code---------------------- 
+torch.arange(0, 10)  # Creates tensor [0, 1, 2, ..., 9]
+torch.arange(1, 11)  # Creates tensor [1, 2, ..., 10]
+-------------------code---------------------- 
+
+- Defining a step value:
+-------------------code---------------------- 
+torch.arange(0, 1000, 77)  # Starts at 0, increments by 77, up to 1000
+-------------------code---------------------- 
+
+3. Checking Documentation
+- You can check function documentation in Google Colab by:
+  - Hovering over the function name.
+  - Pressing `Shift + Tab` (may not always work reliably).
+  - Searching online for "torch.arange documentation".
+
+4. Creating Tensors with a Similar Shape
+- Use `torch.zeros_like()` or `torch.ones_like()` to create tensors with the same shape as an existing tensor.
+-------------------code---------------------- 
+tensor_1_to_10 = torch.arange(1, 11)
+zeros_like_tensor = torch.zeros_like(tensor_1_to_10)
+-------------------code---------------------- 
+
+5. Troubleshooting in Google Colab
+- If code execution is stuck or not working:
+  - Try stopping and rerunning the cell.
+  - Restart the runtime by navigating to `Runtime` > `Restart runtime`.
+  - Use `Runtime` > `Restart and run all` to reset and rerun all cells.
+
+6. Practice Challenge
+- Create a range tensor using `torch.arange()`.
+- Use `torch.zeros_like()` to create a tensor with the same shape but filled with zeros.
+
