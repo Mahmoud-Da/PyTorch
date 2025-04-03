@@ -1202,6 +1202,12 @@ tensor([[ 27, 30, 33],
 - Computation for element (2,2):
   - (3×8) + (4×11) = 68
 
+using this site  with pressing Next button 
+we can Visualize how the matrix is swap before multiplication
+and what we calls Transpose
+-------------------code---------------------- 
+http://matrixmultiplication.xyz/
+-------------------code---------------------- 
 ---
 
 ### Alternative Notation: `torch.mm()`
@@ -1221,10 +1227,107 @@ result = torch.mm(tensor_a, tensor_b_T)  # Same as @ operator
 
 ---
 
-### **Challenge**
-- Try transposing **`tensor_a`** instead of **`tensor_b`** and analyze the results.
-- Use [Matrix Multiplication Visualizer](https://www.matrixmultiplication.xyz/) to practice further.
+### Challenge
+- Try transposing `tensor_a` instead of `tensor_b` and analyze the results.
+- Use [Matrix Multiplication Visualizer](http://matrixmultiplication.xyz/) to practice further.
 - Experiment with different tensor shapes and observe how transposing affects the results.
 
 ---
+
+*** 30. Finding the Min Max Mean and Sum of Tensors (Tensor Aggregation) ***
+# Lecture Notes: Tensor Aggregation in PyTorch
+
+## Overview
+In this lecture, we explored tensor aggregation in PyTorch, which involves reducing large amounts of numerical data into smaller values (e.g., finding min, max, mean, sum). These operations are useful for analyzing tensor values in deep learning and neural networks.
+
+---
+
+## Creating a Tensor
+To begin, we created a tensor using `torch.arange`:
+-------------------code---------------------- 
+import torch
+x = torch.arange(0, 100, 10)
+-------------------code---------------------- 
+This creates a tensor:
+-------------------code---------------------- 
+tensor([ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
+-------------------code---------------------- 
+
+---
+
+## Finding Min and Max Values
+PyTorch provides built-in functions to find the minimum and maximum values in a tensor:
+-------------------code---------------------- 
+min_value = torch.min(x)
+max_value = torch.max(x)
+-------------------code---------------------- 
+Alternatively, we can use:
+-------------------code---------------------- 
+min_value = x.min()
+max_value = x.max()
+-------------------code---------------------- 
+Both approaches return the same results.
+
+---
+
+## Calculating the Mean
+Attempting to compute the mean using `torch.mean(x)` results in an error:
+-------------------code---------------------- 
+RuntimeError: mean(): input data type should be either floating point or complex.
+-------------------code---------------------- 
+This occurs because the tensor's data type is `int64` (`long` type). PyTorch requires floating point tensors for mean calculations. We can convert the tensor to `float32` before computing the mean:
+-------------------code---------------------- 
+mean_value = torch.mean(x.type(torch.float32))
+-------------------code---------------------- 
+Alternatively, using:
+-------------------code---------------------- 
+mean_value = x.float().mean()
+-------------------code---------------------- 
+Both approaches return the correct mean value.
+
+### Key Takeaway
+- `torch.mean()` requires a floating-point tensor.
+
+---
+
+## Finding the Sum
+To compute the sum of all elements:
+-------------------code---------------------- 
+sum_value = torch.sum(x)
+-------------------code---------------------- 
+Alternatively:
+-------------------code---------------------- 
+sum_value = x.sum()
+-------------------code---------------------- 
+Both methods return the same result.
+
+### Which Method to Use?
+- `torch.function_name(tensor)` or `tensor.function_name()` both work. Choose a style and stay consistent.
+
+---
+
+## Challenge: Finding Positional Min/Max (ArgMin, ArgMax)
+In the next lesson, we will cover **finding the position of min/max values in a tensor** using:
+-------------------code---------------------- 
+torch.argmin(x)
+torch.argmax(x)
+-------------------code---------------------- 
+These functions return the index positions of the minimum and maximum values in the tensor.
+
+---
+
+## Summary
+- **Aggregation** reduces a tensor's elements to a smaller set of values.
+- PyTorch provides functions to compute min, max, mean, and sum.
+- `torch.mean()` requires `float32` or `complex` tensor types.
+- **Next topic:** Finding index positions of min/max values using `argmin` and `argmax`.
+
+---
+
+## Next Steps
+Experiment with:
+- Computing other statistics (e.g., `median`, `std`)
+- Converting tensor data types for aggregation
+- Using `argmin` and `argmax` to find positional min/max values
+
 
