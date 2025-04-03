@@ -962,3 +962,111 @@ Understanding basic tensor operations is crucial for manipulating data in PyTorc
 Using Python operators (`+`, `*`, `-`) is often more intuitive, 
 but PyTorch provides equivalent built-in functions for more control.
 
+*** 27. Matrix Multiplication (Part 1) ***
+Matrix Multiplication in Neural Networks
+
+### Recap of Previous Lesson
+In the last lesson, we discussed basic tensor operations such as:
+- Addition
+- Subtraction
+- Multiplication
+- Element-wise division
+- Matrix multiplication (briefly introduced)
+
+However, we didn't dive into what matrix multiplication truly entails. In this lesson, we will explore the difference between element-wise multiplication and matrix multiplication in detail.
+
+---
+
+### Two Types of Multiplication in Neural Networks
+1. Element-wise multiplication (Hadamard product)
+2. Matrix multiplication (Dot product)
+
+#### 1. Element-wise Multiplication
+This is the simpler form of multiplication, where each element of a matrix (or tensor) is multiplied by a corresponding element in another matrix.
+
+Example:
+-------------------code---------------------- 
+A = [2  0  1 -9]
+B = [4  2  2  2]
+A ⊙ B = [8  0  2 -18] (each element is multiplied individually)
+-------------------code---------------------- 
+
+#### 2. Matrix Multiplication (Dot Product)
+Matrix multiplication, also called the dot product, is a more complex operation. Instead of multiplying elements one by one, it involves summing up the products of corresponding elements in rows and columns.
+
+Example:
+Consider the following matrix multiplication:
+-------------------code---------------------- 
+A = [ 1  2  3 ]   B = [ 7  9  11 ]
+    [ 4  5  6 ]       [ 8 10 12 ]
+
+Result of A * B:
+(1*7 + 2*9 + 3*11) = 58
+(4*7 + 5*9 + 6*11) = ??? (computed similarly for other elements)
+-------------------code---------------------- 
+
+### Dot Product Notation
+The dot product is represented by a dot (`·`) symbol. When performing matrix multiplication, the number of columns in the first matrix must match the number of rows in the second matrix.
+
+---
+
+### Implementing Matrix Multiplication in PyTorch
+In PyTorch, we can perform both element-wise and matrix multiplication efficiently.
+
+#### Element-wise Multiplication in PyTorch
+-------------------code---------------------- python
+import torch
+
+tensor = torch.tensor([1, 2, 3])
+result = tensor * tensor  # Element-wise multiplication
+print(result)  # Output: tensor([1, 4, 9])
+-------------------code---------------------- 
+
+#### Matrix Multiplication in PyTorch
+-------------------code---------------------- python
+matrix_A = torch.tensor([[1, 2, 3], [4, 5, 6]])
+matrix_B = torch.tensor([[7, 8], [9, 10], [11, 12]])
+result = torch.matmul(matrix_A, matrix_B)
+print(result)
+-------------------code---------------------- 
+
+Alternatively, you can use `torch.mm(A, B)` for two-dimensional matrices.
+
+---
+
+### Efficiency of PyTorch's Matrix Multiplication
+When performing matrix multiplication manually using loops, performance can be significantly slower compared to using optimized PyTorch functions.
+
+#### Manual Matrix Multiplication with a Loop
+-------------------code---------------------- python
+value = 0
+for i in range(len(tensor)):
+    value += tensor[i] * tensor[i]
+print(value)  # Output: 14
+-------------------code---------------------- 
+
+#### Using PyTorch's Optimized Function
+-------------------code---------------------- python
+result = torch.matmul(tensor, tensor)
+print(result)  # Faster computation
+-------------------code---------------------- 
+
+### Performance Comparison
+- Loop-based method: ~1.9 milliseconds
+- PyTorch `torch.matmul()`: ~252 microseconds (10x faster)
+
+### Why Use PyTorch for Matrix Multiplication?
+- Optimized for speed: Uses vectorized operations.
+- Scalability: Works efficiently with large matrices.
+- Readable code: More concise and easier to understand than manual implementations.
+
+---
+
+### Next Steps
+Now that we've covered basic matrix multiplication, in the next lesson, we will:
+- Explore multiplication with larger tensors.
+- Discuss rules and constraints for matrix multiplication.
+- Examine practical applications in deep learning.
+
+For further reading, refer to [MathIsFun](https://www.mathsisfun.com/algebra/matrix-multiplying.html) for additional explanations on matrix multiplication.
+
