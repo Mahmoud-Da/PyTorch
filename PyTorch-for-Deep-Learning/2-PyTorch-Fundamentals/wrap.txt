@@ -1330,4 +1330,63 @@ Experiment with:
 - Converting tensor data types for aggregation
 - Using `argmin` and `argmax` to find positional min/max values
 
+*** 31. Finding The Positional Min and Max of Tensors ***
+Tensor Aggregation and Positional Min/Max in PyTorch
+
+### Recap from Previous Lesson
+In the last lecture, we covered tensor aggregation, where we learned how to compute:
+- Minimum (`min`)
+- Maximum (`max`)
+- Mean (`mean`)
+- Sum (`sum`)
+
+We also encountered one of the most common errors in PyTorch—wrong data types.
+- For example, `torch.mean()` requires a tensor of float32, but our default tensor was `torch.int64`.
+- We fixed this issue by converting the tensor type using `.type(torch.float32)`.
+
+### Finding Positional Min and Max
+I also challenged you to find the positional min and max values within a tensor.
+This can be done using:
+- `torch.argmin()` → Returns the index of the minimum value.
+- `torch.argmax()` → Returns the index of the maximum value.
+
+### Example: Finding Positional Min/Max
+Let's start by defining a tensor:
+-------------------code---------------------- 
+import torch
+
+# Creating a tensor with values from 1 to 91 with a step of 10
+x = torch.arange(1, 101, 10)
+print(x)  # Output: tensor([  1,  11,  21,  31,  41,  51,  61,  71,  81,  91])
+-------------------code---------------------- 
+
+#### Finding the Minimum Position (argmin)
+-------------------code---------------------- 
+arg_min_index = torch.argmin(x)
+print(arg_min_index)  # Output: tensor(0)
+print(x[arg_min_index])  # Output: tensor(1)
+-------------------code---------------------- 
+- The `argmin` function returns the index where the minimum value occurs.
+- In this case, the smallest value is `1`, and it appears at index 0.
+
+#### Finding the Maximum Position (argmax)
+-------------------code---------------------- 
+arg_max_index = torch.argmax(x)
+print(arg_max_index)  # Output: tensor(9)
+print(x[arg_max_index])  # Output: tensor(91)
+-------------------code---------------------- 
+- The `argmax` function returns the index where the maximum value occurs.
+- The highest value in the tensor is `91`, and it appears at index 9.
+
+### Why is `argmax` Important?
+While finding min and max values is useful, knowing their positions is critical in deep learning.
+- In classification tasks, `argmax` is often used to determine the predicted class.
+- Later, when we discuss the Softmax activation function, `argmax` will be used to select the most probable class.
+
+### Key Takeaways
+- `min()` and `max()` return actual values, while `argmin()` and `argmax()` return positions.  
+- Data type mismatches are common errors; `mean()` requires float32, not int64.  
+- `argmax()` is crucial for classification tasks in deep learning.  
+
+
 
