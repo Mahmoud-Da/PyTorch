@@ -270,7 +270,7 @@ CUDA: A framework that allows PyTorch to run models on NVIDIA GPUs.
 Notes on Tensors and Neural Networks
 
 Introduction
-- The previous video introduced the concept of tensors and issued a challenge to research them.
+- The previous lecture introduced the concept of tensors and issued a challenge to research them.
 - The course is designed to encourage curiosity and self-exploration rather than just providing definitions.
 
 What is a Tensor?
@@ -321,7 +321,7 @@ The course aims to instill a problem-solving mindset by encouraging exploration.
 - Course Structure and Learning Approach
 The course is designed to take a broad learning approach, combining multiple sources:
 University-level machine learning (ML) and deep learning (DL) concepts.
-Online courses and video tutorials.
+Online courses and lecture tutorials.
 Written articles and documentation.
 Engaging formats like memes for conceptual understanding.
 
@@ -593,7 +593,7 @@ in other word
 
 *** 21. Creating Random Tensors in PyTorch ***
 
-In the last video, we covered the basic building blocks of data representation in deep learning, specifically tensors in PyTorch. Within that discussion, we explored:
+In the last lecture, we covered the basic building blocks of data representation in deep learning, specifically tensors in PyTorch. Within that discussion, we explored:
 -------------------code----------------------
 - Scalars
 - Vectors
@@ -1135,4 +1135,96 @@ Before moving on to the next lesson,
 explore matrix multiplication using an online tool such as [Matrix Multiplication ZZ](https://matrixmultiplication.xyz/). 
 Experiment with different matrices and observe the results.
 
+
+*** 29. Matrix Multiplication (Part 3): Dealing With Tensor Shape Errors ***
+Matrix Multiplication in Deep Learning
+
+---
+
+### Review from the Last Video
+- Discussed matrix multiplication and its two main rules.
+- Encountered shape errors, one of the most common errors in deep learning.
+- Neural networks involve numerous matrix multiplications, so understanding these errors is crucial.
+- Explored the importance of ensuring inner dimensions match.
+
+---
+
+### Shapes for Matrix Multiplication
+
+#### Creating Example Tensors
+-------------------code---------------------- 
+import torch
+
+tensor_a = torch.tensor([[1, 2], [3, 4], [5, 6]])
+tensor_b = torch.tensor([[7, 10], [8, 11], [9, 12]])
+-------------------code---------------------- 
+- `tensor_a`: Shape (3,2)
+- `tensor_b`: Shape (3,2)
+- Attempting `tensor_a @ tensor_b` results in an error!
+  - Reason: Inner dimensions (2 ≠ 3) do not match.
+
+---
+
+### Fixing Shape Errors using Transpose
+#### Transpose (`.T`)
+- Definition: Swaps the dimensions of a given tensor.
+- Applying Transpose to `tensor_b`
+-------------------code---------------------- 
+tensor_b_T = tensor_b.T
+-------------------code---------------------- 
+- New shape of `tensor_b_T`: (2,3)
+- Now, `tensor_a @ tensor_b_T` works!
+
+#### Performing Matrix Multiplication
+-------------------code---------------------- 
+result = tensor_a @ tensor_b_T
+print(result)
+-------------------code---------------------- 
+- Output:
+-------------------code---------------------- 
+tensor([[ 27, 30, 33],
+        [ 61, 68, 75],
+        [ 95, 106, 117]])
+-------------------code---------------------- 
+- Output Shape: (3,3) (outer dimensions)
+
+---
+
+### Understanding Matrix Multiplication Visually
+- Consider the example:
+-------------------code---------------------- 
+[[1, 2],      [[ 7,  8,  9],    [[ 27,  30,  33],
+ [3, 4],   ×   [10, 11, 12]]  =  [ 61,  68,  75],
+ [5, 6]]                            [ 95, 106, 117]]
+-------------------code---------------------- 
+- Computation for element (1,1):
+  - (1×7) + (2×10) = 27
+- Computation for element (2,2):
+  - (3×8) + (4×11) = 68
+
+---
+
+### Alternative Notation: `torch.mm()`
+-------------------code---------------------- 
+result = torch.mm(tensor_a, tensor_b_T)  # Same as @ operator
+-------------------code---------------------- 
+- `torch.mm()` is equivalent to `@` but is explicitly named for readability.
+
+---
+
+### Key Takeaways
+1. Inner dimensions must match for matrix multiplication.
+2. Use `.T` (transpose) to fix shape mismatches.
+3. Output shape = outer dimensions of the multiplied matrices.
+4. Use `torch.mm()` or `@` for matrix multiplication.
+5. Practice by creating your own tensors and visualizing results.
+
+---
+
+### **Challenge**
+- Try transposing **`tensor_a`** instead of **`tensor_b`** and analyze the results.
+- Use [Matrix Multiplication Visualizer](https://www.matrixmultiplication.xyz/) to practice further.
+- Experiment with different tensor shapes and observe how transposing affects the results.
+
+---
 
