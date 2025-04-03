@@ -1070,3 +1070,69 @@ Now that we've covered basic matrix multiplication, in the next lesson, we will:
 
 For further reading, refer to [MathIsFun](https://www.mathsisfun.com/algebra/matrix-multiplying.html) for additional explanations on matrix multiplication.
 
+*** 28. Matrix Multiplication (Part 2): The Two Main Rules of Matrix Multiplication ***
+# Matrix Multiplication
+
+## Introduction
+one of the most common operations in neural networks. We also discussed that PyTorch's built-in implementations of certain operations should be used whenever possible for efficiency, except for basic operations like addition and multiplication.
+While matrix multiplication might seem straightforward, there are specific rules that need to be satisfied to avoid errors, particularly shape errors—one of the most common errors in deep learning.
+
+## Rules for Matrix Multiplication
+### Rule #1: The Inner Dimensions Must Match
+For matrix multiplication to be valid, the inner dimensions of the two matrices must match. Consider the following cases:
+
+- A matrix of shape `(3,2)` cannot be multiplied by another `(3,2)` matrix.
+- A matrix of shape `(2,3)` can be multiplied by a matrix of shape `(3,2)`, because the inner dimensions (`3` and `3`) match.
+
+Example in PyTorch:
+-------------------code---------------------- 
+import torch
+A = torch.rand(3,2)
+B = torch.rand(3,2)
+result = torch.matmul(A, B)  # This will raise an error because inner dimensions do not match.
+-------------------code---------------------- 
+
+However, swapping `B` for a tensor with matching inner dimensions will work:
+-------------------code---------------------- 
+C = torch.rand(2,3)
+result = torch.matmul(A, C)  # This works because inner dimensions (2,2) match.
+-------------------code---------------------- 
+
+### Rule #2: The Resulting Matrix Has the Shape of the Outer Dimensions
+After matrix multiplication, the resulting matrix has the shape defined by the outer dimensions of the original matrices.
+
+Example:
+- Multiplying a `(2,3)` matrix by a `(3,2)` matrix results in a `(2,2)` matrix.
+- Multiplying a `(3,2)` matrix by a `(2,3)` matrix results in a `(3,3)` matrix.
+
+Example in PyTorch:
+-------------------code---------------------- 
+A = torch.rand(2,3)
+B = torch.rand(3,2)
+result = torch.matmul(A, B)
+print(result.shape)  # Output: torch.Size([2, 2])
+-------------------code---------------------- 
+
+## Choosing Between `@` and `matmul`
+PyTorch allows matrix multiplication using both `@` and `torch.matmul`:
+-------------------code---------------------- 
+result1 = A @ B  # Uses @ operator
+result2 = torch.matmul(A, B)  # Uses matmul function
+-------------------code---------------------- 
+Using `matmul` is generally recommended as it is more explicit and reduces confusion.
+
+## Common Errors in Matrix Multiplication
+A frequent mistake is attempting to multiply matrices with incompatible shapes. For example:
+-------------------code---------------------- 
+A = torch.rand(10,7)
+B = torch.rand(10,10)
+result = torch.matmul(A, B)  # This will raise an error
+-------------------code---------------------- 
+This happens because the inner dimensions (`7` and `10`) do not match. Ensuring matching inner dimensions is crucial to avoid these errors.
+
+## Exercise
+Before moving on to the next lesson, 
+explore matrix multiplication using an online tool such as [Matrix Multiplication ZZ](https://matrixmultiplication.xyz/). 
+Experiment with different matrices and observe the results.
+
+
