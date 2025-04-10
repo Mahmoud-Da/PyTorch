@@ -1390,3 +1390,89 @@ While finding min and max values is useful, knowing their positions is critical 
 
 
 
+*** 32. Reshaping, Viewing and Stacking Tensors ***
+
+## Reconnecting to Google Colab
+
+When we return to a Colab notebook after a break, we might find that our previous session has disconnected and the state is reset.
+
+- For example, running a variable like `X` after reconnection will show:
+-------------------code---------------------- 
+NameError: name 'X' is not defined
+-------------------code---------------------- 
+
+- This happens because Colab clears memory after long inactivity to conserve resources.
+
+
+### How to Resume Work
+- **Option 1:** `Runtime > Restart and run all`
+- **Option 2:** Use the "Run before" feature to only run cells before the current one
+- **Caveat:** Execution will stop at any cell that throws an error
+
+
+## Quick Recap: Tensor Transformations in PyTorch
+
+### 1. **Reshape**
+- Changes the shape of a tensor, provided the total number of elements remains the same.
+-------------------code---------------------- 
+x = torch.arange(1, 10)  # shape: [9]
+x_reshaped = x.reshape(9, 1)  # shape: [9, 1]
+-------------------code---------------------- 
+- Incompatible reshapes will raise an error.
+
+### 2. **View**
+- Similar to `reshape` but returns a view of the tensor that shares the same memory.
+-------------------code---------------------- 
+z = x.view(1, 9)  # Shares memory with x
+z[0][0] = 5
+print(x)  # x is also updated
+-------------------code---------------------- 
+
+---
+
+## Stacking Tensors
+
+### 3. **torch.stack()**
+- Combines multiple tensors into one along a **new dimension**.
+-------------------code---------------------- 
+x_stacked = torch.stack([x, x, x])
+# Default: dim=0, stacks vertically
+-------------------code---------------------- 
+- Try different `dim` values (e.g., 1) to see how stacking changes.
+
+---
+
+## Squeeze and Unsqueeze
+
+### 4. **squeeze()**
+- Removes dimensions with size 1.
+-------------------code---------------------- 
+x = torch.tensor([[1, 2, 3]])
+x.squeeze()  # shape: [3]
+-------------------code---------------------- 
+
+### 5. **unsqueeze()**
+- Adds a dimension of size 1 at a specified position.
+-------------------code---------------------- 
+x = torch.tensor([1, 2, 3])
+x.unsqueeze(0)  # shape: [1, 3]
+-------------------code---------------------- 
+
+## Permute
+
+### 6. **permute()**
+- Rearranges the dimensions of a tensor.
+-------------------code---------------------- 
+x = torch.rand(2, 3, 4)
+x.permute(2, 0, 1)  # shape becomes [4, 2, 3]
+-------------------code---------------------- 
+
+---
+
+## Common Issues & Troubleshooting
+
+- **Save Failed in Colab:** Just keep coding or manually download the notebook.
+- **Restarting fixes most session and runtime issues.**
+
+---
+
