@@ -1639,17 +1639,17 @@ x[0, :, 2]      # batch 0, column 2 of all rows
 
 ### More Practice Challenges
 - Get only `5`:  
-  -------------------code---------------------- 
-  x[0, 1, 1]
-  -------------------code---------------------- 
+-------------------code---------------------- 
+x[0, 1, 1]
+-------------------code---------------------- 
 - Get `[1, 2, 3]`:  
-  -------------------code---------------------- 
-  x[0, 0, :]
-  -------------------code---------------------- 
+-------------------code---------------------- 
+x[0, 0, :]
+-------------------code---------------------- 
 - Get all values from row 2 (i.e. `[7, 8, 9]`):  
-  -------------------code---------------------- 
-  x[0, 2, :]
-  -------------------code---------------------- 
+-------------------code---------------------- 
+x[0, 2, :]
+-------------------code---------------------- 
 
 ---
 
@@ -1657,3 +1657,97 @@ x[0, :, 2]      # batch 0, column 2 of all rows
 - Tensor indexing can be confusing at first — especially with nested dimensions.
 - Practice helps — break things down dimension by dimension.
 - Use slicing (`:`) for cleaner, more readable code.
+
+*** 35. PyTorch Tensors and NumPy ***
+
+### **1. Recap: Indexing Challenge**
+
+#### **Challenges from Previous Video:**
+- **Task 1:** Index on `X` to return the value `9`.
+  - Solution: `X[0, 2, 2]`
+    - `0`: Selects the outermost bracket (first dimension).
+    - `2`: Selects the third row (second dimension).
+    - `2`: Selects the third element in that row (third dimension).
+
+- **Task 2:** Index on `X` to return values `[3, 6, 9]`.
+  - Solution: `X[0, :, 2]`
+    - `0`: Selects the first tensor (only tensor available).
+    - `:`: Selects all rows.
+    - `2`: Selects the third element from each row.
+
+#### **Practice Tip:**
+Create a small tensor (e.g., `1x3x3`) and try indexing it in different ways to retrieve specific elements or slices.
+
+---
+
+### **2. PyTorch and NumPy Interoperability**
+
+#### **Overview:**
+- **NumPy**: A widely-used numerical computing library in Python.
+- **PyTorch**: Often works with NumPy data since many datasets and processing pipelines start with NumPy arrays.
+
+---
+
+### **3. Converting Between NumPy Arrays and PyTorch Tensors**
+
+#### **From NumPy to PyTorch**
+- **Method:** `torch.from_numpy(array)`
+- **Example:**
+-------------------code---------------------- 
+import numpy as np
+import torch
+
+array = np.arange(1.0, 9.0)
+tensor = torch.from_numpy(array)
+-------------------code---------------------- 
+
+- **Data Type Note:**
+  - NumPy’s default dtype: `float64`
+  - PyTorch reflects that dtype when using `torch.from_numpy`
+    - Resulting tensor dtype: `torch.float64`
+
+- **Changing dtype:**
+-------------------code---------------------- 
+tensor = tensor.type(torch.float32)
+-------------------code---------------------- 
+
+#### **Memory Sharing Note:**
+- `torch.from_numpy()` **shares memory** with the original NumPy array.
+  - **But:** If you modify the array using operations like `array = array + 1`, it creates a new array in memory.
+  - **Result:** The tensor is **not updated**, because the new NumPy array is not the one that shares memory.
+
+---
+
+#### **From PyTorch to NumPy**
+- **Method:** `tensor.numpy()`
+- **Example:**
+-------------------code---------------------- 
+tensor = torch.ones(7)
+numpy_tensor = tensor.numpy()
+-------------------code---------------------- 
+
+- **Data Type Note:**
+  - PyTorch’s default dtype: `float32`
+  - When converting to NumPy, the dtype is preserved (`float32`).
+
+- **Memory Sharing Note:**
+  - `tensor.numpy()` also **shares memory**.
+  - However, if you reassign the PyTorch tensor (`tensor = tensor + 1`), it creates a new tensor in memory.
+  - The NumPy array will **not be updated**.
+
+---
+
+### **4. Summary**
+
+| Conversion | Method | Shares Memory? | Dtype Behavior |
+|------------|--------|----------------|----------------|
+| NumPy → Tensor | `torch.from_numpy()` | Yes | Inherits `float64` from NumPy |
+| Tensor → NumPy | `tensor.numpy()` | Yes | Keeps original tensor's dtype |
+
+---
+
+### **5. Further Learning**
+
+- Suggested search terms:
+  - `PyTorch and NumPy interoperability`
+  - `PyTorch reproducibility` (preview for next video topic)
