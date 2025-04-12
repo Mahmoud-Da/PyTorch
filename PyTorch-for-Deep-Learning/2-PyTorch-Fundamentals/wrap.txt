@@ -1526,3 +1526,134 @@ z = x.unsqueeze(1)  # shape: (3, 1)
 ### Mini-Challenge (at the end):
 - Change a value in the **original tensor** and check if it changes in the **permuted tensor**, because `permute` creates a **view**, not a copy.
 
+
+*** 34. Selecting Data From Tensors (Indexing) ***
+
+### Recap from Previous Lesson
+- Topics Covered: 
+  - Squeezing
+  - Unsqueezing
+  - Commuting Tensors
+- Purpose: 
+  - Helps manage tensor shapes and dimensions, a frequent challenge in deep learning.
+- Key Insight: 
+  - Commuting returns a *view* of the tensor (shares memory).
+  - Changing values in the original tensor reflects in the commuted tensor due to shared memory.
+
+---
+
+### Main Topic: Indexing Tensors
+
+#### Concept Overview
+- Indexing helps you select and manipulate data from multi-dimensional tensors.
+- Similar to NumPy indexing if you’ve worked with arrays before.
+
+---
+
+### Hands-On Example
+
+#### Creating the Tensor
+-------------------code---------------------- 
+import torch
+
+x = torch.arange(9).reshape(1, 3, 3)
+print(x)
+print(x.shape)
+-------------------code---------------------- 
+- `torch.arange(9)` creates values 0–8
+- `.reshape(1, 3, 3)` makes the shape compatible (1 × 3 × 3)
+
+#### Structure Breakdown
+-------------------code---------------------- 
+x = [[[0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8]]]
+-------------------code---------------------- 
+- Dimensions: `(1, 3, 3)`
+- Outer bracket: batch of 1
+- Middle: 3 rows
+- Inner: 3 columns
+
+---
+
+### Indexing Dimensions
+
+#### Basic Indexing
+-------------------code---------------------- 
+x[0]           # returns shape (3, 3)
+x[0][0]        # returns shape (3,) — first row
+x[0][0][0]     # returns scalar — 0
+-------------------code---------------------- 
+Same as:
+-------------------code---------------------- 
+x[0, 0, 0]
+-------------------code---------------------- 
+
+#### Changing Indices
+-------------------code---------------------- 
+x[0, 0, 1]     # Returns 1
+x[0, 1, 1]     # Returns 4
+x[0, 2, 2]     # Returns 8
+-------------------code---------------------- 
+
+---
+
+### Common Error
+-------------------code---------------------- 
+x[1, 1, 1]     # IndexError: index 1 is out of bounds for dimension 0 with size 1
+-------------------code---------------------- 
+- The first dimension has size 1 → can only index `0`
+
+---
+
+### Challenge Exercises (Mini Quizzes)
+
+####Challenge 1: Get the value `9`
+- Change your tensor to start at 1:
+-------------------code---------------------- 
+x = torch.arange(1, 10).reshape(1, 3, 3)
+x[0, 2, 2]    # Returns 9
+-------------------code---------------------- 
+
+#### Challenge 2: Get values `[3, 6, 9]`
+- These are the last values of each row:
+-------------------code---------------------- 
+x = torch.arange(1, 10).reshape(1, 3, 3)
+x[0, :, 2]    # Returns tensor([3, 6, 9])
+-------------------code---------------------- 
+
+---
+
+### Advanced Indexing with Colons
+
+#### Select specific parts with slicing
+-------------------code---------------------- 
+x[:, 0, :]      # all batches, first row of each
+x[:, :, 1]      # all batches, second column of each
+x[0, :, :]      # batch 0, all rows and columns
+x[0, 1, :]      # batch 0, row 1
+x[0, :, 2]      # batch 0, column 2 of all rows
+-------------------code---------------------- 
+
+---
+
+### More Practice Challenges
+- Get only `5`:  
+  -------------------code---------------------- 
+  x[0, 1, 1]
+  -------------------code---------------------- 
+- Get `[1, 2, 3]`:  
+  -------------------code---------------------- 
+  x[0, 0, :]
+  -------------------code---------------------- 
+- Get all values from row 2 (i.e. `[7, 8, 9]`):  
+  -------------------code---------------------- 
+  x[0, 2, :]
+  -------------------code---------------------- 
+
+---
+
+### Final Tips
+- Tensor indexing can be confusing at first — especially with nested dimensions.
+- Practice helps — break things down dimension by dimension.
+- Use slicing (`:`) for cleaner, more readable code.
