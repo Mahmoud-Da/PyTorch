@@ -1751,3 +1751,83 @@ numpy_tensor = tensor.numpy()
 - Suggested search terms:
   - `PyTorch and NumPy interoperability`
   - `PyTorch reproducibility` (preview for next video topic)
+
+*** 36. PyTorch Reproducibility (Taking the Random Out of Random) ***
+
+
+## **Topic: Reproducibility in PyTorch**
+**Goal:** Make random behavior in neural network experiments more consistent and shareable.
+
+## **1. Why Reproducibility Matters**
+- Neural networks often start with **random numbers** (e.g., random weights).
+- Every time you generate a tensor with `torch.rand()`, it produces **different numbers**.
+- If you're sharing your code or notebook, others might get **different results**—which can affect debugging and experimentation.
+
+---
+
+## **2. The Concept of Random Seeds**
+- Computers generate **pseudo-random numbers** (not truly random).
+- A **random seed** sets the starting point for this pseudo-random number generator, allowing for **consistent results**.
+- Think of the seed as a “flavor” of randomness:
+  - Same seed → same results
+  - Different seed → different results
+
+---
+
+## **3. Setting the Seed in PyTorch**
+Use `torch.manual_seed(<int>)` to control randomness.
+
+### Example:
+-------------------code---------------------- 
+import torch
+
+torch.manual_seed(42)  # Set the random seed
+random_tensor = torch.rand(3, 4)
+-------------------code---------------------- 
+
+This ensures the generated tensor will have the **same values** every time this cell is run.
+
+---
+
+## **4. Important Notes**
+- If you're generating **multiple random tensors**, you need to call `torch.manual_seed()` **before each call** if you're using separate cells or calls like below:
+
+-------------------code---------------------- 
+torch.manual_seed(42)
+tensor_c = torch.rand(3, 4)
+
+torch.manual_seed(42)
+tensor_d = torch.rand(3, 4)
+
+print(tensor_c == tensor_d)  # All True
+-------------------code---------------------- 
+
+If you **don’t** reset the seed before the second tensor, their values will be **different**.
+
+---
+
+## **5. Reproducibility in Practice**
+- This is especially important when:
+  - Sharing notebooks
+  - Running tests
+  - Comparing model results
+- Some torch functions (like `rand`) **do not have a seed argument**, so you need to **manually call** `torch.manual_seed`.
+
+---
+
+## **6. Memory Independence Reminder**
+Even with `torch.from_numpy()` or conversions between NumPy and PyTorch, changing one **doesn't affect the other** (they don’t share memory).
+
+---
+
+## **7. Additional Resources**
+- **[PyTorch Reproducibility Guide](https://pytorch.org/docs/stable/notes/randomness.html)**  
+  → Official resource on how to ensure consistent behavior in PyTorch.
+
+- **[Wikipedia: Random Seed](https://en.wikipedia.org/wiki/Random_seed)**  
+  → Explains the general concept of random seeds and pseudo-random number generation.
+
+---
+
+## **Conclusion**
+Reproducibility helps ensure **consistency** across experiments and platforms. Setting a manual seed with `torch.manual_seed()` is a simple but powerful step in making your PyTorch projects more reliable.
