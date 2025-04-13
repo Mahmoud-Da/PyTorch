@@ -1926,3 +1926,127 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 -------------------code---------------------- 
 This setup will be used throughout the course.
 
+*** 38. Setting up Device-Agnostic Code and Putting Tensors On and Off the GPU ***
+Here is a clean and organized version of the lecture, broken into logical sections for clarity and ease of study:
+
+# PyTorch and GPU Fundamentals
+
+## 1. Setting Up PyTorch with GPU Access
+
+- The easiest way to use a GPU is through **Google Colab**, which provides free GPU access.
+- **Colab Pro** offers access to faster GPUs.
+- PyTorch comes pre-installed in Colab, and is automatically configured to use the GPU if available.
+
+---
+
+## 2. Why Use a GPU?
+
+- **GPUs enable faster computations**, especially with tensor operations.
+- Useful in training machine learning models which rely heavily on numerical operations.
+- Faster computation allows for:
+  - Quicker pattern discovery
+  - More experiments
+  - Optimizing models faster
+
+---
+
+## 3. Creating and Inspecting Tensors
+
+By default, tensors are created on the **CPU**:
+
+-------------------code---------------------- 
+import torch
+
+tensor = torch.tensor([1, 2, 3])
+print(tensor)  # Output: tensor([1, 2, 3])
+print(tensor.device)  # Output: cpu
+-------------------code---------------------- 
+
+You can also explicitly set the device:
+
+-------------------code---------------------- 
+tensor = torch.tensor([1, 2, 3], device="cpu")
+-------------------code---------------------- 
+
+---
+
+## 4. Moving Tensors to the GPU
+
+Set up device-agnostic code:
+
+-------------------code---------------------- 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+tensor = torch.tensor([1, 2, 3])
+tensor_on_gpu = tensor.to(device)
+print(tensor_on_gpu.device)  # Output: cuda:0 or cpu
+-------------------code---------------------- 
+
+- `cuda:0` means the first (and only) GPU is being used.
+- This structure allows the code to run on **either GPU or CPU** without modification.
+
+---
+
+## 5. Why Use Device-Agnostic Code?
+
+- Makes your code **portable and error-free**, regardless of the available hardware.
+- Avoids runtime errors due to missing devices.
+- Same logic applies to **models** as well:
+  -------------------code---------------------- 
+  model.to(device)
+  -------------------code---------------------- 
+
+---
+
+## 6. Moving Tensors Back to the CPU
+
+This is important for operations that require CPU-only libraries, like **NumPy**.
+
+Example of a common error:
+
+-------------------code---------------------- 
+import numpy as np
+
+tensor_on_gpu.numpy()
+# Error: Can't convert CUDA tensor to NumPy array
+-------------------code---------------------- 
+
+Solution:
+
+-------------------code---------------------- 
+tensor_back_on_cpu = tensor_on_gpu.cpu()
+numpy_array = tensor_back_on_cpu.numpy()
+-------------------code---------------------- 
+
+- Always move tensors to CPU **before converting to NumPy**.
+
+---
+
+## 7. Common PyTorch Errors
+
+1. **Shape errors**
+2. **Data type issues**
+3. **Device mismatch errors** (e.g., trying to operate on tensors located on different devices)
+
+---
+
+## 8. Summary of GPU Usage in PyTorch
+
+- Create tensors (default on CPU)
+- Use `.to(device)` to move them to GPU or CPU
+- Use device-agnostic code for flexibility
+- Move back to CPU with `.cpu()` when needed (e.g., for NumPy)
+- PyTorch provides helpful error messages to guide you
+
+---
+
+## 9. Practice Suggestions
+
+- Use Colab to get GPU access
+- Check if a GPU is available using `torch.cuda.is_available()`
+- Set up device-agnostic code and move tensors between devices
+- Create dummy tensors and test operations on GPU and CPU
+- Attempt NumPy conversions on GPU tensors to trigger and learn from errors
+- Then, fix those errors by moving tensors back to CPU
+
+---
+
