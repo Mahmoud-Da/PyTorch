@@ -2050,3 +2050,86 @@ numpy_array = tensor_back_on_cpu.numpy()
 
 ---
 
+*** 39. PyTorch Fundamentals: Exercises and Extra-Curriculum ***
+
+# Wrapping Up the PyTorch Fundamentals Section
+
+## 1. Congratulations and Encouragement
+
+- You've covered a lot of **PyTorch fundamentals**.
+- These are the **core building blocks** used throughout the course.
+- It's important to **consolidate your learning** through practice before moving forward.
+
+---
+
+## 2. Practice Through Exercises
+
+- Go to the **Learn PyTorch** repository.
+- Open the **PyTorch Fundamentals notebook**.
+- Scroll down to the **Table of Contents**.
+- At the bottom, you'll find **Exercises and Extra Curriculum**.
+
+---
+
+## 3. Overview of Exercises
+
+- Exercises are based on material covered in the current section.
+- Examples include:
+  1. **Documentation reading**: Get familiar with the official PyTorch documentation (e.g., `torch.tensor`).
+  2. **Tensor operations**:
+     - Create a random tensor of shape `(7, 7)`.
+     - Perform matrix multiplication with another compatible tensor.
+- Use the **notebooks you've worked on** as references when needed.
+
+---
+
+## 4. How to Approach the Exercises
+
+### Option 1: Manual Setup
+- In Google Colab:
+  - Go to **File > New Notebook**
+  - Name it something like `00-pytorch-exercises`
+  - Start by importing PyTorch:
+    ```python
+    import torch
+    ```
+
+### Option 2: Use Templates from GitHub
+- Go to the course’s GitHub repository.
+- Navigate to:
+  - `extras > exercises > pytorch_fundamentals_exercises.ipynb`
+- To open in Colab:
+  - Copy the GitHub link.
+  - In Colab: **File > Open Notebook > GitHub tab**.
+  - Paste the URL and open it.
+- The template includes exercise headings to help guide your code writing.
+
+---
+
+## 5. Use Open Book Wisely
+
+- You can refer to:
+  - The video walkthroughs
+  - Previous notebooks
+  - The documentation
+- But try to **solve the exercises on your own first**.
+- This helps reinforce learning through **active recall and application**.
+
+---
+
+## 6. Solutions and Extra Curriculum
+
+- Solutions are also available on GitHub:
+  - Navigate to `extras > solutions > pytorch_fundamentals_exercise_solutions.ipynb`
+- Only check the solutions **after** attempting the exercises yourself.
+- Extra Curriculum includes:
+  - Reading the **PyTorch Basics tutorial** (especially the Quickstart and Tensor sections).
+  - Watching the video: **"What is a tensor?"** for deeper conceptual understanding.
+
+---
+
+## 7. Final Note
+
+- This is the end of the **PyTorch Fundamentals** section.
+- A massive effort, and you should be proud of your progress.
+- See you in the next section as we build on this strong foundation.
