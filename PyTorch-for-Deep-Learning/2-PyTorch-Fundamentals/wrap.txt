@@ -1831,3 +1831,98 @@ Even with `torch.from_numpy()` or conversions between NumPy and PyTorch, changin
 
 ## **Conclusion**
 Reproducibility helps ensure **consistency** across experiments and platforms. Setting a manual seed with `torch.manual_seed()` is a simple but powerful step in making your PyTorch projects more reliable.
+
+*** 37. Different Ways of Accessing a GPU in PyTorch ***
+Here’s a clean and well-organized version of your lecture on running PyTorch objects on GPUs, without emojis:
+
+## Running PyTorch Tensors and Objects on GPUs
+
+### Why Use GPUs?
+Using GPUs allows for **faster numerical computation**, especially when working with large datasets or deep learning models. This performance boost is due to:
+- NVIDIA hardware
+- CUDA (NVIDIA’s GPU programming interface)
+- PyTorch's seamless integration with CUDA
+
+---
+
+### 1. Getting Access to a GPU
+
+#### Option A: **Google Colab (Recommended for Beginners)**
+- **Free Tier**: Comes with access to GPUs like Tesla K80.
+- **Colab Pro**: Provides access to faster GPUs (e.g., Tesla P100), longer runtimes, and more memory.
+- **Colab Pro+**: An upgraded tier with even more powerful hardware.
+
+> *Note: You can complete the entire course using the free version.*
+
+To enable GPU in Colab:
+- Go to `Runtime` > `Change runtime type`
+- Set **Hardware Accelerator** to **GPU**
+- Save and run:  
+  -------------------code---------------------- bash
+  !nvidia-smi
+  -------------------code---------------------- 
+  This will show you the available GPU (e.g., Tesla P100).
+
+#### Option B: **Using Your Own GPU**
+- Requires purchasing and setting up a compatible GPU.
+- Setup includes installing CUDA drivers and configuring PyTorch locally.
+- A useful reference: *"Which GPU for Deep Learning?"* blog post (search online for updated versions).
+
+#### Option C: **Cloud Computing Platforms**
+- **GCP** (Google Cloud Platform)
+- **AWS** (Amazon Web Services)
+- **Azure** (Microsoft Cloud)
+  
+These platforms allow you to rent powerful GPU instances for development or production workloads.
+
+---
+
+### 2. Checking GPU Access in PyTorch
+
+To verify if PyTorch can access the GPU:
+-------------------code---------------------- 
+import torch
+torch.cuda.is_available()
+-------------------code---------------------- 
+
+If this returns `True`, PyTorch is ready to use the GPU. Google Colab handles this setup automatically, making it beginner-friendly.
+
+---
+
+### 3. Device-Agnostic Code in PyTorch
+
+Device-agnostic code ensures your program can run on **GPU if available**, or **CPU** otherwise.
+
+Set the target device:
+-------------------code---------------------- 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+-------------------code---------------------- 
+
+This ensures flexibility and portability of your code across different environments.
+
+---
+
+### 4. Counting Available GPUs
+
+If you're scaling your experiments, you might use multiple GPUs. You can count the number of available GPUs with:
+-------------------code---------------------- 
+torch.cuda.device_count()
+-------------------code---------------------- 
+
+This is useful for managing large-scale models and parallel processing.
+
+---
+
+### 5. PyTorch Best Practices for CUDA
+
+Refer to the **[PyTorch CUDA Semantics](https://pytorch.org/docs/stable/notes/cuda.html)** for:
+- Writing device-agnostic code
+- Moving tensors and models to the appropriate device
+- Efficient memory usage on GPUs
+
+Key best practice:
+-------------------code---------------------- 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+-------------------code---------------------- 
+This setup will be used throughout the course.
+
