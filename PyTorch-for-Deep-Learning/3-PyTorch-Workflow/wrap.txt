@@ -95,3 +95,73 @@
 | - Reload for reuse         |
 +-----------------------------+
 -------------------code----------------------
+
+*** 41. Getting Setup and What We Are Covering ***
+
+## Workflow Overview:
+
+The goal is to explore the following stages of the PyTorch workflow in a hands-on, step-by-step manner:
+1. **Data Preparing and Loading**
+2. **Building a Machine Learning or Deep Learning Model in PyTorch**
+3. **Training the Model** (Fitting the model to the data)
+4. **Evaluating the Model** (Making predictions and performing inference)
+5. **Saving and Loading the Model**
+
+We will go through all these steps with an emphasis on understanding the code and using it effectively in real-world applications.
+-------------------code----------------------
+what_were_covering = {1: "data (prepare and load)",
+                      2: "build model",
+                      3: "fitting the model to data (training)",
+                      4: "making predictions and evaluting a model (inference)",
+                      5: "saving and loading a model",
+                      6: "putting it all together"}
+
+what_were_covering
+-------------------code----------------------
+
+---
+
+## Key Concepts:
+
+- **PyTorch Model Building**: Use the `torch` library to build neural networks.
+- **Training**: This step involves "fitting" the model to the data, where you'll learn various terminology and techniques in machine learning.
+- **Inference**: Making predictions using the trained model. The term **inference** is often used here.
+- **Save and Reload Models**: Learn how to save a trained model for future use and reload it without retraining.
+
+---
+
+## Steps in the Notebook:
+
+1. **Setup Google Colab Notebook**:
+   - Start a new notebook in Google Colab.
+   - Title the notebook "PyTorch Workflow - End-to-End Example."
+   - Link the resources (original notebook, book version, and discussion page).
+
+2. **Import Libraries**:
+   - Import necessary libraries like `torch` for PyTorch and `torch.nn` for building neural networks.
+   - Learn the basic components of a neural network and computational graph in PyTorch.
+   - **torch.nn** contains all building blocks for neural networks.
+
+3. **Neural Networks**:
+   - Neural networks are constructed from layers, and PyTorch provides tools for building these layers and connecting them.
+   - Computational graphs in PyTorch can be visualized as layers in a network.
+   
+4. **Libraries for Data Exploration**:
+   - Import `matplotlib` for data visualization (visualize, visualize, visualize!).
+
+5. **Check PyTorch Version**:
+   - Run `torch.__version__` to check the installed PyTorch version. Ensure it is at least **1.10** to avoid compatibility issues with CUDA (GPU acceleration).
+-------------------code----------------------
+import torch
+from torch import nn # nn contains all of PyTorch's building blocks for neural networks 
+import matplotlib.pyplot as plt
+
+# Check PyTorch version
+torch.__version__  #'1.10.0+cu111'
+-------------------code----------------------
+---
+
+## Key Points:
+- **PyTorch and Computational Graphs**: Understanding the connection between layers and the data flow through them is crucial. A neural network is essentially a computational graph where data is processed through various layers.
+- **Hands-On Learning**: The course focuses on coding directly rather than spending too much time on theory and slides. You'll experiment with the code, run it, make mistakes, and learn from them.
+- **Versioning and CUDA**: If you're working with GPUs, ensure that your PyTorch installation has CUDA support (e.g., version 1.10 with CUDA 11.1). If your version is older than 1.10, upgrade to avoid issues.
