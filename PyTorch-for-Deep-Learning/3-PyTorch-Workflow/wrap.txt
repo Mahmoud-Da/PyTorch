@@ -1,0 +1,97 @@
+*** 40. Introduction and Where You Can Get Help ***
+# PyTorch Workflow Module Overview
+
+## 1. Introduction
+
+- This module introduces a **typical deep learning workflow using PyTorch**.
+- There are many valid workflows in machine learning; this is one effective approach among many.
+- The goal is to **build, train, evaluate, and save** a model.
+
+---
+
+## 2. PyTorch Workflow Steps
+
+1. **Prepare the data**
+   - Load and preprocess your data.
+   - Convert it to **tensors**, as tensors are the fundamental data structure in PyTorch.
+
+2. **Build or select a model**
+   - Either build your own model or use a **pretrained model**.
+
+3. **Choose a loss function and optimizer**
+   - The loss function measures the model’s performance.
+   - The optimizer adjusts the model’s parameters to minimize the loss.
+
+4. **Build a training loop**
+   - Feed data into the model.
+   - Calculate the loss and update weights.
+   - Repeat this for several epochs (iterations).
+
+5. **Evaluate the model**
+   - Assess how well the model performs on new, unseen data.
+
+6. **Experiment and improve**
+   - Tweak your model, hyperparameters, or data preprocessing to enhance performance.
+
+7. **Save and load the model**
+   - Save your trained model for future use or deployment.
+   - Reload the model when needed to avoid retraining from scratch.
+-------------------code----------------------
++----------------------+
+| 1. Prepare the Data  |
+|----------------------|
+| - Load & preprocess  |
+| - Convert to tensors |
++----------+-----------+
+           |
+           v
++-----------------------------+
+| 2. Build or Select a Model |
+|-----------------------------|
+| - Build your own model     |
+| - Or use a pretrained one  |
++-------------+---------------+
+              |
+              v
++-------------------------------------+
+| 3. Choose Loss Function & Optimizer|
+|-------------------------------------|
+| - Loss: measures performance       |
+| - Optimizer: updates parameters    |
++---------------+---------------------+
+                |
+                v
++----------------------------+
+| 4. Build a Training Loop  |
+|----------------------------|
+| - Feed data               |
+| - Compute loss            |
+| - Update weights          |
+| - Repeat for epochs       |
++-------------+--------------+
+              |
+              v
++--------------------------+
+| 5. Evaluate the Model    |
+|--------------------------|
+| - Test on new data       |
+| - Measure performance    |
++-------------+------------+
+              |
+              v
++---------------------------+
+| 6. Experiment & Improve   |
+|---------------------------|
+| - Tweak model             |
+| - Adjust hyperparameters  |
+| - Improve preprocessing   |
++-------------+-------------+
+              |
+              v
++-----------------------------+
+| 7. Save and Load the Model |
+|-----------------------------|
+| - Save trained model       |
+| - Reload for reuse         |
++-----------------------------+
+-------------------code----------------------
