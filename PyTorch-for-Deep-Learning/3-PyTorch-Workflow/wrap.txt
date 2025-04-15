@@ -159,9 +159,124 @@ import matplotlib.pyplot as plt
 # Check PyTorch version
 torch.__version__  #'1.10.0+cu111'
 -------------------code----------------------
----
 
 ## Key Points:
 - **PyTorch and Computational Graphs**: Understanding the connection between layers and the data flow through them is crucial. A neural network is essentially a computational graph where data is processed through various layers.
 - **Hands-On Learning**: The course focuses on coding directly rather than spending too much time on theory and slides. You'll experiment with the code, run it, make mistakes, and learn from them.
 - **Versioning and CUDA**: If you're working with GPUs, ensure that your PyTorch installation has CUDA support (e.g., version 1.10 with CUDA 11.1). If your version is older than 1.10, upgrade to avoid issues.
+
+*** 42. Creating a Simple Dataset Using the Linear Regression Formula ***
+
+# PyTorch Workflow: Step 1 - Data Preparation and Loading
+
+## Introduction
+- The first step in any machine learning workflow is **data preparation and loading**.
+- Data in machine learning can come in many forms:
+  - Structured tables (e.g., Excel spreadsheets)
+  - Images
+  - Videos
+  - Audio (e.g., songs, podcasts)
+  - DNA sequences
+  - Text
+
+## The Core Idea of Machine Learning
+Machine Learning (including Deep Learning) can be summarized in **two main steps**:
+1. **Convert data into a numerical representation** (e.g., tensors).
+2. **Build a model** to learn patterns in that numerical representation.
+
+This is the foundational cycle of ML:
+- Input data → Numerical encoding → Model learns patterns → Output predictions/actions
+
+## Numerical Representation
+- All data needs to be transformed into numbers (tensors in PyTorch).
+- This process is called **encoding**.
+- The choice of encoding depends on the type of data.
+- After encoding, a neural network can be trained to learn features or patterns (often referred to as representations, features, or weights).
+
+Examples of ML tasks after representation:
+- Image classification (e.g., ramen vs spaghetti)
+- Text classification (e.g., spam vs not spam)
+- Audio recognition
+
+## Summary of Two-Part ML Workflow
+1. Convert raw data into a numerical representation (tensors).
+2. Build (or use) a model to learn patterns from those tensors.
+
+---
+
+# Demonstration: Creating Synthetic Data with Known Parameters
+
+To demonstrate this, the lecture uses **linear regression**.
+
+### What is Linear Regression?
+- A simple mathematical model to describe a straight-line relationship:
+-------------------code----------------------
+y = a + b*x
+-------------------code----------------------
+  - `a` is the intercept (value of `y` when `x = 0`)
+  - `b` is the slope or gradient
+
+This can also be written as:
+-------------------code----------------------
+y = weight * x + bias
+-------------------code----------------------
+
+In machine learning terminology:
+- **Weight** = slope (`b`)
+- **Bias** = intercept (`a`)
+- These are also referred to as **parameters**, which are the values the model learns.
+
+---
+
+## Coding: Generating Known Data
+
+1. Define known parameters:
+-------------------code----------------------python
+weight = 0.7
+bias = 0.3
+-------------------code----------------------
+
+2. Create a range of values for `x`:
+-------------------code----------------------python
+import torch
+
+start = 0
+end = 1
+step = 0.02
+X = torch.arange(start, end, step).unsqueeze(1)
+-------------------code----------------------
+
+- `torch.arange()` creates evenly spaced values.
+- `.unsqueeze(1)` adds a dimension (from shape `[N]` to `[N, 1]`) to prepare it as input for models.
+
+3. Generate corresponding `y` values using the linear formula:
+-------------------code----------------------python
+Y = weight * X + bias
+-------------------code----------------------
+
+4. Check the data:
+-------------------code----------------------python
+print(X[:10])
+print(Y[:10])
+print(len(X), len(Y))  # Expected: 50 samples
+-------------------code----------------------
+
+---
+
+## Purpose of This Step
+- We are building a dataset with a known relationship between inputs and outputs.
+- The goal later is to train a model to "rediscover" the original parameters (weight and bias) by learning from the data.
+
+This is a controlled example to build intuition. In real-world scenarios, we typically do not know the true mapping between inputs and outputs — that’s what the model is supposed to learn.
+
+---
+
+## Note on Squeeze/Unsqueeze
+- `.unsqueeze()` adds a dimension to the tensor, which is often necessary when feeding data into a model expecting inputs of shape `[batch_size, num_features]`.
+- `.squeeze()` would remove such extra dimensions.
+
+---
+
+## Next Step
+- Now that we have numerical data, the next step will be to **visualize it** and **build a model** to learn its pattern.
+- Visualization helps with understanding how well the model learns over time.
