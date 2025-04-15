@@ -216,6 +216,22 @@ y = a + b*x
   - `a` is the intercept (value of `y` when `x = 0`)
   - `b` is the slope or gradient
 
+Slope:
+- The steepness of a line.
+- Tells you how much y changes when x increases by 1.
+
+Example: If slope = 2, then for every step right (x+1), y goes up by 2.
+
+Intercept (y-intercept):
+- Where the line crosses the y-axis (when x=0).
+Example: If intercept = 3, the line passes through (0, 3).
+
+Quick Comparison:
+Slope (b): "How steep?"
+Intercept (a): "Where does it start on the y-axis?"
+
+
+
 This can also be written as:
 -------------------code----------------------
 y = weight * x + bias
@@ -280,3 +296,90 @@ This is a controlled example to build intuition. In real-world scenarios, we typ
 ## Next Step
 - Now that we have numerical data, the next step will be to **visualize it** and **build a model** to learn its pattern.
 - Visualization helps with understanding how well the model learns over time.
+
+*** 43. Splitting Our Data Into Training and Test Sets ***
+
+### **Splitting Data in Machine Learning: Training, Validation, and Test Sets**
+
+#### **Recap**
+- Previously, we generated numbers on a page using the linear regression formula with known parameters.
+- We're continuing to build on that foundation.
+
+---
+
+### **Why Splitting Data Is Important**
+- One of the most critical concepts in machine learning is **splitting data into training and test sets**.
+- This concept is essential for understanding how well a model generalizes to **unseen data**.
+- Generalization: The ability of a model to perform well on data it hasn't seen before.
+
+---
+
+### **Analogy: University Exams**
+Think of machine learning datasets like a university course:
+- **Training Set**: Course materials – where the model learns.
+- **Validation Set**: Practice exams – used to tune the model.
+- **Test Set**: Final exam – evaluates generalization on unseen data.
+
+---
+
+### **Goal**
+- The ultimate aim is to train a model that learns patterns from the training data and performs well on new, unseen data.
+
+---
+
+### **Standard Data Split**
+- **Training Set**: 60% – 80% of total data.
+- **Validation Set**: 10% – 20% (optional, used during model tuning).
+- **Test Set**: 10% – 20% (always used to evaluate final performance).
+
+---
+
+### **Practical Example: Creating a Train-Test Split**
+Assume we have 50 data points:
+
+- We'll use an **80/20 split**, which is a common practice.
+  - **Training Samples**: 40
+  - **Testing Samples**: 10
+
+#### **Code Summary (in PyTorch)**
+-------------------code----------------------
+# Determine split point
+train_split = int(0.8 * len(X))  # 80% of the data
+
+# Create training sets
+X_train = X[:train_split]
+Y_train = Y[:train_split]
+
+# Create testing sets
+X_test = X[train_split:]
+Y_test = Y[train_split:]
+-------------------code----------------------
+
+---
+
+### **Result Check**
+-------------------code----------------------
+len(X_train)  # 40
+len(Y_train)  # 40
+len(X_test)   # 10
+len(Y_test)   # 10
+-------------------code----------------------
+
+- Training set: 40 features and labels
+- Testing set: 10 features and labels
+
+---
+
+### **Alternative Methods**
+- While this example uses manual indexing, more advanced methods include:
+  - `sklearn.model_selection.train_test_split()` – adds randomness and shuffling.
+
+---
+
+### **Conclusion**
+- You've now created proper **training and test sets**.
+- Remember:
+  - **Training set** = where learning happens.
+  - **Test set** = where generalization is evaluated.
+  - **Validation set** = optional, used during model selection and tuning.
+- Proper splitting is one of the most important parts of any machine learning workflow.
