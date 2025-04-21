@@ -530,3 +530,165 @@ plt.show()                            # Display the figure
 
 This shows a figure (canvas) with two sets of points (blue and green).
 
+*** 45. Creating Our First PyTorch Model for Linear Regression ***
+Here's a clean and organized summary of the lecture without using any emojis:
+
+## **Introduction to Our First PyTorch Model**
+
+### **Model Type**
+- We are building a **Linear Regression** model in PyTorch.
+- The goal: implement the formula `y = weight * x + bias`.
+
+---
+
+## **Python Classes & PyTorch Modules**
+
+### **Python Class Basics**
+- If unfamiliar with Python classes, follow along during the video and refer to:
+  - Real Python: Object-Oriented Programming in Python 3
+
+### **PyTorch Module**
+- We subclass `nn.Module` which is the foundation for all models in PyTorch.
+- Think of `nn.Module` as **Lego blocks**—you can combine multiple modules to build more complex networks.
+
+---
+
+## **Model Implementation Steps**
+
+### **1. Create a Class**
+-------------------code----------------------
+class LinearRegressionModel(nn.Module):
+-------------------code----------------------
+- Inherits from `nn.Module`.
+
+### **2. Constructor Method (`__init__`)**
+- Initializes the model.
+-------------------code----------------------
+def __init__(self):
+    super().__init__()
+    self.weight = nn.Parameter(torch.rand(1, requires_grad=True, dtype=torch.float))
+    self.bias = nn.Parameter(torch.rand(1, requires_grad=True, dtype=torch.float))
+-------------------code----------------------
+- `nn.Parameter`: wraps tensors and marks them as learnable parameters.
+- `requires_grad=True`: allows PyTorch to track gradients for optimization.
+- Default `dtype` is `torch.float32`.
+
+### **3. Forward Method**
+-------------------code----------------------
+def forward(self, x: torch.Tensor) -> torch.Tensor:
+    return self.weight * x + self.bias
+-------------------code----------------------
+- This method defines the computation when the model is called.
+- Implements the linear regression formula.
+
+---
+
+## **Linking Back to Data Creation**
+
+- Earlier, we created data with known parameters (`weight` and `bias`) using:
+-------------------code----------------------
+y = weight * x + bias
+-------------------code----------------------
+- The model starts with random parameters and tries to learn these known values through training.
+
+---
+
+## **The Learning Process in ML**
+
+### **Objective**
+- Start with random values (`weight`, `bias`)
+- Look at training data
+- Adjust these values to closely match the true relationship
+
+### **Key Algorithms**
+1. **Gradient Descent**: Optimizes parameters by minimizing loss
+2. **Backpropagation**: Computes gradients for each parameter
+
+- These are the core of learning in PyTorch.
+- `requires_grad=True` enables gradient tracking during computation.
+
+---
+
+## **Next Steps**
+- In the next video:
+  - Dive deeper into how this model learns
+  - Explore essential PyTorch modules (`nn`, others)
+  - Understand how gradient descent and backpropagation work in practice (via PyTorch's automation)
+
+### **Suggested Further Reading**
+- PyTorch documentation on [`nn.Module`](https://pytorch.org/docs/stable/generated/torch.nn.Module.html)
+- Real Python guide on object-oriented programming
+- Optional deep dive into gradient descent and backpropagation (resources will be provided)
+
+-------------------code----------------------
+from torch import nn
+
+# Create linear regression model class
+class LinearRegressionModel(nn.Module): # <- almost everything in PyTorch inherhits from nn.Module
+  def __init__(self):
+    super().__init__()
+    self.weights = nn.Parameter(torch.randn(1, # <- start with a random weight and try to adjust it to the ideal weight
+                                            requires_grad=True, # <- can this parameter be updated via gradient descent?
+                                            dtype=torch.float)) # <- PyTorch loves the datatype torch.float32
+    
+    self.bias = nn.Parameter(torch.randn(1, # <- start with a random bias and try to adjust it to the ideal bias
+                                         requires_grad=True, # <- can this parameter be updated via gradient descent?
+                                         dtype=torch.float)) # <- PyTorch loves the datatype torch.float32 
+    
+  # Forward method to define the computation in the model
+  def forward(self, x: torch.Tensor) -> torch.Tensor: # <- "x" is the input data
+    return self.weights * x + self.bias # this is the linear regression formula
+-------------------code----------------------
+
+
+what is Gradient Descent and Back-propagation?
+
+## **1. Gradient Descent**
+
+### **What it is:**
+Gradient Descent is an **optimization algorithm** used to minimize a **loss function** by adjusting the model's parameters (like weights and biases).
+
+### **Why it’s important:**
+The goal of training a machine learning model is to make accurate predictions. To do that, the model needs to **minimize the error** (difference between predicted and actual values). Gradient descent helps achieve that.
+
+### **How it works (intuition):**
+Think of it like trying to find the **lowest point in a valley (the minimum of a function)**:
+
+1. Start at a random point (random weights).
+2. Look around to see in which direction the slope goes down (compute the gradient).
+3. Take a small step downhill (update the weights).
+4. Repeat until you’re at the bottom (minimum loss).
+
+### **Mathematically:**
+If `w` is a weight and `L(w)` is the loss function:
+
+-------------------code----------------------
+w_new = w_old - learning_rate * gradient_of_L_with_respect_to_w
+-------------------code----------------------
+
+The **learning rate** controls how big your steps are.
+
+---
+
+## **2. Backpropagation**
+
+### **What it is:**
+Backpropagation is the **algorithm** used to **compute the gradients** needed for gradient descent.
+
+### **Why it’s important:**
+To know how to adjust each weight, the model needs to understand how changing a weight affects the loss. Backpropagation does exactly that by using **the chain rule of calculus**.
+
+### **How it works (in steps):**
+1. Perform a **forward pass**: Compute the output of the network with current weights.
+2. Compute the **loss**: Measure how far off the prediction is from the actual value.
+3. **Backpropagate**: Go backwards through the network to compute the gradient (how much each weight contributed to the loss).
+4. Use **gradient descent** to update weights using those gradients.
+
+---
+
+## **Quick Analogy:**
+Imagine you're blindfolded on a hilly terrain trying to reach the lowest point:
+
+- **Gradient Descent** is how you figure out which direction to move to go downhill.
+- **Backpropagation** is how your brain processes feedback from your steps (how steep the hill is in each direction) so you can adjust your next move.
+
