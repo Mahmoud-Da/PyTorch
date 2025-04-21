@@ -692,7 +692,7 @@ Imagine you're blindfolded on a hilly terrain trying to reach the lowest point:
 - **Gradient Descent** is how you figure out which direction to move to go downhill.
 - **Backpropagation** is how your brain processes feedback from your steps (how steep the hill is in each direction) so you can adjust your next move.
 
-*** 46. Breaking Down What's Happening in Our PyTorch Linear regression Model ***
+*** 47. Discussing Some of the Most Important PyTorch Model Building Classes ***
 
 ## **1. Recap and Context**
 - Previously, we built our first PyTorch model that **inherits from `nn.Module`**.
