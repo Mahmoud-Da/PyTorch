@@ -928,3 +928,82 @@ torch.rand(1)  # Will return the same value if seed is set
 - In the next video, the instructor will:
   - Use the randomly initialized model to make predictions.
   - Evaluate how well the untrained model performs on the test data.
+
+*** 49. Making Predictions With Our Random Model Using Inference Mode ***
+
+## Predicting with a Randomly Initialized PyTorch Model**
+
+### **1. Model Initialization Recap**
+- In the previous video, we looked into the internals of our `torch.nn.Module`-based model.
+- The model’s parameters are randomly initialized.
+- Deep learning works by starting with random weights and progressively tuning them based on training data.
+
+---
+
+### **2. Making Predictions with the Initial Model**
+- Objective: Check the predictive power of our untrained model.
+- Machine learning models take inputs (`X_test`) and produce predictions close to the target values (`y_test`).
+
+---
+
+### **3. Forward Method Clarification**
+- The model's `forward()` method is invoked during predictions.
+- Although we defined `forward(self, x)`, we can pass in full datasets like `X_test` to it.
+- `x` is a common convention in PyTorch code for input data.
+
+---
+
+### **4. Using `torch.inference_mode()`**
+- This is a **context manager** used during inference (i.e., prediction phase).
+- Syntax:
+-------------------code----------------------
+with torch.inference_mode():
+    y_preds = model(X_test)
+-------------------code----------------------
+- Benefits of `inference_mode`:
+  - Turns off gradient tracking.
+  - Reduces memory usage.
+  - Improves inference speed, especially on large datasets.
+
+---
+
+### **5. Error Encounter: NotImplementedError**
+- Issue: `NotImplementedError` due to indentation of the `forward()` method.
+- Fix: Align the `forward()` definition correctly using `Shift + Tab` in Google Colab.
+- This is a common issue and often arises from misalignment in function indentation.
+
+---
+
+### **6. Visualizing Predictions**
+- Model predictions are visualized:
+  - Red dots (predictions)
+  - Green dots (actual values from `y_test`)
+- Observations:
+  - Predictions are poor (expected, since parameters are random).
+  - Red dots are far from green dots, indicating bad performance.
+
+---
+
+### **7. Why Use `inference_mode()` Over `no_grad()`**
+- Older code may use:
+-------------------code----------------------
+with torch.no_grad():
+    y_preds = model(X_test)
+-------------------code----------------------
+- While both disable gradient tracking:
+  - `inference_mode()` is **newer** and **more efficient**.
+  - Preferred for modern PyTorch inference tasks.
+
+---
+
+### **8. Additional Resources**
+- For a deeper dive into `inference_mode`, refer to:
+  - PyTorch’s blog posts
+  - Related Twitter threads explaining performance improvements
+
+---
+
+### **9. Key Takeaways**
+- When predicting with a model, use `torch.inference_mode()` for better performance.
+- Untrained models produce random predictions.
+- We'll train our model in future lectures to improve prediction accuracy and bring red dots closer to green dots.
