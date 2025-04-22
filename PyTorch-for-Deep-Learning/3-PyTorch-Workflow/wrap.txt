@@ -1245,3 +1245,107 @@ optimizer = optim.SGD(params=model.parameters(), lr=0.01)
 - Loss function and optimizer work together in the training loop.
 - Next step: Building a training loop to put this into action.
 
+*** 52. PyTorch Training Loop Steps and Intuition ***
+# Loss Functions, Optimizers & Training Loops in PyTorch**
+
+
+## **1. What is a Gradient?**
+
+A **gradient** is just a fancy word for **slope** or **direction of change**.
+
+Imagine you're on a hill and you're blindfolded.  
+You want to get to the bottom of the hill (lowest point = **minimum**).
+
+The **gradient** tells you:
+- Which **direction** to go to get down the hill fastest.
+- How **steep** the hill is in that direction.
+
+### In Machine Learning:
+- The "hill" is your **loss function** (how wrong the model is).
+- The **gradient** tells the model how to **change its parameters** (like weights and bias) to make the loss smaller.
+
+So, during training, the model uses the **gradient** to **learn** how to improve its predictions step by step.
+
+## **2. Inside the Optimizer**
+- Optimizers require:
+  - `params`: model parameters (e.g., weights and biases).
+  - `lr` (learning rate): controls how much to change the parameters.
+- **Learning Rate (LR)**:
+  - A **hyperparameter** (set by the engineer, not learned).
+  - Small LR → small updates.
+  - Large LR → large updates.
+
+## **3. Choosing a Loss Function and Optimizer**
+- **Problem-specific**.
+- For regression:
+  - Use **L1 loss**.
+  - Use **SGD (Stochastic Gradient Descent)** as the optimizer.
+- For classification:
+  - Use a classification loss like binary cross-entropy.
+
+---
+
+## **4. Training Loop Overview**
+### **Goal**: Reduce the loss through multiple passes over the data.
+
+### **Steps of the Training Loop**
+0. **Loop through the data**:
+   - Called an **epoch**: one full pass through the dataset.
+1. **Set model to training mode**:
+   - `model.train()`
+   - Enables gradient tracking.
+2. **Forward Pass**:
+   - Pass data through the model to make predictions.
+   - Called **forward propagation**.
+3. **Calculate Loss**:
+   - Compare predictions with ground truth.
+4. **Zero Gradients**:
+   - `optimizer.zero_grad()` to reset gradients before each update.
+5. **Backward Pass**:
+   - `loss.backward()` calculates gradients via **backpropagation**.
+   - Computes gradients of the loss with respect to model parameters.
+6. **Optimizer Step**:
+   - `optimizer.step()` updates the parameters using **gradient descent**.
+
+---
+
+## **5. Gradient Intuition**
+- **Gradient** = slope (change in y / change in x).
+- Imagine loss as the height of a hill:
+  - The model starts at the top.
+  - It follows the slope downhill (i.e., reduces the gradient).
+  - Goal: reach the bottom where gradient = 0 → loss minimized.
+
+---
+
+## **6. Epochs and Hyperparameters**
+- **Epoch**: one full cycle of training data through the model.
+- `epochs` is a hyperparameter (you define how many).
+- The more data or complexity, the more epochs may be needed.
+
+---
+
+## **7. Model Modes in PyTorch**
+- `model.train()`:
+  - Enables gradient tracking (`requires_grad=True`).
+- `model.eval()` or using `torch.no_grad()`:
+  - Turns off gradient tracking (used during inference/testing).
+
+---
+
+## **Closing Notes**
+- The first few training loops might seem complex, but with practice, they become second nature.
+- In the future, you can wrap these steps into functions for cleaner code.
+- Next step: writing the training loop code from scratch.
+
+
+-------------------code----------------------
+# An epoch is one loop through the data... (this is a hyperparameter because we've set it ourselves)
+epochs = 1
+
+### Training
+# 0. Loop through the data
+for epoch in range(epochs): 
+  # Set the model to training mode
+  model_0.train() # train mode in PyTorch sets all parameters that require gradients to require gradients 
+-------------------code----------------------
