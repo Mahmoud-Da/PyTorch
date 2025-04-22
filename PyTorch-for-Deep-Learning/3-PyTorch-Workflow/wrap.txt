@@ -1349,3 +1349,185 @@ for epoch in range(epochs):
   # Set the model to training mode
   model_0.train() # train mode in PyTorch sets all parameters that require gradients to require gradients 
 -------------------code----------------------
+
+
+*** 53. Writing Code for a PyTorch Training Loop ***
+
+## **What is Gradient Tracking in Machine Learning?**
+
+### **Definition**:
+**Gradient tracking** means **keeping track of operations done on tensors so we can calculate gradients automatically during backpropagation**.
+
+This is especially important for training neural networks, where we want to know:
+> "How should we adjust each parameter to reduce the loss?"
+
+---
+
+### **Why do we need it?**
+In training, we update model parameters using **gradients**, which are computed by taking derivatives of the loss function **with respect to** the parameters.
+
+- To compute these gradients **automatically**, libraries like **PyTorch** record all the operations (like addition, multiplication, etc.) done on tensors.
+- This "recording" is called **gradient tracking**.
+- When we call `.backward()`, PyTorch walks back through this recorded graph and computes the gradients.
+
+---
+
+### **In Practice (PyTorch example)**:
+-------------------code----------------------
+import torch
+
+x = torch.tensor(2.0, requires_grad=True)
+y = x**2 + 3*x
+
+y.backward()
+print(x.grad)  # Output: 7.0
+-------------------code----------------------
+
+- `requires_grad=True` enables **gradient tracking** for `x`.
+- PyTorch tracks the computation `x**2 + 3*x`.
+- Calling `backward()` computes the derivative of `y` with respect to `x` (i.e., dy/dx = 2x + 3).
+
+---
+
+### **When to Enable or Disable Gradient Tracking**
+- **Enable (default for training)**:
+  - When you're training a model and need to update weights.
+- **Disable**:
+  - When you're evaluating or doing inference (no learning).
+  - Saves memory and speeds things up.
+
+-------------------code----------------------
+with torch.no_grad():
+    output = model(data)
+-------------------code----------------------
+
+---
+
+### **Summary**
+- Gradient tracking = automatic bookkeeping for computing gradients.
+- Used during training to enable learning via backpropagation.
+- Can be turned off during inference to save resources.
+
+
+
+### Introduction
+In the previous video, the focus was on understanding the inner workings of a training loop, rather than jumping directly into code. This session builds on that foundation by writing the essential training loop in PyTorch. These steps form the foundation of how a model learns during training.
+
+---
+
+### Why This Matters
+Although we’ll later encapsulate this logic into functions, understanding each line of the training loop is essential. This manual walkthrough provides the core understanding needed to train neural networks effectively.
+
+---
+
+### Key Concept: Forward Pass
+The **forward pass** involves sending input data through the model to make predictions.
+
+-------------------code----------------------
+y_pred = model(x_train)
+-------------------code----------------------
+
+- Here, `x_train` is the input.
+- `model` is the current model instance.
+- `y_pred` contains the model's predictions.
+
+---
+
+### Step 1: Calculate the Loss
+We use a loss function to measure how far off our predictions are from the actual target values.
+
+-------------------code----------------------
+loss = loss_fn(y_pred, y_train)
+-------------------code----------------------
+
+- The `loss_fn` could be L1 loss (Mean Absolute Error).
+- In PyTorch, the correct order is:
+  - First: predictions (`input`)
+  - Second: ground truth (`target`)
+
+---
+
+### Step 2: Zero the Gradients
+Before calculating the gradients, we need to clear the previously stored ones.
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+- If we don’t zero out the gradients, they will accumulate across iterations.
+- This is a design choice in PyTorch for efficiency.
+
+---
+
+### Step 3: Perform Backpropagation
+Calculate how the loss should influence each parameter (gradient computation).
+
+-------------------code----------------------
+loss.backward()
+-------------------code----------------------
+
+- This step computes the gradients of the loss with respect to each model parameter.
+- These gradients are then used to update the weights.
+
+---
+
+### Step 4: Perform a Step of Gradient Descent
+Update the model parameters using the optimizer and the gradients.
+
+-------------------code----------------------
+optimizer.step()
+-------------------code----------------------
+
+- Applies the gradients to update the parameters.
+- This is the actual "learning" step.
+
+---
+
+### Summary of the Five Major Training Steps
+1. **Forward pass** – Compute predictions using model.
+2. **Calculate the loss** – Compare predictions to actual labels.
+3. **Zero the gradients** – Clear gradients from previous iteration.
+4. **Backward pass** – Compute new gradients based on the loss.
+5. **Step the optimizer** – Update parameters using gradients.
+
+---
+
+### Important Notes
+- The order of steps is essential: optimizer step **must** come after backward.
+- Gradients accumulate by default in PyTorch – hence the need for `zero_grad()`.
+- PyTorch handles both **backpropagation** and **gradient descent** under the hood.
+
+---
+
+### Suggested Exercise
+- Practice writing and running this full training loop.
+- Comment out the optimizer steps to observe behavior.
+- Attempt to write the testing loop based on your current understanding.
+
+---
+
+### Memory Aid: The Training Loop Song
+A mnemonic song to remember the training steps:
+
+> It's train time  
+> So we do the forward pass, calculate the loss  
+> Optimizer zero grad, loss backward  
+> Optimizer step, step, step  
+
+For test time:
+
+> Let's test with `torch.no_grad()`  
+> Do the forward pass, calculate the loss  
+> Watch it go down, down, down
+
+Search for the "Unofficial PyTorch Optimization Loop Song" online if you want a fun way to memorize these steps.
+
+---
+
+### Coming Up Next
+- A colorful graphic will summarize the training loop visually.
+- Next video will focus on writing the **testing loop**.
+- We’ll revisit the training and testing process for deeper understanding.
+
+--- 
+
