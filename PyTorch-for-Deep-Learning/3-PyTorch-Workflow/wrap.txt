@@ -1165,3 +1165,83 @@ optimizer.step()           # Update parameters
 |---------------|-------------------------------------------|
 | Loss Function | Tells how bad the predictions are         |
 | Optimizer     | Adjusts model to make better predictions  |
+
+
+*** 51. Setting Up an Optimizer and a Loss Function ***
+Here’s a well-organized set of notes summarizing the lecture without using emojis:
+
+---
+
+## **Lecture Summary: Training a Machine Learning Model in PyTorch**
+
+### **1. Training Concept Overview**
+- Training transforms random model parameters into values that better represent the data.
+- This is achieved by minimizing a **loss function** using an **optimizer**.
+- The goal is to make the model's predictions as close as possible to the actual outputs.
+
+---
+
+### **2. Loss Function**
+- **Definition**: Measures how wrong the model’s predictions are.
+- **Goal**: Lower the loss to improve model performance.
+- **PyTorch Implementation**: Many built-in loss functions available via `torch.nn`.
+- **Types Discussed**:
+  - **L1 Loss (Mean Absolute Error)**:
+    - Calculates the average of absolute differences between predictions and actual values.
+    - Suitable for **regression problems**.
+  - **MSE Loss (Mean Squared Error)**:
+    - Also used for regression.
+  - **Cross Entropy Loss**:
+    - Used for **classification problems**.
+- **PyTorch Code Example**:
+-------------------code----------------------
+import torch.nn as nn
+loss_fn = nn.L1Loss()
+-------------------code----------------------
+
+---
+
+### **3. Optimizer**
+- **Definition**: Algorithm that adjusts model parameters to reduce the loss.
+- **PyTorch Location**: `torch.optim`
+- **Popular Optimizers**:
+  - **SGD (Stochastic Gradient Descent)**:
+    - Updates model parameters by taking random steps to minimize the loss.
+    - Basic and widely used.
+  - **Adam**:
+    - Adaptive learning rate and momentum-based optimization.
+
+- **PyTorch Code Example (SGD)**:
+-------------------code----------------------
+import torch.optim as optim
+optimizer = optim.SGD(params=model.parameters(), lr=0.01)
+-------------------code----------------------
+
+---
+
+### **4. Important Concepts**
+- **Gradient Descent**:
+  - Algorithm to iteratively minimize the loss by adjusting weights.
+  - Stochastic gradient descent adds randomness to updates.
+- **Backpropagation**:
+  - Computes gradients used by the optimizer to adjust parameters.
+
+---
+
+### **5. Hyperparameters**
+- **Definition**: Values set by the data scientist before training starts.
+- **Key Hyperparameter**:
+  - **Learning Rate (`lr`)**:
+    - Controls how much to change model parameters during each update.
+    - Small `lr` = small updates (slow learning).
+    - Large `lr` = big updates (risk of overshooting optimum).
+
+- **Typical Learning Rate Values**:
+  - `0.1`, `0.01`, `0.001`
+
+### **6. Summary**
+- **Loss function** = Measures prediction error.
+- **Optimizer** = Adjusts parameters to reduce loss.
+- Loss function and optimizer work together in the training loop.
+- Next step: Building a training loop to put this into action.
+
