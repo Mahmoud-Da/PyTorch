@@ -383,3 +383,150 @@ len(Y_test)   # 10
   - **Test set** = where generalization is evaluated.
   - **Validation set** = optional, used during model selection and tuning.
 - Proper splitting is one of the most important parts of any machine learning workflow.
+
+*** 44. Building a function to Visualize Our Data ***
+
+
+## **Lecture Summary: Visualizing Data Before Model Training**
+
+### **Context**
+- Previously: Split data into **training** and **test** sets.
+- Goal: Build a model that learns patterns in the training data and makes accurate predictions on the test data.
+- Challenge: Raw numbers (data) are hard to interpret — hence the need for **visualization**.
+
+---
+
+## **Key Message**
+> **Visualize, visualize, visualize.**  
+Visualization helps in understanding the relationships in data more clearly.
+
+---
+
+## **Plotting Function: `plot_predictions()`**
+
+### **Function Purpose**
+- Visualizes training data, test data, and optionally, model predictions.
+- Makes use of `matplotlib` to create scatter plots.
+
+### **Function Definition**
+-------------------code----------------------
+def plot_predictions(train_data=X_train, 
+                     train_labels=y_train, 
+                     test_data=X_test, 
+                     test_labels=y_test, 
+                     predictions=None):
+    """
+    Plots training data, test data, and compares predictions if provided.
+    """
+-------------------code----------------------
+
+### **Plotting Code Explanation**
+1. **Create Figure**
+-------------------code----------------------
+plt.figure(figsize=(10, 7))
+-------------------code----------------------
+   - Preferred size: 10x7 (also a poker joke).
+
+2. **Plot Training Data (Blue)**
+-------------------code----------------------
+plt.scatter(train_data, train_labels, c="b", s=4, label="Training data")
+-------------------code----------------------
+
+3. **Plot Test Data (Green)**
+-------------------code----------------------
+plt.scatter(test_data, test_labels, c="g", s=4, label="Testing data")
+-------------------code----------------------
+
+4. **Plot Predictions (Red), if provided**
+-------------------code----------------------
+if predictions is not None:
+      plt.scatter(test_data, predictions, c="r", s=4, label="Predictions")
+-------------------code----------------------
+
+5. **Display Legend**
+-------------------code----------------------
+plt.legend(prop={"size":14})
+-------------------code----------------------
+
+---
+
+## **Understanding the Visual Output**
+- **Blue dots**: Training data points.
+- **Green dots**: Actual test data values (ground truth).
+- **Red dots** (if available): Predictions made by the model.
+
+> **Goal**: Train a model on blue (training) data, feed it the x-values of green (test) data, and try to make the red dots (predicted y-values) overlap the green dots (actual y-values).
+
+---
+
+## **Mathematical Background**
+- The relationship is predefined as:
+-------------------code----------------------
+y = weight * x + bias
+-------------------code----------------------
+- This is the basic linear regression equation (**y = mx + c**) from algebra.
+
+---
+
+## **Conclusion**
+- This function sets the foundation for **visual model evaluation**.
+- Even without building a model yet, visualization helps clarify:
+  - Data distribution
+  - Desired outcome
+  - The target of our machine learning model
+
+> Next step: Start building the actual model to learn and make predictions.
+
+
+## **What is `plt.figure()`?**
+
+### Think of it like:
+> A **blank canvas** where you can draw your plots.
+
+### What it does:
+- `plt.figure()` creates a **new figure window** — this is where your plots (like lines, bars, scatter plots) will be displayed.
+- You can specify the **size** of the canvas using `figsize=(width, height)` in inches.
+
+### Example:
+-------------------code----------------------
+plt.figure(figsize=(10, 7))
+-------------------code----------------------
+This creates a figure that’s 10 inches wide and 7 inches tall.
+
+---
+
+## **What is `plt.scatter()`?**
+
+### Think of it like:
+> A way to **plot individual data points** as **dots** on your figure.
+
+### What it does:
+- `plt.scatter(x, y)` takes two lists (or arrays):
+  - `x`: the horizontal values
+  - `y`: the vertical values
+- It plots each pair `(x[i], y[i])` as a **dot** on the graph.
+
+### Extra Options:
+- `c`: color of the dots (e.g., `"b"` for blue, `"r"` for red)
+- `s`: size of each dot
+- `label`: label to show in the legend
+
+### Example:
+-------------------code----------------------
+plt.scatter(X_train, y_train, c="b", s=4, label="Training data")
+-------------------code----------------------
+This will plot blue dots for each `(X_train[i], y_train[i])` pair.
+
+---
+
+### Putting it Together
+-------------------code----------------------
+plt.figure(figsize=(10, 7))           # Create a canvas
+plt.scatter(x1, y1, c="b")            # Plot some blue dots
+plt.scatter(x2, y2, c="g")            # Plot some green dots
+plt.legend()
+plt.show()                            # Display the figure
+-------------------code----------------------
+
+This shows a figure (canvas) with two sets of points (blue and green).
+
