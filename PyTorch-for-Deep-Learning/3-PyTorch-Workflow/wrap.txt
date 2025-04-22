@@ -1733,3 +1733,148 @@ for epoch in range(epochs):
   model_0.eval()
 -------------------code----------------------  
 
+*** 56. Writing Testing Loop Code and Discussing What's Happening Step by Step ***
+
+### **Lecture Summary: Model Evaluation & Testing Code in PyTorch**
+
+#### **Recap**
+- In the previous session, we observed our **loss decreasing**, which indicates that the model's predictions are becoming more accurate.
+- Loss = Difference between predicted and actual values.
+- This was achieved using **backpropagation** and **gradient descent**, handled automatically by PyTorch.
+
+#### **Resources**
+- For deeper understanding:
+  - Search: *"How does gradient descent work?"*
+  - Search: *"Backpropagation explained"*
+
+#### **Learning Approach**
+- Practical advice: When encountering unfamiliar concepts, Google them, read articles or watch videos, and implement small projects to build intuition.
+
+---
+
+### **Training Code Challenge**
+- Previously, a challenge was issued: **Run the training code for 100 epochs.**
+  - Questions to reflect:
+    - How low did your loss go?
+    - Did weights and bias move toward expected values?
+    - How do predictions look now?
+
+---
+
+### **Writing Testing Code**
+
+#### **Key Concepts**
+- **Training and testing code can be separated** (will be functionized later).
+- For now, both are written together for intuition-building.
+
+#### **Model Evaluation Mode**
+- `model.eval()`: Turns off specific settings not required during testing.
+  - Example: Disables **Dropout** and **Batch Normalization**.
+  - These layers behave differently during training vs. testing.
+
+#### **Inference Mode**
+- `with torch.inference_mode():`
+  - Turns off **gradient tracking**.
+  - Makes evaluation more **memory-efficient and faster**.
+  - Equivalent (older alternative): `with torch.no_grad()`
+
+---
+
+### **Testing Steps Overview**
+
+1. **Set model to evaluation mode:**
+-------------------code----------------------  
+model.eval()
+-------------------code----------------------  
+
+2. **Use inference context:**
+-------------------code----------------------  
+with torch.inference_mode():
+-------------------code----------------------  
+
+3. **Forward pass (inference):**
+-------------------code----------------------  
+test_preds = model(X_test)
+-------------------code----------------------  
+
+4. **Calculate test loss:**
+-------------------code----------------------  
+test_loss = loss_fn(test_preds, y_test)
+-------------------code----------------------  
+
+5. **Print progress periodically:**
+   - E.g., every 10 epochs.
+
+---
+
+### **Key Principles**
+
+- Training = Learning patterns from **training data**.
+- Testing = Evaluating on **unseen test data**.
+  - Avoid testing on data used in training to prevent **data leakage**.
+- Analogy: Like preparing for exams with study materials (training) and taking the exam with new questions (testing).
+
+---
+
+### **Running 100 Epochs**
+
+- Model was re-initialized with a **random seed** for reproducibility.
+- Training loop executed for 100 epochs.
+  - Loss decreased significantly over time.
+  - Weights and bias moved closer to ideal values (0.7 and 0.3).
+  - Final predictions were much more accurate compared to the initial ones.
+
+---
+
+### **Observations**
+- Training loss was lower than test loss.
+- Challenge: Try to reduce test loss further.
+  - Hint: Could training for longer help?
+  - Can we make the red (predicted) points match the green (actual) points better?
+
+---
+
+### **Next Steps**
+- Think of strategies to improve model accuracy on test data.
+- Prepare for the next session where testing code will be reviewed again.
+
+-------------------code----------------------  
+epochs = 100
+
+# 0. Loop through the data
+for epoch in range(epochs): 
+  # Set the model to training mode
+  model_0.train() # train mode in PyTorch sets all parameters that require gradients to require gradients 
+
+  # 1. Forward pass
+  y_pred = model_0(X_train)
+
+  # 2. Calculate the loss
+  loss = loss_fn(y_pred, y_train)
+
+  # 3. Optimizer zero grad
+  optimizer.zero_grad() 
+
+  # 4. Perform backpropagation on the loss with respect to the parameters of the model (calculate gradients of each parameter)
+  loss.backward()
+
+  # 5. Step the optimizer (perform gradient descent)
+  optimizer.step() # by default how the optimizer changes will accumulate through the loop so... we have to zero them above in step 3 for the next iteration of the loop
+
+  ### Testing
+  model_0.eval() # turns off different settings in the model not needed for evaluation/testing (dropout/batch norm layers)
+  with torch.inference_mode(): # turns off gradient tracking & a couple more things behind the scenes - https://twitter.com/PyTorch/status/1437838231505096708?s=20&t=aftDZicoiUGiklEP179x7A
+  # with torch.no_grad(): # you may also see torch.no_grad() in older PyTorch code
+    # 1. Do the forward pass 
+    test_pred = model_0(X_test)
+
+    # 2. Calculate the loss
+    test_loss = loss_fn(test_pred, y_test)
+
+  # Print out what's happenin'
+  if epoch % 10 == 0:
+    print(f"Epoch: {epoch} | Loss: {loss} | Test loss: {test_loss}")
+    # Print out model state_dict()
+    print(model_0.state_dict())
+-------------------code----------------------  
+
