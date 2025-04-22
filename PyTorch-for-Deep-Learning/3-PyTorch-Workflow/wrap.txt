@@ -848,3 +848,83 @@ def forward(self, x):
 - Next video will cover:
   - **Creating an instance of our linear regression model**
   - Exploring what happens when we interact with the model
+
+***  48. Checking Out the Internals of Our PyTorch Model ***
+
+# **Inspecting and Understanding Our First PyTorch Model**
+
+## **1. Recap of Previous Content**
+- Last video introduced **PyTorch model building essentials**.
+- A **PyTorch Cheat Sheet** was recommended for additional reading.
+- This course uses the `00_pytorch_fundamentals.ipynb` notebook from the *Learn PyTorch* book.
+
+---
+
+## **2. Overview of the PyTorch Workflow**
+Outlined steps in the model development lifecycle and key modules involved:
+
+### **Workflow Steps and Relevant Modules**
+| Step                        | Module                                      | Notes |
+|-----------------------------|----------------------------------------------|-------|
+| Getting data                | `torchvision.transforms`                     | For image transforms (used later in CV) |
+| Creating datasets           | `torch.utils.data.Dataset`                   | For custom datasets |
+| Loading data                | `torch.utils.data.DataLoader`                | For batching/shuffling |
+| Building models             | `torch.nn`, `torch.nn.Module`                | Used in this section |
+| Using pretrained models     | `torchvision.models`                         | For computer vision (future use) |
+| Optimizing models           | `torch.optim`                                | For gradient descent and parameter updates |
+| Evaluating models           | `torchmetrics`                               | For accuracy, precision, etc. (covered later) |
+| Experiment tracking         | `torch.utils.tensorboard`                    | For visualizing training metrics |
+
+---
+
+## **3. Inspecting the Model**
+### **Creating the Model**
+- Set a random seed using `torch.manual_seed(42)` to ensure reproducibility.
+- Created the model instance:
+-------------------code----------------------
+model_0 = LinearRegressionModel()
+-------------------code----------------------
+
+### **Understanding the Output**
+- Printing the model instance only shows its class name.
+- To inspect parameters:
+-------------------code----------------------
+list(model_0.parameters())
+-------------------code----------------------
+  - Returns a list of `Parameter` tensors with random values.
+- Alternatively, inspect named parameters for clarity:
+  -------------------code----------------------
+  model_0.state_dict()
+  -------------------code----------------------
+  - Returns a dictionary with `weight` and `bias` as keys and their random values.
+
+---
+
+## **4. Importance of Random Initialization**
+- Model parameters (`weights`, `biases`) are initialized **randomly** by default.
+- Running the model multiple times without a seed gives **different values** each time.
+- Setting the seed ensures consistent results during experimentation and debugging.
+
+### **Example:**
+-------------------code----------------------
+torch.manual_seed(42)
+torch.rand(1)  # Will return the same value if seed is set
+-------------------code----------------------
+
+---
+
+## **5. Core Deep Learning Concept**
+- The **foundation of deep learning** is:
+  1. Start with **random values** (weights, biases).
+  2. Use **training data**, **gradient descent**, and **backpropagation**.
+  3. Update parameters to better reflect the patterns in the data.
+- This process transforms the random values into **useful representations**.
+- In real scenarios, we don’t know the ideal parameters — the model learns them.
+- In this example, we know the ideal values, so we can compare and visualize learning.
+
+---
+
+## **6. Next Steps**
+- In the next video, the instructor will:
+  - Use the randomly initialized model to make predictions.
+  - Evaluate how well the untrained model performs on the test data.
