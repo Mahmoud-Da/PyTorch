@@ -692,7 +692,7 @@ Imagine you're blindfolded on a hilly terrain trying to reach the lowest point:
 - **Gradient Descent** is how you figure out which direction to move to go downhill.
 - **Backpropagation** is how your brain processes feedback from your steps (how steep the hill is in each direction) so you can adjust your next move.
 
-*** 46. Breaking Down What's Happening in Our PyTorch Linear regression Model ***
+*** 47. Discussing Some of the Most Important PyTorch Model Building Classes ***
 
 ## **1. Recap and Context**
 - Previously, we built our first PyTorch model that **inherits from `nn.Module`**.
@@ -769,3 +769,82 @@ def forward(self, x):
   - How to check the contents of our model
   - Train the model
   - Make predictions using it
+
+*** 46. Breaking Down What's Happening in Our PyTorch Linear regression Model ***
+
+# **PyTorch Model Building Essentials**
+
+## **1. Recap**
+- We've created our **first PyTorch model** using `nn.Module`.
+- Key takeaways:
+  - Almost every PyTorch model **inherits from `nn.Module`**.
+  - If inheriting from `nn.Module`, you must **override the `forward()` method** to define the computation.
+  - During training, the model updates its parameters (weights and biases) using:
+    - **Gradient Descent**
+    - **Backpropagation**
+
+---
+
+## **2. Behind the Scenes (Yet to Implement)**
+- We haven’t yet written the code to trigger gradient descent and backpropagation.
+- When we do, we’ll refer back to these concepts.
+- Currently, our model only defines the **forward computation**.
+
+---
+
+## **3. Core PyTorch Components**
+
+### `torch.nn`
+- Contains **building blocks** for computational graphs (neural networks).
+- A **computational graph** is a general concept, and neural networks are a specific type of it.
+
+### `torch.nn.Parameter`
+- Used to define parameters (e.g., weights and biases) the model should **learn**.
+- Often, a PyTorch layer from `torch.nn` will handle this for you.
+
+### `torch.nn.Module`
+- **Base class** for all neural network models in PyTorch.
+- Any subclass **must override the `forward()` method**.
+- The `forward()` method defines what the model does during inference/training.
+
+### `torch.optim`
+- Contains **optimizers** (e.g., SGD, Adam).
+- Responsible for updating the model's parameters using **gradient descent**.
+- Adjusts random values to ones that better fit the data.
+
+---
+
+## **4. Additional Useful Modules (Mentioned for Future Use)**
+
+### `torch.utils.data.Dataset`
+- For managing datasets.
+- Will be useful when working with more complex data.
+
+### `torch.utils.data.DataLoader`
+- For batching, shuffling, and loading data efficiently.
+
+---
+
+## **5. Summary of Responsibilities**
+
+| Module                  | Purpose                                 |
+|-------------------------|------------------------------------------|
+| `torch.nn.Module`       | Model definition (includes `forward`)    |
+| `torch.nn.Parameter`    | Learnable model parameters               |
+| `torch.optim`           | Optimizers for parameter updates         |
+| `torch.utils.data`      | Managing and loading datasets            |
+
+---
+
+## **6. Extra Resources**
+- Recommended: **PyTorch Cheat Sheet** (official documentation).
+  - A great place to explore and build familiarity.
+  - Spend 5–10 minutes browsing to get exposure.
+  - Not everything needs to be understood at once.
+
+---
+
+## **7. What’s Next**
+- Next video will cover:
+  - **Creating an instance of our linear regression model**
+  - Exploring what happens when we interact with the model
