@@ -1878,3 +1878,161 @@ for epoch in range(epochs):
     print(model_0.state_dict())
 -------------------code----------------------  
 
+
+*** 57. Reviewing What Happens in a Testing Loop Step by Step ***
+
+## **Lecture Summary: Training and Evaluating Models in PyTorch**
+
+### **Recap & Objective**
+- In the previous video, the model was trained for **100 epochs**, and predictions improved significantly.
+- The challenge: **Align red dots with green dots** (i.e., make accurate predictions).
+- Strategy: Train the model for another 100 epochs to improve alignment.
+
+---
+
+### **Continued Training**
+- Instead of starting from scratch, we can **re-run the training code**.
+- The model **remembers previous parameters** and continues optimizing from the current state.
+- After an additional 100 epochs:
+  - **Training loss** decreased from ~0.244 to ~0.0008.
+  - **Test loss** improved by almost 10x.
+- Model parameters moved closer to the ideal values (e.g., weights around 0.7).
+
+---
+
+### **Understanding Variability**
+- Slight differences in values (even with a fixed seed) are expected due to **randomness** in training.
+- The **direction of improvement** is more important than exact numbers.
+
+---
+
+### **Experiment Tracking**
+- **Why track values?**
+  - For comparing different model setups (e.g., learning rate, architecture).
+  - Like scientific experiments, we record metrics to evaluate improvements.
+- Created lists:
+  - `epoch_count`
+  - `loss_values`
+  - `test_loss_values`
+- Append metrics during each epoch to these lists for analysis.
+
+---
+
+### **Reinitializing the Model**
+- A new model instance is created with **fresh parameters**.
+- Training is performed for **200 epochs** total (100 + 100).
+- Initial loss values are higher; final values are much lower.
+
+---
+
+### **Loss Concept Recap**
+- **Loss function** measures the average prediction error.
+- In this case, we use **Mean Absolute Error (MAE)**:
+  - E.g., test loss = 0.481 → average distance of red dots from green dots.
+
+---
+
+### **Loss Curve Visualization**
+- Purpose: Visualize the model’s training progress.
+- **Loss curves**:
+  - X-axis: Epochs
+  - Y-axis: Loss values
+  - Two lines: Training loss vs Test loss
+- Ideally:
+  - Both curves **decline steadily**.
+  - Curves remain **close together** (indicates good generalization).
+  - If test loss diverges significantly → potential overfitting.
+
+---
+
+### **Fixes & Tips for Plotting**
+- PyTorch tensors must be converted to **NumPy arrays** for plotting with Matplotlib.
+- Use `.numpy()` or `.detach().numpy()` for conversion.
+- Loss curve is one of the most **beautiful visualizations** in ML — it shows convergence.
+-------------------code----------------------  
+plt.plot(epoch_count, np.array(torch.tensor(loss_values).numpy()), label="Train loss")
+plt.plot(epoch_count, test_loss_values, label="Test loss")
+plt.title("Training and test loss curves")
+plt.ylabel("Loss")
+plt.xlabel("Epochs")
+plt.legend();
+-------------------code----------------------  
+
+---
+
+### **Testing Loop Breakdown**
+1. **Switch model to eval mode**:
+   - `model.eval()`
+   - Disables training-specific layers (e.g., dropout, batch norm).
+2. **Turn on inference mode**:
+   - `with torch.inference_mode():`
+   - Disables gradient tracking for efficiency.
+3. **Perform forward pass** with test data.
+4. **Calculate test loss**.
+5. **Print results** and append to tracking lists.
+
+---
+
+### **Takeaways**
+- The training and evaluation loop is **foundational in PyTorch**.
+- These steps will be used for all models throughout the course.
+- Tracking and visualizing metrics helps understand model performance.
+- Practice: Try tweaking training settings and visualize changes.
+
+---
+
+### **Closing Thoughts**
+- The training loop process can be **wrapped into functions** for reuse.
+- Check the **book version** of the course for extra materials and curriculum.
+
+-------------------code----------------------  
+torch.manual_seed(42)
+
+# An epoch is one loop through the data... (this is a hyperparameter because we've set it ourselves)
+epochs = 200
+
+# Track different values
+epoch_count = [] 
+loss_values = []
+test_loss_values = [] 
+
+### Training
+# 0. Loop through the data
+for epoch in range(epochs): 
+  # Set the model to training mode
+  model_0.train() # train mode in PyTorch sets all parameters that require gradients to require gradients 
+
+  # 1. Forward pass
+  y_pred = model_0(X_train)
+
+  # 2. Calculate the loss
+  loss = loss_fn(y_pred, y_train)
+
+  # 3. Optimizer zero grad
+  optimizer.zero_grad() 
+
+  # 4. Perform backpropagation on the loss with respect to the parameters of the model (calculate gradients of each parameter)
+  loss.backward()
+
+  # 5. Step the optimizer (perform gradient descent)
+  optimizer.step() # by default how the optimizer changes will accumulate through the loop so... we have to zero them above in step 3 for the next iteration of the loop
+
+  ### Testing
+  model_0.eval() # turns off different settings in the model not needed for evaluation/testing (dropout/batch norm layers)
+  with torch.inference_mode(): # turns off gradient tracking & a couple more things behind the scenes - https://twitter.com/PyTorch/status/1437838231505096708?s=20&t=aftDZicoiUGiklEP179x7A
+  # with torch.no_grad(): # you may also see torch.no_grad() in older PyTorch code
+    # 1. Do the forward pass 
+    test_pred = model_0(X_test)
+
+    # 2. Calculate the loss
+    test_loss = loss_fn(test_pred, y_test)
+
+  # Print out what's happenin'
+  if epoch % 10 == 0:
+    epoch_count.append(epoch)
+    loss_values.append(loss)
+    test_loss_values.append(test_loss)
+    print(f"Epoch: {epoch} | Loss: {loss} | Test loss: {test_loss}")
+    # Print out model state_dict()
+    print(model_0.state_dict())
+-------------------code----------------------  
