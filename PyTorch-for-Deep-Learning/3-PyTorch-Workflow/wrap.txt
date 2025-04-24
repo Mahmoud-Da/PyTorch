@@ -247,13 +247,13 @@ In machine learning terminology:
 ## Coding: Generating Known Data
 
 1. Define known parameters:
--------------------code----------------------python
+-------------------code----------------------
 weight = 0.7
 bias = 0.3
 -------------------code----------------------
 
 2. Create a range of values for `x`:
--------------------code----------------------python
+-------------------code----------------------
 import torch
 
 start = 0
@@ -266,12 +266,12 @@ X = torch.arange(start, end, step).unsqueeze(1)
 - `.unsqueeze(1)` adds a dimension (from shape `[N]` to `[N, 1]`) to prepare it as input for models.
 
 3. Generate corresponding `y` values using the linear formula:
--------------------code----------------------python
+-------------------code----------------------
 Y = weight * X + bias
 -------------------code----------------------
 
 4. Check the data:
--------------------code----------------------python
+-------------------code----------------------
 print(X[:10])
 print(Y[:10])
 print(len(X), len(Y))  # Expected: 50 samples
@@ -2730,13 +2730,13 @@ OrderedDict([
 ### **Steps:**
 
 1. **Set the model to evaluation mode:**
-   -------------------code----------------------python
+   -------------------code----------------------
    model.eval()
    -------------------code----------------------
    - Ensures any training-specific layers (e.g., Dropout, BatchNorm) behave correctly during inference.
 
 2. **Make predictions using inference mode:**
-   -------------------code----------------------python
+   -------------------code----------------------
    with torch.inference_mode():
        y_preds = model(test_data)
    -------------------code----------------------
@@ -2746,7 +2746,7 @@ OrderedDict([
    - The predictions tensor (`y_preds`) will be on CUDA if the model and data are.
    - **Matplotlib** and **NumPy** require tensors to be on the CPU.
    - Solution:
-     -------------------code----------------------python
+     -------------------code----------------------
      y_preds = y_preds.cpu()
      -------------------code----------------------
 
@@ -2773,3 +2773,106 @@ OrderedDict([
 - Refer to section 6.5: Saving and Loading a PyTorch Model.
 - Practice saving `model.state_dict()` and reloading it to restore the model.
 - Ensure the restored model produces similar predictions.
+
+*** 65. Putting Everything Together (Part 5): Saving and Loading a Trained Model ***
+
+## **Lecture Summary: Saving and Loading a Trained PyTorch Model**
+
+### **Recap**
+- Previously, we trained a linear model using PyTorch, achieving strong prediction performance.
+- Now, we focus on preserving that progress by saving and later loading the trained model.
+
+---
+
+A .pth file is commonly associated with PyTorch,
+a popular open-source machine learning framework. It typically stores the state dictionary of a trained model. This dictionary contains the weights, biases, and other learnable parameters of the neural network, allowing you to save and load the model's state for later use,
+such as making predictions or further training.
+While .pth is frequently used for model checkpoints,
+it can sometimes cause confusion due to its overlap with Python's path configuration files. To avoid potential conflicts, 
+it's recommended to use the .pt extension for saving model checkpoints in PyTorch.
+
+## **1. Saving a PyTorch Model**
+
+### **Step 1: Set Up Save Directory**
+- Use `pathlib` to create a directory named `models/` (if it doesn't exist).
+-------------------code----------------------
+from pathlib import Path
+
+model_path = Path("models")
+model_path.mkdir(parents=True, exist_ok=True)
+-------------------code----------------------
+
+### **Step 2: Define Save Path**
+- Construct a full file path to save the model:
+-------------------code----------------------
+model_name = "01_pytorch_workflow_model_1.pth"
+model_save_path = model_path / model_name
+-------------------code----------------------
+
+### **Step 3: Save the Model’s `state_dict`**
+- `state_dict` contains the model’s parameters and is the recommended way to save models in PyTorch.
+-------------------code----------------------
+torch.save(obj=model_1.state_dict(), f=model_save_path)
+-------------------code----------------------
+
+### **Understanding `state_dict`:**
+- Stores all the model's learned parameters (weights and biases).
+- For a simple model with a single `nn.Linear` layer, there are only two parameters.
+- For deeper models, the state dict will include many more.
+
+---
+
+## **2. Loading a Saved Model**
+
+### **Step 1: Create a New Model Instance**
+- Recreate the model architecture before loading its state:
+-------------------code----------------------
+loaded_model_1 = LinearRegressionModelV2()
+-------------------code----------------------
+
+### **Step 2: Load State Dict into Model**
+-------------------code----------------------
+loaded_model_1.load_state_dict(torch.load(model_save_path))
+-------------------code----------------------
+
+### **Step 3: Move Model to Appropriate Device**
+- Ensures device compatibility (CPU or GPU):
+-------------------code----------------------
+loaded_model_1.to(device)
+-------------------code----------------------
+
+---
+
+## **3. Verifying the Loaded Model**
+
+### **Step 1: Check Parameters**
+- Print or inspect the parameters of the loaded model to ensure they match the original.
+
+### **Step 2: Evaluate Loaded Model**
+-------------------code----------------------
+loaded_model_1.eval()
+with torch.inference_mode():
+    loaded_preds = loaded_model_1(test_data)
+-------------------code----------------------
+
+### **Step 3: Compare Predictions**
+- Ensure that predictions from the original and loaded models are identical:
+-------------------code----------------------
+torch.allclose(y_preds, loaded_preds)
+-------------------code----------------------
+- If this returns `True`, the model was successfully restored.
+
+---
+
+## **Conclusion**
+
+### **Summary of Workflow Accomplished:**
+- Created and prepared data
+- Built and trained a model
+- Evaluated performance
+- Saved and loaded a model
+- Verified restored model performs identically
+
+### **Next:**
+- Explore section exercises and additional resources mentioned throughout the module.
+- Functionalize code to make future workflows even more efficient.
