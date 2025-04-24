@@ -2285,3 +2285,91 @@ with torch.inference_mode():
 - Next, the plan is to integrate and review all previous concepts in practice.
 
 ---
+
+*** 60. Setting Up to Practice Everything We Have Done Using Device Agnostic code ***
+# PyTorch Workflow Recap and Practice
+
+## Overview
+In the past few lessons, we've covered the essential steps in a PyTorch deep learning workflow:
+
+1. **Data Preparation**  
+2. **Model Building**  
+3. **Making Predictions**  
+4. **Training the Model**  
+5. **Evaluating the Model**  
+6. **Saving and Loading Models**
+
+We will now begin putting all these concepts together more efficiently, with practice-oriented sessions.
+
+---
+
+## Section 6.1: Workflow Overview
+
+### Steps Covered
+- Prepared data and converted it to tensors
+- Built a model using PyTorch
+- Chose a loss function and optimizer
+- Created and ran a training loop
+- Evaluated the model performance
+- Saved and loaded the model
+
+Although minimal experimentation was performed, we noticed improvements when increasing the number of training epochs. More experimentation techniques will be introduced throughout the course.
+
+---
+
+## Setting Up for Practice
+
+### Step 1: Import Required Libraries
+-------------------code----------------------  
+import torch
+from torch import nn
+import matplotlib.pyplot as plt
+-------------------code----------------------  
+
+### Step 2: Check PyTorch Version
+-------------------code----------------------  
+print(torch.__version__)
+# Example output: 1.10
+-------------------code----------------------  
+
+This ensures compatibility. If the code doesn’t work on your version, consider updating or asking for support.
+
+---
+
+## Step 3: Create Device Agnostic Code
+
+We are now setting up code that can automatically choose between GPU and CPU.
+
+### Purpose:
+- Utilize GPU if available (for better performance)
+- Fallback to CPU otherwise
+
+### Code Example:
+-------------------code----------------------  
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using device: {device}")
+-------------------code----------------------  
+
+**Note:**  
+- CUDA is Nvidia’s framework for GPU processing.  
+- For small models and datasets, GPU is not necessary but it's a good practice to write device-agnostic code.
+
+---
+
+## Google Colab Specific Notes
+- You can switch to GPU in Colab by going to:  
+  `Runtime > Change Runtime Type > Select GPU`
+- Switching the runtime will reset the session and clear all previous code.
+- To restore the previous state, you can use `Runtime > Run all`.
+
+**Reminder:**  
+Google Colab (both free and paid versions) provides access to GPUs. The paid version may offer newer GPUs, but the free version is sufficient for this course.
+
+---
+
+## Summary
+- Reviewed and restructured the full PyTorch model development workflow
+- Introduced device agnostic coding practices
+- Encouraged learners to reimplement the code themselves as practice
+
+Next up, we’ll begin recreating the full model pipeline step-by-step using the device-agnostic setup.
