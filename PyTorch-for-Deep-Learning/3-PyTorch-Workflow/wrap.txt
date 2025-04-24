@@ -2190,3 +2190,98 @@ print(loaded_dict)  # Output: {'name': 'Alice', 'age': 30}
 ### Things to note:
 - Pickle is **Python-specific**. You can't load a pickle file in other programming languages easily.
 - Be **careful when unpickling** files from untrusted sources—it can execute arbitrary code (i.e., it can be unsafe).
+
+*** 59. Writing Code to Load a PyTorch Model ***
+
+Here is a clean and organized note of the lecture, formatted for easy understanding and study:
+
+---
+
+## **Lecture Notes: Saving and Loading Models in PyTorch (Part 2)**
+
+### **1. Recap: Saving a PyTorch Model**
+- In the previous lesson, a PyTorch model was saved using the `.pt` or `.pth` file format.
+- While the full path-handling code isn't required, it is useful for modularity and reuse (e.g., turning it into a `save_model()` function).
+- The model's **`state_dict`** (not the entire model object) was saved. This contains the learned parameters of the model.
+
+---
+
+### **2. Challenge: Loading the Saved Model**
+- Objective: Load the saved `state_dict` back into a new model instance.
+- Torch function used: `torch.load(filepath)`
+
+#### **About `torch.load()`**
+- Loads an object saved with `torch.save()`.
+- Uses Python's pickle module.
+- Tensor storages are:
+  - Serialized on CPU.
+  - Moved to their original device (CPU or GPU) during loading.
+
+---
+
+### **3. Loading a `state_dict` into a New Model**
+
+#### **Steps to Load a Saved Model's Parameters:**
+1. Instantiate a new model object (e.g., `LinearRegressionModel()`).
+2. Use `.load_state_dict()` method from `nn.Module` to load the saved parameters into this new instance.
+
+-------------------code----------------------  
+loaded_model_0 = LinearRegressionModel()
+loaded_model_0.load_state_dict(torch.load(model_save_path))
+-------------------code----------------------  
+
+- `model_save_path` is the file path where the `state_dict` was stored.
+- `LinearRegressionModel` is a subclass of `torch.nn.Module`.
+
+#### **Important Notes:**
+- Before loading, the new model has randomly initialized weights.
+- After loading, it adopts the exact parameters from the saved `state_dict`.
+
+---
+
+### **4. Verifying the Loaded Model**
+
+#### **Check Before and After Loading:**
+- Before loading: `loaded_model_0.state_dict()` shows random parameters.
+- After loading: Matches the original `model_0.state_dict()`.
+
+---
+
+### **5. Making Predictions to Validate the Load**
+
+#### **Set Model to Evaluation Mode:**
+-------------------code----------------------  
+loaded_model_0.eval()
+-------------------code----------------------  
+
+#### **Use Inference Mode for Prediction:**
+-------------------code----------------------  
+with torch.inference_mode():
+    loaded_model_preds = loaded_model_0(X_test)
+-------------------code----------------------  
+
+- Predictions are made using the test data.
+
+---
+
+### **6. Comparing Predictions**
+- Compare predictions from the original model and the loaded model:
+
+-------------------code----------------------  
+with torch.inference_mode():
+    y_preds = model_0(X_test)
+    loaded_model_preds = loaded_model_0(X_test)
+-------------------code----------------------  
+
+- If the `state_dict` was loaded correctly, `y_preds` and `loaded_model_preds` should match.
+
+---
+
+### **7. Summary**
+- We learned how to:
+  1. Save a model's `state_dict`.
+  2. Load the `state_dict` into a new model instance.
+  3. Verify equivalence by comparing predictions.
+- Next, the plan is to integrate and review all previous concepts in practice.
+
+---
