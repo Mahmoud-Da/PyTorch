@@ -2036,3 +2036,157 @@ for epoch in range(epochs):
     # Print out model state_dict()
     print(model_0.state_dict())
 -------------------code----------------------  
+
+*** 58. Writing Code to Save a PyTorch Model ***
+
+## **Lecture Summary: Saving and Loading Models in PyTorch**
+
+### **1. Recap**
+- Previously, we trained a model, evaluated it using loss metrics and curves, and plotted predictions.
+- Initial predictions were poor, but improved significantly with backpropagation and gradient descent.
+
+---
+
+### **2. Issue with Google Colab Disconnections**
+- After a break, the Colab instance may disconnect.
+- This leads to loss of:
+  - Variables
+  - Functions (e.g., `plot_predictions`)
+  - Models and their parameters
+- Solution: Re-run all cells via `Runtime > Run All`.
+
+---
+
+### **3. Motivation for Saving Models**
+- Re-running training can be time-consuming, especially for large models.
+- Saving models allows:
+  - Reuse within the same notebook or another notebook
+  - Sharing with others
+  - Future use without retraining
+
+---
+
+### **4. Three Main PyTorch Methods for Saving and Loading**
+1. **`torch.save`**
+   - Saves PyTorch objects in Python's Pickle format.
+   - Used for serialization (saving).
+
+2. **`torch.load`**
+   - Loads a saved PyTorch object.
+   - Used for deserialization (loading).
+
+3. **`torch.nn.Module.load_state_dict()`**
+   - Loads the model’s state dictionary (parameters: weights, biases).
+
+---
+
+### **5. Understanding `state_dict`**
+- A `state_dict` is a Python dictionary mapping each layer to its parameters (tensors).
+- Contains only the learnable parameters.
+- Example: `model.state_dict()`
+- Optimizers also have `state_dict`.
+
+---
+
+### **6. Recommended Approach**
+- **Preferred:** Save and load the model’s `state_dict`.
+- **Alternative:** Save and load the entire model (discussed in extra reading).
+
+---
+
+### **7. Creating a Save Path**
+- Use Python’s `pathlib` for file path handling:
+-------------------code----------------------  
+from pathlib import Path
+
+model_path = Path("models")
+model_path.mkdir(parents=True, exist_ok=True)
+
+model_name = "01_pytorch_workflow_model_0.pth"
+model_save_path = model_path / model_name
+-------------------code----------------------  
+
+---
+
+### **8. Saving the Model**
+- Save using:
+-------------------code----------------------  
+torch.save(obj=model.state_dict(), f=model_save_path)
+-------------------code----------------------  
+- This saves the model’s parameters to the specified path.
+
+---
+
+### **9. File Extension Note**
+- Common extensions: `.pth` or `.pt`
+- Both are functionally equivalent.
+
+---
+
+### **10. Optional: Saving to Google Drive**
+- Google Colab files are temporary.
+- Download manually or save to Google Drive.
+- Google Drive integration not covered in-depth here, but encouraged as extra practice.
+
+---
+
+### **11. Verification**
+- Use shell command in Colab to verify the model is saved:
+-------------------code----------------------  
+!ls models/
+-------------------code----------------------  
+
+---
+
+### **12. Next Steps**
+- Learn how to **load** the saved model using `torch.load` and `load_state_dict`.
+- **Challenge**: Try loading the model yourself using the documentation.
+
+---
+
+### **Extra Curriculum**
+- Read the [PyTorch saving/loading models tutorial](https://pytorch.org/tutorials/beginner/saving_loading_models.html).
+- Understand the differences between:
+  - Saving/loading the full model
+  - Saving/loading only the state dict
+- Determine pros and cons of each method.
+
+
+what is Python's pickle format ?
+Python's **pickle** format is a way to **save and load Python objects** (like variables, lists, dictionaries, models, etc.) to and from a file.
+
+### Here's a simple explanation:
+
+- **Pickling** = turning a Python object into a file (a byte stream).
+- **Unpickling** = reading that file and turning it back into the original Python object.
+
+### Why use pickle?
+- To **save your work** (like saving a trained ML model or a large dataset).
+- To **share data** between Python programs without re-computing or re-loading from scratch.
+
+---
+
+### Example:
+
+-------------------code----------------------  
+import pickle
+
+# Some data
+my_dict = {"name": "Alice", "age": 30}
+
+# Save (pickle) it
+with open("data.pkl", "wb") as f:
+    pickle.dump(my_dict, f)
+
+# Load (unpickle) it
+with open("data.pkl", "rb") as f:
+    loaded_dict = pickle.load(f)
+
+print(loaded_dict)  # Output: {'name': 'Alice', 'age': 30}
+-------------------code----------------------  
+
+---
+
+### Things to note:
+- Pickle is **Python-specific**. You can't load a pickle file in other programming languages easily.
+- Be **careful when unpickling** files from untrusted sources—it can execute arbitrary code (i.e., it can be unsafe).
