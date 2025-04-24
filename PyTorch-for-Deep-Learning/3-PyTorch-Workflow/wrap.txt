@@ -2564,3 +2564,130 @@ OrderedDict([
 - The model has been built.
 - In the next lecture, the focus will be on **training the model**.
 
+
+*** 63. Putting Everything Together (Part 3): Training a Model ***
+---
+# PyTorch: Building and Training a Linear Model (Lecture Summary)
+
+## 1. **Recap**
+- A simple PyTorch linear model was built using a single `nn.Linear` layer.
+- It had:
+  - `in_features=1`
+  - `out_features=1`
+- The forward method of the model was overridden to define how the data passes through the layer.
+- This performs the standard linear regression formula:  
+  `y = x * weight + bias`
+
+---
+
+## 2. **Setting Model to the Target Device**
+- PyTorch supports device-agnostic code.
+- Default is CPU, but if CUDA is available, we use GPU.
+- Use:
+  -------------------code----------------------  
+  model.to(device)
+  -------------------code----------------------  
+- Check where model parameters are currently stored using:
+  -------------------code----------------------  
+  next(model.parameters()).device
+  -------------------code----------------------  
+
+---
+
+## 3. **Preparing for Training**
+
+### Key Components of the Training Pipeline:
+1. **Loss Function**  
+   - Measures how wrong the model is.
+   - For regression, `nn.L1Loss()` is used (also called mean absolute error).
+
+2. **Optimizer**  
+   - Updates model parameters to reduce the loss.
+   - `torch.optim.SGD` used here with a learning rate.
+   - Example:
+     -------------------code----------------------  
+     optimizer = torch.optim.SGD(params=model.parameters(), lr=0.01)
+     -------------------code----------------------  
+
+---
+
+## 4. **Writing the Training Loop**
+- Set a manual seed for reproducibility:
+  -------------------code----------------------  
+  torch.manual_seed(42)
+  -------------------code----------------------  
+- Loop over a number of epochs (e.g., 200).
+
+### Training Steps per Epoch:
+1. Set model to training mode:
+   -------------------code----------------------  
+   model.train()
+   -------------------code----------------------  
+2. Forward pass: calculate predictions.
+3. Compute loss:
+   -------------------code----------------------  
+   loss = loss_fn(y_pred, y_train)
+   -------------------code----------------------  
+4. Zero the gradients:
+   -------------------code----------------------  
+   optimizer.zero_grad()
+   -------------------code----------------------  
+5. Backpropagate:
+   -------------------code----------------------  
+   loss.backward()
+   -------------------code----------------------  
+6. Update parameters:
+   -------------------code----------------------  
+   optimizer.step()
+   -------------------code----------------------  
+
+---
+
+## 5. **Evaluation / Testing**
+- Set model to evaluation mode:
+  -------------------code----------------------  
+  model.eval()
+  -------------------code----------------------  
+- Disable gradient tracking with inference mode:
+  -------------------code----------------------  
+  with torch.inference_mode():
+  -------------------code----------------------  
+- Forward pass using test data.
+- Calculate test loss.
+
+---
+
+## 6. **Printing Progress**
+- Print every 10 epochs:
+  -------------------code----------------------  
+  if epoch % 10 == 0:
+      print(f"Epoch: {epoch} | Train Loss: {loss.item()} | Test Loss: {test_loss.item()}")
+  -------------------code----------------------  
+
+---
+
+## 7. **Common Error & Fix**
+- Error: "Expected all tensors to be on the same device"
+- Cause: Model was on CUDA, but data remained on CPU.
+- Solution: Move data to the same device as the model:
+  -------------------code----------------------  
+  X_train = X_train.to(device)
+  y_train = y_train.to(device)
+  -------------------code----------------------  
+
+---
+
+## 8. **Model Evaluation**
+- Check model parameters after training using:
+  -------------------code----------------------  
+  model.state_dict()
+  -------------------code----------------------  
+- Compare learned `weight` and `bias` to expected values (e.g., 0.7 and 0.3).
+
+---
+
+## 9. **Next Steps**
+- Try making predictions and plotting them on the original data.
+- Use the provided plotting function to visualize how well the model fits the data.
+
+---
