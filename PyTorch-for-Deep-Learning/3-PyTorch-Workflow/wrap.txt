@@ -1640,3 +1640,96 @@ optimizer = torch.optim.SGD(params=model.parameters(), lr=0.01)
 ## 6. **Next Step**
 - Next video will go through the training loop **one epoch at a time**.
 - Goal: Observe how model parameters change with each training iteration.
+
+*** 55. Running Our Training Loop Epoch by Epoch and Seeing What Happens ***
+Here's a clean and well-organized note based on your lecture. Let me know if you'd like a downloadable version or further breakdowns.
+
+---
+
+## Lecture Summary: Training Loop and First Model Training in PyTorch
+
+### Importance of the Training Loop
+- Writing the training loop is a fundamental skill in deep learning with PyTorch.
+- It controls how the model learns patterns from data.
+- The **testing loop**, which comes next, evaluates how well the model has learned.
+
+### Supplementary Resources
+- Linked YouTube videos on:
+  - **Backpropagation** (what happens when calling `.backward()`)
+  - **Gradient Descent** (what happens during the optimizer step)
+- Recommended for understanding the math behind PyTorch operations.
+
+### Choosing Loss Functions and Optimizers
+- **Regression** (predicting a number):
+  - Loss: `L1Loss` or `MSELoss`
+  - Optimizer: `torch.optim.SGD`
+- **Binary Classification**:
+  - Loss: `BinaryCrossEntropyLoss`
+- Choice depends on the specific problem. Experience helps refine these choices.
+
+### Model Setup
+- Re-instantiate the model to reset parameters.
+- Use `model.state_dict()` to inspect current weights and biases.
+- Initially, parameters are random—hence poor predictions at first.
+
+### Training Procedure
+1. **Define loss function and optimizer**:
+   - Loss: suitable for regression
+   - Optimizer: e.g., SGD with `lr=0.01`
+2. **Set a random seed** for reproducibility.
+3. **Run a training loop** (single epoch demonstrated):
+   - Forward pass
+   - Compute loss
+   - Zero gradients
+   - Backward pass
+   - Optimizer step
+
+### Observing Learning
+- After each step, weights and biases update.
+- Loss gradually **decreases**, which means the model is learning.
+- The process demonstrates **gradient descent**:
+  - Takes steps in the direction that minimizes the loss (gradient).
+  - The model becomes more accurate.
+
+### Visual Feedback
+- Loss values decrease with each training step.
+- Predictions get closer to the actual targets.
+- This validates that the model is learning even with minimal architecture and data.
+
+### Concept Recap
+- **Gradient Descent**:
+  - Loss = cost function (`J`)
+  - Gradients guide weight updates to minimize loss
+  - PyTorch handles gradient calculations behind the scenes
+
+### Challenge for Practice
+- Modify the training loop to run **100 epochs**.
+- Observe how the loss value changes.
+- Plot predictions before and after training to visualize improvements.
+- Evaluate the effectiveness of training.
+
+### Next Step
+- Begin writing the **testing loop** in the next session.
+
+
+# try the epoch of 10 to see the prediction get close to the test data
+-------------------code----------------------
+epochs = 10
+
+
+for epoch in range(epochs):  
+  model_0.train()
+
+  y_pred = model_0(X_train)
+ 
+  loss = loss_fn(y_pred, y_train)
+ 
+  optimizer.zero_grad() 
+ 
+  loss.backward()
+ 
+  optimizer.step()
+
+  model_0.eval()
+-------------------code----------------------  
+
