@@ -2691,3 +2691,85 @@ OrderedDict([
 - Use the provided plotting function to visualize how well the model fits the data.
 
 ---
+
+*** 64. Putting Everything Together (Part 4): Making Predictions With a Trained Model ***
+## **Lecture Summary: Evaluating Model Predictions in PyTorch**
+
+### **Recap:**
+- In the previous video, we trained a neural network end-to-end using PyTorch.
+- The training loop followed the structure of the "Unofficial PyTorch Optimization Loop Song":
+  -------------------code----------------------
+  For an epoch in a range:
+      Model.train()
+      Do the forward pass
+      Calculate the loss
+      Optimizer.zero_grad()
+      loss.backward()
+      Optimizer.step()
+
+  For evaluation:
+      Model.eval()
+      With torch.inference_mode():
+          Do the forward pass
+          Calculate the test loss
+          Print out metrics
+  -------------------code----------------------
+
+### **Device-Agnostic Code:**
+- We ensured both the **model** and **data** were placed on the same computation device (CPU or CUDA).
+- This avoids device mismatch errors, such as trying to perform operations between CPU and GPU tensors.
+
+---
+
+## **Model Evaluation and Predictions:**
+
+### **Objective:**
+- Evaluate how well the model performs on unseen test data.
+- Compare predictions against actual values visually.
+
+### **Steps:**
+
+1. **Set the model to evaluation mode:**
+   -------------------code----------------------python
+   model.eval()
+   -------------------code----------------------
+   - Ensures any training-specific layers (e.g., Dropout, BatchNorm) behave correctly during inference.
+
+2. **Make predictions using inference mode:**
+   -------------------code----------------------python
+   with torch.inference_mode():
+       y_preds = model(test_data)
+   -------------------code----------------------
+   - Disables gradient tracking for better performance and lower memory usage.
+
+3. **Handle CUDA tensor issue:**
+   - The predictions tensor (`y_preds`) will be on CUDA if the model and data are.
+   - **Matplotlib** and **NumPy** require tensors to be on the CPU.
+   - Solution:
+     -------------------code----------------------python
+     y_preds = y_preds.cpu()
+     -------------------code----------------------
+
+4. **Visualize predictions using `plot_predictions()`:**
+   - Shows how well the model’s predictions (red dots) align with the true test data (green dots).
+   - If trained correctly, the red dots should overlap or closely align with the green dots.
+
+---
+
+## **Model Performance Summary:**
+- Loss functions (training and testing) decrease, indicating good learning.
+- Final weight and bias values are close to ideal values (e.g., 0.6968 vs. 0.7 for weight, 0.3025 vs. 0.3 for bias).
+- Predictions visually align well with the test dataset.
+
+---
+
+## **Next Steps: Saving and Loading Models**
+
+### **Why Save Models?**
+- Prevents loss of progress if a notebook disconnects or crashes.
+- Enables reuse of trained models without retraining.
+
+### **Challenge:**
+- Refer to section 6.5: Saving and Loading a PyTorch Model.
+- Practice saving `model.state_dict()` and reloading it to restore the model.
+- Ensure the restored model produces similar predictions.
