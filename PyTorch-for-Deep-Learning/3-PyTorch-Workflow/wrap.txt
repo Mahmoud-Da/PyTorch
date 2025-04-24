@@ -2373,3 +2373,90 @@ Google Colab (both free and paid versions) provides access to GPUs. The paid ver
 - Encouraged learners to reimplement the code themselves as practice
 
 Next up, we’ll begin recreating the full model pipeline step-by-step using the device-agnostic setup.
+
+*** 61. Putting Everything Together (Part 1): Data ***
+
+
+# PyTorch Lecture Notes: Recreating Data and Preparing for Modeling
+
+## Recap from Previous Video
+- Set up **device-agnostic code** using `torch.cuda.is_available()`
+- Goal: Begin putting all learned concepts into practice by rebuilding the PyTorch workflow from scratch
+
+---
+
+## Step 1: Create Dummy Data Using a Linear Function
+
+### Linear Regression Formula
+We're using the standard linear regression form:  
+**y = weight × x + bias**  
+Also known as:
+- y = mx + c (commonly used in math)
+- y = bx + a (varies by region or context)
+
+### Define Parameters
+-------------------code----------------------  
+weight = 0.7
+bias = 0.3
+-------------------code----------------------  
+*You can adjust these values (e.g., 0.1 and 0.2) as desired.*
+
+### Generate Input Features
+-------------------code----------------------  
+X = torch.arange(0, 1, 0.02).unsqueeze(1)  # Creates values from 0 to 1 with step 0.02
+-------------------code----------------------  
+- `unsqueeze(1)` adds a dimension to avoid shape issues later on.
+
+### Generate Labels
+-------------------code----------------------  
+y = weight * X + bias
+-------------------code----------------------  
+
+---
+
+## Step 2: Split Data into Training and Testing Sets
+
+### Define Train/Test Split
+-------------------code----------------------  
+train_split = int(0.8 * len(X))  # 80% training data
+X_train, y_train = X[:train_split], y[:train_split]
+X_test, y_test = X[train_split:], y[train_split:]
+-------------------code----------------------  
+
+- Typical split: **80% training / 20% testing**
+- Can be adjusted based on dataset size or requirements (e.g., 70/30 or 90/10)
+
+---
+
+## Step 3: Visualize the Data
+
+### Use the `plot_predictions` Function
+This function requires the inputs:
+-------------------code----------------------  
+plot_predictions(train_data=X_train,
+                 train_labels=y_train,
+                 test_data=X_test,
+                 test_labels=y_test)
+-------------------code----------------------  
+
+**Important:**  
+- If the `plot_predictions()` function isn't defined earlier in the notebook, you need to copy it from a previous cell.
+- Running "Run all" in Colab can help restore all functions and variables if the runtime was reset.
+
+---
+
+## Summary of What Was Done
+- Recreated a synthetic dataset using PyTorch
+- Defined a clear relationship between `X` and `y`
+- Split the dataset into training and testing sets
+- Plotted the data for visualization
+
+---
+
+## What's Next?
+- **Next Step in Workflow:** Build a model
+- Challenge for the viewer:  
+  Try to build a **PyTorch Linear Model** that can learn from the blue dots (training data) and predict the green dots (testing data)
+
+> **Reminder:**  
+> We call it a **linear model** because it fits a straight-line relationship. Nonlinear models capture more complex patterns.
