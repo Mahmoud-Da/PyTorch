@@ -2460,3 +2460,107 @@ plot_predictions(train_data=X_train,
 
 > **Reminder:**  
 > We call it a **linear model** because it fits a straight-line relationship. Nonlinear models capture more complex patterns.
+
+
+*** 62. Putting Everything Together (Part 2): Building a Model ***
+
+
+# PyTorch Lecture Notes: Building a Linear Model with `torch.nn`
+
+## Recap
+- In the previous video, dummy linear data was created.
+- The next step in the workflow is **building or picking a model**.
+- Instead of manually defining parameters (as done before), this lesson introduces a more flexible, scalable approach using PyTorch's `torch.nn` module.
+
+---
+
+## Step 1: Creating a Linear Regression Model Using `torch.nn`
+
+### Define a Model Class
+-------------------code----------------------  
+import torch
+from torch import nn
+
+class LinearRegressionModelV2(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear_layer = nn.Linear(in_features=1, out_features=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.linear_layer(x)
+-------------------code----------------------  
+
+### Explanation:
+- `nn.Module`: The base class for all neural networks in PyTorch.
+- `nn.Linear`: Applies a linear transformation to the input data, i.e., `y = XWᵗ + b`.
+- `in_features=1`, `out_features=1`: Because the input and output are scalar values (one feature each).
+- This approach **automatically initializes** weight and bias parameters.
+
+---
+
+## Step 2: Model Initialization
+
+### Set Manual Seed for Reproducibility
+-------------------code----------------------  
+torch.manual_seed(42)
+-------------------code----------------------  
+
+### Create the Model
+-------------------code----------------------  
+model_1 = LinearRegressionModelV2()
+-------------------code----------------------  
+
+---
+
+## Step 3: Inspecting the Model
+
+### Check Model Structure
+-------------------code----------------------  
+print(model_1)
+-------------------code----------------------  
+
+### View Model Parameters
+-------------------code----------------------  
+print(model_1.state_dict())
+-------------------code----------------------  
+
+### Output (example):
+-------------------code----------------------  
+OrderedDict([
+    ('linear_layer.weight', tensor([[value]])),
+    ('linear_layer.bias', tensor([value]))
+])
+-------------------code----------------------  
+
+> **Note:** If the constructor (`__init__`) is incorrectly typed (e.g., `inet`), the linear layer won't be initialized, and `state_dict()` will return empty. Always use correct double underscores: `__init__`.
+
+---
+
+## Comparison to Manual Approach
+
+| Feature                 | Manual Implementation        | `torch.nn.Linear` |
+|------------------------|------------------------------|--------------------|
+| Parameter Initialization | Done explicitly             | Handled internally |
+| Forward Pass           | Manually written equation    | Built-in operation |
+| Scalability            | Limited                      | High (modular)     |
+
+### Alternate Names for Linear Layers
+- **Linear Transform**
+- **Fully Connected Layer (FC)**
+- **Dense Layer (TensorFlow)**
+- All perform the same operation: a linear transformation of the input.
+
+---
+
+## Summary
+- Introduced `nn.Linear` as a more scalable way to define models.
+- Built a new version of the linear regression model using `torch.nn.Module`.
+- Explained how PyTorch layers encapsulate both parameter initialization and computation.
+- Demonstrated how to inspect model parameters with `state_dict()`.
+
+---
+
+## Next Step
+- The model has been built.
+- In the next lecture, the focus will be on **training the model**.
+
