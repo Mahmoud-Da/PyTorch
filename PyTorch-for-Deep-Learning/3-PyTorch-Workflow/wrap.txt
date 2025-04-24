@@ -1531,3 +1531,112 @@ Search for the "Unofficial PyTorch Optimization Loop Song" online if you want a 
 
 --- 
 
+*** 54. Reviewing the Steps in a Training Loop Step by Step ***
+
+# PyTorch Training Loop Recap & Introduction to Backpropagation and Optimization
+
+## Overview
+This lecture recaps the steps of a training loop in PyTorch and explains key concepts such as forward and backward passes, gradient descent, and optimizer behavior. The goal is to understand the flow of training a model before moving into testing.
+
+---
+
+## 1. **Training Loop Overview**
+- A *training loop* runs for a defined number of **epochs**.
+- **Epoch**: One complete forward pass through the entire dataset.
+- **Training loop purpose**: Enables the model to learn patterns from training data.
+
+---
+
+## 2. **Steps in Each Epoch**
+
+### A. Set Model to Training Mode
+-------------------code----------------------
+model.train()
+-------------------code----------------------
+- Prepares the model to track gradients.
+- Enables training-specific behaviors like dropout.
+
+### B. Forward Pass
+-------------------code----------------------
+y_pred = model(X_train)
+-------------------code----------------------
+- Passes training data through the model.
+- Calls the model’s custom `forward()` method.
+
+### C. Calculate Loss
+-------------------code----------------------
+loss = loss_fn(y_pred, y_train)
+-------------------code----------------------
+- Compares model predictions to actual labels.
+- Depends on the chosen **loss function** (e.g., L1, L2).
+
+### D. Zero Optimizer Gradients
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+- Prevents accumulation of gradients from previous steps.
+- Necessary before backpropagation.
+
+### E. Backward Pass (Backpropagation)
+-------------------code----------------------
+loss.backward()
+-------------------code----------------------
+- Calculates gradients of all parameters with `requires_grad=True`.
+- PyTorch uses `autograd` to perform automatic differentiation.
+
+### F. Optimizer Step
+-------------------code----------------------
+optimizer.step()
+-------------------code----------------------
+- Updates parameters using the calculated gradients.
+- Attempts to minimize the loss function.
+
+---
+
+## 3. **Concepts Behind the Scenes**
+
+### A. Forward & Backward Propagation
+- **Forward Propagation**: Input → Output through the network.
+- **Backward Propagation**: Calculates gradients by moving from output → input.
+
+### B. Gradients and Loss Curves
+- Gradient = Slope of the loss function curve.
+- Used to determine direction of parameter updates.
+- Goal: Find the point where gradient = 0 (minimum loss).
+
+### C. Gradient Descent
+- Optimization algorithm that updates parameters in the opposite direction of the gradient.
+- Visualized as stepping downhill on a curve toward the lowest point (minimum loss).
+
+---
+
+## 4. **Optimizer and Learning Rate**
+
+### Optimizer Configuration
+-------------------code----------------------
+optimizer = torch.optim.SGD(params=model.parameters(), lr=0.01)
+-------------------code----------------------
+- `params`: Parameters to optimize (usually `model.parameters()`).
+- `lr` (learning rate): Size of each optimization step.
+
+### Learning Rate Insights
+- **Too large**: May overshoot minimum.
+- **Too small**: Slow convergence.
+- **Learning Rate Scheduling**: Reduce step size over time for better convergence.
+
+---
+
+## 5. **Function Abstraction**
+- Training steps can be wrapped in a function for reuse.
+- Recommended ordering:
+  1. Forward pass
+  2. Calculate loss
+  3. Zero gradients
+  4. Backward pass
+  5. Optimizer step
+
+---
+
+## 6. **Next Step**
+- Next video will go through the training loop **one epoch at a time**.
+- Goal: Observe how model parameters change with each training iteration.
