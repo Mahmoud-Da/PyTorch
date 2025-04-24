@@ -2950,3 +2950,85 @@ Everyone is learning, and no one is perfect (except maybe Yoda).
 
 Teaching is a key part of the learning process. Don’t wait to be an expert—start sharing now.  
 See you in the next lecture.
+
+
+*** 67. PyTorch Workflow: Exercises and Extra-Curriculum ***
+## **Lecture Summary: Exercises & Extra Resources for PyTorch Workflow**
+
+### **Context**
+- This lecture wraps up Section 01: **PyTorch Workflow Fundamentals**.
+- It introduces where to find exercises and supplementary learning resources.
+
+---
+
+## **1. Where to Find Exercises and Extra Curriculum**
+
+### **Course Materials (Book Version)**
+- Hosted at **Lone Pine Audio**.
+- Navigate to the **01 PyTorch Workflow Fundamentals** section.
+- At the end of each subsection, there are:
+  - Exercises
+  - Extra reading and resources
+
+### **Highlighted Resources**
+- **Gradient Descent**: In-depth explanations.
+- **Backpropagation**: Additional materials.
+- **Loading and Saving Models**: Official PyTorch documentation.
+- **PyTorch Cheat Sheet**: Summary of key commands and functions.
+- **Article by Jeremy Howard**: Advanced insights into PyTorch internals.
+- **Unofficial PyTorch Optimization Loop Song**: A fun, creative learning aid by the instructor.
+
+---
+
+## **2. Exercises Overview**
+
+### **Exercise Content**
+- Based entirely on material covered in Section 01.
+- Example exercises:
+  - Create a straight-line dataset using the linear regression formula.
+  - Build a model using `nn.Module` subclassing.
+
+### **Exercise Notebooks**
+- Templates available in the **PyTorch Deep Learning GitHub Repository**.
+  - Path: `extras/exercises/01_pytorch_workflow_exercises.ipynb`
+- Can be opened directly in **Google Colab**.
+  - Allows you to edit, test, and save your code.
+
+---
+
+## **3. Best Practices for Learning**
+
+### **Recommendations**
+- **Attempt the exercises yourself** before checking any solutions.
+- Use:
+  - The lecture notebooks
+  - The ebook text version
+  - Your own notes
+  - Provided templates
+- Challenge yourself to **implement without copying**.
+
+### **Solutions**
+- Found in the `extras/solutions/` folder in the GitHub repo.
+- Example solutions for Section 01 are available, but only check them after attempting the exercises.
+
+---
+
+## **4. Final Recap of Section 01: PyTorch Workflow**
+
+### **What You Learned**
+- Preparing and processing data into tensors.
+- Building and selecting models.
+- Choosing loss functions and optimizers.
+- Implementing a training loop.
+- Fitting a model to data and making predictions.
+- Evaluating model performance.
+- Experimenting and improving results.
+- Saving and loading trained models.
+
+---
+
+## **5. What’s Next**
+- This concludes Section 01.
+- Next up: a new section diving deeper into PyTorch and deep learning workflows.
+
+**End of Section 01: PyTorch Workflow Fundamentals**
