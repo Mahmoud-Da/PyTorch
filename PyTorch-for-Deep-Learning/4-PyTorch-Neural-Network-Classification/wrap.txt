@@ -159,3 +159,96 @@ In this lecture, we moved from a general understanding of classification problem
 - Visualizing the flow of data through a neural network.
 
 ---
+
+*** 70. Typical Architecture of a Classification Neural Network (Overview) ***
+
+---
+
+## Lecture Summary: Architecture of a Classification Model
+
+### Overview
+- Classification problems require:
+  - **Numerical inputs** (e.g., pixel values, numerical features).
+  - **Prediction probabilities** as outputs (not discrete values).
+
+---
+
+### Key Components of a Classification Model
+
+#### 1. **Hyperparameters**
+- **User-defined settings** that influence the model.
+- Examples:
+  - Number of input features
+  - Number of neurons per hidden layer
+  - Number of hidden layers
+  - Learning rate
+  - Batch size
+
+---
+
+#### 2. **Types of Classification**
+- **Binary classification**: Two classes (e.g., yes/no, 0/1).
+- **Multiclass classification**: More than two classes (e.g., sushi, steak, pizza).
+
+---
+
+#### 3. **Input Layer**
+- Determined by number of features (e.g., for a health dataset: age, sex, height, weight, smoking status).
+- All inputs must be **numerically encoded** (e.g., male = 0, female = 1).
+
+---
+
+#### 4. **Hidden Layers**
+- Contain neurons (also known as units or nodes).
+- Each layer performs a mathematical operation using activation functions.
+- Example PyTorch syntax:
+  - `nn.Linear()`
+  - `nn.ReLU()`
+- You can have multiple hidden layers (e.g., ResNet has up to 152 layers).
+
+---
+
+#### 5. **Output Layer**
+- Determines the shape of the output:
+  - **Binary classification**: 1 output (e.g., 0 or 1)
+  - **Multiclass classification**: 1 output per class (e.g., 3 outputs for sushi, steak, pizza)
+
+---
+
+#### 6. **Activation Functions**
+- **Hidden Layers**: Commonly use `ReLU` (Rectified Linear Unit)
+- **Output Layer**:
+  - Binary classification: `Sigmoid`
+  - Multiclass classification: `Softmax`
+
+---
+
+#### 7. **Loss Functions**
+- Measure how far off the model’s predictions are from the actual values.
+  - Binary classification: `Binary Cross Entropy Loss`
+  - Multiclass classification: `Cross Entropy Loss`
+
+---
+
+#### 8. **Optimizers**
+- Adjust the model’s weights to reduce loss.
+  - Common choices: 
+    - `SGD` (Stochastic Gradient Descent)
+    - `Adam`
+
+---
+
+#### 9. **Sequential Models**
+- Often built using a sequential approach: the data flows through each layer in order.
+- Example for multiclass classification:
+  - Input layer (e.g., pixel values or features)
+  - Hidden layers (with activations)
+  - Output layer (3 output neurons for 3 classes)
+
+---
+
+### Final Notes
+- This overview introduces terminology and structure.
+- We’ll dive into coding the actual models starting in the next lecture.
+
+---
