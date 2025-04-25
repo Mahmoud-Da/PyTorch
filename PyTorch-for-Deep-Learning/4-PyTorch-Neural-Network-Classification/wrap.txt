@@ -81,3 +81,81 @@
 - Focus on building a deep, practical understanding through code examples and intuition.
 
 ---
+
+*** 69. Classification Problem Example: Input and Output Shapes ***
+## Lecture Summary: Classification Inputs and Outputs
+
+### Overview
+In this lecture, we moved from a general understanding of classification problems to exploring the actual **inputs and outputs** involved in a classification task. The example used throughout is an app called **FoodVision**, designed to classify food photos.
+
+---
+
+### Classification Workflow
+1. **Input**  
+   - Raw data: Images (e.g., sushi, steak, pizza photos)
+   - Must be numerically encoded for machine learning algorithms to process.
+   - Common encoding for images:
+     - Shape: **(width, height, color_channels)**  
+     - Example: **(224, 224, 3)**  
+       - 224 width, 224 height, 3 color channels (RGB)
+
+2. **Machine Learning Algorithm**
+   - A model (e.g., neural network) that processes the encoded input.
+   - Can be custom-built (e.g., with PyTorch) or a pre-trained model (e.g., in transfer learning).
+
+3. **Output**
+   - Model predicts **probabilities** for each class (e.g., 0.9 for pizza, 0.05 for sushi, 0.05 for steak).
+   - These are **not discrete labels** but **prediction probabilities**.
+   - Final prediction is the class with the highest probability.
+
+---
+
+### Types of Classification Illustrated
+- **Single-label, Multiclass Classification**  
+  - One label per input image (e.g., either sushi, steak, or pizza).
+
+---
+
+### Input Encoding Details
+- Image representation: Pixel values across 3 color channels (R, G, B).
+- Image tensor shape example:  
+  - **(batch_size, color_channels, width, height)**  
+  - Example: **(32, 3, 224, 224)**  
+    - 32 images per batch (common batch size).
+    - 3 color channels.
+    - 224 x 224 image resolution.
+
+> Note: PyTorch uses the shape **(C, W, H)** (channels-first), but other libraries (like TensorFlow) may use **(W, H, C)**.
+
+---
+
+### Batch Size
+- Common batch size: **32**
+- Helps manage memory and computational limits.
+- Based on community recommendations and performance balance.
+
+---
+
+### Output Shape
+- Depends on the number of classes.
+  - For 3 food classes (sushi, steak, pizza): output shape is **(batch_size, 3)**
+  - For binary classification: output could be **(batch_size, 1)** or **(batch_size, 2)**
+
+---
+
+### Key Takeaways
+- Inputs must be **numerically encoded** (tensors of pixel values).
+- Outputs are **prediction probabilities** per class.
+- Tensor shapes:
+  - **Inputs**: `(batch_size, channels, width, height)`
+  - **Outputs**: `(batch_size, number_of_classes)`
+- The number of output classes is determined by the specific classification problem.
+- Machine learning improves by iterating: add more data, retrain, and refine predictions.
+
+---
+
+### Coming Up Next
+- High-level architecture of a classification model.
+- Visualizing the flow of data through a neural network.
+
+---
