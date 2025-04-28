@@ -252,3 +252,82 @@ In this lecture, we moved from a general understanding of classification problem
 - We’ll dive into coding the actual models starting in the next lecture.
 
 ---
+
+*** 71. Making a Toy Classification Dataset ***
+# Lecture Notes: Introduction to Classification with a Toy Dataset
+
+## Overview of Classification
+- **Classification** is the task of predicting whether something belongs to one class or another.
+- There can be multiple classes depending on the problem.
+- **Examples**:
+  - Email: Spam or Not Spam
+  - Photos: Dog, Cat, Pizza, Sushi, or Steak
+
+
+## Machine Learning Workflow
+- **First step**: Always start with **data**.
+- Machine learning needs data to find patterns; without data, learning is not possible.
+
+## Creating Custom Data
+- We will **create a custom dataset** for practice purposes.
+- **Libraries**:
+  - **scikit-learn** is pre-installed in Google Colab.
+  - scikit-learn is widely used for machine learning (not deep learning).
+  - PyTorch focuses mainly on deep learning.
+
+### Creating the Data
+- We use **make_circles** from scikit-learn to generate data.
+- Generate **1000 samples** with added **noise** (set to 0.3) and a **random_state** for reproducibility.
+- Variables:
+  - `X`: features
+  - `y`: labels
+
+### Understanding the Data
+- **Length**:
+  - `len(X)` = 1000
+  - `len(y)` = 1000
+- **Samples**:
+  - Each sample in `X` has **2 features** (coordinate points).
+  - `y` contains the corresponding **label** (either 0 or 1).
+
+### Type of Classification
+- Since labels are only **0** and **1**, this is a **binary classification** problem.
+- If there were more than two classes (e.g., 0, 1, 2), it would be **multiclass classification**.
+
+## Exploring the Data
+- **Data Exploration** is important to understand patterns.
+- **Tools used**:
+  - **pandas**: Create a DataFrame for easy inspection.
+  - **matplotlib**: For data visualization (scatter plot).
+
+### Creating a DataFrame
+- Create a pandas DataFrame with:
+  - `x1`: first feature
+  - `x2`: second feature
+  - `label`: the corresponding label
+
+### Visualizing the Data
+- **Scatter Plot**:
+  - X-axis: `x1`
+  - Y-axis: `x2`
+  - Points colored based on the `label` (using a color map: red-yellow-blue).
+- Visualization shows two distinct **circles**:
+  - Red points and blue points form two circles.
+
+### Problem Setup
+- **Goal**: Given two numbers (`x1`, `x2`), predict whether it belongs to the red circle or the blue circle.
+- This setup is **binary classification**.
+
+## Understanding Toy Datasets
+- This dataset is a **toy dataset**:
+  - Small and simple enough for experimentation.
+  - Still large enough to practice fundamental machine learning concepts.
+
+## Additional Resources
+- **scikit-learn Datasets**:
+  - Besides circles, scikit-learn offers other toy datasets for practice.
+  - These are useful for both machine learning and deep learning projects.
+
+## Questions to Reflect On
+- What are the **input** and **output shapes** of the problem?
+- How would you **split** the dataset into **training** and **test** sets?
