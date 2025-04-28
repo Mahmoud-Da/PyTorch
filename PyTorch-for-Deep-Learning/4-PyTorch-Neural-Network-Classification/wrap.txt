@@ -604,3 +604,228 @@ These steps follow the general modeling workflow:
 
 ## Next Step
 - In the following lecture, we will move on to **constructing the model**.
+
+*** 74. Coding a Small Neural Network to Handle Our Classification Data ***
+---
+# Lecture Notes: Building a Model (Part 2)
+
+## Recap
+- In the last lecture, we set up **device agnostic code**.
+  - This ensures that the code runs on a **CPU** by default, but uses a **GPU** if available for faster computation.
+  - This setup is essential for running the code on different hardware in the future.
+
+## Step 2: Constructing a Model by Sub-classing `nn.Module`
+- We will now build a simple model for classifying the circle dataset (red and blue dots).
+
+### High-Level Steps
+1. **Subclass `nn.Module`.**
+2. **Create two `nn.Linear` layers** to handle the input data shapes.
+3. **Define a `forward` method** to outline the model's forward pass.
+4. **Instantiate the model** and send it to the target device.
+
+---
+
+## Detailed Steps
+
+### 1. Subclass `nn.Module`
+- All PyTorch models typically subclass `nn.Module` to leverage its built-in functionality.
+- Create a new model class:
+  -------------------code----------------------
+  class CircleModelV1(nn.Module):
+      def __init__(self):
+          super().__init__()
+          # Layers will be defined here
+  -------------------code----------------------
+
+### 2. Create Two `nn.Linear` Layers
+- Define two linear layers inside the constructor:
+  - **Layer 1**: input features → hidden units
+  - **Layer 2**: hidden units → output feature
+
+- Checking the input feature shape:
+  - `X_train` shape: (800 samples, 2 features)
+  - Therefore, input features = 2.
+
+- Code to define the layers:
+  -------------------code----------------------
+  self.layer_1 = nn.Linear(in_features=2, out_features=5)
+  self.layer_2 = nn.Linear(in_features=5, out_features=1)
+  -------------------code----------------------
+
+- Key points:
+  - The number of hidden units (`5`) is arbitrary and for simplicity. 
+  - Typically, multiples of 8 are used for efficiency (e.g., 8, 16, 32, 64).
+
+### 3. Define the `forward` Method
+- Defines how data flows through the model:
+  -------------------code----------------------
+  def forward(self, x):
+      return self.layer_2(self.layer_1(x))
+  -------------------code----------------------
+- Flow:
+  - Input `x` → `layer_1` → `layer_2` → Output
+
+### 4. Instantiate the Model and Send to Target Device
+- Create an instance of the model and move it to the device (CPU or GPU):
+  -------------------code----------------------
+  model_0 = CircleModelV1().to(device)
+  -------------------code----------------------
+
+- Verify the model is on the correct device:
+  -------------------code----------------------
+  next(model_0.parameters()).device
+  -------------------code----------------------
+
+- Confirmed that model parameters are on `cuda` if using a GPU.
+
+---
+
+## Summary
+- We created a simple neural network model with two linear layers.
+- The model is structured to accept two input features and output a single scalar value.
+- Device agnostic coding practices were applied to allow easy switching between CPU and GPU.
+
+---
+
+## Next Step
+- In the following lecture, we will **visualize the model structure** to better understand how the data flows through the network.
+
+---
+
+- how to determining the number of layers?
+determining the **number of layers** in a model depends mainly on three things:
+
+---
+
+## 1. **The Complexity of the Problem**
+- **Simple problems** (e.g., linearly separable data, small datasets) → 1–2 layers are usually enough.
+- **Moderate problems** (e.g., basic image classification, simple pattern recognition) → 3–5 layers.
+- **Complex problems** (e.g., image segmentation, natural language processing, video recognition) → 10+ layers, sometimes hundreds (as in ResNet-50, BERT, etc.).
+
+**Rule:**  
+> Start small. Only add more layers if your model underfits (too simple, cannot capture the data's patterns).
+
+---
+
+## 2. **The Size and Nature of the Data**
+- **Low-dimensional data** (e.g., tabular data with few features) → shallow models (1–3 layers) often perform well.
+- **High-dimensional data** (e.g., images, text, audio) → deeper models (more layers) are often needed to capture hierarchical patterns.
+
+**Example:**  
+- Tabular data → 1–2 hidden layers.
+- 28x28 images (like MNIST) → 2–4 layers can work.
+- Complex images (like ImageNet, 224x224x3) → often need 30–100 layers.
+
+---
+
+## 3. **Risk of Overfitting**
+- **More layers = More parameters = Higher risk of overfitting** (memorizing the training data instead of generalizing).
+- If the model overfits, you may need:
+  - Regularization (dropout, weight decay)
+  - More training data
+  - Simpler (shallower) models
+
+**Good Practice:**  
+> Use the simplest model that achieves good performance. Adding more layers unnecessarily just makes training slower and more fragile.
+
+---
+
+## Practical Guidelines
+| Problem Type              | Suggested Layers             |
+|----------------------------|-------------------------------|
+| Very simple classification | 1–2 layers                   |
+| Basic image classification | 2–4 layers                   |
+| Moderate complexity        | 5–10 layers                  |
+| High complexity (vision/NLP) | 10+ layers (sometimes 100+)  |
+
+---
+
+## Example
+For your **red and blue circles** dataset:
+- It’s a **simple** classification task (2D data, small patterns).
+- **2 layers** (input → hidden → output) is more than enough.
+- You could even solve it with **one layer** sometimes.
+
+---
+
+## Bonus: Hidden Layer Size
+When you choose how many **neurons** (units) each layer should have:
+- Hidden layers often have more units than the input and output layers.
+- Common hidden sizes: 8, 16, 32, 64, 128, 256, etc.
+- It depends on how much *capacity* you want your model to have.
+
+---
+
+### Quick Checklist for Layer Decisions
+- Start with 1–2 hidden layers.
+- If the model underfits (cannot learn well): **add more neurons** or **add another layer**.
+- If the model overfits (memorizes training data): **reduce layers** or **apply regularization**.
+
+---
+
+so the layer number is not depends on the data shape example of X_train.shape is 2 so we have to write two layers if 3 we have to write three layers
+
+**the number of layers does *not* directly depend on the input data shape** like that.  
+**Important:**  
+> The **input shape** decides **the *size* of the input layer**, not how many *layers* you need.
+
+---
+
+### To be clear:
+- If your `X_train.shape[1] == 2` → Your **input layer** must accept **2 features** (input size = 2).
+- If your `X_train.shape[1] == 3` → Your **input layer** must accept **3 features** (input size = 3).
+- **BUT** the number of **hidden layers** (middle layers) and their sizes is your design choice based on task complexity, not on the shape.
+
+---
+
+### Simple example
+Suppose you have:
+-------------------code----------------------
+X_train.shape = (800, 2)  # 800 samples, 2 features
+-------------------code----------------------
+
+You can build many different models:
+
+**Model 1 (small model):**
+-------------------code----------------------
+Input (2 features) → Output (1 neuron)
+-------------------code----------------------
+- No hidden layers.
+
+**Model 2 (a little bigger):**
+-------------------code----------------------
+Input (2 features) → Hidden layer (5 neurons) → Output (1 neuron)
+-------------------code----------------------
+- 1 hidden layer.
+
+**Model 3 (even bigger):**
+-------------------code----------------------
+Input (2 features) → Hidden1 (5 neurons) → Hidden2 (3 neurons) → Output (1 neuron)
+-------------------code----------------------
+- 2 hidden layers.
+
+The *only thing* that must match is the **input size** of the first layer = the number of features in your `X_train`.
+
+---
+
+### Important Concepts
+| Concept                         | Meaning                                                            |
+|----------------------------------|--------------------------------------------------------------------|
+| **Input size**                  | Must match `X_train.shape[1]` (number of features).                |
+| **Number of layers**             | Depends on problem difficulty, not input size.                   |
+| **Number of neurons per layer**  | You choose. Larger = more capacity, but can overfit if too large.  |
+
+---
+
+### Why is this?
+Because **deep learning** is about learning **complex mappings**, not just matching shapes.
+
+If the number of layers = number of features, then all deep networks would just copy the input shape, but that's not the goal. We want **layers** to **transform** the data step by step into something useful for prediction.
+
+---
+
+**Summary:**
+- `X_train.shape[1]` decides the **input size**, not the **number of layers**.
+- **You** decide how many layers based on how complex the problem is.
+
+---
