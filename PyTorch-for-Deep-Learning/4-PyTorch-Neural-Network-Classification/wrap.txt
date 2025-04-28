@@ -829,3 +829,69 @@ If the number of layers = number of features, then all deep networks would just 
 - **You** decide how many layers based on how complex the problem is.
 
 ---
+
+*** 75. Making Our Neural Network Visual ***
+
+# Lecture Notes: Building a Multi-Layer Neural Network
+
+## 1. Introduction
+- Previously, we created our first multi-layer neural network.
+- While it is currently just code, this represents the core process of building machine learning models in PyTorch:
+  - Create layers (as simple or complex as necessary).
+  - Use these layers in a **forward pass** to perform computations.
+
+## 2. Visualizing Neural Networks with TensorFlow Playground
+- **TensorFlow Playground** (playground.tensorflow.org) allows building and training neural networks visually in a browser.
+- Although TensorFlow is different from PyTorch, the fundamental concepts are the same.
+
+## 3. Model Setup
+- Example dataset: circular patterns (similar to our circles dataset).
+- Input features: **x1** and **x2** (two features).
+- Network structure:
+  - Input layer: 2 features (x1 and x2).
+  - Hidden layer: 5 neurons.
+  - Output layer: 1 neuron.
+- Matches the model we built in code:
+  - `in_features=2`, `out_features=5` for the first layer.
+  - `in_features=5`, `out_features=1` for the second layer.
+
+## 4. Key Points About the Model
+- Linear activation is used for now.
+- Learning rate set to 0.01.
+- Binary classification task.
+
+## 5. Understanding Loss
+- **Test Loss** observed: approximately 0.5 (50%).
+- Interpretation:
+  - Perfect loss = 0
+  - Worst loss = 1
+  - A random guess in a binary classification problem (two classes) would result in about 50% loss.
+- Analogy: Tossing a fair coin results in about a 50/50 distribution over many tosses.
+
+## 6. Why the Loss Might Stay High
+- Even after 3000 epochs, the loss may not improve significantly if the model's structure or settings are not ideal for the task.
+
+## 7. Diagramming the Neural Network (with FigJam)
+- Visual elements:
+  - **Input nodes**: x1 and x2 (green).
+  - **Hidden nodes**: Represented with blue dots.
+  - **Output node**: Single output (orange).
+- Arrows connecting inputs to hidden nodes and hidden nodes to output illustrate the forward pass.
+
+## 8. Important Architectural Concepts
+- Each input feature connects to every neuron in the hidden layer.
+- Hidden units can be increased or adjusted to change the model’s capacity.
+- The output shape of one layer must match the expected input shape of the next layer.
+- Example: 
+  - If an input layer outputs five values, the next layer must expect five input values.
+
+## 9. Experimenting with TensorFlow Playground
+- Suggestions:
+  - Try increasing the number of hidden layers or neurons.
+  - Challenge: Replicate the current network structure and try fitting it to the dataset using TensorFlow Playground.
+
+## 10. Preview of Next Lecture
+- Introduction to creating the same network with even less code.
+- Upcoming focus on simplifying the network-building process.
+
+---
