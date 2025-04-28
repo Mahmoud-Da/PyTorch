@@ -549,3 +549,58 @@ print(f"Shape of one y sample: {y_sample.shape}")  # Note: scalar, no shape
 - Data types were adjusted to match PyTorch expectations (`float32`).
 - Data was split into training and testing sets.
 - Next step: Build or choose a model.
+
+*** 73. Laying Out Steps for Modelling and Setting Up Device-Agnostic Code ***
+
+# Lecture Notes: Building a Model (Part 1)
+
+## Recap
+- In the previous lecture, we split the dataset into **training** and **test** sets using an 80/20 split.
+  - **Training set**: ~800 samples
+  - **Test set**: ~200 samples
+- Purpose:
+  - Training set: to learn patterns from the data (circles dataset - red and blue dots).
+  - Test set: to evaluate how well the model has learned those patterns.
+  
+## Transition to Model Building
+- Moving into Part 2: **Building a Model** to classify the blue and red dots.
+
+## High-Level Steps
+1. Set up **device agnostic code** (CPU or GPU).
+2. **Construct the model**.
+3. Define a **loss function** and **optimizer**.
+4. Create **training and testing loops** (training/testing loop construction will be covered in the next section).
+
+These steps follow the general modeling workflow:
+- Pick or build a model suitable for your problem.
+- Choose a loss function and optimizer.
+- Build a training loop.
+
+## Step-by-Step Breakdown
+
+### 1. Set Up Device Agnostic Code
+- **Import necessary libraries**:
+  -------------------code----------------------
+  import torch
+  import torch.nn as nn
+  -------------------code----------------------
+- **Define the device**:
+  -------------------code----------------------
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  -------------------code----------------------
+  - If a GPU is available, use CUDA; otherwise, default to CPU.
+  - By default, PyTorch will use the CPU unless a GPU is explicitly set up.
+
+- **Setting up GPU (if available)**:
+  - Go to `Runtime > Change Runtime Type > GPU` and save changes.
+  - This restarts the runtime and reconnects the session.
+  - After reconnection, rerun previous cells to redefine variables like `X_train`.
+
+### 2. Verify Setup
+- After setting the device and rerunning necessary cells, check if `X_train` and other variables are properly defined.
+- Confirmed that the setup was successful.
+
+---
+
+## Next Step
+- In the following lecture, we will move on to **constructing the model**.
