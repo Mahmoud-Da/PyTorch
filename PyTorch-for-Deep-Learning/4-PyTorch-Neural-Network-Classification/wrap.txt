@@ -331,3 +331,221 @@ In this lecture, we moved from a general understanding of classification problem
 ## Questions to Reflect On
 - What are the **input** and **output shapes** of the problem?
 - How would you **split** the dataset into **training** and **test** sets?
+
+*** 72. Turning Our Data into Tensors and Making a Training and Test Split ***
+
+what is scaler in  machine learning?
+In very simple words:
+A **scaler** in machine learning is something that **changes the size of your data** so that all the numbers are **more similar** to each other.
+
+This helps the machine learn better because if some numbers are too big and others are too small, it gets confused.
+
+**Example**:  
+- Imagine you are comparing people's height (like 1.7 meters) and their salary (like 3,000,000 yen).  
+- The salary numbers are so big compared to the height numbers.  
+- A scaler shrinks or stretches the numbers so they are on a similar level, like both being between 0 and 1.
+
+That's it — scaling just makes the data "even" and easier for the model to understand.
+
+definition:
+In machine learning, a **scaler** is a tool used to **transform features** (your data) so that they have a specific scale or range.
+
+**Why scaling is important**:
+- Many machine learning algorithms (especially those based on distances, like k-NN, SVM, and gradient descent-based models) work **better and faster** when features are on a similar scale.
+- If one feature has very large values (e.g., income in millions) and another has very small values (e.g., height in meters), the model might give **too much importance** to the larger-scale feature.
+- Scaling **helps models converge faster** and perform better.
+
+---
+
+### Common Types of Scalers
+-------------------code----------------------
+| Scaler                  | What it does                                           | Example                                      |
+|--------------------------|--------------------------------------------------------|----------------------------------------------|
+| **Min-Max Scaler**        | Rescales the data to a specific range, usually [0, 1].  | New value = (value - min) / (max - min)       |
+| **Standard Scaler**       | Standardizes the data so that it has a mean of 0 and a standard deviation of 1. | (value - mean) / standard deviation |
+| **Robust Scaler**         | Scales data using the median and interquartile range (good for data with outliers). | Based on median instead of mean |
+| **MaxAbs Scaler**         | Scales each feature by its maximum absolute value (useful when data is already centered at 0). | value / max(abs(value))           |
+-------------------code----------------------
+---
+
+### Quick Example
+Suppose you have two features:
+-------------------code----------------------
+| Height (cm) | Salary (¥) |
+|-------------|------------|
+| 170         | 3,000,000  |
+| 160         | 2,800,000  |
+| 180         | 3,500,000  |
+-------------------code----------------------
+If you **do not scale**, "Salary" dominates because its numbers are much bigger.
+
+After **Standard Scaling**, both features would have similar magnitudes (around mean = 0, std = 1), allowing the model to treat them **fairly**.
+
+---
+
+### In Code (Python using scikit-learn)
+-------------------code----------------------
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+scaled_X = scaler.fit_transform(X)
+-------------------code----------------------
+
+how numbers looks like before and after scaling:
+---
+
+### Before Scaling
+-------------------code----------------------
+| Feature 1 (Height in cm) | Feature 2 (Salary in yen) |
+|--------------------------|---------------------------|
+| 160                      | 3,000,000                 |
+| 170                      | 3,500,000                 |
+| 180                      | 4,000,000                 |
+-------------------code----------------------
+You can see:  
+- Heights are small numbers (around 160–180).
+- Salaries are huge numbers (millions).
+
+The model might think Salary is more important **just because** the numbers are bigger.
+
+---
+
+### After Scaling (for example using StandardScaler)
+-------------------code----------------------
+| Feature 1 (Height scaled) | Feature 2 (Salary scaled) |
+|----------------------------|---------------------------|
+| -1.22                      | -1.22                     |
+|  0.00                      |  0.00                     |
+|  1.22                      |  1.22                     |
+-------------------code----------------------
+Now:  
+- Both height and salary are around the **same range** (around -1 to 1).
+- The model treats them **fairly**.
+
+---
+
+**Quick visual feel:**
+
+Before scaling:
+-------------------code----------------------
+Height:  160    170    180
+Salary: 3000000 3500000 4000000
+-------------------code----------------------
+
+After scaling:
+-------------------code----------------------
+Height:  -1.22   0   1.22
+Salary:  -1.22   0   1.22
+-------------------code----------------------
+
+
+# Lecture Notes: Preparing Data for a Neural Network in PyTorch
+
+## 1. Recap and Current Progress
+- Previously: Created classification data (blue and red dots) for practice.
+- Now: Need to turn data into tensors to proceed with building a neural network.
+
+---
+
+## 1.1 Checking Input and Output Shapes
+
+**Why focus on shapes?**
+- Machine learning heavily uses numerical representations (tensors).
+- Most common errors occur due to mismatched input/output shapes.
+  
+**Current Data Overview:**
+- `X`: Numpy array with shape `(1000, 2)` → 1000 samples, 2 features each.
+- `y`: Numpy array with shape `(1000,)` → 1000 labels (scalars, no features).
+
+**Practical Example:**
+- **Input (X):** Two numbers per sample (e.g., coordinates).
+- **Output (y):** One label per sample.
+
+**Code to view a sample:**
+-------------------code----------------------
+x_sample = X[0]
+y_sample = y[0]
+
+print(f"One sample of X: {x_sample}")
+print(f"One sample of y: {y_sample}")
+
+print(f"Shape of one X sample: {x_sample.shape}")
+print(f"Shape of one y sample: {y_sample.shape}")  # Note: scalar, no shape
+-------------------code----------------------
+
+- **Summary:** Two features for X trying to predict one scalar label y.
+
+---
+
+## 1.2 Turning Data into Tensors
+
+**Goal:** Convert Numpy arrays into PyTorch tensors and ensure proper data types.
+
+**Steps:**
+1. **Import PyTorch:**
+   -------------------code----------------------
+   import torch
+   print(torch.__version__)
+   -------------------code----------------------
+   - Ensure PyTorch version is at least 1.10.
+
+2. **Convert arrays to tensors:**
+   -------------------code----------------------
+   X = torch.from_numpy(X).type(torch.float)
+   y = torch.from_numpy(y).type(torch.float)
+   -------------------code----------------------
+
+   - `torch.float` is equivalent to `float32`.
+   - PyTorch prefers `float32` while Numpy defaults to `float64`.
+
+3. **Check data:**
+   -------------------code----------------------
+   print(X[:5])
+   print(y[:5])
+   print(X.dtype)  # Should be torch.float32
+   print(y.dtype)
+   -------------------code----------------------
+
+**Important Note:**  
+- Without converting to `float32`, mismatches and errors can occur when training models.
+
+---
+
+## 1.3 Splitting Data into Training and Testing Sets
+
+**Goal:** Randomly split the dataset into a training set and a testing set.
+
+**Steps:**
+1. **Import split function:**
+   -------------------code----------------------
+   from sklearn.model_selection import train_test_split
+   -------------------code----------------------
+
+2. **Perform split:**
+   -------------------code----------------------
+   X_train, X_test, y_train, y_test = train_test_split(
+       X, y, 
+       test_size=0.2,    # 20% test, 80% train
+       random_state=42   # For reproducibility
+   )
+   -------------------code----------------------
+
+3. **Check sizes:**
+   -------------------code----------------------
+   print(len(X_train))  # 800 samples
+   print(len(X_test))   # 200 samples
+   print(len(y_train))
+   print(len(y_test))
+   -------------------code----------------------
+
+**Explanation:**
+- `test_size=0.2` means 20% of data goes to testing, 80% to training.
+- `random_state=42` ensures consistent splits across runs.
+
+---
+
+## Summary
+- Data has been turned into PyTorch tensors.
+- Data types were adjusted to match PyTorch expectations (`float32`).
+- Data was split into training and testing sets.
+- Next step: Build or choose a model.
