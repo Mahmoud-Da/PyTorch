@@ -1430,3 +1430,151 @@ With all steps ready:
 
 > Recommended: Try implementing the training/testing loop based on the steps before watching the next video.
 
+
+*** 79. Coding a Training and Testing Optimization Loop for Our Classification Model ***
+# Lecture Notes: Training a Binary Classification Model in PyTorch
+
+## 1. **Introduction**
+
+* Focus: Training a binary classification model in PyTorch.
+* Previous steps covered: Model creation, data preparation, understanding logits and activation functions.
+* Goal: Write a full training and evaluation loop.
+
+---
+
+## 2. **Understanding Logits and Activations**
+
+* **Logits**: Raw outputs from the model’s final layer (before any activation).
+* **Activation Functions**:
+
+  * `sigmoid`: Used for **binary classification**.
+  * `softmax`: Used for **multi-class classification** (not used here).
+* **Converting Predictions**:
+
+  * Logits → Probabilities: via `torch.sigmoid`
+  * Probabilities → Labels: via `torch.round`
+* Necessary for comparing predictions with ground-truth labels (apples-to-apples).
+
+---
+
+## 3. **Google Colab Notes**
+
+* After a runtime disconnection, re-run all previous cells.
+* GPU Persistence: GPU setting remains even after runtime resets.
+* GPU check:
+
+  * `device`: Verifies the device (CPU/GPU).
+  * `!nvidia-smi`: Confirms presence and type of CUDA-enabled GPU (e.g., Tesla P100).
+
+---
+
+## 4. **Reproducibility: Setting Random Seeds**
+
+* `torch.manual_seed(42)`
+* `torch.cuda.manual_seed(42)`: For reproducibility on CUDA devices.
+* Purpose: Ensure model behaves similarly across runs.
+
+---
+
+## 5. **Prepare Data for Training**
+
+* Move data to the same device as the model:
+
+  -------------------code----------------------
+  X_train, y_train = X_train.to(device), y_train.to(device)
+  X_test, y_test = X_test.to(device), y_test.to(device)
+  -------------------code----------------------
+* This makes the code device-agnostic.
+
+---
+
+## 6. **Training and Evaluation Loop**
+
+### 6.1 Set Epochs
+
+-------------------code----------------------
+epochs = 100
+-------------------code----------------------
+
+### 6.2 Training Phase
+
+-------------------code----------------------
+model.train()
+-------------------code----------------------
+
+* Forward Pass:
+
+  -------------------code----------------------
+  y_logits = model(X_train).squeeze()
+  y_pred = torch.round(torch.sigmoid(y_logits))
+  -------------------code----------------------
+* **Loss Calculation**:
+
+  -------------------code----------------------
+  loss = loss_fn(y_logits, y_train)  # BCEWithLogitsLoss expects logits
+  -------------------code----------------------
+* **Accuracy Calculation** (custom function):
+
+  -------------------code----------------------
+  acc = accuracy_fn(y_true=y_train, y_pred=y_pred)
+  -------------------code----------------------
+
+### 6.3 Optimizer Steps
+
+-------------------code----------------------
+optimizer.zero_grad()
+loss.backward()
+optimizer.step()
+-------------------code----------------------
+
+* Standard backpropagation and parameter update.
+
+---
+
+## 7. **Testing Phase**
+
+-------------------code----------------------
+model.eval()
+with torch.inference_mode():
+    test_logits = model(X_test).squeeze()
+    test_pred = torch.round(torch.sigmoid(test_logits))
+    test_loss = loss_fn(test_logits, y_test)
+    test_acc = accuracy_fn(y_true=y_test, y_pred=test_pred)
+-------------------code----------------------
+
+---
+
+## 8. **Loss Function Differences**
+
+* `BCEWithLogitsLoss`: Expects **logits**.
+* `BCELoss`: Expects **probabilities**. Must wrap logits with `torch.sigmoid`.
+
+---
+
+## 9. **Accuracy Function Parameter Order**
+
+* Custom `accuracy_fn` follows Scikit-learn convention: `accuracy_fn(y_true, y_pred)`
+* PyTorch `loss_fn`: expects `(predictions, labels)` — **order matters**.
+
+---
+
+## 10. **Logging Progress**
+
+* Print every 10 epochs:
+
+-------------------code----------------------
+if epoch % 10 == 0:
+    print(f"Epoch: {epoch} | "
+          f"Loss: {loss:.5f}, Acc: {acc:.2f}% | "
+          f"Test Loss: {test_loss:.5f}, Test Acc: {test_acc:.2f}%")
+-------------------code----------------------
+
+---
+
+## 11. **Conclusion**
+
+* Model is now ready for training.
+* Errors are expected and encouraged for learning.
+* Next step: Run the loop and start training the model.
+
+---
