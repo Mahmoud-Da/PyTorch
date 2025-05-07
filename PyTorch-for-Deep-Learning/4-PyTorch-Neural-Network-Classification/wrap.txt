@@ -1328,3 +1328,105 @@ So:
 
 ---
 
+*** 78. Going from Model Logits to Prediction Probabilities to Prediction Labels ***
+## Lecture Notes: From Logits to Predictions and Training a Binary Classifier in PyTorch
+
+### 1. **Loss Functions & Optimizers Recap**
+
+* **Binary classification** requires **Binary Cross Entropy (BCE)**.
+* `BCEWithLogitsLoss` is preferred due to **numerical stability** (it includes a sigmoid activation internally).
+* The **optimizer** updates model parameters to **minimize loss**.
+* Accuracy can be used as an additional **evaluation metric**.
+
+---
+
+### 2. **PyTorch Training Loop Steps**
+
+**Remember the jingle**:
+
+> For an epoch in a range:
+> Do the forward pass → Calculate the loss → `optimizer.zero_grad()` → `loss.backward()` → `optimizer.step()`
+
+**Detailed Steps**:
+
+1. Forward pass
+2. Calculate loss
+3. Zero gradients
+4. Backpropagation
+5. Optimizer step (gradient descent)
+
+---
+
+### 3. **Understanding Logits, Probabilities, and Labels**
+
+#### Terminology:
+
+* **Logits**: Raw model outputs before applying any activation function.
+* **Prediction probabilities**: Outputs after applying an activation (e.g., `sigmoid`).
+* **Prediction labels**: Final class decisions (0 or 1) after thresholding probabilities.
+
+#### Conversion Flow:
+
+-------------------code----------------------
+Model Output (Logits) 
+→ Activation Function (Sigmoid for binary classification) 
+→ Prediction Probabilities 
+→ Thresholding (rounding) 
+→ Prediction Labels
+-------------------code----------------------
+
+---
+
+### 4. **Code Walkthrough: From Logits to Predictions**
+
+-------------------code----------------------python
+# Forward pass on test data (ensure it’s on the same device as the model)
+y_logits = model_0(X_test.to(device))
+
+# Convert logits to probabilities
+y_pred_probs = torch.sigmoid(y_logits)
+
+# Convert probabilities to class labels (0 or 1)
+y_preds = torch.round(y_pred_probs)
+-------------------code----------------------
+
+**Why not round logits directly?**
+
+* Rounding logits doesn’t give meaningful results.
+* Sigmoid transforms logits to values in the \[0, 1] range for proper interpretation as probabilities.
+
+---
+
+### 5. **Decision Thresholding**
+
+Default threshold is **0.5**:
+
+* If `y_pred_prob ≥ 0.5` → Class **1**
+* If `y_pred_prob < 0.5` → Class **0**
+
+This can be adjusted for different sensitivity needs.
+
+---
+
+### 6. **Checking Predictions**
+
+-------------------code----------------------python
+# Compare predictions to expected values
+torch.equal(y_preds.squeeze(), y_pred_labels)
+-------------------code----------------------
+
+* `.squeeze()` removes extra dimensions for matching shapes.
+* Use `torch.inference_mode()` during evaluation to avoid tracking gradients.
+
+---
+
+### 7. **Next Step: Training and Testing Loop**
+
+With all steps ready:
+
+* Inputs: model, data, loss function (`BCEWithLogitsLoss`), optimizer
+* Goal: Implement training and testing loop
+* Follow the PyTorch training pattern introduced earlier
+
+> Recommended: Try implementing the training/testing loop based on the steps before watching the next video.
+
