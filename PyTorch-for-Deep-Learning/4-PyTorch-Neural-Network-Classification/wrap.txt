@@ -1058,3 +1058,273 @@ To improve predictions:
 * Choose an **optimizer**.
 * Build and implement a **training loop**.
 * This will allow the model to adjust its parameters through backpropagation.
+
+
+*** 77. Loss Function Optimizer and Evaluation Function for Our Classification Network ***
+
+Here's a **clean, organized summary** of the lecture, structured in note format without emojis:
+
+---
+
+## Lecture Notes: Setting Up Loss Function, Optimizer, and Evaluation for Binary Classification in PyTorch
+
+### 1. **Model Structure Recap**
+
+* We're building a simple neural network for **binary classification**.
+* Model setup:
+
+  * Input: 2 features
+  * Hidden layer: 5 units
+  * Output: 1 unit (for binary classification)
+
+---
+
+### 2. **Loss Functions Overview**
+
+* The loss function **measures how wrong** the model's predictions are.
+* Different types are used for different problems:
+
+  * **Regression**: `L1Loss` (Mean Absolute Error), `MSELoss` (Mean Squared Error)
+  * **Classification**: `BCELoss`, `BCEWithLogitsLoss`, `CrossEntropyLoss` (for multiclass)
+
+#### Binary Classification:
+
+* Use: `BCEWithLogitsLoss`
+
+  * Combines **sigmoid activation** + **binary cross entropy** in one step.
+  * More **numerically stable** than applying sigmoid separately then BCELoss.
+
+#### Reference:
+
+* Article recommended: "Understanding Binary Cross Entropy / Log Loss" by Daniel Godoy.
+
+---
+
+### 3. **What is a Logit?**
+
+* A **logit** is the raw score (real number) output **before** applying the sigmoid function.
+* In deep learning, "logit" often refers to the output of the final linear layer **before activation**.
+* Using `BCEWithLogitsLoss` expects logits as input and applies sigmoid internally.
+
+---
+
+### 4. **Sigmoid Activation Function**
+
+* Squashes input to a value between 0 and 1.
+* Formula: `1 / (1 + e^(-x))`
+* Used in the **output layer** of binary classifiers to predict probabilities.
+
+---
+
+### 5. **Optimizers**
+
+* Optimizers adjust model parameters to reduce loss.
+* Common choices:
+
+  * **SGD** (Stochastic Gradient Descent)
+  * **Adam**
+* PyTorch provides many: `torch.optim.SGD`, `Adam`, `Adagrad`, etc.
+
+#### Example (using SGD):
+
+-------------------code----------------------
+optimizer = torch.optim.SGD(params=model.parameters(), lr=0.1)
+-------------------code----------------------
+
+---
+
+### 6. **Evaluation Metric: Accuracy**
+
+* Accuracy = (Number of correct predictions / Total predictions) × 100
+* Useful for binary classification to measure how often the model is correct.
+
+#### Accuracy Function:
+
+-------------------code----------------------
+def accuracy_fn(y_true, y_pred):
+    correct = torch.eq(y_true, y_pred).sum().item()
+    acc = (correct / len(y_pred)) * 100
+    return acc
+-------------------code----------------------
+
+---
+
+### 7. **Summary**
+* We've now set up:
+
+  * The model
+  * Loss function: `BCEWithLogitsLoss` (includes sigmoid)
+  * Optimizer: SGD
+  * Evaluation metric: Accuracy
+* Ready to move on to building the training loop in the next step.
+
+
+
+what is binary cross entropy?
+
+**Binary Cross-Entropy (BCE)** is a loss function used to measure how well a **binary classification** model is performing.
+
+### Simple Explanation:
+
+Imagine your model is trying to predict whether something is:
+
+* **Class 0** (e.g., not a cat), or
+* **Class 1** (e.g., a cat)
+
+For each prediction, your model outputs a **probability** between 0 and 1 (like 0.8 or 0.3).
+Binary Cross-Entropy compares this probability to the **true label** (which is exactly 0 or 1), and calculates **how far off** the prediction is.
+
+---
+
+### Formula:
+
+If the true label is `y` and the predicted probability is `p`, then:
+
+-------------------code----------------------
+BCE = -[ y * log(p) + (1 - y) * log(1 - p) ]
+-------------------code----------------------
+
+* If the label is 1, the loss becomes `-log(p)`
+* If the label is 0, the loss becomes `-log(1 - p)`
+
+So the closer `p` is to the correct label (0 or 1), the smaller the loss.
+
+---
+
+### Example:
+
+If the true label is `1` and the model predicts `0.9`:
+
+-------------------code----------------------
+Loss = -log(0.9) ≈ 0.105 (small loss → good)
+-------------------code----------------------
+
+If the model predicts `0.1`:
+
+-------------------code----------------------
+Loss = -log(0.1) ≈ 2.30 (big loss → bad)
+-------------------code----------------------
+
+---
+
+### In PyTorch:
+
+-------------------code----------------------
+loss_fn = nn.BCELoss()
+-------------------code----------------------
+
+Or, if you're using `nn.BCEWithLogitsLoss()`, it includes the sigmoid function internally and is more stable.
+
+
+what is a Logit?
+A **logit** is just a **raw prediction score** (usually from a neural network) **before** it's turned into a probability.
+
+---
+
+### Simple Explanation:
+
+When your model is making a prediction, it often gives you a number that could be anything — like `-3`, `0.5`, `2.7`, etc. That number is the **logit**.
+
+To turn that number into a **probability between 0 and 1**, we pass it through the **sigmoid function**:
+
+$$
+\text{Probability} = \text{sigmoid(logit)} = \frac{1}{1 + e^{-\text{logit}}}
+$$
+
+---
+
+### Example:
+
+| Logit | Sigmoid Output (Probability) |
+| ----- | ---------------------------- |
+| -2    | 0.12                         |
+| 0     | 0.50                         |
+| 2     | 0.88                         |
+
+So:
+
+* A logit of `0` means a **50%** prediction.
+* A large **positive logit** means the model is more confident in **class 1**.
+* A large **negative logit** means it's more confident in **class 0**.
+
+---
+
+### Why Use Logits?
+
+Using logits directly (before converting to probabilities) is more **numerically stable** when training models. That's why PyTorch provides `BCEWithLogitsLoss`, 
+which expects **logits as input**, and internally applies the sigmoid.
+
+
+### Imagine this:
+Your model is trying to predict **yes (1)** or **no (0)**.
+Before giving you the final answer as a **probability**, the model first gives a **raw score** — this score is called the **logit**.
+
+---
+
+### Example:
+
+* Model gives a logit of `3` → means **strong yes**
+* Model gives a logit of `-2` → means **strong no**
+* Model gives a logit of `0` → means **maybe (50/50)**
+
+Then, we use something called **sigmoid** to turn that score into a **probability** between 0 and 1.
+
+---
+
+### In short:
+
+> **Logit = raw prediction score (can be any number)**
+> **Sigmoid(logit) = turns it into a probability**
+
+---
+
+
+what is sigmoid activation function ?
+The **sigmoid activation function** is a special math function that turns any number (positive or negative) into a value **between 0 and 1** — like a **soft yes/no** answer.
+
+---
+
+### Simple Explanation:
+
+Think of sigmoid as a **squasher**:
+
+* It takes **any number** (like -100 or +5 or 0.2)
+* And **squashes** it into a range from **0 to 1**
+
+This is useful when your model needs to **predict probabilities** — because probabilities must be between 0 and 1.
+
+---
+
+### Formula (you don't have to memorize this):
+
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}}
+$$
+
+---
+
+### Examples:
+
+| Input (x) | Sigmoid(x) Output |
+| --------- | ----------------- |
+| -3        | 0.05              |
+| 0         | 0.50              |
+| 2         | 0.88              |
+| 10        | 0.99995           |
+
+So:
+
+* Big **negative** numbers become close to **0**
+* Big **positive** numbers become close to **1**
+* **0** becomes **0.5** (neutral)
+
+---
+
+### Why use sigmoid?
+
+* It helps your model **make decisions** like:
+  “Is this a cat or not?” → Output: 0.92 (Yes)
+* It's often used in the **final layer** for **binary classification**
+
+---
+
