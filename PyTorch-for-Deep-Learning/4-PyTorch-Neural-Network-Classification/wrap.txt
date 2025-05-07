@@ -895,3 +895,166 @@ If the number of layers = number of features, then all deep networks would just 
 - Upcoming focus on simplifying the network-building process.
 
 ---
+
+*** 76. Recreating and Exploring the Insides of Our Model Using nn.Sequential ***
+## **Lecture Summary: Building Neural Networks in PyTorch**
+
+### **1. Review of Previous Work**
+
+* Previously built a neural network model named `CircleModelV0` using PyTorch.
+* Subclassed `nn.Module` to define a custom model with:
+
+  * **Two linear layers**:
+
+    * Input: 2 features (x)
+    * Hidden: 5 features (for better learning capacity)
+    * Output: 1 feature (to match y)
+
+### **2. Visual Understanding**
+
+* **TensorFlow Playground** was used to visualize network architecture.
+* **Figma** was introduced as another tool to conceptualize neural networks.
+* Visual tools help understand model architecture early in your learning journey.
+
+### **3. Replicating the Model with `nn.Sequential`**
+- our Subclassing modle
+-------------------code----------------------
+from sklearn import datasets
+
+class CircleModelV0(nn.Module):
+  def __init__(self):
+    super().__init__()
+    
+    self.layer_1 = nn.Linear(in_features=2, out_features=5) 
+    self.layer_2 = nn.Linear(in_features=5, out_features=1) 
+
+  
+  def forward(self, x):
+    return self.layer_2(self.layer_1(x)) 
+-------------------code----------------------
+
+* Simpler alternative for straightforward models.
+* Example architecture:
+
+  -------------------code----------------------
+  model = nn.Sequential(
+      nn.Linear(in_features=2, out_features=5),
+      nn.Linear(in_features=5, out_features=1)
+  )
+  -------------------code----------------------
+* This approach **eliminates the need** for a `forward` method.
+* Behind the scenes, `nn.Sequential` handles layer-by-layer computation.
+
+what is nn.Sequential?
+`nn.Sequential` is a class in PyTorch's `torch.nn` module that allows you to **build neural networks by stacking layers in order**, one after another.
+
+### **Definition**
+
+-------------------code----------------------
+nn.Sequential(*args)
+-------------------code----------------------
+
+You pass layers as arguments, and `nn.Sequential` connects them end-to-end. The output of one layer becomes the input to the next.
+
+---
+
+### **Why Use `nn.Sequential`?**
+
+* **Quick and simple** way to build feedforward neural networks.
+* Great for models where layers flow **sequentially** without branching or custom logic.
+
+---
+
+### **Example**
+
+-------------------code----------------------
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(in_features=2, out_features=5),
+    nn.ReLU(),
+    nn.Linear(in_features=5, out_features=1)
+)
+-------------------code----------------------
+
+This is equivalent to:
+
+-------------------code----------------------
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layer1 = nn.Linear(2, 5)
+        self.activation = nn.ReLU()
+        self.layer2 = nn.Linear(5, 1)
+
+    def forward(self, x):
+        x = self.layer1(x)
+        x = self.activation(x)
+        x = self.layer2(x)
+        return x
+-------------------code----------------------
+
+---
+
+### **Limitations**
+
+* You can't add **if-conditions, loops, or other logic** inside the forward pass.
+* Only works for **straightforward, linear sequences** of layers.
+
+---
+
+Would you like a visual diagram showing how `nn.Sequential` connects the layers?
+
+
+### **4. Comparison: Subclassing vs. Sequential**
+-------------------code----------------------
+| Method          | Pros                                           | Cons                                          |
+| --------------- | ---------------------------------------------- | --------------------------------------------- |
+| Subclassing     | Great for complex logic, custom forward passes | More verbose, requires manual implementation  |
+| `nn.Sequential` | Simple for straightforward feedforward models  | Limited flexibility, only linear flow allowed |
+-------------------code----------------------
+
+### **5. Inspecting the Model Parameters**
+
+* Accessed model weights and biases with `model[0].weight`, `model[0].bias`, etc.
+* Each layer's parameters:
+
+  * First layer: 2 × 5 weights + 5 biases
+  * Second layer: 5 × 1 weights + 1 bias
+* Parameters are **randomly initialized** unless a seed is set.
+* PyTorch automates parameter creation and management.
+
+### **6. Model Complexity**
+
+* Increasing the number of layers and neurons increases the parameter count significantly.
+* PyTorch still handles this automatically, but the underlying complexity grows.
+
+### **7. Making Untrained Predictions**
+
+* Predictions made on `X_test` before training:
+
+  -------------------code----------------------
+  with torch.inference_mode():
+      untrained_preds = model(X_test)
+  -------------------code----------------------
+* Model outputs random float values due to untrained weights.
+* Rounded predictions (e.g., `torch.round(preds)`) mostly result in zeroes.
+* Model performs poorly before training, often around **50% accuracy** in binary tasks.
+
+### **8. Key Concepts and Observations**
+
+* **Model Initialization**: Starts with random weights.
+* **Device Matching**: Data and model must be on the same device (e.g., CUDA).
+* **Prediction Format**:
+
+  * Labels: integers (0 or 1)
+  * Predictions: floats (need post-processing for evaluation)
+
+### **9. Next Steps**
+
+To improve predictions:
+
+* Introduce a **loss function**.
+* Choose an **optimizer**.
+* Build and implement a **training loop**.
+* This will allow the model to adjust its parameters through backpropagation.
