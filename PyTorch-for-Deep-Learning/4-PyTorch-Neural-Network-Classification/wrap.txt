@@ -1703,3 +1703,93 @@ plot_decision_boundary(model_0, X_test, y_test)
 
   * Hint: Model architecture may need to be **non-linear** to fit the data properly.
 
+
+*** 81. Discussing Options to Improve a Model ***
+### **Review of Previous Work**
+
+* Downloaded helper functions from `helper_functions.py`.
+* Emphasis on the importance of modular code reuse:
+
+  * Instead of rewriting, we import and reuse code.
+  * Similar to how PyTorch is structured (a collection of Python scripts).
+* Current goal: Train a model to separate red and blue dots.
+* Existing model uses linear separation (straight lines).
+* Challenge: Can the linear model ever separate this non-linear data?
+
+---
+
+### **Problem with Current Model**
+
+* Model's predictions are unsatisfactory.
+* Current approach isn't capturing the complexity of the data.
+* Time to experiment with improvements.
+
+---
+
+### **Strategies to Improve the Model**
+
+1. **Add More Layers**
+
+   * More layers = more opportunities to learn patterns.
+   * Example: Moving from a 2-layer model to a 10-layer model increases parameters, enabling better pattern recognition.
+   * But too many layers can overfit or overcomplicate simple data.
+
+2. **Increase Hidden Units**
+
+   * More units per layer = more capacity.
+   * Example: Increase from 5 to 10 hidden units per layer.
+   * As with layers, adding too many might not help with simple datasets.
+
+3. **Train for More Epochs**
+
+   * More epochs = more passes through the data.
+   * Example: Increase from 100 to 1000 epochs.
+   * Challenge issued to see if this improves the linear model.
+
+4. **Change Activation Functions**
+
+   * Currently using **Sigmoid** (common for binary classification).
+   * Introduced **ReLU** (Rectified Linear Unit) as another option.
+   * Activation functions allow the network to learn non-linear patterns.
+
+5. **Adjust Learning Rate**
+
+   * Learning rate controls how much model weights update each epoch.
+   * Too small: Training is slow, might not converge.
+   * Too large: Training can diverge or lead to **exploding gradients**.
+   * Also introduced concept of **vanishing gradients**.
+
+6. **Change the Optimization Function**
+
+   * Current: **SGD (Stochastic Gradient Descent)**.
+   * Alternative: **Adam**, generally performs well across problems.
+
+7. **Loss Function**
+
+   * Currently using **Binary Cross Entropy** with **Sigmoid** — suitable for this binary classification task.
+   * No change planned here yet.
+
+---
+
+### **Visual Summary (Described from Lecture Slide)**
+
+* Compared two models:
+
+  * **Simple Model**: Fewer layers, fewer hidden units, SGD, learning rate = 0.01, 10 epochs.
+  * **Larger Model**: More layers, increased hidden units (e.g. 128 → 128 → 256), added ReLU activations, changed optimizer to Adam, reduced learning rate, increased epochs to 100.
+
+---
+
+### **Next Steps**
+
+* Experiment with:
+
+  * Adding layers.
+  * Increasing hidden units.
+  * Fitting for longer.
+* Leave all other parameters constant for now.
+* Encouraged to implement these changes and observe improvements.
+* TensorBoard (a PyTorch utility for monitoring experiments) will be discussed later.
+* Model saving will be done once a satisfactory model is trained.
+
+---
