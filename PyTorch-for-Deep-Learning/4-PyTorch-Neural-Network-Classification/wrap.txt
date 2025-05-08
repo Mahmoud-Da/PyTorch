@@ -1578,3 +1578,128 @@ if epoch % 10 == 0:
 * Next step: Run the loop and start training the model.
 
 ---
+
+*** 80. Writing Code to Download a Helper Function to Visualize Our Models Predictions ***
+## **Lecture Summary: Binary Classification and Model Visualization**
+
+### **1. Loss Functions and Output Interpretation**
+
+* **Binary Cross-Entropy Loss (BCE Loss)**:
+
+  * Requires **probability predictions** (0 to 1).
+  * Apply `torch.sigmoid()` to model logits before passing to BCE loss.
+* **BCEWithLogitsLoss**:
+
+  * Combines sigmoid activation with BCE internally.
+  * Pass **raw logits** directly—no need to apply sigmoid.
+* **Custom Accuracy Function**:
+
+  * Compares predicted labels (after thresholding) to actual labels.
+
+### **2. Model Output Pipeline**
+
+* Convert `logits → probabilities → predicted labels`.
+* Final output should be human-readable labels (e.g., class 0 or 1).
+
+### **3. Initial Training Attempt**
+
+* Model trained for **100 epochs**.
+* Training completed extremely fast due to:
+
+  * **Small dataset**.
+  * **Simple model**.
+  * **GPU acceleration**.
+* Observations:
+
+  * Loss ≈ 0.69973 (barely changes).
+  * Accuracy starts high but then decreases.
+  * Model performance ≈ random guessing (around 50%).
+-------------------code----------------------
+Epoch: 0 | Loss: 0.69396, Accuracy: 50.88% | Test loss: 0.69261, Test acc: 51.00%
+Epoch: 100 | Loss: 0.69305, Accuracy: 50.38% | Test loss: 0.69379, Test acc: 48.00%
+Epoch: 200 | Loss: 0.69299, Accuracy: 51.12% | Test loss: 0.69437, Test acc: 46.00%
+Epoch: 300 | Loss: 0.69298, Accuracy: 51.62% | Test loss: 0.69458, Test acc: 45.00%
+Epoch: 400 | Loss: 0.69298, Accuracy: 51.12% | Test loss: 0.69465, Test acc: 46.00%
+Epoch: 500 | Loss: 0.69298, Accuracy: 51.00% | Test loss: 0.69467, Test acc: 46.00%
+Epoch: 600 | Loss: 0.69298, Accuracy: 51.00% | Test loss: 0.69468, Test acc: 46.00%
+Epoch: 700 | Loss: 0.69298, Accuracy: 51.00% | Test loss: 0.69468, Test acc: 46.00%
+Epoch: 800 | Loss: 0.69298, Accuracy: 51.00% | Test loss: 0.69468, Test acc: 46.00%
+Epoch: 900 | Loss: 0.69298, Accuracy: 51.00% | Test loss: 0.69468, Test acc: 46.00%
+-------------------code----------------------
+
+
+### **4. Dataset Inspection**
+
+* Used a dataset of **red and blue dots**.
+* Class distribution:
+
+  * **500 of each class** → **Balanced dataset**.
+  * **Training set**: 400 samples/class.
+  * **Test set**: 100 samples/class.
+* Conclusion: Model fails to learn meaningful patterns.
+-------------------code----------------------
+# Check different labels
+circles.label.value_counts()
+
+label
+1    500
+0    500
+Name: count, dtype: int64
+-------------------code----------------------
+
+
+### **5. Visualizing Model Predictions**
+
+* Introduced the principle: **Visualize, visualize, visualize**.
+* Strategy: Use helper function to **plot decision boundary**.
+* Setup:
+
+  * Downloaded `helper_functions.py` from the course GitHub repo using `requests` and `pathlib`.
+  * Imported `plot_decision_boundary()` for visualization.
+-------------------code----------------------
+import requests
+from pathlib import Path 
+
+# Download helper functions from Learn PyTorch repo (if not already downloaded)
+if Path("helper_functions.py").is_file():
+  print("helper_functions.py already exists, skipping download")
+else:
+  print("Downloading helper_functions.py")
+  request = requests.get("https://raw.githubusercontent.com/mrdbourke/pytorch-deep-learning/main/helper_functions.py")
+  with open("helper_functions.py", "wb") as f:
+    f.write(request.content)
+
+from helper_functions import plot_predictions, plot_decision_boundary
+-------------------code----------------------
+
+### **6. Plot Interpretation**
+
+* Training vs. test set decision boundaries:
+
+  * Model draws a **straight line** through circular data.
+  * Result: Poor fit, poor accuracy.
+* Root cause: Model only uses **linear layers**.
+
+  * Cannot capture non-linear patterns (e.g., circular clusters).
+  * Linear layers draw straight-line decision boundaries.
+
+-------------------code----------------------
+# Plot decision boundaries for training and test sets
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+plt.title("Train")
+plot_decision_boundary(model_0, X_train, y_train)
+plt.subplot(1, 2, 2)
+plt.title("Test")
+plot_decision_boundary(model_0, X_test, y_test)
+-------------------code----------------------
+
+### **7. Next Steps and Challenge**
+
+* Challenge: Try training the model for **1000 epochs**.
+
+  * Will performance improve?
+* Key Question: If the model still fails, **why**?
+
+  * Hint: Model architecture may need to be **non-linear** to fit the data properly.
+
