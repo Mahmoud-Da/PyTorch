@@ -2577,3 +2577,109 @@ def forward(self, x):
 * Activation functions like ReLU enable neural networks to approximate non-linear relationships.
 * Next steps involve training this model and evaluating its performance on circular (nonlinear) data.
 
+
+*** 89. Writing Training and Testing Code for Our First Non-Linear Model  ***
+## **Lecture Summary: Building and Training a Nonlinear Neural Network (PyTorch)**
+
+### **Objective**
+
+* Recreate a simple neural network model with:
+
+  * Two hidden layers
+  * Five neurons
+  * Learning rate: **0.1**
+  * Activation: **ReLU** (instead of linear)
+
+---
+
+### **Key Concepts**
+
+#### **1. Importance of Non-Linearity**
+
+* **ReLU (Rectified Linear Unit)** is used as a non-linear activation function.
+* Non-linearity allows neural networks to model complex, non-linear patterns.
+* Neural networks = combination of **linear** and **non-linear** functions.
+* This enables them to learn patterns in both simple and complex datasets.
+
+---
+
+#### **2. Learning Rate Impact**
+
+* Demonstrated visually using the TensorFlow Playground:
+
+  * **High learning rate**: Fast convergence, may overshoot.
+  * **Low learning rate**: Slow convergence, may not reach optimal.
+  * Best results: A learning rate that balances speed and stability (e.g., **0.1**).
+
+---
+
+#### **3. Loss and Optimizer**
+
+* Problem type: **Binary Classification** (e.g., red vs blue dots).
+* Loss function: **Binary Cross Entropy with Logits (BCEWithLogitsLoss)**.
+* Optimizer: **Stochastic Gradient Descent (SGD)** with `lr=0.1`.
+
+---
+
+#### **4. Other Binary Classification Examples**
+
+* Email spam detection (spam or not spam)
+* Credit card fraud (fraud or not fraud)
+* Insurance claims (at fault or not at fault)
+
+---
+
+### **Model Training Steps (Using PyTorch)**
+
+#### **Setup**
+
+* Set random seeds (`torch.manual_seed`) for reproducibility.
+* Use device-agnostic code (`cuda` or `cpu`).
+
+#### **Training Loop (1000 epochs)**
+
+1. **Set model to training mode**: `model.train()`
+2. **Forward pass**:
+
+   * Compute logits
+   * Convert logits to predictions using `torch.sigmoid` + `torch.round`
+3. **Loss calculation**: Using BCEWithLogits
+4. **Accuracy calculation**: Compare predictions with true labels
+5. **Zero gradients**: `optimizer.zero_grad()`
+6. **Backpropagation**: `loss.backward()`
+7. **Parameter update**: `optimizer.step()`
+
+---
+
+#### **Model Parameters Check**
+
+* Use `model.state_dict()` to inspect trainable parameters.
+* Activation functions like **ReLU** have **no parameters**.
+
+---
+
+### **Inference (Validation Phase)**
+
+* Set model to evaluation mode: `model.eval()` and use `torch.inference_mode()`.
+* Forward pass on **test data**
+* Apply `torch.sigmoid` and `torch.round` to get predicted labels.
+* Compute **test loss** and **test accuracy**.
+
+---
+
+#### **Troubleshooting: Shape Errors**
+
+* Common in deep learning: Shape mismatches (especially during loss computation).
+* Solution: Use `.squeeze()` to remove extra dimensions.
+
+  * Example: Predicted output shape `[200, 1]` → `[200]` using `.squeeze()`
+
+---
+
+### **Conclusion**
+
+* Training with ReLU (non-linear activation) improves performance.
+* Model now shows a **decrease in loss** and **increase in accuracy**.
+* Reinforces the power of non-linear modeling.
+* Next step: Visualize the decision boundary to confirm model learning.
+
