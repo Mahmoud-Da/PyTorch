@@ -2237,13 +2237,13 @@ plot_decision_boundary(model_1, X_test, y_test)
 
 * Architecture:
 
-  ```python
-  model_2 = nn.Sequential(
-      nn.Linear(in_features=1, out_features=10),
-      nn.ReLU(),
-      nn.Linear(in_features=10, out_features=1)
-  )
-  ```
+-------------------code----------------------
+model_2 = nn.Sequential(
+    nn.Linear(in_features=1, out_features=10),
+    nn.ReLU(),
+    nn.Linear(in_features=10, out_features=1)
+)
+-------------------code----------------------
 * This setup:
 
   * Takes one input feature.
@@ -2301,3 +2301,89 @@ plot_decision_boundary(model_1, X_test, y_test)
   * Wrap prediction in `torch.inference_mode()` for performance and correctness.
 
 ---
+
+*** 86. Evaluating Our Models Predictions on Straight Line Data ***
+## **Lecture Summary: Confirming Model Learning and Preparing for Non-Linearity**
+
+### **Recap of Previous Steps**
+
+* In the last session, we:
+
+  * Solved a **simpler regression problem** to troubleshoot a complex classification model.
+  * Used a **straight-line dataset** to test our model architecture (Model 2).
+  * Confirmed that the model **can learn**, as evidenced by the decreasing loss.
+
+---
+
+### **Key Adjustments Made**
+
+* **Input Feature Change**: Adapted input features from 2 (classification) to 1 (regression).
+* **Loss Function**: Switched to `nn.L1Loss()` (Mean Absolute Error) for regression tasks.
+* **Learning Rate**: Adjusted from `0.1` to `0.01` for better learning performance.
+* **Device-Agnostic Code**: Ensured both model and data are on the same device (CPU or GPU).
+* **Training Setup**: Reused the training loop from the classification model, now applied to regression.
+
+---
+
+### **Model Capacity Confirmation**
+
+* **Why revisit a simpler dataset?**
+
+  * To confirm that our model has *capacity to learn*.
+  * If it learns well on a simple task but fails on a complex one, the problem likely lies elsewhere.
+
+---
+
+### **Inference and Visualization**
+
+* Switched model to evaluation mode:
+
+-------------------code----------------------
+model_2.eval()
+-------------------code----------------------
+* Wrapped prediction step in inference mode:
+
+-------------------code----------------------
+with torch.inference_mode():
+    y_preds = model_2(x_test_regression)
+-------------------code----------------------
+* Used `plot_predictions()` helper function to visualize model outputs:
+
+  * Inputs: training/test data and labels, predicted values (`y_preds`).
+  * Issue encountered: **TypeError** due to attempting `.numpy()` on CUDA tensors.
+  * **Solution**: Convert tensors to CPU first:
+
+    -------------------code----------------------
+    tensor.cpu().numpy()
+    -------------------code----------------------
+
+---
+
+### **Outcome**
+
+* Visualization showed **red dots (predictions)** closely aligned with **green dots (actual values)**.
+* This confirms that the model is learning from the regression dataset.
+
+---
+
+### **Next Questions**
+
+* Why does the model fail on **non-linear classification data** (e.g., circular patterns)?
+* Insight:
+
+  * The model so far uses **linear layers only** (e.g., `nn.Linear`).
+  * Linear layers are best for learning **straight-line relationships**.
+  * But classification data might require **non-linear capabilities**.
+
+---
+
+### **Teaser for Next Lecture**
+
+* Topic: **Non-linear activations**
+
+  * Begin exploring `torch.nn` non-linear layers.
+  * We've already used one (`nn.ReLU`)—can you identify it in our current model?
+* Suggested action:
+
+  * Review the PyTorch documentation for non-linear activation functions to get a head start.
+
