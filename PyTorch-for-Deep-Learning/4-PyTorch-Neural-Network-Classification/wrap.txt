@@ -2103,3 +2103,97 @@ plot_decision_boundary(model_1, X_test, y_test)
 * Visual diagnostics and testing on simpler data are crucial next steps.
 
 ---
+
+*** 84. Creating a Straight Line Dataset to See if Our Model is Learning Anything ***
+### **Lecture Summary: Preparing a Model to Learn a Straight Line (Section 5.1)**
+
+#### **Context**
+
+* We’ve previously attempted to build a model to separate blue and red dots (a classification task).
+* So far, those efforts haven't worked well.
+* The goal remains: build a **fundamental classification model** that works.
+
+#### **Review of Previous Attempts**
+
+* Tried training the model for more epochs.
+* Added another hidden layer.
+* Increased hidden units.
+* Discussed ways to improve a model:
+
+  * Tuning hyperparameters (layers, units, epochs).
+  * Changing activation functions.
+  * Adjusting learning rate (not done yet).
+  * Modifying the loss function.
+
+---
+
+### **5.1: Preparing Data to Test Model with a Simpler Problem**
+
+#### **Troubleshooting Strategy**
+
+* **Approach**: Test the model on a simpler, known problem (fitting a straight line).
+* **Why**: If the model can’t solve a simple problem, there might be a fundamental issue.
+
+#### **Reference**
+
+* In Section 0.1 (PyTorch Workflow Fundamentals), a simple linear model was built that worked.
+* The same idea will be used here to ensure the model can learn **anything at all**.
+
+---
+
+### **Creating Simpler Data (Linear Regression)**
+
+1. **Objective**: Create a dataset for a regression problem (straight line fitting).
+2. **Setup**:
+
+   * Weight = `0.7`
+   * Bias = `0.3`
+3. **Code Steps**:
+
+   * Generate `x_regression` data.
+   * Compute `y_regression = weight * x_regression + bias`.
+   * This is a **linear regression formula without noise** (epsilon).
+4. **Sanity Check**:
+
+   * Visualize data to confirm it's valid.
+   * Emphasized: *“Visualize, visualize, visualize.”*
+
+---
+
+### **Creating Train/Test Splits**
+
+1. **Train/Test Split**:
+
+   * 80% training data, 20% test data.
+   * Use indexing to create `x_train_regression`, `y_train_regression`, `x_test_regression`, `y_test_regression`.
+
+2. **Validation**:
+
+   * Check lengths: should be 80 (train) and 20 (test) samples.
+   * Long variable names are used to avoid confusion with existing data.
+
+---
+
+### **Using Helper Functions**
+
+1. **Helper Functions**:
+
+   * If not already present, download from course GitHub.
+   * Contains a useful function: `plot_predictions()`.
+   * Originally defined in Section 0.1.
+
+2. **Plotting the Data**:
+
+   * Plot training and test data to visually inspect.
+   * No predictions yet, but visualization helps ensure correctness.
+
+---
+
+### **Thinking Ahead: Is the Model Architecture Suitable?**
+
+* **Prompted Questions**:
+
+  * Does our model need different input or output features for this new regression task?
+  * What changes (if any) are required in `model_1` to fit this new data?
+
+---
