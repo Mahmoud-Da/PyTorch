@@ -1428,7 +1428,7 @@ With all steps ready:
 * Goal: Implement training and testing loop
 * Follow the PyTorch training pattern introduced earlier
 
-> Recommended: Try implementing the training/testing loop based on the steps before watching the next video.
+> Recommended: Try implementing the training/testing loop based on the steps before watching the next lecture.
 
 
 *** 79. Coding a Training and Testing Optimization Loop for Our Classification Model ***
@@ -2386,4 +2386,97 @@ with torch.inference_mode():
 * Suggested action:
 
   * Review the PyTorch documentation for non-linear activation functions to get a head start.
+
+*** 87. Introducing the Missing Piece for Our Classification Model Non-Linearity ***
+## **Lecture Summary: Linear vs Non-Linear Functions in Machine Learning**
+
+### **Recap and Context**
+
+* The previous lecture showed our model has some learning capability—its predictions aligned well with a straight-line dataset.
+* The key takeaway: **the model learned because the data was linear**, and we used **linear functions**.
+
+---
+
+### **Linear vs Non-Linear Functions**
+
+* **Linear Data:** Can be represented using straight lines (`y = mx + b`).
+* **Non-Linear Data:** Has curves and cannot be accurately modeled using straight lines alone.
+* **Linear functions** are useful, but limited.
+* **Non-linear functions** allow models to learn more complex patterns.
+
+---
+
+### **Machine Learning Insight**
+
+* Neural networks are essentially a **stack of linear and non-linear functions**.
+* To learn complex data distributions, we must combine these:
+
+  * **Linear layers** identify basic patterns.
+  * **Non-linear activations** allow flexibility to model curves and intricate relationships.
+
+---
+
+### **Real-World Analogy**
+
+* Example: Detecting pizza in images.
+
+  * Modeling pizza using just straight lines is impractical.
+  * **Machine learning models** learn both straight and curved features to identify complex objects like pizza or sushi.
+  * Writing explicit rules for every feature would be unscalable—ML models **learn these features automatically**.
+
+---
+
+### **Key Concept Introduced**
+
+* **Non-Linearity** is the missing piece.
+
+  * Without it, our model cannot learn from circular (non-linear) data.
+  * It’s a **foundational concept** that recurs throughout all deep learning.
+
+---
+
+### **Conceptual Challenge**
+
+> *"What patterns could you draw with an infinite combination of straight and curved lines?"*
+
+* This emphasizes the power of deep learning: it can learn complex relationships using many linear and non-linear layers.
+
+---
+
+### **Preparing for Non-Linear Modeling**
+
+* Revisiting and recreating the circular classification dataset (`make_circles`) for practice.
+* **Visualization**: Red and blue circles (binary classification).
+
+  * Improved colormap aesthetics for clearer visualization.
+
+---
+
+### **Data Preparation**
+
+* Convert NumPy arrays to PyTorch tensors using `torch.from_numpy`.
+* Ensure tensors are in `float` format to be compatible with PyTorch.
+* Use `train_test_split` from `sklearn.model_selection` to divide data:
+
+-------------------code----------------------
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+-------------------code----------------------
+
+---
+
+### **Why PyTorch?**
+
+* Supports **automatic differentiation** (via `autograd`).
+* Can leverage **GPU acceleration**.
+* Tensors integrate easily with numerical libraries like NumPy, but with added power.
+
+---
+
+### **Challenge for the Viewer**
+
+* Explore `torch.nn` (PyTorch’s neural network module).
+* Identify **non-linear activation functions**.
+* Hint: One of them has already been used earlier in the notebook.
+
+  * Try to find and understand it.
 
