@@ -2683,3 +2683,89 @@ def forward(self, x):
 * Reinforces the power of non-linear modeling.
 * Next step: Visualize the decision boundary to confirm model learning.
 
+*** 90. Making Predictions with and Evaluating Our First Non-Linear Model ***
+### **Lecture Summary: Model Evaluation and Non-Linearity**
+
+#### **1. Recap: First Model Training**
+
+* The model combines **linear and non-linear functions**.
+* Dataset: 500 red dots and 500 blue dots → **balanced binary classification**.
+* After 1000 epochs, the model performs better than random guessing (50%).
+
+#### **2. Importance of Non-Linearity**
+
+* Linear models alone do not fit complex patterns well.
+* Adding non-linear activation functions (e.g., ReLU, sigmoid) enables better performance.
+* In **TensorFlow Playground**, non-linearity helps the model to start fitting the data.
+
+#### **3. Transition to Coding**
+
+* TensorFlow Playground is retired; coding resumes.
+* Next focus: **Model evaluation** and **visualization**.
+
+---
+
+### **Model Evaluation**
+
+#### **Setup**
+
+* Using `model_3` (which includes non-linear functions).
+* Switch to **inference mode** (`model.eval()` and `with torch.inference_mode()`).
+* Predict with:
+
+-------------------code----------------------
+preds = torch.round(torch.sigmoid(model_3(X_test))).squeeze()
+-------------------code----------------------
+
+#### **Troubleshooting**
+
+* Squeeze used to avoid shape errors — a common issue in deep learning.
+* Compare predictions (`preds`) with ground truth (`y_test`).
+* Confirm both are in the same format (data type, shape, device).
+
+---
+
+### **Visualization**
+
+* Use a **decision boundary plot** to visually assess model predictions.
+* Plot both training and test data:
+
+-------------------code----------------------
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+plot_decision_boundary(model=model_1, X=X_train, y=y_train)  # No non-linearity
+plt.title("Train - Model 1")
+
+plt.subplot(1, 2, 2)
+plot_decision_boundary(model=model_3, X=X_test, y=y_test)    # With non-linearity
+plt.title("Test - Model 3")
+-------------------code----------------------
+
+#### **Insights**
+
+* **Model 1** (linear only): Poor performance.
+* **Model 3** (non-linear): Visibly better decision boundary.
+* Non-linearity enables more expressive decision surfaces.
+
+---
+
+### **Challenge to Improve Model 3**
+
+* Current accuracy: \~79%.
+* Target: **Over 80% on test data**.
+* Suggestions for improvement:
+
+  * Add more hidden layers.
+  * Increase hidden units.
+  * Train for more epochs.
+  * Use different or additional activation functions.
+  * Adjust the learning rate (e.g., lower from 0.1).
+
+---
+
+### **Next Steps**
+
+* Explore how non-linear activation functions work in code.
+* Upcoming: Implement these activations from scratch.
+
+---
