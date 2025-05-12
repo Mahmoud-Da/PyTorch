@@ -3091,3 +3091,88 @@ model_4 = BlobModel(input_features=2, out_features=4, hidden_units=8).to(device)
 * Continue in the next video to implement these parts.
 
 ---
+
+*** 94. Setting Up a Loss Function and Optimizer for Our Multi-Class Model ***
+Here’s a clean, concise note-style summary of the lecture content you provided, emphasizing the key takeaways:
+
+---
+
+## Lecture Notes: Loss Function & Optimizer for Multiclass Classification in PyTorch
+
+### Recap
+
+* Previously built a **multiclass classification model** using a custom `BlobModel` class.
+* Model constructor allows dynamic configuration of:
+
+  * `input_features`: Must match the number of features in `X`.
+  * `output_features`: Must match the number of classes.
+  * `hidden_units`: Can be adjusted to increase model capacity.
+
+### Next Step: Loss Function and Optimizer
+
+#### 1. **Loss Function (Criterion)**
+
+* **Location:** `torch.nn`
+* PyTorch refers to loss functions as **criteria**.
+* **For multiclass classification:** use `nn.CrossEntropyLoss()`
+
+  * Accepts raw logits (not softmaxed).
+  * Automatically applies `LogSoftmax` + `NLLLoss` internally.
+  * Works when `target` is of shape `[N]` and `input` is `[N, C]`, where `C` is the number of classes.
+
+##### Optional Parameter: `weight`
+
+* A 1D tensor assigning weights to each class.
+* Useful for **imbalanced datasets** (e.g., class A = 10 samples, class B = 500).
+* Not needed here since dataset is balanced.
+
+##### Code Example:
+
+-------------------code----------------------
+loss_fn = nn.CrossEntropyLoss()
+-------------------code----------------------
+
+---
+
+#### 2. **Optimizer**
+
+* **Location:** `torch.optim`
+* Optimizers adjust model weights to minimize loss during training.
+
+##### Common Choices:
+
+* `torch.optim.SGD` – Stochastic Gradient Descent
+* `torch.optim.Adam` – Adaptive method (more modern, often better convergence)
+
+##### Code Example (Using SGD):
+
+-------------------code----------------------
+optimizer = torch.optim.SGD(params=model_4.parameters(), lr=0.1)
+-------------------code----------------------
+
+* `lr` (learning rate) is a **hyperparameter**.
+* Choosing the right `lr` is critical. Try experimenting with different values to observe impact.
+
+---
+
+### Next Focus
+
+* Start building the **training loop**.
+* But before that, examine the **model's raw outputs**:
+
+  * Pass `X_blob_test` through the model.
+  * Think: what exactly do these raw outputs represent?
+  * Hint: They’re logits, not probabilities.
+
+---
+
+### Summary
+
+You now have:
+
+* A **model architecture** built programmatically.
+* A **loss function** suitable for multiclass tasks.
+* An **optimizer** to train the model.
+
+What's next is core: the training loop and prediction logic. If you're not comfortable with what logits are, stop here and study them—understanding this distinction is fundamental, not optional.
+
