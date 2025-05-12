@@ -2480,3 +2480,100 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 
   * Try to find and understand it.
 
+*** 88. Building Our First Neural Network with Non-Linearity ***
+## **Lecture: Building a Model with Nonlinearity**
+
+### **1. Introduction to Nonlinearity**
+
+* **Linear = Straight lines**
+* **Nonlinear = Non-straight lines**
+* Nonlinearity is a key component in building powerful machine learning models.
+* Linear models can only model straight-line relationships, while real-world data is often nonlinear.
+
+### **2. Neural Network Anatomy (Recap)**
+
+* Neural networks consist of:
+
+  * Input layer
+  * Hidden layers (can be various types: linear, pooling, padding, activation, etc.)
+  * Output layer
+* Hidden layers can use various PyTorch modules to introduce complexity.
+
+---
+
+### **3. Nonlinear Activation Functions**
+
+* Found under `torch.nn` in PyTorch.
+* Purpose: perform nonlinear transformations on input data.
+* **Common examples:**
+
+  * `Sigmoid`
+  * `ReLU` (Rectified Linear Unit)
+
+#### **ReLU Function**
+
+* Defined as:
+
+  * If input < 0: output = 0
+  * If input ≥ 0: output = input
+* This introduces nonlinearity while remaining computationally efficient.
+* Visual: a piecewise function with a flat part and an increasing part.
+
+---
+
+### **4. Implementing a Model with Nonlinearity in PyTorch**
+
+#### **Class Definition: `CircleModelV2`**
+
+* Inherits from `nn.Module`
+* Constructor (`__init__`) creates:
+
+  * `layer_1`: `nn.Linear(in_features=2, out_features=10)`
+  * `layer_2`: `nn.Linear(10, 10)`
+  * `layer_3`: `nn.Linear(10, 1)`
+  * `relu`: `nn.ReLU()`
+
+#### **Forward Method**
+
+-------------------code----------------------
+def forward(self, x):
+    return self.layer3(
+        self.relu(
+            self.layer2(
+                self.relu(
+                    self.layer1(x)
+                )
+            )
+        )
+    )
+-------------------code----------------------
+
+* Nonlinear activation (`ReLU`) is applied between each linear layer.
+
+---
+
+### **5. Remarks on the Model**
+
+* Output layer is left without a final activation, as `Sigmoid` will be applied during the training or evaluation phase.
+* The model (`model_3`) is instantiated and moved to the target device.
+
+---
+
+### **6. Practice and Challenges**
+
+* **Challenge 1:** Train this model on the circular dataset.
+* **Challenge 2:** Try replicating this architecture using the **TensorFlow Playground**:
+
+  * Set two hidden layers (e.g., with 5 units each)
+  * Use `ReLU` as the activation
+  * Learning rate: 0.1 (same as used in earlier training)
+  * Observe how nonlinearity helps fit nonlinear patterns.
+
+---
+
+### **7. Conclusion**
+
+* Nonlinearity is crucial for handling complex data patterns.
+* Activation functions like ReLU enable neural networks to approximate non-linear relationships.
+* Next steps involve training this model and evaluating its performance on circular (nonlinear) data.
+
