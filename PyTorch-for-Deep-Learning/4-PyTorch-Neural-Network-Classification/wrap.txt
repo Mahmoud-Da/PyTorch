@@ -2977,3 +2977,117 @@ plt.scatter(X_blob[:, 0], X_blob[:, 1], c=y_blob, cmap=plt.cm.RdYlBu)
 
 ---
 
+*** 93. Creating a Multi-Class Classification Model with PyTorch ***
+## Lecture Notes: Building a Multiclass Classification Model in PyTorch
+
+### Context
+
+* Previously created a multiclass dataset using `make_blobs`.
+* Goal: Combine everything learned so far to build a **multiclass classification model**, rather than binary.
+
+---
+
+### Model Design Considerations
+
+#### 1. **Input Features**
+
+* Based on dataset: `X_train.shape` reveals 2 input features.
+
+#### 2. **Hidden Layers**
+
+* Hidden units are a tunable hyperparameter.
+* Example: Start with `hidden_units=8`.
+* Can increase based on dataset complexity or model capacity needs.
+
+#### 3. **Output Features**
+
+* One output per class.
+* Dataset contains 4 classes → `output_features=4`.
+
+#### 4. **Activation Function**
+
+* Use **Softmax** at the output for multiclass classification.
+
+#### 5. **Loss Function**
+
+* Use `CrossEntropyLoss` (instead of `BCELoss` for binary).
+
+#### 6. **Optimizer**
+
+* Common choices: `SGD` or `Adam`.
+
+---
+
+### Device Agnostic Setup
+
+-------------------code----------------------
+device = "cuda" if torch.cuda.is_available() else "cpu"
+-------------------code----------------------
+
+* Ensures compatibility with both GPU and CPU.
+
+---
+
+### Model Architecture: Using `nn.Sequential`
+
+#### Custom Model Class: `BlobModel`
+
+-------------------code----------------------
+class BlobModel(nn.Module):
+    def __init__(self, input_features, out_features, hidden_units=8):
+        super().__init__()
+        self.linear_layer_stack = nn.Sequential(
+            nn.Linear(input_features, hidden_units),
+            nn.ReLU(),
+            nn.Linear(hidden_units, hidden_units),
+            nn.ReLU(),
+            nn.Linear(hidden_units, out_features)
+        )
+
+    def forward(self, x):
+        return self.linear_layer_stack(x)
+-------------------code----------------------
+
+#### Docstring (Google Style Recommended)
+
+* Describes the class, input/output, and parameters clearly.
+* Format:
+
+  -------------------code----------------------
+  """
+  Initializes a multiclass classification model.
+
+  Args:
+      input_features (int): Number of input features.
+      out_features (int): Number of output classes.
+      hidden_units (int): Number of hidden units. Default is 8.
+  """
+  -------------------code----------------------
+
+---
+
+### Model Instantiation Example
+
+-------------------code----------------------
+model_4 = BlobModel(input_features=2, out_features=4, hidden_units=8).to(device)
+-------------------code----------------------
+
+* Make sure to match parameter names correctly (`out_features`, not `output_features`).
+
+---
+
+### Notes
+
+* You can experiment by removing `ReLU()` layers to test model performance with and without non-linearity.
+* Sequential models are simple and good for straightforward feedforward architectures.
+* Confirm model shapes align with dataset: input features = 2, output features = 4.
+* `torch.unique()` helps check how many classes exist in your dataset.
+
+---
+
+### What's Next?
+
+* Define loss function and training loop.
+* Continue in the next video to implement these parts.
+
+---
