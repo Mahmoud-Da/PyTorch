@@ -2197,3 +2197,107 @@ plot_decision_boundary(model_1, X_test, y_test)
   * What changes (if any) are required in `model_1` to fit this new data?
 
 ---
+
+*** 85. Building and Training a Model to Fit on Straight Line Data ***
+
+## **Lecture Summary: Troubleshooting Model Performance with a Simple Dataset**
+
+### **Context and Motivation**
+
+* We are currently working on a model that fails to fit a circular classification dataset.
+* To troubleshoot, we return to a simpler problem: fitting a straight-line dataset.
+* This approach helps test if the model can learn *anything* at all before addressing more complex problems.
+
+---
+
+### **Troubleshooting Philosophy**
+
+* When facing a large ML problem:
+
+  * Start with a **simpler subset** of data.
+  * Use a **smaller model** before scaling up.
+* In our case, we use a straight-line dataset previously built in Section 1.
+
+---
+
+### **Dataset Review**
+
+* The new dataset (`x_train_regression`, `y_train_regression`) has:
+
+  * **One input feature per sample**
+  * **One output label per sample**
+* Input/output shape awareness is crucial in ML.
+
+  * Our previous model was designed for **two input features** (classification).
+  * Now we need to **adjust the input features to one**.
+
+---
+
+### **Model 2 Setup (Adjusted for Regression)**
+
+* Architecture:
+
+  ```python
+  model_2 = nn.Sequential(
+      nn.Linear(in_features=1, out_features=10),
+      nn.ReLU(),
+      nn.Linear(in_features=10, out_features=1)
+  )
+  ```
+* This setup:
+
+  * Takes one input feature.
+  * Uses one hidden layer with 10 units.
+  * Outputs one continuous value (suitable for regression).
+
+---
+
+### **Loss Function and Optimizer**
+
+* Loss function: `nn.L1Loss()` (Mean Absolute Error), appropriate for regression.
+* Optimizer: `torch.optim.SGD(model_2.parameters(), lr=0.1)`
+
+  * Learning rate later tested with `0.01` for improved results.
+
+---
+
+### **Training Setup**
+
+* Epochs: 1000
+* Data and model sent to the appropriate device (CPU/GPU).
+* Training loop:
+
+  * Forward pass
+  * Loss calculation
+  * Backpropagation (`loss.backward()`)
+  * Optimizer step
+  * Progress printed every 100 epochs
+
+---
+
+### **Evaluation**
+
+* Testing performed using `torch.inference_mode()`:
+
+  * Predictions made on `x_test_regression`
+  * Test loss computed against `y_test_regression`
+
+---
+
+### **Observations**
+
+* The training and test losses **decrease**, indicating learning is happening.
+* Adjusting the learning rate (e.g., to `0.01`) resulted in significantly lower test loss.
+
+---
+
+### **Next Steps**
+
+* Visual confirmation:
+
+  * Use `plot_predictions()` to check if predicted values (red dots) align closely with actual values (green dots).
+* Reminder:
+
+  * Wrap prediction in `torch.inference_mode()` for performance and correctness.
+
+---
