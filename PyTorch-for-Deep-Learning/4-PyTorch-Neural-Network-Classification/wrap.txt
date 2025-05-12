@@ -2879,3 +2879,101 @@ def sigmoid(x: torch.Tensor) -> torch.Tensor:
 * Will apply all previously learned steps in a new context.
 
 ---
+
+*** 92. Putting It All Together (Part 1): Building a Multiclass Dataset ***
+Here is a clean, organized summary of the lecture in a structured note format:
+
+---
+
+## **Lecture Notes: Introduction to Multiclass Classification**
+
+### **1. Recap of Non-Linearity in Neural Networks**
+
+* Neural networks combine **linear and non-linear functions** to find patterns in data.
+* Non-linearity allows the model to draw intricate boundaries between classes.
+* Previously used non-linear activations:
+
+  * **Sigmoid**
+  * **ReLU**
+* These allow networks to capture more complex decision boundaries.
+* PyTorch (`torch.nn`) provides many non-linear activations and layers.
+
+### **2. Transition from Binary to Multiclass Classification**
+
+* **Binary Classification**: Distinguishes between two classes (e.g., cat vs dog, spam vs not spam).
+* **Multiclass Classification**: Involves more than two classes (e.g., cat vs dog vs chicken).
+* Key differences in architecture:
+
+  * Use **Softmax** instead of Sigmoid for output activation.
+  * Use **Cross Entropy Loss** instead of Binary Cross Entropy.
+
+---
+
+## **Section 8: Multiclass Classification – Putting It All Together**
+
+### **3. Data Preparation**
+
+#### Step 1: Import Libraries
+
+* `torch`, `matplotlib.pyplot`, and `sklearn.datasets.make_blobs`
+* Also imported `train_test_split` for data splitting.
+
+#### Step 2: Set Hyperparameters
+
+* `NUM_CLASSES = 4`
+* `NUM_FEATURES = 2`
+* `RANDOM_SEED = 42`
+* `N_SAMPLES = 1000`
+
+#### Step 3: Create Data using `make_blobs()`
+
+* Generates isotropic Gaussian blobs for clustering:
+
+-------------------code----------------------
+X_blob, y_blob = make_blobs(
+    n_samples=N_SAMPLES,
+    n_features=NUM_FEATURES,
+    centers=NUM_CLASSES,
+    cluster_std=1.5,
+    random_state=RANDOM_SEED
+)
+-------------------code----------------------
+
+#### Step 4: Convert to PyTorch Tensors
+
+* `X_blob = torch.from_numpy(X_blob).float()`
+* `y_blob = torch.from_numpy(y_blob).long()`
+
+#### Step 5: Split into Train/Test Sets
+
+* Used `train_test_split()` from sklearn:
+
+-------------------code----------------------
+X_blob_train, X_blob_test, y_blob_train, y_blob_test = train_test_split(
+    X_blob, y_blob,
+    test_size=0.2,
+    random_state=RANDOM_SEED
+)
+-------------------code----------------------
+
+---
+
+### **4. Data Visualization**
+
+* Used matplotlib to visualize the blob clusters:
+
+-------------------code----------------------
+plt.figure(figsize=(10, 7))
+plt.scatter(X_blob[:, 0], X_blob[:, 1], c=y_blob, cmap=plt.cm.RdYlBu)
+-------------------code----------------------
+* Adjusted `cluster_std` to control the spread of data points (e.g., 0 for tight clusters, 1.5 for more spread).
+
+---
+
+## **Next Step**
+
+* Build the **first multiclass classification model** using PyTorch.
+* The model will need to separate four different classes based on 2D input features.
+
+---
+
