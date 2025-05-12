@@ -1793,3 +1793,112 @@ plot_decision_boundary(model_0, X_test, y_test)
 * Model saving will be done once a satisfactory model is trained.
 
 ---
+
+*** 82. Creating a New Model with More Layers and Hidden Units ***
+## **Lecture Notes: Improving the Model – Part 2 (Model Perspective)**
+
+### **1. Recap: Model Improvements (Model Perspective)**
+
+* Previously, improvements focused on the *model itself* rather than the *data*.
+* Examples of model-focused improvements:
+
+  * Adding more layers.
+  * Increasing the number of hidden units.
+  * Training (fitting) for more epochs.
+  * Changing the activation function.
+  * Adjusting the learning rate.
+  * Changing the loss function.
+
+---
+
+### **2. Why "Model Perspective"?**
+
+* These changes directly affect the model architecture or training configuration.
+* They do not involve modifying the dataset.
+* This contrasts with improvements from a *data perspective*, such as:
+
+  * Increasing the number of training samples.
+  * Improving data quality.
+
+---
+
+### **3. Parameters vs Hyperparameters**
+
+* **Parameters**: Internal weights and biases that the model learns during training.
+* **Hyperparameters**: Settings we define before training, such as:
+
+  * Number of layers
+  * Hidden units
+  * Activation functions
+  * Learning rate
+  * Epoch count
+  * Loss function
+
+---
+
+### **4. Experiment: Building `CircleModelV1`**
+
+* **Goal**: Modify the model to include more hidden units, more layers, and longer training.
+
+#### **Changes from the previous model (V0):**
+
+* Hidden units increased from 5 to **10**.
+* Number of layers increased from 2 to **3**.
+* Epochs to train increased from 100 to **1000**.
+
+> **Note**: Changing multiple hyperparameters at once makes it hard to isolate which change caused improvements or regressions.
+
+* Best practice: Change *one hyperparameter at a time* (experiment tracking).
+
+---
+
+### **5. Model Implementation Details**
+
+#### **Subclassing `nn.Module`**
+
+* Chose to subclass `nn.Module` instead of using `nn.Sequential`:
+
+  * More flexible and scalable.
+  * Common practice in complex models.
+
+#### **Model Definition (`CircleModelV1`)**
+
+* `Layer 1`: Takes 2 input features → 10 hidden units.
+* `Layer 2`: 10 hidden units → 10 hidden units.
+* `Layer 3`: 10 hidden units → 1 output.
+
+#### **Forward Pass**
+
+Two styles shown:
+
+1. **Step-by-step variable assignment using `Z`**.
+2. **Nested function calls (recommended for speed)**:
+
+-------------------code----------------------
+def forward(self, x):
+    return self.layer3(self.layer2(self.layer1(x)))
+-------------------code----------------------
+
+* This chaining is efficient and leverages internal PyTorch speedups.
+
+---
+
+### **6. Device Agnostic Model Deployment**
+
+* Created model instance:
+
+-------------------code----------------------
+model_1 = CircleModelV1().to(device)
+-------------------code----------------------
+
+* Ensures the model is compatible with CPU or GPU.
+
+---
+
+### **7. Next Steps (Challenge)**
+
+* Define loss function (likely Binary Cross Entropy as before).
+* Define optimizer (e.g., SGD or Adam).
+* Train the model using a training and evaluation loop.
+* Try these steps independently before the next lecture.
+
