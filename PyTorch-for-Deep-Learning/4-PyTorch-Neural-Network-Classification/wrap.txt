@@ -2769,3 +2769,113 @@ plt.title("Test - Model 3")
 * Upcoming: Implement these activations from scratch.
 
 ---
+
+*** 91. Replicating Non-Linear Activation Functions with Pure PyTorch ***
+## **Lecture Summary: Improving Models and Replicating Activation Functions in PyTorch**
+
+### **1. Model Improvement Strategy**
+
+* Previous goal: Improve Model 3 to exceed **80% accuracy** on test data.
+* Suggestions:
+
+  * **Add more layers**
+  * **Increase the number of hidden units**
+  * **Lower the learning rate** (e.g., to `0.01`)
+  * **Train for more epochs**
+* Key principle: *Experimentation is central to data science.*
+
+---
+
+### **2. Replicating Nonlinear Activation Functions**
+
+#### **General Concept**
+
+* Neural networks **discover patterns** in data through layers of **linear and nonlinear functions**.
+* Even small networks (e.g., 4–5 layers) follow this principle.
+* PyTorch makes it easier and faster to work with these layers by handling complex computation internally.
+
+#### **Creating a Tensor**
+
+-------------------code----------------------
+a = torch.arange(-10, 10, 1, dtype=torch.float32)
+-------------------code----------------------
+
+* Range: `-10` to `9`
+* Data type: `torch.float32` is preferred to avoid function errors.
+
+#### **Visualizing the Data**
+
+* Plotting `a` results in a **straight (linear) line**.
+
+---
+
+### **3. ReLU Activation Function**
+
+#### **Using Built-in Function**
+
+-------------------code----------------------
+torch.relu(a)
+-------------------code----------------------
+
+* Converts all negative values to `0`, leaves positive values unchanged.
+
+#### **Replicating ReLU Manually**
+
+-------------------code----------------------
+def relu(x: torch.Tensor) -> torch.Tensor:
+    return torch.maximum(torch.tensor(0), x)
+-------------------code----------------------
+
+* Performs same operation as `torch.relu`.
+
+#### **Visual Comparison**
+
+* Plotting both `torch.relu(a)` and `relu(a)` shows identical output.
+
+---
+
+### **4. Sigmoid Activation Function**
+
+#### **Sigmoid Formula**
+
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}}
+$$
+
+#### **Using Built-in Function**
+
+-------------------code----------------------
+torch.sigmoid(a)
+-------------------code----------------------
+
+#### **Replicating Sigmoid Manually**
+
+-------------------code----------------------
+def sigmoid(x: torch.Tensor) -> torch.Tensor:
+    return 1 / (1 + torch.exp(-x))
+-------------------code----------------------
+
+#### **Visual Comparison**
+
+* Plotting both `torch.sigmoid(a)` and `sigmoid(a)` gives identical sigmoid curves.
+
+---
+
+### **5. Takeaways**
+
+* **You can replicate both linear and nonlinear operations** used in PyTorch.
+* Neural networks = stacking **linear** and **nonlinear** functions to learn data patterns.
+* While custom functions are good for learning, PyTorch’s built-in layers are:
+
+  * **Efficient**
+  * **Error-tested**
+  * **Optimized for GPU**
+
+---
+
+### **6. Next Topic: Multiclass Classification**
+
+* Transitioning from **binary classification** to **multiclass classification**.
+* Will apply all previously learned steps in a new context.
+
+---
