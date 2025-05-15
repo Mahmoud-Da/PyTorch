@@ -3176,3 +3176,94 @@ You now have:
 
 What's next is core: the training loop and prediction logic. If you're not comfortable with what logits are, stop here and study them—understanding this distinction is fundamental, not optional.
 
+*** 95. Logits to Prediction Probabilities to Prediction Labels with a Multi-Class Model ***
+# Lecture Notes: From Model Outputs to Prediction Labels in Multiclass Classification (PyTorch)
+
+## 1. **Review: Loss Function and Optimizer**
+
+* **Loss function**: Measures how wrong the model’s predictions are.
+* **Optimizer**: Updates model parameters to reduce the loss.
+
+---
+
+## 2. **Forward Pass with Model Four**
+
+* Attempted a forward pass with the latest model.
+* Encountered a **runtime error**: “Expected all tensors to be on the same device.”
+
+  * **Issue**: Model is on CUDA (GPU), but data is still on CPU.
+  * **Solution**: Ensure both model and input data are on the same device.
+
+---
+
+## 3. **Setting Model to Evaluation Mode**
+
+* Use `model.eval()` for evaluation.
+* Use `with torch.inference_mode():` to prevent unnecessary computation and memory usage.
+
+---
+
+## 4. **Raw Model Outputs (Logits)**
+
+* **Logits**: Raw, unnormalized outputs of the model.
+* Example: One sample has 4 logit values → one for each class.
+
+  * This is because the model’s output layer has 4 features (classes).
+
+---
+
+## 5. **Converting Logits to Predictions**
+
+### Step-by-step process:
+
+1. **Logits → Prediction Probabilities**
+
+   * Use **Softmax** activation:
+-------------------code----------------------
+pred_probs = torch.softmax(logits, dim=1)
+-------------------code----------------------
+   
+   * Softmax converts logits into probabilities (values between 0 and 1 that sum to 1).
+
+     * Example: `[0.1, 0.3, 0.2, 0.4]`
+
+2. **Prediction Probabilities → Prediction Labels**
+
+   * Use `torch.argmax()` to get the index of the highest probability:
+-------------------code----------------------
+pred_labels = torch.argmax(pred_probs, dim=1)
+-------------------code----------------------
+
+---
+
+## 6. **Verifying Predictions**
+
+* Compare prediction labels (`pred_labels`) with actual test labels (`y_test`).
+* Since the model is untrained, predictions are essentially **random**.
+* Proper alignment will occur **after training**.
+
+---
+
+## 7. **Summary of Key Concepts**
+
+| Step              | Description                         | Function Used                 |
+| ----------------- | ----------------------------------- | ----------------------------- |
+| Logits            | Raw outputs from model              | `model(x)`                    |
+| Prediction Probs  | Softmax of logits (probabilities)   | `torch.softmax(logits, 1)`    |
+| Prediction Labels | Index of max prob (predicted class) | `torch.argmax(pred_probs, 1)` |
+
+---
+
+## 8. **Next Step: Training and Testing Loop**
+
+* Now that we understand how to:
+
+  * Perform a forward pass
+  * Convert logits → probabilities → predicted labels
+* We are ready to build:
+
+  * **Training loop**
+  * **Testing loop**
+* Hint: These loops are similar to the ones used in binary classification.
+
+---
