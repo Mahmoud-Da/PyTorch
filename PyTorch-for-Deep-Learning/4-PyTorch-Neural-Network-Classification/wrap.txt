@@ -3267,3 +3267,184 @@ pred_labels = torch.argmax(pred_probs, dim=1)
 * Hint: These loops are similar to the ones used in binary classification.
 
 ---
+
+*** 96. Training a Multi-Class Classification Model and Troubleshooting Code on the Fly ***
+
+
+what is model eval ?
+**Model evaluation** is the process of checking how well a machine learning model performs.
+
+### In simple terms:
+
+It's like **testing** your model to see if it’s doing a good job.
+
+### Example:
+
+Imagine you built a model to **predict if an email is spam or not**. You give it some test emails and check:
+
+* Did it correctly detect the spam emails?
+* Did it avoid marking normal emails as spam?
+
+Based on that, you calculate **metrics** (scores) like:
+
+* **Accuracy** – how often it was right.
+* **Precision** – how often it correctly predicted spam when it said "spam".
+* **Recall** – how many actual spam emails it managed to catch.
+
+### Why it's important:
+
+Even if your model works on the training data, it might not do well on new data. Evaluation helps you find that out and improve the model.
+
+
+## Lecture Notes: Training & Testing a PyTorch Multiclass Model
+
+**Objective:** To build, train, and test a multiclass classification model in PyTorch, including common troubleshooting steps.
+
+---
+
+**I. Recap from Previous Video: From Logits to Predictions**
+
+1.  **Logits:** Raw output of the model.
+    *   For a multiclass model with N classes, it outputs N values per sample.
+2.  **Prediction Probabilities:** Convert logits to probabilities.
+    *   `torch.softmax(logits, dim=1)` (dim=1 because we operate across the class dimension for each sample).
+3.  **Prediction Labels:** Convert probabilities to class labels.
+    *   `torch.argmax(prediction_probabilities, dim=1)` (returns the index of the maximum probability).
+    *   Example: `[0.1, 0.7, 0.1, 0.1]` -> `argmax` -> `1` (index).
+
+---
+
+**II. Setting Up the Training Environment**
+
+1.  **Manual Seeds:** For reproducibility (though not guaranteed complete determinism).
+    *   `torch.manual_seed(42)` (or any chosen seed)
+2.  **Hyperparameters:**
+    *   `epochs = 100` (can be adjusted, e.g., to 1000).
+3.  **Data to Target Device:** Ensure data and model are on the same device (CPU/GPU).
+    *   Uses pre-defined `device` (agnostic code).
+    *   `X_blob_train = X_blob_train.to(device)`
+    *   `y_blob_train = y_blob_train.to(device)`
+    *   `X_blob_test = X_blob_test.to(device)`
+    *   `y_blob_test = y_blob_test.to(device)`
+
+---
+
+**III. The Training Loop**
+
+-------------------code----------------------
+# (Assumes model, loss_fn, optimizer, accuracy_fn are already defined)
+
+for epoch in range(epochs):
+    ### Training
+    model.train() # Set model to training mode
+
+    # 1. Forward pass
+    y_logits = model(X_blob_train) # Raw model outputs
+    y_pred_probs = torch.softmax(y_logits, dim=1) # Probabilities
+    y_preds = torch.argmax(y_pred_probs, dim=1) # Labels
+
+    # (Alternative/Shortcut: y_preds = torch.argmax(y_logits, dim=1) - often works)
+
+    # 2. Calculate loss
+    loss = loss_fn(y_logits, y_blob_train) # CrossEntropyLoss compares logits to true labels
+
+    # 3. Calculate accuracy (optional, but good for classification)
+    acc = accuracy_fn(y_true=y_blob_train, y_pred=y_preds)
+
+    # 4. Optimizer zero grad
+    optimizer.zero_grad()
+
+    # 5. Loss backward (backpropagation)
+    loss.backward()
+
+    # 6. Optimizer step (gradient descent)
+    optimizer.step()
+
+    ### Testing (or Inference/Evaluation)
+    model.eval() # Set model to evaluation mode
+    # Turns off things like dropout and batch normalization layers.
+    # For more info: search "What does model.eval() do PyTorch?" (e.g., StackOverflow)
+
+    with torch.inference_mode(): # Context manager for faster inference (no gradient tracking)
+        # 1. Forward pass
+        test_logits = model(X_blob_test)
+        test_pred_probs = torch.softmax(test_logits, dim=1)
+        test_preds = torch.argmax(test_pred_probs, dim=1)
+
+        # 2. Calculate test loss
+        test_loss = loss_fn(test_logits, y_blob_test)
+
+        # 3. Calculate test accuracy
+        test_acc = accuracy_fn(y_true=y_blob_test, y_pred=test_preds) # Corrected from y_pred to test_preds
+
+    # Print out metrics
+    if epoch % 10 == 0:
+        print(f"Epoch: {epoch} | Loss: {loss:.4f}, Acc: {acc:.2f}% | Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}%")
+-------------------code----------------------
+
+---
+
+**IV. Troubleshooting Common Errors (Live Debugging Session)**
+
+*   **Error 1: Data Type Mismatch for Loss Function**
+    *   **Error Message:** `RuntimeError: nll_loss_forward_reduce_cuda_kernel_2d_index not implemented for Float`
+    *   **Hint:** "Float" in the error message points to a data type issue.
+    *   **Problem:** `y_blob_train` (and `y_blob_test`) were `torch.float`. PyTorch's `CrossEntropyLoss` (which `nn.NLLLoss` is a part of) expects target labels (`y_true`) to be of type `torch.long` (integers representing class indices).
+    *   **Location of Fix:** Where data is created/loaded.
+        -------------------code----------------------
+        # Original (problematic for y_labels)
+        # y_blob = torch.tensor(y, dtype=torch.float).unsqueeze(1)
+
+        # Corrected
+        y_blob = torch.tensor(y, dtype=torch.long) # For CrossEntropyLoss
+        -------------------code----------------------
+    *   **Reasoning from Documentation:** `CrossEntropyLoss` documentation often shows examples using `dtype=torch.long` for target tensors. "The performance of the criterion is generally better when the target contains class indices."
+
+*   **Error 2: Shape Mismatch / Incorrect Data Usage in Testing Loop**
+    *   **Error Message:** `ValueError: input batch size XXX to match target size YYY` (e.g., 800 vs. 200).
+    *   **Symptom 1:** `test_logits.shape` was `[800, 4]` (from training data) while `y_blob_test.shape` was `[200]`.
+    *   **Problem 1:** Typo in test forward pass: `test_logits = model(X_blob_train)` (used training data `X_blob_train` instead of `X_blob_test`).
+    *   **Fix 1:** `test_logits = model(X_blob_test)`
+    *   **Symptom 2 (related to re-running cells):** `y_blob_test` might have been incorrectly reassigned.
+    *   **Problem 2:** Earlier typo during device transfer: `y_blob_test = X_blob_test.to(device)` (assigned features to labels).
+    *   **Fix 2:** Ensure correct assignment: `y_blob_test = y_blob_test.to(device)` (and rerun data preparation cells).
+
+*   **Error 3: Using Incorrect Prediction Variable for Test Accuracy**
+    *   **Problem:** In the testing block, `test_acc` was calculated using `y_pred` (training predictions) instead of `test_preds` (testing predictions).
+        -------------------code----------------------
+        # Incorrect
+        # test_acc = accuracy_fn(y_true=y_blob_test, y_pred=y_pred)
+
+        # Corrected
+        test_acc = accuracy_fn(y_true=y_blob_test, y_pred=test_preds)
+        -------------------code----------------------
+
+**Key Debugging Takeaways:**
+*   Pay close attention to **data types (`dtype`)** and **tensor shapes (`.shape`)**. These are very common sources of errors.
+*   Read error messages carefully; they often contain clues (e.g., "Float", "size mismatch").
+*   When troubleshooting, print out shapes and dtypes of tensors involved in the error.
+*   Typos are common! Double-check variable names.
+*   Be mindful of cell execution order in notebooks, especially when re-running parts of the code.
+
+---
+
+**V. Successful Training Outcome**
+
+*   After fixing errors, the model trained successfully.
+*   **Indicators of Success:**
+    *   Training loss decreases.
+    *   Training accuracy increases.
+    *   Test loss decreases.
+    *   Test accuracy increases.
+
+---
+
+**VI. Next Steps**
+
+*   **Evaluate the model visually:**
+    *   Use the `plot_decision_boundary` function (presumably defined elsewhere) to see how well the model separates the different classes.
+    *   Similar to binary classification visualization, but adapted for multiclass data and model.
+
+---
+
+This lecture emphasizes the practical aspects of building and debugging PyTorch models, highlighting that troubleshooting is a normal and essential part of the machine learning workflow.
