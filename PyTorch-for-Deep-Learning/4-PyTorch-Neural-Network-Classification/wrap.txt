@@ -3447,4 +3447,121 @@ for epoch in range(epochs):
 
 ---
 
-This lecture emphasizes the practical aspects of building and debugging PyTorch models, highlighting that troubleshooting is a normal and essential part of the machine learning workflow.
+*** 97. Making Predictions with and Evaluating Our Multi-Class Classification Model ***
+## Lecture Notes: Evaluating PyTorch Multiclass Model & Understanding Non-Linearity
+
+**Objective:** To demonstrate how to make predictions with a trained multiclass model, visualize its performance, and explore the impact of non-linear activation functions.
+
+---
+
+**I. Recap of Previous Session & Common Challenges**
+
+1.  **Previous Focus:** Training and testing a model.
+2.  **Key Challenges Encountered:**
+    *   **Data type issues:** Mismatched tensor data types.
+    *   **Shape issues:** Incompatible tensor dimensions.
+3.  **Troubleshooting Reminder:**
+    *   It's an iterative process: run code -> observe errors -> Google errors -> read documentation -> try again.
+    *   These issues are very common in ML/DL.
+4.  **Current Model Status:**
+    *   Loss is decreasing.
+    *   Accuracy is increasing.
+    *   Indicates the multiclass model has learned patterns.
+
+---
+
+**II. Making and Evaluating Predictions**
+
+1.  **Set Model to Evaluation Mode:**
+    *   `model.eval()`: Turns off training-specific layers (e.g., dropout, batch normalization).
+2.  **Use Inference Mode Context Manager:**
+    *   `with torch.inference_mode():`: Disables gradient tracking for faster predictions, as gradients are not needed for inference.
+3.  **Step 1: Get Raw Logits**
+    *   Logits are the raw, unnormalized outputs of the model.
+    *   `y_logits = model(X_blob_test)` (Ensure correct test data variable is used).
+    *   Viewing `y_logits[:10]` shows raw numerical values.
+4.  **Step 2: Convert Logits to Prediction Probabilities**
+    *   For multiclass, use `torch.softmax`.
+    *   `y_pred_probs = torch.softmax(y_logits, dim=1)` (dim=1 to apply softmax across class scores for each sample).
+    *   Viewing `y_pred_probs[:10]` shows probabilities for each class, summing to 1 per sample.
+    *   At this stage, predictions are not yet "apples to apples" with ground truth labels (`y_blob_test` which are class indices).
+    *   The index with the highest probability is the predicted class.
+5.  **Step 3: Convert Prediction Probabilities to Prediction Labels**
+    *   Use `torch.argmax` to find the index of the maximum probability.
+    *   `y_preds = torch.argmax(y_pred_probs, dim=1)` (dim=1 to find max across class probabilities).
+    *   Alternative syntax: `y_pred_probs.argmax(dim=1)`.
+    *   Viewing `y_preds[:10]` shows the predicted class indices.
+    *   Now, `y_preds` are "apples to apples" with `y_blob_test` and can be directly compared.
+    *   Example comparison: `y_preds[:10]` output `[1, 3, 2, 1, 0, 3, ...]` matches `y_blob_test[:10]`.
+
+---
+
+**III. Visualizing Model Performance: Plotting Decision Boundaries**
+
+1.  **Setup Plot:**
+    *   `plt.figure(figsize=(12, 6))`
+    *   Create subplots to compare training and testing data visualization.
+2.  **Plot Training Data:**
+    *   `plt.subplot(1, 2, 1)`
+    *   `plot_decision_boundary(model_0, X_blob_train, y_blob_train)` (assuming `model_0` is the trained model)
+3.  **Plot Test Data:**
+    *   `plt.subplot(1, 2, 2)`
+    *   `plot_decision_boundary(model_0, X_blob_test, y_blob_test)`
+4.  **Observation:**
+    *   The plots show the model has learned to separate the different classes effectively.
+    *   "Separated our data almost as best as what we could."
+
+---
+
+**IV. Experiment: Impact of Non-Linearity (ReLU)**
+
+1.  **Question Posed Earlier:** Can this data be separated without non-linear activation functions?
+2.  **Hypothesis Test:**
+    *   **Modify Model:** Recreate the model, but comment out/remove the `nn.ReLU()` layers.
+        -------------------code----------------------
+        # class BlobModel(nn.Module):
+        #     def __init__(self, input_features, output_features, hidden_units=8):
+        #         super().__init__()
+        #         self.linear_layer_stack = nn.Sequential(
+        #             nn.Linear(in_features=input_features, out_features=hidden_units),
+        #             # nn.ReLU(), # <-- Commented out
+        #             nn.Linear(in_features=hidden_units, out_features=hidden_units),
+        #             # nn.ReLU(), # <-- Commented out
+        #             nn.Linear(in_features=hidden_units, out_features=output_features),
+        #         )
+        #     def forward(self, x):
+        #         return self.linear_layer_stack(x)
+        -------------------code----------------------
+    *   **Re-run:** Re-initialize the model, optimizer, and re-run the entire training and prediction pipeline.
+3.  **Observation (Without Non-Linearity):**
+    *   The model *still works* and separates the data.
+    *   The decision boundaries are noticeably "a lot more straighter."
+    *   Performance metrics (loss/accuracy) might be slightly different but likely still good for this specific dataset.
+4.  **Reason for Success (Without Non-Linearity on *this* dataset):**
+    *   The generated "blob" dataset is **linearly separable**. This means straight lines (or hyperplanes in higher dimensions) are sufficient to distinguish the classes.
+
+---
+
+**V. Discussion on the Importance of Non-Linearity in General**
+
+1.  **Real-world Data:** Most real-world datasets are *not* linearly separable.
+    *   Examples: Circle data (previously covered), image classification (e.g., "Food Vision" classifying pizza).
+2.  **Need for Non-Linearity:**
+    *   To capture complex patterns and relationships, models need non-linear activation functions.
+    *   PyTorch makes adding non-linearity (like `nn.ReLU()`) very easy.
+3.  **Recommendation:**
+    *   Include non-linearities in your models.
+    *   If the data is simple and linear, the model can still learn effectively (as seen in the experiment).
+    *   If the data is complex, the non-linearities are crucial for the model to learn the necessary transformations.
+    *   "The beauty of neural networks is that they decide the numbers that should represent our data the best."
+
+---
+
+**VI. Conclusion and Next Steps**
+
+1.  Successfully trained, made predictions, and evaluated a multiclass classification model.
+2.  Demonstrated the transition from binary to multiclass classification.
+3.  **Next Topic (Section 9):** "A few more classification metrics."
+    *   Emphasizes that "evaluating a model is just as important as training a model."
+
+---
