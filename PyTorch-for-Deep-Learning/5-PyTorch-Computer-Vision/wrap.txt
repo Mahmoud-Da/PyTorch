@@ -1,0 +1,93 @@
+*** 100. What Is a Computer Vision Problem and What We Are Going to Cover ***
+## **Introduction to Computer Vision**
+
+### **What is a Computer Vision Problem?**
+
+* A broad field—if a human can *see* something, it can likely be turned into a computer vision problem.
+* Involves teaching machines to interpret and understand visual data (images or videos).
+
+---
+
+## **Examples of Computer Vision Problems**
+
+### **1. Binary Classification**
+
+* **Task**: Decide between two classes (e.g., *steak* vs. *pizza*).
+* **Approach**: A machine learning model takes in image pixels and learns patterns that distinguish the two.
+* **Learning**: The model is not explicitly told what a steak or pizza is—it learns from examples.
+
+### **2. Multiclass Classification**
+
+* **Task**: Identify an image from three or more categories (e.g., *sushi*, *steak*, *pizza*).
+* **Application Example**: Nutrafol app
+
+  * Upload an image of food.
+  * The model classifies the image as one of 100 possible food items (e.g., chicken wings, apple, etc.).
+  * Also detects whether an image is food or not.
+
+---
+
+## **3. Object Detection**
+
+* **Task**: Locate specific objects within an image.
+* **Example**: Identifying a car from a security camera video.
+
+  * Useful for cases like identifying hit-and-run vehicles.
+* **Goal**: Find where an object appears in an image and possibly track it.
+
+---
+
+## **4. Image Segmentation**
+
+* **Task**: Divide an image into multiple meaningful parts.
+* **Example**: Apple’s computational photography
+
+  * Segmenting image parts: skin, hair, background, etc.
+  * Used to enhance different regions individually.
+* **On-Device**: Much of this processing happens directly on mobile devices.
+
+---
+
+## **5. Advanced Use Case: Tesla Autopilot**
+
+* **Application**: Self-driving cars using computer vision.
+* **Setup**:
+
+  * Each Tesla car is equipped with 8 cameras.
+  * These cameras feed data into neural networks.
+  * The network transforms visual input into vectors (numerical representations).
+* **Purpose**: Helps the car perceive its environment and make driving decisions.
+* **Software**: Tesla uses PyTorch and custom hardware like the Dojo chip.
+
+---
+
+## **General Applications of Computer Vision**
+
+* Widely used across various industries: security, medical imaging, retail, automotive, etc.
+* Many resources available to explore real-world use cases.
+
+---
+
+## **What You Will Learn in This Course (Using PyTorch)**
+
+### **Focus: Multiclass Image Classification with CNN**
+
+* **Tools**:
+
+  * `torchvision`: For loading vision datasets and transformations.
+  * PyTorch: To build and train models.
+* **Topics**:
+
+  * Loading and working with vision datasets.
+  * Understanding the architecture of Convolutional Neural Networks (CNNs).
+  * Building an end-to-end multiclass image classification pipeline.
+  * Choosing appropriate loss functions and optimizers.
+  * Training and evaluating models.
+  * Understanding the art and science behind machine learning workflows.
+
+---
+
+## **Next Step**
+
+* The upcoming lecture will cover **inputs and outputs** of computer vision problems.
+
