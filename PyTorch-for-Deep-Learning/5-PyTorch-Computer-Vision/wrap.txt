@@ -317,3 +317,127 @@ Next up: We'll explore how CNNs are implemented in PyTorch with actual code.
 
 ---
 
+*** 103. Discussing and Importing the Base Computer Vision Libraries in PyTorch ***
+# **Lecture Notes: PyTorch Computer Vision – Introduction and Setup**
+
+## **Overview**
+
+* Transitioning from theory to practical implementation.
+* Begin coding computer vision models using **PyTorch** in **Google Colab**.
+* Creating a new notebook:
+  Example name: `03_pytorch_computer_vision_video.ipynb`
+
+---
+
+## **Resources**
+
+* **Video notebooks** are tagged with `_video` and contain all the code written during the lectures.
+* **Reference notebook**: Contains the same code with explanations, text, and images.
+* **Online book**: Available at *Lone Planet Audio*, Section 3: *PyTorch Computer Vision*.
+
+---
+
+## **Getting Started**
+
+### **Notebook Setup**
+
+* Add a markdown heading:
+  `# PyTorch Computer Vision`
+  Include notes pointing to:
+
+  * Reference notebook
+  * Online textbook (Lone Planet Audio, Section 3)
+
+---
+
+## **Important Libraries for Computer Vision in PyTorch**
+
+### **1. `torchvision`**
+
+* The **main domain library** for computer vision in PyTorch.
+* Current version during recording: `0.12` (may vary).
+
+### **Other Domain Libraries**
+
+* `torchaudio` – for audio problems
+* `torchtext` – for text processing
+* `torchrec` – for recommendation systems
+* `torchdata` – for data pipelines
+* `torchserve` – for model deployment
+* `torch.onnx` – for exporting models to ONNX format
+  *(Only `torchvision` is relevant for now.)*
+
+---
+
+## **Submodules in `torchvision`**
+
+| Submodule                | Description                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| `torchvision.datasets`   | Provides standard computer vision datasets and loading utilities.                |
+| `torchvision.models`     | Contains pre-trained models for transfer learning or inference.                  |
+| `torchvision.transforms` | Tools for manipulating and preparing image data (e.g., resizing, normalization). |
+
+* **Transforms** are key to converting image data into a usable numerical format for models.
+
+#### Example Transform:
+
+* `transforms.ToTensor()`
+  Converts a PIL image or NumPy array into a PyTorch tensor.
+
+#### Additional Transforms:
+
+* Available in the [`torchvision.transforms` documentation](https://pytorch.org/vision/stable/transforms.html)
+* Can be chained together using `transforms.Compose([])`
+
+---
+
+## **General Utilities in PyTorch**
+
+| Module                        | Purpose                                                              |
+| ----------------------------- | -------------------------------------------------------------------- |
+| `torch.utils.data.Dataset`    | Base class for custom datasets.                                      |
+| `torch.utils.data.DataLoader` | Provides iterable over a dataset, useful for batching and shuffling. |
+
+---
+
+## **Initial Imports for This Section**
+
+-------------------code----------------------
+# Core PyTorch
+import torch
+import torch.nn as nn  # For neural network layers and loss functions
+
+# TorchVision modules
+import torchvision
+from torchvision import datasets, transforms
+
+# Visualization
+import matplotlib.pyplot as plt
+
+# Check versions
+print(torch.__version__)
+print(torchvision.__version__)
+-------------------code----------------------
+
+* At the time of recording:
+
+  * `torch` version: `1.10`
+  * `torchvision` version: `0.11`
+  * CUDA is available on Google Colab
+
+---
+
+## **Extra Tip: Documentation Reading**
+
+* Spend \~10 minutes reading each subpackage’s documentation.
+* Getting familiar with PyTorch documentation will greatly help later on.
+* This course builds momentum, but **real learning comes from exploring and reading official docs**.
+
+---
+
+## **Conclusion**
+
+* You’ve set up your environment and learned about key computer vision libraries in PyTorch.
+* Ready to start working with datasets in the next video.
+
+---
