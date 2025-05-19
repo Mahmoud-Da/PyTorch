@@ -441,3 +441,162 @@ print(torchvision.__version__)
 * Ready to start working with datasets in the next video.
 
 ---
+
+*** 104. Getting a Computer Vision Dataset and Checking Out Its- Input and Output Shapes ***
+# Lecture Notes: Loading and Exploring FashionMNIST with `torchvision`
+
+## Overview
+
+This lecture introduces the **FashionMNIST** dataset using PyTorch’s `torchvision.datasets` module, covering:
+
+* Loading datasets with `torchvision`
+* Understanding dataset structure
+* Basic transformations
+* Inspecting and interpreting sample data
+
+---
+
+## Key Libraries Covered
+
+* `torchvision`
+* `torch.utils.data.Dataset`
+* `torch.utils.data.DataLoader`
+
+These tools are essential for handling and processing image datasets in PyTorch.
+
+---
+
+## Introduction to FashionMNIST
+
+* **FashionMNIST** is a dataset created by Zalando Research.
+* It is intended as a more challenging replacement for MNIST.
+* Each image is **28x28 grayscale** representing an item of clothing (e.g., shirt, shoe, boot).
+* There are **60,000 training** and **10,000 test** examples.
+
+### Background
+
+* Original MNIST was designed for recognizing handwritten digits, useful for postal service applications.
+* FashionMNIST was introduced because MNIST became too easy for modern models.
+
+---
+
+## Accessing Built-in Datasets with `torchvision.datasets`
+
+* `torchvision` provides many common datasets out-of-the-box such as:
+
+  * MNIST
+  * CIFAR-10, CIFAR-100
+  * ImageNet
+  * FashionMNIST
+
+### Example Usage
+
+-------------------code----------------------
+from torchvision import datasets, transforms
+
+# Define transform to convert PIL image to tensor
+transform = transforms.ToTensor()
+
+# Load training data
+train_data = datasets.FashionMNIST(
+    root="data",
+    train=True,
+    download=True,
+    transform=transform
+)
+
+# Load test data
+test_data = datasets.FashionMNIST(
+    root="data",
+    train=False,
+    download=True,
+    transform=transform
+)
+-------------------code----------------------
+
+---
+
+## Dataset Breakdown
+
+* **Root**: Directory to download data.
+* **train**: Boolean, whether to load training data (`True`) or test data (`False`).
+* **download**: Boolean, whether to download the dataset.
+* **transform**: Transform applied to each image.
+* **target\_transform**: Transform applied to each label (not used here).
+
+---
+
+## Download Confirmation
+
+After running the above code, the following files will be downloaded into the `data/` folder:
+
+* Training images and labels
+* Test images and labels
+
+---
+
+## Inspecting the Data
+
+### Accessing a Sample
+
+-------------------code----------------------
+image, label = train_data[0]
+-------------------code----------------------
+
+### Data Details
+
+* `image`: A tensor with shape `[1, 28, 28]` (grayscale: 1 channel)
+* `label`: An integer from `0` to `9`, corresponding to a class
+
+### Class Names and Mapping
+
+-------------------code----------------------
+# View class names
+train_data.classes
+
+# Map from class name to index
+train_data.class_to_idx
+-------------------code----------------------
+
+### Reverse Lookup
+
+-------------------code----------------------
+class_name = train_data.classes[label]
+-------------------code----------------------
+
+---
+
+## Understanding `transforms.ToTensor()`
+
+* Converts a PIL Image or NumPy array to a PyTorch tensor
+* Rescales pixel values from `[0, 255]` to `[0.0, 1.0]`
+* Rearranges image shape from `(H, W, C)` to `(C, H, W)`
+
+### Example Output Shape
+
+-------------------code----------------------
+image.shape  # torch.Size([1, 28, 28])
+-------------------code----------------------
+
+### Grayscale vs. RGB
+
+* Grayscale: 1 color channel
+* RGB: 3 channels (Red, Green, Blue)
+
+---
+
+## Summary
+
+* `torchvision.datasets.FashionMNIST` is an easy way to load FashionMNIST.
+* Transforms are essential to prepare image data for neural networks.
+* Each image is a normalized tensor in `[1, 28, 28]` shape for grayscale.
+* Labels are mapped to clothing class names using `classes` and `class_to_idx`.
+
+---
+
+## Next Step
+
+In the upcoming video, we’ll **visualize these images** using Matplotlib instead of just inspecting tensor values.
+
+---
+
