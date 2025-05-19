@@ -743,3 +743,92 @@ In the upcoming video, we’ll **visualize these images** using Matplotlib inste
   * Set up for training a computer vision model such as a CNN
 
 ---
+
+*** 106. DataLoader Overview Understanding Mini-Batches ***
+
+## Lecture Notes: Preparing Data Loaders for FashionMNIST
+
+### 1. **Dataset Overview**
+
+* **Total Images**: 60,000 training images (grayscale, 28x28) from the FashionMNIST dataset.
+* **Task**: Classify images into **10 clothing categories**.
+
+### 2. **Linear vs. Non-Linear Models**
+
+* **Question**: Can clothing images be modeled with linear decision boundaries, or is **non-linearity** required?
+* **Answer**: To be tested. You can try building both a linear and non-linear model and compare performance.
+
+---
+
+### 3. **From Dataset to DataLoader**
+
+* **Current Format**: `torchvision.datasets.FashionMNIST` objects (for both training and testing).
+* **Goal**: Convert into `torch.utils.data.DataLoader` objects.
+
+#### Why Use a DataLoader?
+
+**1. Efficient Computation**
+
+* Full dataset may not fit in memory, especially with larger datasets.
+* Break data into **batches (mini-batches)** for processing.
+* Example: Batch size of 32 means the model sees 32 images at a time.
+
+**2. More Frequent Weight Updates**
+
+* Each batch allows the model to update its weights once per batch rather than once per full epoch.
+* Faster convergence and better generalization.
+
+---
+
+### 4. **Mini-Batch Gradient Descent**
+
+* **Definition**: A middle-ground between full-batch and stochastic gradient descent.
+* **Key Reference**: *Andrew Ng’s lecture on Mini-Batch Gradient Descent*.
+
+---
+
+### 5. **DataLoader Construction**
+
+#### Code Summary
+
+-------------------code----------------------
+from torch.utils.data import DataLoader
+
+# Define parameters
+batch_size = 32
+
+# Create DataLoaders
+train_dataloader = DataLoader(
+    dataset=train_data,
+    batch_size=batch_size,
+    shuffle=True  # Randomize data order each epoch
+)
+
+test_dataloader = DataLoader(
+    dataset=test_data,
+    batch_size=batch_size,
+    shuffle=False  # No need to shuffle test data
+)
+-------------------code----------------------
+
+#### Why Shuffle Training Data?
+
+* Prevent the model from learning the **order** of data (e.g., all T-shirts followed by all coats).
+* Encourages generalization by seeing mixed examples per batch.
+
+---
+
+### 6. **Visualizing the Batch Structure**
+
+* **Batch Size**: 32 samples per batch.
+* **Total Training Samples**: 60,000
+* **Total Batches**: `60000 / 32 ≈ 1875`
+
+---
+
+### 7. **Next Steps**
+
+* Code the `DataLoader` setup as shown above.
+* Use this batched data in your training loop.
+* The batching process will be implemented in the next video.
+
