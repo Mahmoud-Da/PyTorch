@@ -91,3 +91,140 @@
 
 * The upcoming lecture will cover **inputs and outputs** of computer vision problems.
 
+
+*** 101. Computer Vision Input and Output Shapes ***
+# **Lecture Notes: Introduction to Computer Vision with PyTorch**
+
+## **1. Overview**
+
+* **Computer Vision (CV)**: Any problem involving visual data (e.g., images, video) can potentially be transformed into a CV problem.
+* We'll focus on building **machine learning models**, especially with **PyTorch**, for computer vision tasks.
+
+---
+
+## **2. Inputs & Outputs in a CV Problem**
+
+### **Example: Multi-class Classification (Food Images)**
+
+* **Goal**: Identify images of food (e.g., sushi, steak, pizza).
+* **Input**: Colored images with dimensions
+
+  * Width = 224
+  * Height = 224
+  * Channels = 3 (Red, Green, Blue – RGB)
+
+### **Why 3 Channels?**
+
+* Digital images often use 24-bit RGB, assigning values to red, green, and blue pixels.
+* Each pixel is represented by 3 values: `[R, G, B]`.
+
+### **Numerical Representation**
+
+* Images are converted into **tensors**: multi-dimensional arrays.
+* Tensor shape: **(Batch size, Height, Width, Channels)** or **(Batch size, Channels, Height, Width)**
+
+---
+
+## **3. Model Outputs**
+
+* Model predicts **class probabilities** for each category.
+* Example: For a 3-class classification:
+
+  * Output: `[0.1, 0.81, 0.09]` → highest score = class prediction.
+* Output shape corresponds to the number of classes.
+
+  * E.g., 3 classes → output shape = `[3]`
+  * E.g., 100 classes → output shape = `[100]`
+
+---
+
+## **4. Improving Model Performance**
+
+* Show the model more images (data) to enhance pattern recognition.
+* The more diverse and larger the dataset, the better generalization on unseen images.
+
+---
+
+## **5. General Pattern Across CV Problems**
+
+* Encode data numerically.
+* Use a suitable ML model (e.g., for classification, detection, or segmentation).
+* Ensure **input and output shapes** match the problem.
+
+---
+
+## **6. Model Architectures**
+
+* **CNN (Convolutional Neural Network)**: Most common for image data.
+* **Transformers**: Also perform well on vision tasks (e.g., Vision Transformers – ViTs), though CNNs remain a strong baseline.
+* We'll focus on **CNNs** for now.
+
+---
+
+## **7. Input Tensor Shapes in Practice**
+
+* Common input tensor shape:
+
+  * **(Batch size, Channels, Height, Width)** → e.g., `(32, 3, 224, 224)`
+
+    * `32`: batch size
+    * `3`: color channels (RGB)
+    * `224 x 224`: image dimensions
+* Higher resolution (e.g., 512x512) = more data, more compute
+* Batch size depends on model & hardware (e.g., 32, 64, 128)
+
+---
+
+## **8. Grayscale Images Example (Fashion Items)**
+
+* Dataset: Grayscale images of clothing items (28x28 pixels)
+* Follows the same process:
+
+  * Encode data
+  * Feed to ML model
+  * Predict class
+* Output: One of 10 clothing item classes (e.g., shirt, pants, boots)
+
+---
+
+## **9. Image Tensor Representations**
+
+* Two common formats:
+
+  1. **Channels last (NHWC)**: `(Batch, Height, Width, Channels)`
+  2. **Channels first (NCHW)**: `(Batch, Channels, Height, Width)`
+* PyTorch defaults to **channels first**
+* Be mindful of format mismatches — incorrect order can lead to errors
+* Efficient formats and library conventions vary
+
+---
+
+## **10. PyTorch Workflow Recap**
+
+1. **Prepare the data**
+
+   * Use `torchvision.transforms` to convert images into tensors
+   * Use `torch.utils.data.Dataset` and `DataLoader`
+2. **Build the model**
+
+   * Custom or pre-trained models using `torch.nn` and `torchvision.models`
+3. **Define optimizer and loss function**
+
+   * Standard: `torch.optim`, `torch.nn.functional`, etc.
+4. **Evaluate the model**
+
+   * Use `torchmetrics` or write custom evaluation functions
+5. **Experiment and improve**
+
+   * Try different models, architectures, hyperparameters
+6. **Save & reload**
+
+   * Use `torch.save()` and `torch.load()` for model persistence
+
+---
+
+## **Next Topic**
+
+* Introduction to **Convolutional Neural Networks (CNNs)**.
+
+---
