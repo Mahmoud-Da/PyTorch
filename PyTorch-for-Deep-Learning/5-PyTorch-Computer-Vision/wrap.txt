@@ -600,3 +600,146 @@ In the upcoming video, we’ll **visualize these images** using Matplotlib inste
 
 ---
 
+*** 105. Visualizing Random Samples of Data ***
+
+# **Lecture Notes: Exploring the Fashion MNIST Dataset with PyTorch**
+
+## **1. Dataset Overview**
+
+* The dataset used is **Fashion MNIST**, provided by **Zalando Research**.
+* It consists of **28x28 grayscale images** representing 10 classes of clothing:
+
+  * T-shirt/top
+  * Trouser
+  * Pullover
+  * Dress
+  * Coat
+  * Sandal
+  * Shirt
+  * Sneaker
+  * Bag
+  * Ankle boot
+
+---
+
+## **2. Understanding Input and Output Shapes**
+
+* Each image has dimensions: `28 x 28`.
+
+* Images are grayscale (1 channel), so input shape = `(1, 28, 28)`.
+
+* In PyTorch, tensors are in the format `NCHW`:
+
+  * `N`: Batch size (can be any number)
+  * `C`: Channels (1 for grayscale)
+  * `H`, `W`: Height and Width (28x28)
+
+* Output shape is `10` (one for each class).
+
+---
+
+## **3. Visualizing the Data**
+
+### **3.1 Basic Visualization**
+
+* Import required libraries:
+
+  -------------------code----------------------
+  import matplotlib.pyplot as plt
+  -------------------code----------------------
+
+* Get the first image and label:
+
+  -------------------code----------------------
+  image, label = train_data[0]
+  -------------------code----------------------
+
+* Image shape:
+
+  * `torch.Size([1, 28, 28])`
+
+* Direct plotting with `plt.imshow(image)` will raise an error:
+
+  -------------------code----------------------
+  Invalid shape (1, 28, 28) for image data.
+  -------------------code----------------------
+
+* **Solution**: Use `.squeeze()` to remove the extra channel:
+
+  -------------------code----------------------
+  plt.imshow(image.squeeze())
+  -------------------code----------------------
+
+* Plot with grayscale colormap and a title:
+
+  -------------------code----------------------
+  plt.imshow(image.squeeze(), cmap='gray')
+  plt.title(class_names[label])
+  plt.axis('off')
+  plt.show()
+  -------------------code----------------------
+
+---
+
+## **4. Visualizing Multiple Random Samples**
+
+### **4.1 Setting Up Random Image Grid**
+
+* Set a manual seed for reproducibility:
+
+  -------------------code----------------------
+  torch.manual_seed(42)
+  -------------------code----------------------
+
+* Define grid size:
+
+  -------------------code----------------------
+  rows, cols = 4, 4
+  plt.figure(figsize=(rows * 2, cols * 2))
+  -------------------code----------------------
+
+* Loop to select and display random images:
+
+  -------------------code----------------------
+  for i in range(1, rows * cols + 1):
+      random_idx = torch.randint(0, len(train_data), size=[1]).item()
+      image, label = train_data[random_idx]
+      plt.subplot(rows, cols, i)
+      plt.imshow(image.squeeze(), cmap='gray')
+      plt.title(class_names[label])
+      plt.axis('off')
+  plt.show()
+  -------------------code----------------------
+
+### **4.2 Observations**
+
+* Some classes (e.g., **pullover** vs **shirt**, **t-shirt/top** vs **shirt**) look visually similar.
+* This could create challenges for classification models.
+* Ambiguities in labels (e.g., distinction between **shirt** and **t-shirt/top**) can be confusing even for humans.
+* This implies that **model confusion** is possible, especially between visually overlapping classes.
+
+---
+
+## **5. Key Takeaways**
+
+* Visualizing the dataset is crucial for:
+
+  * Understanding data distribution
+  * Detecting potential class overlaps
+  * Spotting image quality issues
+
+* Differences in tensor formatting (e.g., `channels_first` in PyTorch vs. `channels_last` in other libraries) must be handled correctly during visualization and preprocessing.
+
+* Exploring multiple random samples helps in becoming familiar with the dataset and preparing for model training.
+
+---
+
+## **6. What's Next**
+
+* The next step involves **preparing the dataset** for loading into a model:
+
+  * Apply necessary transformations
+  * Use data loaders
+  * Set up for training a computer vision model such as a CNN
+
+---
