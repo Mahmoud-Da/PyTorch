@@ -3565,3 +3565,133 @@ for epoch in range(epochs):
     *   Emphasizes that "evaluating a model is just as important as training a model."
 
 ---
+
+
+*** 98. Discussing a Few More Classification Metrics ***
+## Lecture Notes: Advanced Classification Evaluation Metrics
+
+**Objective:** To introduce and discuss classification metrics beyond accuracy, including precision, recall, F1-score, confusion matrix, and classification report, and to demonstrate how to use `torchmetrics`.
+
+---
+
+**I. Recap and Context**
+
+1.  **Previous Video:** Visually evaluated the multiclass model; it performed well, even without non-linear functions, because the data was linearly separable.
+2.  **Important Note:** Most real-world data *will* require linear and non-linear functions. PyTorch offers flexibility in creating such models.
+3.  **Current Focus:** Further evaluation of classification models beyond basic accuracy.
+
+---
+
+**II. Introduction to Advanced Classification Metrics**
+
+1.  **Accuracy:**
+    *   **Definition:** Out of 100 samples, how many does the model get right?
+    *   Our current model's test accuracy is ~100%.
+    *   **Formula (Conceptual):** `(True Positives + True Negatives) / (Total Samples)`
+    *   **When to Use:** Good for balanced classes (similar number of samples per class).
+    *   **Limitation:** Not ideal for imbalanced classes (e.g., 1000 samples of Class A, 10 samples of Class B). Accuracy can be misleading in such cases.
+
+2.  **Precision:**
+    *   **Definition:** Of all samples the model predicted as positive, how many were actually positive?
+    *   **Formula:** `True Positives / (True Positives + False Positives)`
+    *   **Focus:** Minimizing **False Positives** (predicting positive when it's negative). Higher precision means fewer false positives.
+    *   Important when the cost of a false positive is high.
+
+3.  **Recall (Sensitivity or True Positive Rate):**
+    *   **Definition:** Of all actual positive samples, how many did the model correctly identify?
+    *   **Formula:** `True Positives / (True Positives + False Negatives)`
+    *   **Focus:** Minimizing **False Negatives** (predicting negative when it's positive). Higher recall means fewer false negatives.
+    *   Important when the cost of a false negative is high.
+
+4.  **Precision-Recall Trade-off:**
+    *   Generally, increasing precision tends to decrease recall, and vice-versa.
+    *   This is a common consideration when tuning models.
+
+5.  **F1-Score:**
+    *   **Definition:** The harmonic mean of precision and recall.
+    *   **Formula:** `2 * (Precision * Recall) / (Precision + Recall)`
+    *   **Purpose:** Provides a single metric that balances both precision and recall. Good for situations where both are important.
+
+6.  **Confusion Matrix:**
+    *   **Definition:** A table that visualizes the performance of a classification model by showing counts of true positive, true negative, false positive, and false negative predictions for each class.
+    *   Helps to understand *what kind* of errors the model is making.
+
+7.  **Classification Report:**
+    *   **Definition:** A text report showing the main classification metrics (precision, recall, F1-score, support) for each class.
+    *   Provides a comprehensive summary of performance.
+
+---
+
+**III. Resources and Implementation**
+
+1.  **Key Terminology for Formulas:**
+    *   **TP:** True Positive (correctly predicted positive)
+    *   **TN:** True Negative (correctly predicted negative)
+    *   **FP:** False Positive (incorrectly predicted positive - Type I error)
+    *   **FN:** False Negative (incorrectly predicted negative - Type II error)
+
+2.  **External Resources for Deeper Understanding:**
+    *   **Article Recommendation:** "Beyond Accuracy: Precision and Recall" by Will Koehrsen (on Medium or Towards Data Science). This article is highly recommended for understanding when to use precision and recall, especially with imbalanced datasets.
+
+3.  **Libraries for Metrics:**
+    *   **`torchmetrics`:**
+        *   A PyTorch-ecosystem library providing implementations of various metrics.
+        *   PyTorch-like API.
+        *   Requires installation if not already present: `!pip install torchmetrics`
+        *   **Important:** Metrics calculated with `torchmetrics` must be on the same device as the input tensors (predictions and targets).
+    *   **`scikit-learn` (sklearn.metrics):**
+        *   A widely used machine learning library in Python.
+        *   Offers a comprehensive suite of classification metrics (e.g., `classification_report`, `confusion_matrix`, `precision_score`, `recall_score`, `f1_score`).
+
+---
+
+**IV. Code Demonstration: Using `torchmetrics.Accuracy`**
+
+1.  **Installation (if needed):**
+    -------------------code----------------------
+    !pip install torchmetrics
+    -------------------code----------------------
+2.  **Import:**
+    -------------------code----------------------
+    from torchmetrics import Accuracy
+    -------------------code----------------------
+3.  **Setup the Metric:**
+    *   Initialize the accuracy class.
+    *   **Crucially, move the metric object to the same device as your data/predictions.**
+    -------------------code----------------------
+    # Assuming 'device' is defined (e.g., "cuda" or "cpu")
+    torchmetric_accuracy = Accuracy(task="multiclass", num_classes=NUM_CLASSES).to(device)
+    # (Note: The lecture used Accuracy() without task/num_classes initially,
+    # but for multiclass, specifying these is good practice and often required by newer versions)
+    -------------------code----------------------
+4.  **Calculate Accuracy:**
+    *   Pass the model's predictions (`y_preds`) and the true labels (`y_blob_test`) to the metric object.
+    -------------------code----------------------
+    # Ensure y_preds and y_blob_test are on the correct 'device'
+    acc_value = torchmetric_accuracy(y_preds.to(device), y_blob_test.to(device))
+    print(f"Accuracy using torchmetrics: {acc_value}")
+    -------------------code----------------------
+5.  **Error Encountered & Fix:**
+    *   **Error:** `RuntimeError: Expected all tensors to be on the same device, but found at least two devices (CPU and CUDA).`
+    *   **Reason:** The `Accuracy` object by default is on the CPU, while `y_preds` and `y_blob_test` might be on the GPU (if `device="cuda"`).
+    *   **Fix:** Move the `torchmetric_accuracy` object to the `device`: `torchmetric_accuracy = Accuracy(...).to(device)`.
+
+6.  **Result:** The accuracy calculated by `torchmetrics` should align with the manually coded accuracy function. (e.g., 99.5%).
+
+---
+
+**V. Extra Curriculum / Call to Action**
+
+1.  **Explore `torchmetrics`:**
+    *   Browse the `torchmetrics.classification` module documentation to discover the wide range of available metrics. Spend ~10 minutes familiarizing yourself.
+2.  **Implement Other Metrics:**
+    *   Try implementing precision, recall, F1-score, and confusion matrix using either `torchmetrics` or `scikit-learn` for the current multiclass classification model.
+3.  **Read Recommended Article:** Go through the "Beyond Accuracy: Precision and Recall" article.
+
+---
+
+**VI. Summary & Next Steps**
+
+1.  **Achievements:** Covered PyTorch workflow for both binary and multiclass classification.
+2.  **Key Message:** Evaluating a model is as crucial as building it.
+3.  **Next Video:** Exercises to practice the concepts learned.
