@@ -3695,3 +3695,69 @@ for epoch in range(epochs):
 1.  **Achievements:** Covered PyTorch workflow for both binary and multiclass classification.
 2.  **Key Message:** Evaluating a model is as crucial as building it.
 3.  **Next Video:** Exercises to practice the concepts learned.
+
+*** 99. PyTorch Classification: Exercises and Extra-Curriculum ***
+## Lecture Notes: PyTorch Classification Exercises & Course Progress
+
+**Objective:** To direct students to the exercises for the PyTorch classification module, explain where to find them, and mark the completion of the section.
+
+---
+
+**I. Recap of Previous Video**
+
+*   Reviewed additional classification metrics beyond basic accuracy.
+*   Provided a high-level overview and pointed to extra curriculum resources for deeper understanding.
+
+---
+
+**II. Transition to Practice: Exercises**
+
+1.  **Importance of Practice:**
+    *   A significant amount of code has been covered collaboratively.
+    *   Now it's time for students to practice independently to solidify their understanding.
+2.  **Location of Exercises:**
+    *   **Primary Source:** The "Learn PyTorch" online book/resource.
+        *   Each chapter/module has an "Exercises" section at the bottom.
+        *   The current module (Section 02 - PyTorch Classification) has 7 exercises.
+    *   **Direct Link:** The instructor will provide a direct link to the exercises within the current notebook/lecture materials.
+        -------------------code----------------------
+        ## Exercises and Extra Curriculum
+        # See exercises and extra curriculum [link to Learn PyTorch book exercises section]
+        -------------------code----------------------
+3.  **Exercise Resources (Templates and Solutions):**
+    *   **GitHub Repository:** `pytorch-deep-learning` repository.
+    *   **Folder:** `extras/`
+        *   Contains `exercises/` and `solutions/` subfolders.
+    *   **Specific Files:**
+        *   `02_pytorch_classification_exercises.ipynb` (Skeleton code/template for exercises).
+        *   `02_pytorch_classification_solutions.ipynb` (Solutions to the exercises).
+4.  **How to Approach the Exercises:**
+    *   **Start with the skeleton code:** Use `02_pytorch_classification_exercises.ipynb`.
+    *   **Attempt independently:** Try to solve the problems on your own first.
+    *   **Refer if stuck:**
+        1.  The lecture notebook (the code written together during the section).
+        2.  PyTorch documentation.
+        3.  **As a last resort:** The solutions notebook (`02_pytorch_classification_solutions.ipynb`).
+
+---
+
+**III. Acknowledging Progress and Module Completion**
+
+1.  **Significant Coverage:** The instructor scrolls through the current notebook to visually demonstrate the large amount of material covered in Section 02 (PyTorch Classification).
+2.  **Congratulations:** Students are congratulated on finishing Section 02.
+
+---
+
+**IV. Looking Ahead**
+
+*   The course will move on to the next section.
+*   More deep learning concepts with PyTorch will be covered.
+
+---
+
+**Key Takeaways:**
+
+*   This lecture serves as a wrap-up for the PyTorch Classification module.
+*   The main call to action is for students to engage with the provided exercises.
+*   Clear instructions are given on where to find exercise materials and solutions.
+*   The iterative learning process (try, refer, then check solutions) is encouraged.
