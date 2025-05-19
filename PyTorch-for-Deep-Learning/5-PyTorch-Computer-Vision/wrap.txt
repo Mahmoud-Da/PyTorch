@@ -228,3 +228,92 @@
 * Introduction to **Convolutional Neural Networks (CNNs)**.
 
 ---
+
+*** 102. What Is a Convolutional Neural Network (CNN) ***
+# **Lecture Notes: Introduction to Convolutional Neural Networks (CNNs)**
+
+## **Recap of Previous Video**
+
+* Discussed computer vision problems, input/output shapes.
+* Introduced the concept of **Convolutional Neural Networks (CNNs)** as effective models for recognizing patterns in images.
+
+---
+
+## **What is a Convolutional Neural Network (CNN)?**
+
+* CNN: A type of deep learning architecture designed specifically for image data.
+* Abbreviation “CNN” refers to *Convolutional Neural Network*, **not** the news network.
+
+### **Learning Resources**
+
+* Many good guides available online (e.g., Code Basics).
+* Best resource = the one **you understand the best**.
+* Images and diagrams can help, but this course focuses on **code-first learning**.
+
+---
+
+## **Typical CNN Architecture**
+
+### **Components**
+
+1. **Input Layer**
+
+   * Takes in image data with a defined number of channels (e.g., RGB).
+   * Important: input and output **shapes must align** throughout the model.
+
+2. **Convolutional Layer**
+
+   * Applies mathematical operations across the image using filters (kernels).
+   * Performs a **sliding window operation** to extract features.
+   * Formula:
+
+     $$
+     \text{Output} = \text{Bias} + \sum (\text{Weight Matrix} \times \text{Input})
+     $$
+   * Torch module: `torch.nn.Conv2d`
+
+3. **Activation Function**
+
+   * Applies non-linear transformations (e.g., ReLU).
+   * Helps model non-linear relationships in data.
+
+4. **Pooling Layer**
+
+   * Reduces spatial size (height & width) of feature maps.
+   * Helps with computation efficiency and overfitting reduction.
+   * Common methods: Max Pooling, Average Pooling.
+
+5. **Output Layer**
+
+   * Converts the processed features into predictions.
+   * Often a `Linear` (fully connected) layer with number of outputs = number of classes.
+
+---
+
+## **Workflow of a CNN in PyTorch**
+
+* The model is usually defined using `nn.Sequential` or custom `nn.Module`.
+* Forward pass:
+  Input images → Conv layers → Activation → Pooling → Output → Prediction
+* Example: Model predicts class labels from image inputs.
+
+---
+
+## **Important Note**
+
+* **Infinite Variations** of CNNs exist.
+* The structure shown is **just one typical configuration**.
+* As you progress, you'll learn to build or use more **complex or pre-trained models** (e.g., in Transfer Learning).
+
+---
+
+## **Conclusion**
+
+* CNNs are foundational to image-based deep learning.
+* Best way to understand: **write and run code**.
+* Don’t memorize architectures—focus on building and experimenting.
+
+Next up: We'll explore how CNNs are implemented in PyTorch with actual code.
+
+---
+
