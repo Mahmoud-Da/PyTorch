@@ -1437,3 +1437,135 @@ print(f"Training on device: {device}")
   Use `argmax(dim=1)` on logits to get predicted labels for comparison.
 
 ---
+
+*** 112. Writing an Evaluation Function to Get Our Models Results ***
+## **Lecture Notes: Evaluating a PyTorch Model & Preparing for GPU Training**
+
+---
+
+### **Review & Debugging**
+
+* Previous video focused on implementing a training loop.
+* Emphasis on writing Python code frequently to improve.
+* Common beginner mistake: **Indentation errors** (e.g., code misaligned by a space can break the entire script).
+* Manual line-by-line indentation correction was demonstrated to reinforce proper structure.
+* Reran the model after fixing indentation – it worked successfully.
+
+---
+
+### **Training Results Overview**
+
+* Progress bar displayed training status.
+* Output includes:
+
+  * **Train loss**: `0.4550`
+  * **Test loss**: `0.4766`
+  * **Test accuracy**: `83.42%`
+  * **Training time**: \~21–22 seconds
+* Notes:
+
+  * Slight variation is expected due to random seeds and system differences.
+  * Major accuracy differences (e.g., 25% instead of \~83%) indicate issues.
+  * Performance depends heavily on hardware (Google Colab Pro used here).
+
+---
+
+### **Evaluation Function Design**
+
+#### **Purpose**
+
+To modularize and reuse evaluation logic across different models and data loaders.
+
+#### **Function: `eval_model()`**
+
+**Parameters:**
+
+* `model`: a `torch.nn.Module`
+* `data_loader`: a `torch.utils.data.DataLoader`
+* `loss_fn`: a loss function (e.g., `torch.nn.CrossEntropyLoss`)
+* `acc_fn`: an accuracy function
+
+**Steps:**
+
+1. Initialize `loss` and `acc` to 0.
+2. Use `torch.inference_mode()` to disable gradient calculations.
+3. Loop over the `data_loader`:
+
+   * Pass inputs `X` through `model` to get predictions `y_pred`.
+   * Accumulate:
+
+     * `loss += loss_fn(y_pred, y)`
+     * `acc += acc_fn(y_true=y, y_pred=y_pred.argmax(dim=1))`
+4. After the loop, average the results:
+
+   * `loss /= len(data_loader)`
+   * `acc /= len(data_loader)`
+5. Return a dictionary:
+
+   -------------------code----------------------
+   {
+       "model_name": model.__class__.__name__,
+       "model_loss": loss.item(),
+       "model_acc": acc
+   }
+   -------------------code----------------------
+
+---
+
+### **Evaluating Model Zero**
+
+* Call the function:
+
+  -------------------code----------------------
+  model_0_results = eval_model(
+      model=model_0,
+      data_loader=test_dataloader,
+      loss_fn=loss_fn,
+      acc_fn=accuracy_fn
+  )
+  -------------------code----------------------
+* Result printed:
+
+  -------------------code----------------------
+  {'model_name': 'Model0', 'model_loss': 0.47, 'model_acc': 83.42}
+  -------------------code----------------------
+* The dictionary allows easy comparison between models later (e.g., `model_1_results`, etc.).
+
+---
+
+### **Using a Progress Bar**
+
+* Confirmed that using `tqdm` displays progress bars in evaluation loops.
+* Especially useful for loops over many batches.
+
+---
+
+### **Next Steps: GPU Preparation**
+
+* Baseline model (`model_0`) was trained on **CPU**.
+* Next goal: Build `model_1` and train it on **GPU**.
+* Need to implement **device-agnostic code**:
+
+  -------------------code----------------------
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  -------------------code----------------------
+* Before proceeding:
+
+  * In Google Colab: go to `Runtime > Change runtime type > GPU`
+  * After changing runtime, **rerun all previous cells** to reinitialize variables and functions.
+
+---
+
+### **Progress Recap (Machine Learning Workflow)**
+
+1. \[✓] Got data
+2. \[✓] Built model
+3. \[✓] Picked loss function
+4. \[✓] Created optimizer
+5. \[✓] Built training loop
+6. \[✓] Fit model to data
+7. \[✓] Made predictions
+8. \[✓] Evaluated with loss & accuracy
+9. \[ ] Ready to **experiment** for improvements
+
+---
