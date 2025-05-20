@@ -966,3 +966,121 @@ test_dataloader = DataLoader(
 * Now that the data is properly prepared using DataLoaders, the next video will begin building **Model 0** – a baseline neural network for classification.
 
 ---
+
+*** 108. Model 0: Creating a Baseline Model with Two Linear Layers ***
+## Lecture Summary: Building a Baseline Model in PyTorch
+
+### 1. **Recap: Data Preparation**
+
+* Converted the dataset into batches using DataLoaders:
+
+  * Training set: 1,875 batches of 32 images each.
+  * Test set: 313 batches of 32 images each.
+* Visualized a batch to confirm:
+
+  * Image dimensions: 1 color channel, 28x28 pixels.
+* Purpose: To pass data in batches to the model efficiently.
+
+---
+
+### 2. **Modeling Workflow Overview**
+
+Current stage in the workflow:
+
+* **Done**:
+
+  * Loaded and transformed data using `torchvision.transforms` and `torchvision.datasets.FashionMNIST`.
+  * Wrapped data with `torch.utils.data.DataLoader`.
+* **Now**: Begin model building.
+
+---
+
+### 3. **What is a Baseline Model?**
+
+* A **baseline model** is a simple model used as a starting point.
+* Helps determine a reference performance level.
+* Future models aim to **improve** upon this baseline.
+* Important to **start simple** and **add complexity** only when needed to avoid overfitting.
+
+---
+
+### 4. **Introducing the `Flatten` Layer**
+
+* Used to reshape image tensors for linear (fully connected) layers.
+* Example:
+
+  * Original shape: `[1, 28, 28]`
+  * After flattening: `[1, 784]`
+* Flattening turns a 2D image into a 1D feature vector.
+* Flattening is necessary because linear layers expect 1D input per sample.
+
+---
+
+### 5. **Defining the Baseline Model**
+
+#### Code Structure:
+
+-------------------code----------------------
+import torch.nn as nn
+
+class FashionMNISTModelV0(nn.Module):
+    def __init__(self, input_shape: int, hidden_units: int, output_shape: int):
+        super().__init__()
+        self.layer_stack = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(in_features=input_shape, out_features=hidden_units),
+            nn.Linear(in_features=hidden_units, out_features=output_shape)
+        )
+
+    def forward(self, x):
+        return self.layer_stack(x)
+-------------------code----------------------
+
+#### Key Components:
+
+* `nn.Flatten()`: Reshapes input tensor from `[1, 28, 28]` to `[784]`.
+* `nn.Linear(...)`: Fully connected layers.
+* No activation functions used (purely linear model).
+* Only the linear layers contain learnable parameters.
+
+---
+
+### 6. **Model Initialization and Forward Pass**
+
+#### Initialization:
+
+-------------------code----------------------
+torch.manual_seed(42)
+model_0 = FashionMNISTModelV0(
+    input_shape=784,             # 28 * 28
+    hidden_units=10,
+    output_shape=10              # 10 FashionMNIST classes
+)
+-------------------code----------------------
+
+#### Dummy Input Test:
+
+-------------------code----------------------
+dummy_x = torch.rand([1, 1, 28, 28])  # Simulates one image batch
+output = model_0(dummy_x)
+-------------------code----------------------
+
+* Output shape: `[1, 10]` — one logit per class.
+* If flatten is omitted, tensor shape mismatch errors will occur during the matrix multiplication.
+* Shows the importance of understanding tensor shapes and dimensions in deep learning.
+
+---
+
+### 7. **Common Error: Shape Mismatches**
+
+* One of the most frequent issues in machine learning.
+* Happens when the input tensor's shape doesn't match the expected shape for a given layer.
+* Solution: Always check input/output shapes and layer requirements (read the docs).
+
+---
+
+### 8. **Next Step**
+
+* Now that the model architecture is working, the next step is to **train** the model on the dataset.
+
+---
