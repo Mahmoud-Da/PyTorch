@@ -1802,3 +1802,106 @@ next(model_1.parameters()).device
 * Neural networks are highly customizable; results must be empirically validated.
 
 ---
+
+*** 115. Mode 1: Creating a Loss Function and Optimizer ***
+## **Lecture Notes: Setting Up Loss Function, Optimizer, and Evaluation for Model 1**
+
+---
+
+### **1. Recap**
+
+* In the previous video, **Model 1 (FashionMNISTModelV1)** was created.
+
+  * The **only difference** from Model 0 is the **addition of non-linear layers**.
+* It’s uncertain if non-linearity will improve results without experimentation.
+
+  * Practical advice: Run multiple experiments to find out what works.
+  * Experience helps you anticipate model behavior, but testing is essential.
+
+---
+
+### **2. Setting Up the Training Components**
+
+Since this is a **multi-class classification** task, we need:
+
+#### **a. Accuracy Function**
+
+* Imported from a helper script:
+
+  -------------------code----------------------
+  from helper_functions import accuracy_fn
+  -------------------code----------------------
+
+#### **b. Loss Function**
+
+* Standard for multi-class classification:
+
+  -------------------code----------------------
+  loss_fn = nn.CrossEntropyLoss()
+  -------------------code----------------------
+
+#### **c. Optimizer**
+
+* Using Stochastic Gradient Descent (SGD), consistent with Model 0:
+
+  -------------------code----------------------
+  optimizer = torch.optim.SGD(params=model_1.parameters(), lr=0.1)
+  -------------------code----------------------
+
+---
+
+### **3. Best Practices for Experimentation**
+
+* When experimenting, **only change one or two things** at a time.
+
+  * This isolates the effect of each change on performance.
+* Keeping all other factors constant allows clearer analysis.
+
+---
+
+### **4. Conceptual Pop Quiz (Refresher)**
+
+* **What does the loss function do?**
+
+  * Measures **how wrong** the model's predictions are.
+* **What does the optimizer do?**
+
+  * **Updates the model's parameters** to reduce the loss.
+* **What does the accuracy function do?**
+
+  * Evaluates how many predictions are **correct**, a basic but crucial classification metric.
+
+---
+
+### **5. Preparing for the Training Loop**
+
+* Up to this point, training and evaluation loops were written manually.
+* Now it’s time to **refactor them into functions** for reusability and clarity.
+
+#### **Functions to Create:**
+
+* `train_step`: Handles one epoch of training.
+* `test_step`: Handles one round of evaluation.
+
+#### **Next Steps (Challenge)**
+
+* Try implementing these functions yourself before the next video.
+* Consider what inputs each function will require:
+
+  * Model
+  * DataLoader
+  * Loss function
+  * Optimizer
+  * Accuracy function
+  * Device
+
+---
+
+### **Key Takeaways**
+
+* Loss function: Cross-entropy for classification.
+* Optimizer: SGD, same learning rate as before.
+* Consistency across experiments is key for valid comparison.
+* Refactoring training and testing into functions improves code structure and readability.
+
+---
