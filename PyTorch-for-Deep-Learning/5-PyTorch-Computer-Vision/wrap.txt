@@ -1183,3 +1183,94 @@ from helper_functions import accuracy_fn
 * Create a function to **time experiments** before writing the full training loop.
 
 ---
+
+*** 110. Creating a Function to Time Our Modelling Code ***
+## **Lecture Summary: Timing Model Training with a Custom Function**
+
+### **Recap**
+
+* Previously downloaded and imported `helper_functions.py`, including the `accuracy_fn` function.
+* Suggested future expansion of `helper_functions.py` to avoid repetitive code and centralize utility functions.
+
+---
+
+## **Timing Function for Experiments**
+
+### **Why Time Model Training?**
+
+* Machine learning is inherently **experimental**.
+* Two primary factors to track during experiments:
+
+  1. **Model performance** (e.g., loss, accuracy).
+  2. **Model speed** (execution time).
+
+### **Trade-Off Consideration**
+
+* Higher performance often requires larger models (more layers, parameters), which may reduce speed.
+* Speed is critical for:
+
+  * Web deployments
+  * GPU execution
+  * Mobile or edge devices
+
+---
+
+## **Creating a Timing Function**
+
+### **Used Module**
+
+-------------------code----------------------
+from timeit import default_timer as timer
+-------------------code----------------------
+
+* `default_timer()` provides high-resolution timing, suitable for performance measurement.
+
+### **Function: `print_train_time()`**
+
+-------------------code----------------------
+def print_train_time(start: float, end: float, device: torch.device = None):
+    """
+    Print difference between start and end time in seconds.
+    """
+    total_time = end - start
+    print(f"Train time on {device}: {total_time:.3f} seconds")
+    return total_time
+-------------------code----------------------
+
+* **Parameters**:
+
+  * `start`: start time (float)
+  * `end`: end time (float)
+  * `device`: target device (e.g., CPU or GPU), optional
+
+* **Returns**: total training time (float)
+
+### **Usage Example**
+
+-------------------code----------------------
+start_time = timer()
+
+# ... Place model training or computation here ...
+
+end_time = timer()
+print_train_time(start=start_time, end=end_time, device="cpu")
+-------------------code----------------------
+
+* If no code is between the timers, time will be nearly zero.
+* Meant to wrap model training or other intensive tasks to measure runtime.
+
+---
+
+## **What's Next**
+
+* All components are ready:
+
+  * Model
+  * Data
+  * Loss function
+  * Optimizer
+  * Evaluation metric
+  * Timing function
+* Next step: **Train the baseline computer vision model**.
+
+---
