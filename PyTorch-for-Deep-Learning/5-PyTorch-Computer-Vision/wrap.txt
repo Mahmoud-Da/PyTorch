@@ -1675,3 +1675,130 @@ To modularize and reuse evaluation logic across different models and data loader
 * Test model performance both on CPU and GPU for comparison.
 
 ---
+
+*** 114. Model 1: Creating a Model with Non-Linear Functions ***
+## **Lecture Notes: Building a Better Model with Non-Linearity (Model 1)**
+
+---
+
+### **1. Recap of Progress So Far**
+
+* Dataset is prepared.
+* Data loaders are set up.
+* A baseline model (Model 0) has been built, trained, and evaluated.
+* Device-agnostic code has been implemented to enable CPU or GPU execution.
+
+---
+
+### **2. Current Objective**
+
+* Entering the *"Improve through Experimentation"* phase of the machine learning framework.
+* Aim: Build a **better model** by introducing **non-linearity**.
+
+---
+
+### **3. Importance of Experimentation**
+
+* Machine learning involves frequent experimentation.
+* Results can vary depending on architecture, data, or hardware.
+* Always worth trying different approaches to evaluate their impact.
+
+---
+
+### **4. Revisiting Non-Linearity**
+
+* Referenced section 2 of the course for the concept of non-linearity:
+
+  * Non-linear functions allow models to represent complex patterns.
+  * Example: A circle can't be modeled with straight lines alone (linear models).
+  * Neural networks combine linear and non-linear layers to model complex data.
+
+---
+
+### **5. Observation About Current Data**
+
+* The data (e.g., images of bags, shirts, etc.) appears relatively linear.
+* However, some classes may have non-linear characteristics.
+* Justification: Worth testing both linear and non-linear models to compare performance.
+
+---
+
+### **6. Building Model 1 with Non-Linearity**
+
+#### **Class Definition**
+
+-------------------code----------------------
+class FashionMNISTModelV1(nn.Module):
+    def __init__(self, input_shape: int, hidden_units: int, output_shape: int):
+        super().__init__()
+        self.layer_stack = nn.Sequential(
+            nn.Flatten(),  # Flatten 28x28 image to 784
+            nn.Linear(in_features=input_shape, out_features=hidden_units),
+            nn.ReLU(),  # Non-linear activation
+            nn.Linear(in_features=hidden_units, out_features=output_shape),
+            nn.ReLU()   # Optional second non-linearity
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.layer_stack(x)
+-------------------code----------------------
+
+#### **Notes on Architecture**
+
+* The structure is similar to Model 0 but with ReLU activations between layers.
+* **ReLU** (Rectified Linear Unit):
+
+  * Returns 0 for negative inputs.
+  * Returns the input itself for positive inputs.
+* This introduces non-linearity into the model.
+
+---
+
+### **7. Model Instantiation**
+
+#### **Setup**
+
+-------------------code----------------------
+# Set manual seed for reproducibility
+torch.manual_seed(42)
+
+# Define input/output dimensions
+input_shape = 784           # 28x28 images flattened
+hidden_units = 10           # Same as Model 0
+output_shape = len(class_names)  # One output per class
+
+# Instantiate the model
+model_1 = FashionMNISTModelV1(input_shape, hidden_units, output_shape).to(device)
+-------------------code----------------------
+
+#### **Device Verification**
+
+-------------------code----------------------
+next(model_1.parameters()).device
+-------------------code----------------------
+
+* Confirms model is located on GPU (e.g., CUDA:0 — the Tesla T4 GPU).
+
+---
+
+### **8. Next Steps**
+
+* According to the machine learning workflow:
+
+  1. **Build model**
+  2. **Instantiate loss function and optimizer**
+* Task for the student:
+
+  * Create a **loss function** and an **optimizer** for `model_1`.
+  * Hint: Use the same setup as `model_0`.
+
+---
+
+### **Key Takeaways**
+
+* Adding non-linear layers allows the model to capture more complex relationships.
+* Visual inspection of data may help, but actual experimentation is necessary.
+* Device-agnostic code makes it easy to switch between CPU and GPU.
+* Neural networks are highly customizable; results must be empirically validated.
+
+---
