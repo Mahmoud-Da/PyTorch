@@ -832,3 +832,137 @@ test_dataloader = DataLoader(
 * Use this batched data in your training loop.
 * The batching process will be implemented in the next video.
 
+*** 107. Turning Our Datasets Into DataLoaders ***
+## Lecture Summary: Data Loading and Mini-Batches in PyTorch
+
+### 1. **Mini-Batches Overview**
+
+* Instead of feeding all 60,000 images into the model at once, the dataset is split into **mini-batches**.
+* **Batch size** commonly starts at 32, though it can vary by task.
+* **Two main reasons** for using mini-batches:
+
+  1. **Computational Efficiency**: Easier on memory and faster training.
+  2. **Frequent Gradient Updates**: The model updates its weights more often per epoch.
+
+---
+
+### 2. **Setting Up the DataLoader in PyTorch**
+
+* Import statement:
+
+  -------------------code----------------------
+  from torch.utils.data import DataLoader
+  -------------------code----------------------
+
+* **Applies to all data types**: images, text, audio, etc.
+
+* **Hyperparameter Definition**:
+
+  -------------------code----------------------
+  BATCH_SIZE = 32
+  -------------------code----------------------
+
+---
+
+### 3. **Creating Data Loaders**
+
+* Use the `DataLoader` class to turn datasets into iterable batches:
+
+  -------------------code----------------------
+  train_dataloader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
+  test_dataloader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE, shuffle=False)
+  -------------------code----------------------
+
+* **Shuffling**:
+
+  * **Train data** should be shuffled to avoid learning order.
+  * **Test data** is usually not shuffled to keep evaluation consistent.
+
+* **Documentation Tip**:
+  Read the official [PyTorch DataLoader Documentation](https://pytorch.org/docs/stable/data.html) to understand parameters like `num_workers`, `drop_last`, `pin_memory`, etc.
+
+---
+
+### 4. **Inspecting DataLoader Attributes**
+
+* Example properties of a DataLoader:
+
+  * `batch_size`
+  * `dataset`
+  * `drop_last`
+  * `pin_memory`
+* Can check length (number of batches):
+
+  -------------------code----------------------
+  len(train_dataloader)  # ~1875 for 60,000 samples at batch size of 32
+  len(test_dataloader)   # ~313 for 10,000 samples at batch size of 32
+  -------------------code----------------------
+
+---
+
+### 5. **Understanding Shapes of Batches**
+
+* A batch has shape:
+  `(batch_size, channels, height, width)`
+  Example: `(32, 1, 28, 28)`
+
+* Corresponding labels batch: `(32,)`
+
+* Compared to typical formats:
+
+  * PyTorch uses **channels-first**
+  * Some tools (like Keras) use **channels-last**
+
+---
+
+### 6. **Visualizing a Sample from a Batch**
+
+* Steps:
+
+  1. Convert DataLoader to iterator:
+
+     -------------------code----------------------
+     train_features_batch, train_labels_batch = next(iter(train_dataloader))
+     -------------------code----------------------
+  2. Pick a random index from the batch using torch:
+
+     -------------------code----------------------
+     random_idx = torch.randint(0, len(train_features_batch), size=(1,)).item()
+     -------------------code----------------------
+  3. Extract image and label:
+
+     -------------------code----------------------
+     image = train_features_batch[random_idx]
+     label = train_labels_batch[random_idx]
+     -------------------code----------------------
+  4. Display the image:
+
+     -------------------code----------------------
+     import matplotlib.pyplot as plt
+     plt.imshow(image.squeeze(), cmap="gray")
+     plt.title(class_names[label])
+     plt.axis("off")
+     plt.show()
+     -------------------code----------------------
+
+* Additional Print Statements (Optional for Debugging):
+
+  -------------------code----------------------
+  print(image.shape)  # e.g., torch.Size([1, 28, 28])
+  print(label.item())  # e.g., 4 (representing a coat)
+  -------------------code----------------------
+
+---
+
+### 7. **Key Observations**
+
+* Even when classes are labeled (e.g., "bag", "coat"), the images may not be visually obvious or easily interpretable to a human.
+* Understanding and visualizing the dataset helps build **intuition** for model training.
+
+---
+
+### 8. **Next Step**
+
+* Now that the data is properly prepared using DataLoaders, the next video will begin building **Model 0** – a baseline neural network for classification.
+
+---
