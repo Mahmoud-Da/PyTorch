@@ -1084,3 +1084,102 @@ output = model_0(dummy_x)
 * Now that the model architecture is working, the next step is to **train** the model on the dataset.
 
 ---
+
+
+*** 109. Creating a Loss Function: an Optimizer for Model 0 ***
+---
+
+## **Lecture Summary: Setting Up Loss, Optimizer & Evaluation Metrics (Module 3.1)**
+
+### **Recap from Previous Module (Module 0 - Baseline Model)**
+
+* Built a baseline model (`model_0`) for classifying clothing images (28x28 grayscale).
+* Emphasized matching input/output shapes.
+* Conducted a dummy forward pass to verify shape correctness.
+* Inspected model's parameters using `model_0.state_dict()`:
+
+  * Found weight and bias tensors for both layers.
+  * These parameters are initialized randomly and get updated during training.
+* Highlighted that the model learns features from data (e.g., edges, shapes), rather than being explicitly told what features to extract.
+
+---
+
+## **Next Step: Loss Function, Optimizer, and Evaluation Metric Setup**
+
+### **Workflow Overview**
+
+1. Data loaded and converted to tensors.
+2. Baseline model created.
+3. Now setting up:
+
+   * Loss function
+   * Optimizer
+   * Evaluation metric
+
+---
+
+### **Loss Function**
+
+* Using multiclass classification.
+* Selected: `torch.nn.CrossEntropyLoss()`
+
+### **Optimizer**
+
+* Two common options: `SGD` (Stochastic Gradient Descent) and `Adam`.
+* Selected: `torch.optim.SGD`
+* Parameters:
+
+  * `params=model_0.parameters()`
+  * `lr=0.1` (learning rate, high due to simplicity of data)
+
+---
+
+### **Evaluation Metric**
+
+* Classification task → Use **accuracy**.
+* Discussed two approaches:
+
+  1. **Using TorchMetrics** (external library)
+  2. **Using a custom accuracy function**
+
+     * Found in `helper_functions.py`
+     * Also previously defined in another notebook.
+
+#### **Importing the Accuracy Function**
+
+* Demonstrated downloading `helper_functions.py` from the PyTorch GitHub repo:
+
+  * Used `requests` and `pathlib` to download the raw file.
+  * Saved it locally to reuse across notebooks.
+* Imported the function:
+
+  -------------------code----------------------
+  from helper_functions import accuracy_fn
+  -------------------code----------------------
+* This script modularizes common utilities like training/testing loops and metrics.
+
+---
+
+### **Implementation Summary**
+
+-------------------code----------------------
+# Loss function
+loss_fn = torch.nn.CrossEntropyLoss()
+
+# Optimizer
+optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.1)
+
+# Accuracy metric
+from helper_functions import accuracy_fn
+-------------------code----------------------
+
+* Verified `accuracy_fn` docstring was correctly defined.
+* Will test all components during model training in the next step.
+
+---
+
+### **Next Planned Step**
+
+* Create a function to **time experiments** before writing the full training loop.
+
+---
