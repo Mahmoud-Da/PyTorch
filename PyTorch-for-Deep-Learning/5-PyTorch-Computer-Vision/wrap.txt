@@ -1274,3 +1274,166 @@ print_train_time(start=start_time, end=end_time, device="cpu")
 * Next step: **Train the baseline computer vision model**.
 
 ---
+
+*** 111. Writing Training and Testing Loops for Our Batched Data ***
+# 3.3: Creating a Training Loop and Training a Model on Batches of Data
+
+## Overview
+
+This section focuses on creating a full training loop in PyTorch, where the model is trained and evaluated on mini-batches of data rather than the entire dataset at once. The training and evaluation are done per batch and per epoch.
+
+---
+
+## Key Concepts
+
+* **Training per batch**: The optimizer updates model parameters once **per batch**, not per epoch. This is more memory-efficient and allows for faster model updates.
+* **Batching with `DataLoader`**:
+
+  * Training data is split into batches (e.g., 1875 batches of size 32 from 60,000 training images).
+  * Test data is also split similarly (e.g., 313 batches of size 32).
+
+---
+
+## Structure of a Training Loop
+
+### 1. Preparations
+
+* Import progress bar: `from tqdm.auto import tqdm`
+* Set seed for reproducibility
+* Start timer to track training time
+* Set number of epochs (e.g., `epochs = 3`) for quick experimentation
+
+### 2. Main Training Loop
+
+-------------------code----------------------
+for epoch in tqdm(range(epochs)):
+-------------------code----------------------
+
+#### a. Print Epoch Info
+
+-------------------code----------------------
+print(f"Epoch: {epoch}")
+-------------------code----------------------
+
+#### b. Initialize Training Metrics
+
+-------------------code----------------------
+train_loss = 0
+model.train()  # Set model to training mode
+-------------------code----------------------
+
+#### c. Loop Through Training Batches
+
+-------------------code----------------------
+for batch, (X, y) in enumerate(train_dataloader):
+    y_pred = model(X)  # Forward pass
+    loss = loss_fn(y_pred, y)  # Calculate loss
+    train_loss += loss.item()  # Accumulate loss
+
+    optimizer.zero_grad()  # Zero gradients
+    loss.backward()        # Backward pass
+    optimizer.step()       # Update parameters
+-------------------code----------------------
+
+* Print status every 400 batches:
+
+  -------------------code----------------------
+  if batch % 400 == 0:
+      print(f"Looked at {batch * len(X)} / {len(train_dataloader.dataset)} samples")
+  -------------------code----------------------
+
+#### d. Compute Average Training Loss for Epoch
+
+-------------------code----------------------
+train_loss /= len(train_dataloader)
+-------------------code----------------------
+
+---
+
+## Evaluation Loop (Per Epoch)
+
+### 1. Setup
+
+-------------------code----------------------
+test_loss = 0
+test_acc = 0
+model.eval()  # Set model to eval mode
+
+with torch.inference_mode():
+    for X_test, y_test in test_dataloader:
+        test_pred = model(X_test)  # Forward pass
+        test_loss += loss_fn(test_pred, y_test).item()  # Accumulate test loss
+
+        # Calculate accuracy
+        test_acc += accuracy_fn(y_true=y_test, y_pred=test_pred.argmax(dim=1))
+-------------------code----------------------
+
+### 2. Compute Average Test Metrics
+
+-------------------code----------------------
+test_loss /= len(test_dataloader)
+test_acc /= len(test_dataloader)
+-------------------code----------------------
+
+---
+
+## Output Training Progress
+
+-------------------code----------------------
+print(f"Train Loss: {train_loss:.4f} | Test Loss: {test_loss:.4f} | Test Accuracy: {test_acc:.4f}")
+-------------------code----------------------
+
+---
+
+## Time Tracking
+
+* Record end time and print training duration:
+
+-------------------code----------------------
+train_time_end = timer()
+print(f"Train time: {train_time_end - train_time_start} seconds")
+-------------------code----------------------
+
+* Check which device the model is using:
+
+-------------------code----------------------
+device = next(model.parameters()).device
+print(f"Training on device: {device}")
+-------------------code----------------------
+
+---
+
+## Summary of Training Steps
+
+1. Loop through epochs
+2. Loop through training batches:
+
+   * Forward pass
+   * Loss calculation
+   * Zero gradients
+   * Backward pass
+   * Optimizer step
+   * Accumulate loss
+3. After training loop, compute average training loss
+4. Loop through test batches:
+
+   * Forward pass only
+   * Calculate and accumulate test loss and accuracy
+5. After test loop, compute average test loss and accuracy
+6. Print results
+7. Time the training process
+
+---
+
+## Notes
+
+* **Why small number of epochs?**
+  Allows quick iterations and experimentation. Training can be extended once the setup is confirmed to be working.
+
+* **Model parameter updates per batch**
+  Mini-batch gradient descent enables more frequent updates and is efficient for large datasets.
+
+* **Accuracy Calculation**
+  Use `argmax(dim=1)` on logits to get predicted labels for comparison.
+
+---
