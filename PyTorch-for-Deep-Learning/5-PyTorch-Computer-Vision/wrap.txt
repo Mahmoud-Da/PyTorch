@@ -232,7 +232,7 @@
 *** 102. What Is a Convolutional Neural Network (CNN) ***
 # **Lecture Notes: Introduction to Convolutional Neural Networks (CNNs)**
 
-## **Recap of Previous Video**
+## **Recap of Previous Lecture**
 
 * Discussed computer vision problems, input/output shapes.
 * Introduced the concept of **Convolutional Neural Networks (CNNs)** as effective models for recognizing patterns in images.
@@ -438,7 +438,7 @@ print(torchvision.__version__)
 ## **Conclusion**
 
 * You’ve set up your environment and learned about key computer vision libraries in PyTorch.
-* Ready to start working with datasets in the next video.
+* Ready to start working with datasets in the next lecture.
 
 ---
 
@@ -1903,5 +1903,153 @@ Since this is a **multi-class classification** task, we need:
 * Optimizer: SGD, same learning rate as before.
 * Consistency across experiments is key for valid comparison.
 * Refactoring training and testing into functions improves code structure and readability.
+
+---
+
+*** 116. Turing Our Training Loop into a Function ***
+## **Lecture Notes: Creating Training and Evaluation Functions in PyTorch**
+
+---
+
+### **1. Goal**
+
+* Transition from writing repetitive training/testing code to reusable **functions**.
+* This approach:
+
+  * Follows best practices.
+  * Minimizes errors.
+  * Promotes code clarity and maintainability.
+
+---
+
+### **2. Functions to Create**
+
+* `train_step`: A function to handle one training epoch.
+* `test_step`: A function to handle one evaluation/testing epoch (to be created next).
+
+---
+
+### **3. Why Functions?**
+
+* Training and testing loops often involve repeated logic.
+* Having reusable functions:
+
+  * Reduces redundancy.
+  * Makes experiments easier to manage.
+  * Encourages consistency across models and experiments.
+
+---
+
+### **4. Planning the `train_step` Function**
+
+#### **Function Purpose**
+
+* Performs one training loop using a given model, data loader, optimizer, loss function, and accuracy function.
+
+#### **Function Signature (with type hints)**
+
+-------------------code----------------------
+def train_step(
+    model: torch.nn.Module,
+    dataloader: torch.utils.data.DataLoader,
+    loss_fn: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    accuracy_fn,
+    device: torch.device = device
+):
+-------------------code----------------------
+
+#### **Parameters**
+
+* `model`: The PyTorch model to be trained.
+* `dataloader`: Training data loader.
+* `loss_fn`: Loss function (e.g., CrossEntropyLoss).
+* `optimizer`: Optimization algorithm (e.g., SGD).
+* `accuracy_fn`: Function to calculate accuracy.
+* `device`: Target computation device (CPU/GPU).
+
+---
+
+### **5. Step-by-Step Breakdown of `train_step`**
+
+#### **a. Preparation**
+
+* Set the model to training mode:
+
+  -------------------code----------------------
+  model.train()
+  -------------------code----------------------
+* Initialize accumulators:
+
+  -------------------code----------------------
+  train_loss = 0
+  train_acc = 0
+  -------------------code----------------------
+
+#### **b. Training Loop**
+
+For each batch:
+
+1. **Move data to device**:
+
+   -------------------code----------------------
+   X, y = X.to(device), y.to(device)
+   -------------------code----------------------
+2. **Forward pass**:
+
+   -------------------code----------------------
+   y_logits = model(X)
+   -------------------code----------------------
+3. **Loss computation**:
+
+   -------------------code----------------------
+   loss = loss_fn(y_logits, y)
+   train_loss += loss.item()
+   -------------------code----------------------
+4. **Prediction conversion**:
+
+   -------------------code----------------------
+   y_pred = torch.argmax(y_logits, dim=1)
+   -------------------code----------------------
+5. **Accuracy computation**:
+
+   -------------------code----------------------
+   train_acc += accuracy_fn(y_true=y, y_pred=y_pred)
+   -------------------code----------------------
+6. **Backward pass and optimization**:
+
+   -------------------code----------------------
+   optimizer.zero_grad()
+   loss.backward()
+   optimizer.step()
+   -------------------code----------------------
+
+#### **c. Averaging Metrics**
+
+After the loop:
+
+-------------------code----------------------
+train_loss /= len(dataloader)
+train_acc /= len(dataloader)
+-------------------code----------------------
+
+#### **d. Print Results**
+
+-------------------code----------------------
+print(f"Train Loss: {train_loss:.5f} | Train Acc: {train_acc:.2f}%")
+-------------------code----------------------
+
+---
+
+### **6. Outcome**
+
+* The function `train_step` will now execute a full training loop and report average loss and accuracy for the epoch.
+
+---
+
+### **7. Next Steps**
+
+* In the **next video**, a similar function `test_step` will be created for evaluation/testing.
+* **Challenge for now**: Try to refactor the existing testing loop into a `test_step` function using the same format.
 
 ---
