@@ -1569,3 +1569,109 @@ To modularize and reuse evaluation logic across different models and data loader
 9. \[ ] Ready to **experiment** for improvements
 
 ---
+
+*** 113. Setup Device-Agnostic Code for Running Experiments on the GPU ***
+## **Lecture Notes: Setting Up Device-Agnostic Code and Preparing for GPU Use**
+
+---
+
+### **1. Introduction and Intent**
+
+* The lecturer encourages students to try setting up device-agnostic code.
+* Objective: Allow PyTorch to utilize available hardware (CPU or GPU) automatically.
+
+---
+
+### **2. Checking for GPU Availability**
+
+* Initial step: Check if GPU is available.
+
+  * Attempted to use `nvidia-smi` but it failed because GPU wasn't activated yet in Google Colab.
+  * Used:
+
+    -------------------code----------------------
+    torch.cuda.is_available()
+    -------------------code----------------------
+
+    * Returned `False`, confirming no GPU available.
+
+---
+
+### **3. Enabling GPU in Google Colab**
+
+* Switched the runtime to GPU:
+
+  * In Colab: `Runtime > Change runtime type > Select GPU > Save`.
+  * Notebook reset and reconnected.
+
+* After activation:
+
+  * `nvidia-smi` confirmed GPU presence.
+  * Example output: **Tesla T4 GPU with 16 GB memory**.
+
+---
+
+### **4. Important Note About Runtime Reset**
+
+* Resetting runtime causes variables and state to be cleared.
+* Must **rerun all previous cells**:
+
+  * Re-download datasets.
+  * Re-import helper functions.
+  * Ensure the full environment is re-initialized.
+
+---
+
+### **5. Dataset Handling in Colab**
+
+* Current dataset is small and hosted on PyTorch, so it's quick to download.
+* Larger datasets or more complex models will increase setup and run time.
+* **Best practice**:
+
+  * Start with small datasets and models.
+  * Scale up as needed for experiments.
+
+---
+
+### **6. Writing Device-Agnostic Code**
+
+* Example code to select GPU if available, otherwise fallback to CPU:
+
+  -------------------code----------------------
+  import torch
+
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  print(device)
+  -------------------code----------------------
+
+* Result in this case: `"cuda"`
+
+* This approach ensures code runs optimally on any available hardware.
+
+* Usually done at the **top of the notebook**, but demonstrated here midway for learning purposes.
+
+---
+
+### **7. Next Step: Build a New Model**
+
+* Question posed: Does the dataset (e.g., shirts, bags, shoes) need nonlinear functions?
+
+  * Previous baseline model used only **linear operations**.
+  * Achieved \~**83% test accuracy**, which is quite good.
+* Now, the goal:
+
+  * Try creating a model with **nonlinear components**.
+  * Run it on the **GPU**.
+  * Compare performance and accuracy with the linear baseline.
+
+---
+
+### **Summary of Key Points**
+
+* Enable GPU in Colab before relying on GPU-accelerated code.
+* Always use device-agnostic code to maintain flexibility across systems.
+* Re-run all cells after changing the runtime environment in Colab.
+* Nonlinear models may offer performance benefits worth exploring.
+* Test model performance both on CPU and GPU for comparison.
+
+---
