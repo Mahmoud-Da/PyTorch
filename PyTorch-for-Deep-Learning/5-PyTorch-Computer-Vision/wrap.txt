@@ -2637,3 +2637,158 @@ A CNN usually includes the following components:
 * The process of defining, coding, and debugging is iterative.
 
 ---
+
+
+*** 122. Model 2: Breaking Down Conv2D Step by Step ***
+---
+
+# **Lecture 7.1: Stepping Through a Conv2D Layer in PyTorch**
+
+## **Overview**
+
+* In the previous lecture, a convolutional neural network (CNN) was built using PyTorch by replicating the Tiny VGG architecture shown on the [CNN Explainer website](https://poloclub.github.io/cnn-explainer/).
+* Two new layers were introduced: `Conv2d` and `MaxPool2d`.
+* Focus of this lecture: A step-by-step breakdown of the `nn.Conv2d` layer using code.
+
+---
+
+## **Conv2d Layer Basics**
+
+### **Concept**
+
+* `Conv2d` applies a convolution operation to input data to learn spatial hierarchies of features.
+* It contains **learnable parameters**: weights and biases.
+* Mathematically:
+  `output = bias + sum(weights * input)`
+
+### **Documentation**
+
+* Always refer to the PyTorch documentation for full parameter details:
+  [nn.Conv2d Documentation](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)
+
+---
+
+## **Practical Code Walkthrough**
+
+### **1. Creating Dummy Data**
+
+-------------------code----------------------
+import torch
+torch.manual_seed(42)
+images = torch.rand(size=(32, 3, 64, 64))  # Batch of 32 RGB images
+test_image = images[0]  # Single image
+-------------------code----------------------
+
+* Image shape: `(3, 64, 64)` — PyTorch uses **channels first** format: `(C, H, W)`
+
+### **2. Checking Shapes**
+
+-------------------code----------------------
+print(images.shape)       # (32, 3, 64, 64)
+print(test_image.shape)   # (3, 64, 64)
+print(test_image)         # Random values
+-------------------code----------------------
+
+---
+
+## **Understanding Conv2d Parameters**
+
+### **Instantiating the Layer**
+
+-------------------code----------------------
+conv_layer = torch.nn.Conv2d(
+    in_channels=3,        # RGB input
+    out_channels=10,      # Number of filters / output channels
+    kernel_size=3,        # 3x3 filter
+    stride=1,             # Moves 1 pixel at a time
+    padding=0             # No padding around image
+)
+-------------------code----------------------
+
+### **Explanation of Key Parameters**
+
+| Parameter      | Meaning                                                            |
+| -------------- | ------------------------------------------------------------------ |
+| `in_channels`  | Number of input channels (e.g., 3 for RGB images)                  |
+| `out_channels` | Number of filters / feature maps produced                          |
+| `kernel_size`  | Size of the convolutional filter (e.g., 3 → 3x3)                   |
+| `stride`       | Step size when moving the filter across the image                  |
+| `padding`      | Adds extra pixels around the border to preserve spatial dimensions |
+
+---
+
+## **Visualizing the Convolution**
+
+* The filter (or kernel) slides across the image, performing element-wise multiplication and summing the result.
+* The output is a feature map representing spatial hierarchies learned from the image.
+* You can see this visually using the [CNN Explainer](https://poloclub.github.io/cnn-explainer/).
+
+---
+
+## **Running a Forward Pass**
+
+### **Batch Requirement**
+
+* `nn.Conv2d` expects a 4D input: `(batch_size, channels, height, width)`
+
+-------------------code----------------------
+test_image = test_image.unsqueeze(0)  # Add batch dimension
+-------------------code----------------------
+
+### **Forward Pass**
+
+-------------------code----------------------
+conv_output = conv_layer(test_image)
+print(conv_output.shape)
+-------------------code----------------------
+
+* Output shape example: `(1, 10, 62, 62)`
+
+  * `1`: batch size
+  * `10`: number of output channels
+  * `62 x 62`: output spatial dimensions (reduced due to no padding)
+
+---
+
+## **Modifying Parameters and Observing Effects**
+
+### **Changing Kernel Size**
+
+-------------------code----------------------
+conv_layer = torch.nn.Conv2d(3, 10, kernel_size=5)
+-------------------code----------------------
+
+* Output shape reduces more due to larger filter size.
+
+### **Changing Stride**
+
+-------------------code----------------------
+conv_layer = torch.nn.Conv2d(3, 10, kernel_size=3, stride=2)
+-------------------code----------------------
+
+* Output shape is smaller as the filter skips pixels.
+
+### **Adding Padding**
+
+-------------------code----------------------
+conv_layer = torch.nn.Conv2d(3, 10, kernel_size=3, padding=1)
+-------------------code----------------------
+
+* Output shape remains closer to input size.
+
+---
+
+## **Conclusion and Key Takeaways**
+
+* `Conv2d` is a key building block of CNNs.
+* It transforms input tensors using filters to extract spatial features.
+* Understanding the role of parameters like `kernel_size`, `stride`, and `padding` is crucial.
+* When unsure about values, start by copying known architectures, then experiment.
+
+### **Practice Suggestion**
+
+* Try changing the values of `out_channels`, `kernel_size`, `stride`, and `padding`.
+* Observe the effect on output shapes.
+* Understand how each parameter contributes to compressing or preserving spatial features.
+
+---
