@@ -2163,3 +2163,124 @@ for epoch in range(epochs):
 
 ---
 
+*** 118. Training and Testing Model 1 with Our Training and Testing Functions ***
+---
+
+## **Lecture Summary: Combining `train_step()` and `test_step()` into a Training Loop**
+
+### **Objective**
+
+* Combine the `train_step()` and `test_step()` functions into a full training and evaluation loop.
+* Measure performance of a non-linear model trained on GPU.
+* Compare CPU vs GPU training performance.
+* Analyze why training speed and performance can vary across devices.
+
+---
+
+### **Setup**
+
+* **Random Seed:** Set using `torch.manual_seed(42)` for reproducibility.
+
+* **Timer:** Used to measure training time.
+
+  -------------------code----------------------
+  from timeit import default_timer as timer
+  train_time_start_on_gpu = timer()
+  -------------------code----------------------
+
+* **Epochs:** Set to 3 for consistent comparison.
+
+  -------------------code----------------------
+  epochs = 3
+  -------------------code----------------------
+
+---
+
+### **Training and Evaluation Loop**
+
+-------------------code----------------------
+for epoch in tqdm(range(epochs)):
+    print(f"Epoch {epoch}\n-------------------")
+    
+    # Training step
+    train_step(
+        model=model_1,
+        dataloader=train_dataloader,
+        loss_fn=loss_fn,
+        optimizer=optimizer,
+        accuracy_fn=accuracy_fn,
+        device=device
+    )
+
+    # Testing step
+    test_step(
+        model=model_1,
+        dataloader=test_dataloader,
+        loss_fn=loss_fn,
+        accuracy_fn=accuracy_fn,
+        device=device
+    )
+-------------------code----------------------
+
+* These functions are clean, modular, and can be moved to a helper module (`helper_functions.py`) for reuse.
+* No need to rewrite loops manually each time—just plug in the right components.
+
+---
+
+### **Measuring Training Time**
+
+-------------------code----------------------
+train_time_end_on_gpu = timer()
+print_train_time(
+    start=train_time_start_on_gpu,
+    end=train_time_end_on_gpu,
+    device=device
+)
+-------------------code----------------------
+
+* **Purpose:** Compare GPU training time to CPU.
+* Model 1 uses non-linear activation and runs on GPU.
+
+---
+
+### **Results Discussion**
+
+* **Model 1 did not outperform Model 0** in accuracy.
+* **GPU training was slightly faster** but not drastically.
+
+---
+
+### **Why Might GPU Be Slower or Comparable to CPU?**
+
+#### **Key Notes:**
+
+1. **Data Transfer Overhead**
+
+   * Moving data from CPU to GPU takes time.
+   * If data/model is small, this overhead can outweigh GPU's compute benefits.
+
+2. **Hardware Limitations**
+
+   * Some CPUs may be faster than older or low-end GPUs for small tasks.
+   * GPU advantage shows in:
+
+     * Larger models
+     * Bigger datasets
+     * More complex layers
+
+#### **Reference:**
+
+* [Making Deep Learning Go BR: Compute From First Principles – by Horace He](https://horace.io/brrr_intro.html)
+
+  * Explains GPU bandwidth, compute, and overhead.
+  * Offers tips to maximize GPU efficiency.
+
+---
+
+### **Conclusion**
+
+* Modularizing code with reusable functions (`train_step`, `test_step`) simplifies experimentation.
+* GPU can offer speedups, but it's not always faster—depends on model size, data, and hardware.
+* Randomness and hardware differences mean your results may vary slightly from those in the lecture.
+
+---
