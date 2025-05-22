@@ -2493,3 +2493,147 @@ A CNN usually includes the following components:
 
 * Start building your **first CNN with PyTorch** in the next video.
 * The code will replicate the architecture shown in the CNN Explainer tool.
+
+*** 121. Model 2: Coding Our First Convolutional Neural Network with PyTorch ***
+
+# **Lecture Summary: Building a Convolutional Neural Network (CNN) with PyTorch**
+
+## **1. Introduction**
+
+* The lecture continues from a previous overview of [CNN Explainer](https://poloclub.github.io/cnn-explainer/), a visual tool for understanding convolutional neural networks (CNNs).
+* Instead of further exploring the tool, the focus now shifts to **building a CNN from scratch** using **PyTorch**.
+
+---
+
+## **2. Objective**
+
+* Build a CNN inspired by the **TinyVGG architecture**.
+* Use **PyTorch modules** (some new), which will be explained in detail in future videos.
+* Emphasize hands-on coding: “If in doubt, code it out.”
+
+---
+
+## **3. Key Concepts**
+
+### **a. CNN Architecture Naming**
+
+* CNN architectures (e.g., TinyVGG, VGG16, ResNet) are often named by their creators.
+* These names serve as a shorthand reference to specific model configurations.
+
+### **b. CNN Blocks**
+
+* A **block** = group of layers (e.g., Conv2D → ReLU → Conv2D → ReLU → MaxPool).
+* A **model** = composed of **multiple blocks**.
+* This modular structure helps organize deep CNNs.
+
+---
+
+## **4. CNN Model Implementation**
+
+### **a. Class Definition**
+
+* Subclass `nn.Module` to define the model.
+* Parameters:
+
+  * `input_shape`: number of input channels (e.g., 1 for grayscale, 3 for RGB).
+  * `hidden_units`: number of filters in each Conv2D layer.
+  * `output_shape`: number of output classes.
+
+### **b. Block Construction (Sequential API)**
+
+* **Block 1**:
+
+  -------------------code----------------------
+  self.block_1 = nn.Sequential(
+      nn.Conv2d(in_channels=input_shape, out_channels=hidden_units, kernel_size=3, stride=1, padding=1),
+      nn.ReLU(),
+      nn.Conv2d(in_channels=hidden_units, out_channels=hidden_units, kernel_size=3, stride=1, padding=1),
+      nn.ReLU(),
+      nn.MaxPool2d(kernel_size=2)
+  )
+  -------------------code----------------------
+* **Block 2**: Same structure as Block 1.
+
+### **c. Classifier (Output Layer)**
+
+* Composed of:
+
+  * `nn.Flatten()` to turn the multi-dimensional tensor into a vector.
+  * `nn.Linear()` for final classification (dimensions to be calculated).
+
+  -------------------code----------------------
+  self.classifier = nn.Sequential(
+      nn.Flatten(),
+      nn.Linear(in_features=hidden_units*X*Y, out_features=output_shape)  # X and Y to be determined
+  )
+  -------------------code----------------------
+
+---
+
+## **5. Forward Method**
+
+* Define how input passes through the model:
+
+  -------------------code----------------------
+  def forward(self, x):
+      x = self.block_1(x)
+      print(x.shape)  # Optional debug
+      x = self.block_2(x)
+      print(x.shape)  # Optional debug
+      x = self.classifier(x)
+      return x
+  -------------------code----------------------
+
+---
+
+## **6. Hyperparameters Overview**
+
+* **Hyperparameters** = user-defined values, not learned by the model:
+
+  * `kernel_size`
+  * `stride`
+  * `padding`
+* These can be explored interactively on the CNN Explainer site or in the PyTorch documentation.
+
+---
+
+## **7. Pooling Explanation**
+
+* `nn.MaxPool2d(kernel_size=2)` reduces spatial dimensions.
+* Pooling works by sliding a window over the input and taking the **maximum value**.
+* Reduces computation and helps with generalization.
+
+---
+
+## **8. Model Instantiation**
+
+* Example:
+
+  -------------------code----------------------
+  model = ModelV2(input_shape=1, hidden_units=10, output_shape=len(class_names)).to(device)
+  -------------------code----------------------
+
+  * `input_shape = 1` for grayscale images.
+  * `hidden_units = 10` to match TinyVGG.
+  * `output_shape = number of classes`.
+
+---
+
+## **9. Debugging and Typos**
+
+* Common mistakes:
+
+  * Misspelling parameters like `out_channels` or `kernel_size`.
+  * Ensure all layers are written correctly.
+  * Use print statements or shape inspection for debugging.
+
+---
+
+## **10. Takeaways**
+
+* Building CNNs involves structuring layers into reusable blocks.
+* Naming conventions and architecture references (e.g., TinyVGG) help standardize design.
+* Understanding **hyperparameters** and **layer behavior** is critical.
+* The process of defining, coding, and debugging is iterative.
+
+---
