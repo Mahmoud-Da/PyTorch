@@ -2913,3 +2913,132 @@ print(f"Max pool tensor shape: {max_pool_tensor.shape}")
 * Goal: Understand how to compute the `in_features` value for the model’s final linear layer.
 
 ---
+
+*** 124. Mode 2: Using a Trick to Find the Input and Output Shapes of Each of Our Layers ***
+---
+
+## **Lecture Summary: Testing and Validating a CNN Model in PyTorch**
+
+### **Overview**
+
+* We've replicated the **TinyVGG architecture** from the CNN Explainer website using PyTorch.
+* This process, which used to take months, now takes only a few lines of code due to PyTorch’s power and the maturity of the deep learning field.
+
+---
+
+### **Architecture Breakdown**
+
+* **Model Components**:
+
+  * Input layer
+  * Convolutional layers
+  * Activation functions (non-linear)
+  * Pooling layers
+  * Output layer
+* Each of these has been implemented and structured to match TinyVGG.
+
+---
+
+### **Testing the Model: Dummy Data Forward Pass**
+
+#### **Purpose**
+
+* Validate that the model structure is correct by passing dummy data through it.
+
+#### **Steps**
+
+1. **Create Dummy Tensor**
+
+   * Use a tensor shaped like the dataset images: `(1, 28, 28)`
+   * Example:
+
+     -------------------code----------------------
+     random_image_tensor = torch.rand(size=(1, 28, 28))
+     -------------------code----------------------
+
+2. **Fix Shape Issues**
+
+   * CNNs expect 4D tensors: `(batch_size, channels, height, width)`
+   * Adjust using:
+
+     -------------------code----------------------
+     random_image_tensor.unsqueeze(0)  # Add batch dimension
+     -------------------code----------------------
+
+3. **Device Compatibility**
+
+   * Ensure model and data are on the same device (CPU/GPU)
+   * Use:
+
+     -------------------code----------------------
+     random_image_tensor.to(device)
+     -------------------code----------------------
+
+4. **Common Errors Encountered**
+
+   * Shape mismatch
+   * Device mismatch
+   * Data type mismatch
+
+---
+
+### **Understanding Output Shapes**
+
+#### **Why It Matters**
+
+* Knowing output shapes is critical for debugging and understanding how data flows through the model.
+
+#### **Key Insight**
+
+* The final `Linear` layer must receive the correct number of input features.
+* This is calculated as:
+
+  -------------------code----------------------
+  in_features = num_channels * height * width
+  -------------------code----------------------
+
+#### **Example Calculation**
+
+* After two convolution + pooling blocks:
+
+  * Input: `(1, 10, 7, 7)`
+  * Flattened: `10 * 7 * 7 = 490`
+* Linear layer setup:
+
+  -------------------code----------------------
+  nn.Linear(in_features=490, out_features=num_classes)
+  -------------------code----------------------
+
+#### **Troubleshooting Trick**
+
+* Use dummy tensors through each block.
+* Print shapes after each operation.
+* Adjust `Linear` layer based on observed shape.
+
+---
+
+### **Model Output Validation**
+
+* After fixing shape issues, the model produces:
+
+  * Output shape: `(1, 10)`
+  * Each number corresponds to the predicted class score.
+* This confirms the model’s output layer is working as intended.
+
+---
+
+### **Next Steps**
+
+* Instead of dummy data, pass **real dataset images** through the model.
+* Use defined `train_step()` and `test_step()` functions.
+* Begin training the convolutional neural network (CNN).
+
+---
+
+### **Conclusion**
+
+* We've successfully replicated and validated the TinyVGG model structure.
+* By using dummy data and print-debugging, we ensured the model layers are correctly configured.
+* Ready to move on to real data training in the next session.
+
+---
