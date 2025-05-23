@@ -2792,3 +2792,124 @@ conv_layer = torch.nn.Conv2d(3, 10, kernel_size=3, padding=1)
 * Understand how each parameter contributes to compressing or preserving spatial features.
 
 ---
+
+*** 123. Model 2: Breaking Down MaxPool2D Step by Step ***
+---
+
+# **Lecture Summary: Understanding MaxPool2D in CNNs**
+
+## **1. Introduction to MaxPool2D**
+
+* Purpose: Max Pooling is used in Convolutional Neural Networks (CNNs) to **reduce the spatial dimensions** (height and width) of input tensors while **retaining important features**.
+* Analogy: Deep learning is about **intelligent compression** — reducing high-dimensional inputs into lower-dimensional feature vectors that preserve essential information.
+
+---
+
+## **2. Investigative Approach**
+
+* **Exploratory coding**: Writing test code to understand how MaxPool2D behaves with different inputs and kernel sizes.
+* Use of **PyTorch**'s `torch.nn.MaxPool2d` layer.
+* Refer to official documentation for detailed explanations.
+
+---
+
+## **3. Key Concepts and Terms**
+
+* **Input shape**: `[batch_size, channels, height, width]`
+* **Kernel size**: The size of the region over which max pooling is performed (e.g., 2x2).
+* **Stride**: Controls how the kernel moves across the input.
+* **Output shape**: Changes depending on kernel size, stride, and padding.
+
+---
+
+## **4. Practical Example**
+
+### Step-by-step Walkthrough:
+
+1. **Create test image**:
+
+   * A tensor with dimensions similar to a real image, e.g., shape `[1, 3, 64, 64]`.
+2. **Print original shape** and shape after unsqueezing for compatibility.
+3. **Define Conv2D layer** with custom channels.
+4. **Pass test image through Conv2D** and check shape:
+
+   * Conv layers can increase the channel dimension (e.g., from 3 to 64).
+5. **Pass result through MaxPool2D** and print final shape:
+
+   * With kernel size 2 → dimensions are halved (e.g., `64x64 → 32x32`).
+-------------------code----------------------
+# Print out original image shape without unsqueezed dimension
+print(f"Test image original shape: {test_image.shape}")
+print(f"Test image with unsqueezed dimension: {test_image.unsqueeze(0).shape}")
+
+# Create a sample nn.MaxPool2d layer
+max_pool_layer = nn.MaxPool2d(kernel_size=2)
+
+# Pass data through just the conv_layer
+test_image_through_conv = conv_layer(test_image.unsqueeze(dim=0))
+print(f"Shape after going through conv_layer(): {test_image_through_conv.shape}")
+
+# Pass data through the max pool layer
+test_image_through_conv_and_max_pool = max_pool_layer(test_image_through_conv)
+print(f"Shape after going through conv_layer() and max_pool_layer(): {test_image_through_conv_and_max_pool.shape}")
+-------------------code----------------------
+
+---
+
+## **5. Visual Insight**
+
+* MaxPooling takes **maximum value in each region** defined by the kernel.
+* Visually, this results in a **compressed representation** that still maintains the general structure of the input (e.g., an outline of an object like a car).
+
+---
+
+## **6. Experimentation with Kernel Size**
+
+* Increasing kernel size (e.g., 4x4) compresses the data further:
+
+  * `64x64 → 15x15` (approx.)
+* The tradeoff is between **compression** and **loss of detail**.
+
+---
+
+## **7. Mini Exercise with Random Tensors**
+
+* Create a small 4D tensor (e.g., `[1, 1, 2, 2]`).
+* Apply `MaxPool2D(kernel_size=2)`:
+
+  * Output shape becomes `[1, 1, 1, 1]`.
+  * Demonstrates how max pooling reduces spatial dimensions.
+-------------------code----------------------
+torch.manual_seed(42)
+# Create a random tesnor with a similar number of dimensions to our images
+random_tensor = torch.randn(size=(1, 1, 2, 2))
+print(f"\nRandom tensor:\n{random_tensor}")
+print(f"Random tensor shape: {random_tensor.shape}")
+
+# Create a max pool layer
+max_pool_layer = nn.MaxPool2d(kernel_size=2)
+
+# Pass the random tensor through the max pool layer
+max_pool_tensor = max_pool_layer(random_tensor)
+print(f"\nMax pool tensor:\n {max_pool_tensor}")
+print(f"Max pool tensor shape: {max_pool_tensor.shape}")
+-------------------code----------------------
+
+---
+
+## **8. Conceptual Recap**
+
+* **Convolutional Layer**: Learns spatial features.
+* **Activation Layer (e.g., ReLU)**: Introduces non-linearity.
+* **MaxPool Layer**: Compresses learned features by taking the maximum value in small regions.
+* Objective: Extract and compress essential features for robust predictions.
+
+---
+
+## **9. Challenge**
+
+* Use a **dummy tensor** and pass it through the `TinyVGG` model.
+* Inspect how the tensor's shape changes through `conv_block_1` and `conv_block_2`.
+* Goal: Understand how to compute the `in_features` value for the model’s final linear layer.
+
+---
