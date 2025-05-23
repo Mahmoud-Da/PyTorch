@@ -3042,3 +3042,75 @@ print(f"Max pool tensor shape: {max_pool_tensor.shape}")
 * Ready to move on to real data training in the next session.
 
 ---
+
+*** 125. Model 2: Setting Up a Loss Function and Optimizer ***
+## **Training Our First CNN on FashionMNIST**
+
+### **Current Progress**
+
+* We've built a CNN model (`model_2`) replicating the TinyVGG architecture.
+* We've verified the model’s structure and confirmed that it works using dummy data.
+
+### **Next Step in PyTorch Workflow**
+
+We are now at **Step 4** in the typical PyTorch workflow:
+
+1. Prepare data
+2. Build model
+3. Define loss function and optimizer *This lecture*
+4. Train model
+5. Evaluate model
+
+---
+
+### **Goal**
+
+Train the CNN model (`model_2`) on the FashionMNIST dataset to classify grayscale images of clothing.
+
+---
+
+### **Loss Function and Optimizer Setup**
+
+#### **Evaluation Metric**
+
+* Accuracy: Imported from `helper_functions.py` (can be re-imported for completeness).
+
+-------------------code----------------------
+from helper_functions import accuracy_fn
+-------------------code----------------------
+
+#### **Loss Function**
+
+* Since this is a multi-class classification task, we use:
+
+-------------------code----------------------
+loss_fn = nn.CrossEntropyLoss()
+-------------------code----------------------
+
+#### **Optimizer**
+
+* Using Stochastic Gradient Descent (SGD) with a learning rate of 0.1.
+
+-------------------code----------------------
+optimizer = torch.optim.SGD(params=model_2.parameters(), lr=0.1)
+-------------------code----------------------
+
+---
+
+### **Model Parameters Overview**
+
+* The model has many parameters (weights and biases) initialized randomly.
+* The training process will optimize these parameters to improve prediction performance.
+
+-------------------code----------------------
+model_2.state_dict()  # shows all learnable parameters
+-------------------code----------------------
+
+---
+
+### **What’s Next**
+
+* Build the training loop to train `model_2`.
+* Leverage the pre-defined `train_step()` and `test_step()` functions to handle training and evaluation more efficiently.
+
+---
