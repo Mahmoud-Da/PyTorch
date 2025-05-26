@@ -3503,4 +3503,97 @@ model_2.state_dict()  # shows all learnable parameters
 
 ---
 
+*** 129. Plotting Our Best Model Predictions on Random Test Samples and Evaluating Them ***
+## **Lecture Summary: Visualizing Model Predictions**
 
+### **Overview**
+
+This lecture continues with the Data Explorer's motto: **Visualize, visualize, visualize**.
+The aim is to **visually evaluate** the performance of a trained model by comparing predictions to ground truth labels on randomly selected samples from the test dataset.
+
+---
+
+### **Step 1: Setup for Visualization**
+
+* Create a Matplotlib figure with a 3x3 grid (9 samples).
+
+  * `figsize = (9, 9)`
+  * 3 rows and 3 columns to match the 9 random samples selected previously.
+
+---
+
+### **Step 2: Loop Through Samples**
+
+* For each sample in `test_samples`, perform the following:
+
+  1. **Create a subplot** in the 3x3 grid.
+  2. **Plot the image** using `plt.imshow(sample.squeeze(), cmap="gray")`.
+
+     * `squeeze()` removes the batch dimension for display.
+  3. **Retrieve the prediction label**:
+
+     * Use `class_names[pred_classes[i]]`.
+  4. **Retrieve the ground truth label**:
+
+     * Use `class_names[test_labels[i]]`.
+
+---
+
+### **Step 3: Set Plot Title**
+
+* Title format: `"Pred: {pred_label} | Truth: {truth_label}"`
+* **Color of title** depends on whether prediction is correct:
+
+  * **Green**: if prediction matches truth.
+  * **Red**: if prediction is incorrect.
+* This visual cue makes it easy to identify errors at a glance.
+
+---
+
+### **Step 4: Remove Axis for Clarity**
+
+* `plt.axis("off")` is used to maximize visual clarity by removing axis ticks.
+
+---
+
+### **Outcome: Model Performance Visualization**
+
+* The visual display shows how well the model is performing.
+* When predictions are correct, the title is green; otherwise, red.
+* This method reveals not just model accuracy but also:
+
+  * **Misclassifications**
+  * **Potential ambiguity in labels**
+  * **Insights into model behavior**
+
+---
+
+### **Observations from Examples**
+
+* The model performed well on several random samples.
+* Some misclassifications were noted:
+
+  * **Dress vs. Coat**: Understandable confusion due to visual similarity.
+  * **Pullover vs. Coat**: Possible label ambiguity.
+  * **T-shirt/Top vs. Shirt**: Label categories can be overlapping or unclear.
+
+---
+
+### **Key Takeaways**
+
+* Visualizing predictions gives an **intuitive understanding** of model performance.
+* It can reveal:
+
+  * Label inconsistencies
+  * Model confusion
+  * Possible data quality issues
+* **Visual inspection complements accuracy metrics** for more holistic evaluation.
+
+---
+
+### **Next Steps**
+
+* Continue random sampling and visualization for deeper insight.
+* The next video will introduce a more formal method for evaluating model confusion (hinted as a *confusion matrix*).
+
+---
