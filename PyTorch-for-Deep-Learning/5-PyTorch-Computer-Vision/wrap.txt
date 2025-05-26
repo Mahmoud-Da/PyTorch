@@ -3902,3 +3902,132 @@ Now that the model has been trained and evaluated, it's time to **save the best-
 
 * This wraps up the model training and evaluation section.
 * Next, the lecture will focus on **TensorBoard** and further exercises to reinforce the learned concepts.
+
+*** 133. Recapping What We Have Covered Plus Exercises and Extra-Curriculum ***
+## Section Recap: PyTorch for Computer Vision (Section 03)
+
+### 1. **Initial Setup and Reference Material**
+
+* Explored the reference notebook and online book.
+* Introduced key libraries, with a focus on **TorchVision** for datasets, models, and transforms.
+
+---
+
+### 2. **Data Preparation**
+
+* Used the **FashionMNIST** dataset as the primary dataset.
+* Learned how to load and transform data using **DataLoaders** and **TorchVision datasets**.
+* Encouraged to explore other datasets available in TorchVision.
+
+---
+
+### 3. **Baseline Model Creation**
+
+* Created a **simple baseline model** to act as a comparison point.
+* Emphasized the importance of a baseline for guiding improvements through experimentation.
+
+---
+
+### 4. **Model Evaluation and Timing**
+
+* Made predictions using the baseline model.
+* Evaluated performance and learned about using the **GPU** vs **CPU**:
+
+  * Small datasets may not benefit from GPU due to memory transfer overhead.
+
+---
+
+### 5. **Adding Non-Linearity**
+
+* Tried models with non-linear activation functions.
+* Observed minimal improvements over the baseline in this case.
+
+---
+
+### 6. **Building a CNN**
+
+* Developed a **Convolutional Neural Network (CNN)** modeled after the *CNN Explainer* website.
+* Highlighted as a major step—recommended revisiting the CNN Explainer for better understanding.
+* Used **pure PyTorch** to implement the CNN architecture.
+
+---
+
+### 7. **Model Comparison**
+
+* Compared model results from different experiments.
+* Found the CNN performed the best, albeit with longer training time.
+
+---
+
+### 8. **Prediction Visualization**
+
+* Made random predictions and visualized them to better understand model behavior.
+* Reinforced that visualizing predictions helps reveal what the model "sees."
+
+---
+
+### 9. **Confusion Matrix Evaluation**
+
+* Visualized confusion matrices using:
+
+  * `torchmetrics`
+  * `mlxtend`
+* Provided insights into model accuracy and common classification mistakes.
+
+---
+
+### 10. **Saving and Loading the Best Model**
+
+* Saved the model's **state\_dict** using `torch.save`.
+* Reloaded the model with a new instance of the same architecture.
+* Verified that the **reloaded model** matched the original results closely using:
+
+  * Visual inspection
+  * `torch.isclose()` for numerical comparison with tolerance settings.
+
+---
+
+### 11. **Evaluation of Saved Model**
+
+* Confirmed that results from the saved and loaded model were consistent with the original.
+* Discussed reasons for minor differences (floating-point precision).
+* Emphasized importance of setting the same random seed and architecture before loading.
+
+---
+
+## Next Steps: Exercises and Extra Curriculum
+
+### **Practice Exercises**
+
+Available on the **[Learn PyTorch website](https://www.learnpytorch.io)** (Section 03):
+
+* Apply the same code and process to a different dataset.
+* Use the exercise notebook to test knowledge through coding and conceptual questions.
+
+### **Extra Curriculum**
+
+* **MIT Introduction to Deep Learning: Computer Vision Lecture**
+* Explore the **TorchVision model zoo** to study common CNN architectures.
+* Review the **timm** (Torch Image Models) library for advanced and pretrained models.
+
+### **Solutions and Walkthroughs**
+
+* Video walkthroughs available for exercise solutions in the GitHub repo under:
+
+  * `extras/exercise_solutions/03_computer_vision.ipynb`
+
+---
+
+## Final Remarks
+
+You've now completed an end-to-end workflow for a real-world computer vision problem using PyTorch:
+
+* Data loading
+* Model building
+* Training & evaluation
+* Visualization
+* Model persistence
+
+In the next section, you'll begin exploring **custom datasets in PyTorch**.
+
+---
