@@ -3799,3 +3799,106 @@ In this lecture, the focus is on creating and visualizing a **confusion matrix**
 The next lecture will cover **saving and loading the best-trained model**.
 
 ---
+*** 132. Saving and Loading Our Best Performing Model ***
+## **Lecture Notes: Saving and Loading a PyTorch Model**
+
+### **Context**
+
+Now that the model has been trained and evaluated, it's time to **save the best-performing model** so that it can be reloaded and used later, including for deployment or further evaluation.
+
+---
+
+### **Step 1: Set Up Model Saving Path**
+
+* **Import `Path`** from `pathlib` to handle directory and file paths.
+* **Create a directory** called `models/` to store the saved models:
+
+  -------------------code----------------------
+  from pathlib import Path
+
+  model_path = Path("models")
+  model_path.mkdir(parents=True, exist_ok=True)
+  -------------------code----------------------
+* **Define the model file name and path**:
+
+  -------------------code----------------------
+  model_name = "03_pytorch_computer_vision_model_2.pth"
+  model_save_path = model_path / model_name
+  -------------------code----------------------
+
+---
+
+### **Step 2: Save the Model’s State Dictionary**
+
+* Save only the **state dictionary**, which includes the trained parameters (weights and biases):
+
+  -------------------code----------------------
+  torch.save(obj=model_2.state_dict(), f=model_save_path)
+  -------------------code----------------------
+* This allows re-instantiating the model architecture and loading the learned parameters separately.
+
+---
+
+### **Step 3: Load the Saved Model**
+
+* **Recreate the same model architecture**:
+
+  -------------------code----------------------
+  torch.manual_seed(42)  # Ensure reproducibility
+  loaded_model_2 = FashionMNISTModelV2(input_shape=1, hidden_units=10, output_shape=10)
+  -------------------code----------------------
+* **Load the saved parameters**:
+
+  -------------------code----------------------
+  loaded_model_2.load_state_dict(torch.load(model_save_path))
+  loaded_model_2.to(device)
+  -------------------code----------------------
+
+---
+
+### **Step 4: Evaluate the Loaded Model**
+
+* Use the previously defined evaluation function and compare metrics:
+
+  -------------------code----------------------
+  loaded_model_results = eval_model(
+      model=loaded_model_2,
+      data_loader=test_dataloader,
+      loss_fn=loss_fn,
+      accuracy_fn=accuracy_fn
+  )
+  -------------------code----------------------
+
+* **Compare results** to the original model to confirm correctness.
+
+---
+
+### **Step 5: Verify Programmatically (Optional)**
+
+* Use `torch.isclose` to ensure the results are numerically similar:
+
+  -------------------code----------------------
+  torch.isclose(
+      torch.tensor(model_2_results["model_loss"]),
+      torch.tensor(loaded_model_results["model_loss"]),
+      atol=1e-08
+  )
+  -------------------code----------------------
+* You can adjust `atol` (absolute tolerance) if you need to be more or less strict.
+
+---
+
+### **Key Takeaways**
+
+* Saving the model’s `state_dict` is more flexible and common than saving the full model.
+* Always **re-instantiate the model architecture** in the same way before loading the `state_dict`.
+* **Set random seeds** to maintain consistency and reproducibility.
+* **Double-check results** after loading to ensure your model performs the same as before saving.
+* It's good practice to organize your project with clear directories: `models/`, `data/`, etc.
+
+---
+
+### **Next Steps**
+
+* This wraps up the model training and evaluation section.
+* Next, the lecture will focus on **TensorBoard** and further exercises to reinforce the learned concepts.
