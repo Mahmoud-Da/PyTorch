@@ -2284,3 +2284,119 @@ print_train_time(
 * Randomness and hardware differences mean your results may vary slightly from those in the lecture.
 
 ---
+
+*** 119. Getting a Results Dictionary for Model 1 ***
+## **Lecture Summary: Creating a Results Dictionary and Handling Device Errors**
+
+### **Objective**
+
+* Create a results dictionary for Model 1 (trained on GPU) to match the format used for Model 0.
+* Fix a common PyTorch runtime error involving device mismatches.
+* Prepare for comparison and future modeling experiments.
+
+---
+
+### **Step 1: Create Model 1 Results Dictionary**
+
+-------------------code----------------------
+model_1_results = eval_model(
+    model=model_1,
+    dataloader=test_dataloader,
+    loss_fn=loss_fn,
+    accuracy_fn=accuracy_fn
+)
+-------------------code----------------------
+
+* Purpose: Store results in dictionary format for easier comparison later.
+
+---
+
+### **Step 2: RuntimeError – Device Mismatch**
+
+**Error Message:**
+
+-------------------code----------------------
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, CUDA and CPU
+-------------------code----------------------
+
+**Cause:**
+
+* Model is on GPU (CUDA).
+* Test data is still on CPU.
+* PyTorch requires both to be on the same device during inference or training.
+
+**Common Deep Learning Errors:**
+
+1. **Shape mismatches**
+2. **Device mismatches** ← This is the current issue.
+3. **Data type mismatches**
+
+---
+
+### **Step 3: Fix the Error by Updating `eval_model()`**
+
+* Ensure both input `x` and target `y` tensors are moved to the appropriate device.
+* Modify the function to accept a `device` argument and apply `.to(device)` inside the loop.
+
+-------------------code----------------------
+def eval_model(model, dataloader, loss_fn, accuracy_fn, device):
+    model.to(device)
+    model.eval()
+    loss, accuracy = 0, 0
+    with torch.inference_mode():
+        for X, y in dataloader:
+            X, y = X.to(device), y.to(device)
+            y_pred = model(X)
+
+            loss += loss_fn(y_pred, y).item()
+            accuracy += accuracy_fn(y_true=y, y_pred=y_pred)
+    loss /= len(dataloader)
+    accuracy /= len(dataloader)
+    
+    return {"model_name": model.__class__.__name__,
+            "model_loss": loss,
+            "model_acc": accuracy}
+-------------------code----------------------
+
+* Pass `device=device` when calling `eval_model()`.
+
+---
+
+### **Step 4: Rerun the Results Calculation**
+
+-------------------code----------------------
+model_1_results = eval_model(
+    model=model_1,
+    dataloader=test_dataloader,
+    loss_fn=loss_fn,
+    accuracy_fn=accuracy_fn,
+    device=device
+)
+-------------------code----------------------
+
+* This now works correctly with no device mismatch errors.
+* Always ensure **device-agnostic code** for portability across CPU/GPU environments.
+
+---
+
+### **Step 5: Result Comparison**
+
+* **Model 0 (Baseline):** Still performing better in terms of accuracy.
+* **Model 1:** Uses non-linear layers and runs on GPU, but results are slightly behind Model 0.
+
+---
+
+### **Final Notes**
+
+* It's normal for your results to vary slightly due to randomness in model initialization and training.
+* If results are vastly different:
+
+  * Ensure all cells are run in correct order.
+  * Recheck if the model or data were unintentionally altered.
+* Minor differences (a few decimal points) are expected.
+
+---
+
+### **Next Step**
+
+* Begin working with **convolutional neural networks (CNNs)** in the following lecture to build more powerful models for image data.
