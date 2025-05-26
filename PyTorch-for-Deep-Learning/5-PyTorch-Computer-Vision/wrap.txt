@@ -3597,3 +3597,107 @@ The aim is to **visually evaluate** the performance of a trained model by compar
 * The next video will introduce a more formal method for evaluating model confusion (hinted as a *confusion matrix*).
 
 ---
+
+*** 130. Making Predictions and Importing Libraries to Plot a Confusion Matrix ***
+## **Lecture Summary: Visualizing Predictions with a Confusion Matrix**
+
+### **1. Importance of Visualization**
+
+* Visualizing predictions helps reveal model behavior and confusion.
+* Example: It's difficult to distinguish between a "T-shirt/top" and "shirt" even for humans, and the model struggles similarly.
+* Insights from visualizations can also point to potential labeling issues in the dataset.
+
+---
+
+### **2. Introducing the Confusion Matrix**
+
+* A confusion matrix is a **powerful tool for visualizing** classification performance, especially in **multi-class classification**.
+* Previously discussed metrics in the *"Learn PyTorch Book"* include:
+
+  * Accuracy (most common)
+  * Precision
+  * Recall
+  * F1 Score
+  * Confusion Matrix
+
+---
+
+### **3. Plan to Create and Plot a Confusion Matrix**
+
+#### Steps:
+
+1. **Make predictions** on the entire test dataset (not just samples).
+2. **Generate the confusion matrix** using `torchmetrics`.
+3. **Plot the confusion matrix** using the `mlxtend` package.
+
+---
+
+### **4. Making Predictions on Entire Test Dataset**
+
+* Set up the model in **evaluation mode** and use `torch.inference_mode()` for efficient inference.
+* Iterate through the **test data loader** with a progress bar.
+* For each batch:
+
+  * Move data to the correct device.
+  * Perform a forward pass to get logits.
+  * Convert logits to predictions using `torch.softmax` (optional) and `argmax`.
+  * Move predictions to CPU and append to a list.
+* Concatenate the list of tensors into a single tensor for analysis.
+
+**Code Elements Used**:
+
+-------------------code----------------------
+model.eval()
+with torch.inference_mode():
+    for X, y in test_dataloader:
+        # send to device
+        # forward pass -> logits -> probabilities (optional) -> predictions
+        # append predictions
+-------------------code----------------------
+
+* Confirmed prediction tensor length equals test dataset size (e.g., 10,000).
+
+---
+
+### **5. Installing Required Packages in Google Colab**
+
+#### Issues:
+
+* `torchmetrics` is not pre-installed in Colab.
+* `mlxtend` is available but **needs to be version >= 0.19.0** for plotting functionality.
+
+#### Solution:
+
+* Use a try-except block to:
+
+  * Try importing both libraries.
+  * Check `mlxtend` version.
+  * If version check fails, install or upgrade via pip:
+
+    -------------------code----------------------
+    !pip install torchmetrics
+    !pip install mlxtend --upgrade
+    -------------------code----------------------
+  * If needed, **restart the runtime** after installation.
+
+---
+
+### **6. Notes on Restarting Google Colab Runtime**
+
+* After installing packages, you may need to:
+
+  * Restart the runtime.
+  * Click **“Run all”** to rerun all cells (watch for errors).
+  * Reimport packages and check version to ensure success.
+
+---
+
+### **7. Final Checks**
+
+* Verified that:
+
+  * All packages are correctly imported.
+  * `mlxtend` version is 0.19.0 or higher.
+* Ready to move on to **generating and plotting the confusion matrix** in the next step.
+
+---
