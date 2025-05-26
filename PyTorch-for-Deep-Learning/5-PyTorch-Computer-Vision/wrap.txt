@@ -3114,3 +3114,143 @@ model_2.state_dict()  # shows all learnable parameters
 * Leverage the pre-defined `train_step()` and `test_step()` functions to handle training and evaluation more efficiently.
 
 ---
+
+*** 126. Model 2: Training Our First CNN and Evaluating Its Results ***
+---
+
+# Lecture Notes: Training and Evaluating Our First CNN (Model 2)
+
+## 1. Overview
+
+* Goal: Train a convolutional neural network (CNN), referred to as *Model 2*, and compare it against baseline performance.
+* Reuse of functionality: Instead of rewriting training and testing loops, previously defined functions (`train_step`, `test_step`) are reused for modularity and simplicity.
+
+---
+
+## 2. Preparation and Setup
+
+### Manual Seeding
+
+* `torch.manual_seed(42)` is set for reproducibility.
+* CUDA manual seed is also set to ensure consistency when training on the GPU.
+
+### Timing Setup
+
+* A timer is initialized to track how long training takes.
+* Reason: Model comparison should consider both evaluation metrics and training time.
+* Observation: Higher-performing models often require more training time, though not always.
+
+---
+
+## 3. Training Configuration
+
+### Epoch Loop
+
+* Number of epochs: 3 (to keep the experiment lightweight).
+* Progress bar: Uses `tqdm` for visual feedback.
+
+### Training Step (`train_step`)
+
+* Parameters:
+
+  * `model`: Model 2 (TinyVGG CNN)
+  * `dataloader`: `train_dataloader`
+  * `loss_fn`: Defined earlier
+  * `optimizer`: Stochastic Gradient Descent (SGD)
+  * `accuracy_fn`: Accuracy function
+  * `device`: CUDA or CPU
+
+### Testing Step (`test_step`)
+
+* Parameters:
+
+  * `model`: Model 2
+  * `dataloader`: `test_dataloader`
+  * `loss_fn`: Same as above
+  * No optimizer needed during testing
+  * `accuracy_fn`: Accuracy function
+  * `device`: Same target device
+
+---
+
+## 4. Execution and Timing
+
+### Execution
+
+* Model is trained using the setup above.
+* Timing is measured using the `print_train_time()` function:
+
+  -------------------code----------------------
+  train_time_start_model_2 = time.time()
+  # Training + Testing code
+  train_time_end_model_2 = time.time()
+  print_train_time(train_time_start_model_2, train_time_end_model_2)
+  -------------------code----------------------
+
+### Expected Outcome
+
+* The model runs on a GPU (Tesla P100 in the demonstration).
+* Output includes training progress and performance metrics per epoch.
+
+---
+
+## 5. Debugging Output Issues
+
+### Problem
+
+* Forward pass had residual `print()` statements outputting tensor shapes.
+* Result: Console flooded with output; performance impacted.
+
+### Solution
+
+* Comment out print statements in the model’s `forward()` method.
+* Rerun the training after cleaning the outputs to speed up execution and avoid truncation.
+
+---
+
+## 6. Results and Observations
+
+### Training Output
+
+* Each epoch takes approximately 14 seconds.
+* Total training time: Around 42 seconds.
+* Model shows steady improvement in accuracy over epochs.
+* Final test accuracy: Approximately **88.5%**
+
+### Hardware Consideration
+
+* Results may vary depending on GPU or CPU.
+* If training time is extremely different, hardware or code setup may need inspection.
+
+---
+
+## 7. Evaluating Model 2
+
+### Evaluation Function
+
+* Used `eval_model()` (defined earlier) to assess final performance:
+
+  -------------------code----------------------
+  model_2_results = eval_model(
+      model=model_2,
+      dataloader=test_dataloader,
+      loss_fn=loss_fn,
+      accuracy_fn=accuracy_fn,
+      device=device
+  )
+  -------------------code----------------------
+
+### Results
+
+* Model 2 achieved approximately **88% accuracy**.
+* This performance **beats the baseline model**.
+
+---
+
+## 8. Conclusion and Next Steps
+
+* Model 2 (CNN) is the best-performing model so far.
+* Next task: Compare results of all trained models (accuracy, loss, training time).
+* This will help determine the most balanced and effective model overall.
+
+---
