@@ -3381,3 +3381,126 @@ model_2.state_dict()  # shows all learnable parameters
   * Try implementing this before the next video.
 
 ---
+*** 128. Making Predictions on Random Test Samples with the Best Trained Model ***
+# Lecture Summary: Visualizing Model Predictions in PyTorch
+
+## 1. **Recap of Previous Experiment**
+
+* Three models were trained and compared:
+
+  * **Model 0**: Basic linear model.
+  * **Model 1**: Linear model with non-linear activations.
+  * **Model 2 (Fashion Model V2)**: Convolutional Neural Network (CNN).
+* **Results**:
+
+  * CNN (Model V2) achieved the highest accuracy.
+  * It also had the **longest training time**, which varies based on the hardware used (e.g., Google Colab GPUs).
+
+---
+
+## 2. **Visual Evaluation of Model Predictions**
+
+### Goal:
+
+* Visualize how the trained model makes predictions on random samples from the test dataset.
+
+### Why?
+
+* Numbers are useful (accuracy, loss), but visual feedback allows us to *see* what the model is doing.
+* Helps in debugging and understanding model behavior.
+
+---
+
+## 3. **Function: `make_predictions()`**
+
+### Purpose:
+
+* Run inference on a list of test samples.
+* Return prediction probabilities.
+
+### Parameters:
+
+* `model`: trained PyTorch model (`torch.nn.Module`).
+* `data`: list of sample tensors.
+* `device`: PyTorch device object (defaults to the configured device).
+
+### Steps:
+
+1. Set model to evaluation mode using `.eval()`.
+2. Use inference context with `torch.inference_mode()`.
+3. Loop through the input samples:
+
+   * Add batch dimension using `unsqueeze(dim=0)`.
+   * Move data and model to the target device.
+   * Perform forward pass.
+   * Apply `F.softmax()` to obtain prediction probabilities.
+   * Move results to CPU for visualization and append to a list.
+4. Return a stacked tensor of prediction probabilities.
+
+---
+
+## 4. **Preparing Random Test Samples**
+
+### Code Outline:
+
+1. Import Python’s `random` module.
+2. Set a seed (`random.seed(42)`) for reproducibility.
+3. Randomly select **9 samples** from the test dataset (`test_data`), not the DataLoader.
+4. Store the images in `test_samples`, and true labels in `test_labels`.
+
+### Why 9 Samples?
+
+* Planning to create a 3x3 grid for visualization.
+
+---
+
+## 5. **Sample Inspection**
+
+* View shapes and contents of random samples.
+* Plot sample images using `matplotlib.pyplot.imshow()`.
+* Use grayscale colormap (`cmap='gray'`).
+* Add corresponding ground-truth label as the title.
+
+---
+
+## 6. **Running `make_predictions()`**
+
+### Process:
+
+* Call the `make_predictions()` function:
+
+  -------------------code----------------------
+  pred_probs = make_predictions(model=model_2, data=test_samples)
+  -------------------code----------------------
+* Result: A tensor of prediction probabilities for each image.
+
+---
+
+## 7. **Converting Probabilities to Class Labels**
+
+* Use `torch.argmax()` across `dim=1` to convert probabilities to predicted class indices:
+
+  -------------------code----------------------
+  pred_classes = pred_probs.argmax(dim=1)
+  -------------------code----------------------
+
+* These predictions can now be directly compared to `test_labels`.
+
+---
+
+## 8. **Next Steps**
+
+* In the upcoming video:
+
+  * Plot a 3x3 grid of images.
+  * Show the original label and the predicted label for each.
+  * Use this to qualitatively assess model performance.
+
+### Optional Exercise:
+
+* Try plotting the predictions yourself.
+* Remove the random seed if you want the samples to vary each time.
+
+---
+
+
