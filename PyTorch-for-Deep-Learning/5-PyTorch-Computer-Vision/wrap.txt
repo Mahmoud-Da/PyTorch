@@ -3254,3 +3254,130 @@ model_2.state_dict()  # shows all learnable parameters
 * This will help determine the most balanced and effective model overall.
 
 ---
+
+*** 127. Comparing the Results of Our Modelling Experiments ***
+# Lecture Notes: Comparing Model Results and Visualizing Performance
+
+## 1. Introduction
+
+* The previous lesson involved training our first **Convolutional Neural Network (CNN)**.
+* Now, it's time to compare this CNN against the **baseline (Model 0)** and an **intermediate model (Model 1)**.
+* Comparing results is a crucial step in any machine learning experiment to assess model performance fairly.
+
+---
+
+## 2. Organizing Model Results
+
+### Step 1: Create a DataFrame
+
+* All model results are stored in dictionaries:
+
+  * `model_0_results`
+  * `model_1_results`
+  * `model_2_results`
+* Import pandas and construct a comparison table:
+
+  -------------------code----------------------
+  import pandas as pd
+
+  compare_results = pd.DataFrame([
+      model_0_results,
+      model_1_results,
+      model_2_results
+  ])
+  -------------------code----------------------
+
+### Step 2: Review Results
+
+* **Model 0**: Baseline with two linear layers
+
+  * Accuracy: 83.4%
+  * Loss: 0.47
+* **Model 1**: Added non-linearity and used GPU
+
+  * Performed **worse** than the baseline
+* **Model 2 (TinyVGG CNN)**:
+
+  * Best performance so far (around 88% accuracy)
+
+---
+
+## 3. Ideas for Further Experimentation
+
+* Increase the number of hidden units (e.g., to 30).
+* Comment out non-linear layers to test their effect.
+* Modify kernel size, padding, max pooling.
+* Increase training epochs (e.g., from 3 to 10).
+* These experiments help optimize model performance further.
+
+---
+
+## 4. Including Training Time
+
+### Step 1: Add Training Time Column
+
+* Include training time to evaluate the **performance-speed tradeoff**:
+
+  -------------------code----------------------
+  compare_results["training_time"] = [
+      total_train_time_model_0,
+      total_train_time_model_1,
+      total_train_time_model_2
+  ]
+  -------------------code----------------------
+
+### Step 2: Why Training Time Matters
+
+* Example: A 5% accuracy improvement may **not** be worth it if it takes 10x longer to train.
+* Important in real-world projects with resource constraints.
+
+---
+
+## 5. Considerations for Varying Results
+
+* If your results differ:
+
+  * Check that **random seeds** (e.g., `torch.manual_seed`) are properly set.
+  * Ensure **CUDA random seed** is also configured (if using GPU).
+* Training time and results may vary depending on:
+
+  * CPU vs GPU
+  * Type of GPU (e.g., Tesla P100 vs others)
+  * Environment (e.g., Google Colab Pro vs Free)
+
+---
+
+## 6. Visualizing Model Results
+
+### Step 1: Plot Accuracy Comparison
+
+* Set model names as index and plot horizontal bar chart:
+
+  -------------------code----------------------
+  compare_results.index = ["Model 0", "Model 1", "Model 2"]
+  compare_results["accuracy"].plot(
+      kind="barh",
+      xlabel="Accuracy (%)",
+      ylabel="Model"
+  )
+  -------------------code----------------------
+
+### Step 2: Interpretation
+
+* Easy to show performance improvements visually.
+* Useful when discussing results or reporting progress.
+* Model 2 stands out with the highest accuracy and moderate training time.
+
+---
+
+## 7. Next Steps: Visual Predictions
+
+* Numbers are useful, but visualizations make predictions tangible.
+* Goal: Use **Model 2** to make predictions on **random test samples** and **plot them**.
+* Task:
+
+  * Use the trained model to predict on random images.
+  * Display the image with the predicted label as its title.
+  * Try implementing this before the next video.
+
+---
