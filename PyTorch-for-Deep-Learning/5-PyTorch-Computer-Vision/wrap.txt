@@ -2400,3 +2400,96 @@ model_1_results = eval_model(
 ### **Next Step**
 
 * Begin working with **convolutional neural networks (CNNs)** in the following lecture to build more powerful models for image data.
+
+*** 120. Model 2: Convolutional Neural Networks High Level Overview ***
+---
+
+## **Lecture Summary: Introduction to Convolutional Neural Networks (CNNs)**
+
+### **Context**
+
+* Model 1 (a feedforward neural network) did **not** outperform the baseline.
+* Now moving on to **Model 2**: a **Convolutional Neural Network (CNN)**.
+
+---
+
+## **What is a CNN?**
+
+* **CNN** (Convolutional Neural Network), also known as a **ConvNet**, is a deep learning architecture primarily used for visual data.
+* Key strength: Ability to **detect patterns** in images (e.g., edges, shapes, textures).
+
+---
+
+## **Typical CNN Architecture**
+
+A CNN usually includes the following components:
+
+1. **Input Layer**: Receives the image data.
+2. **Convolutional Layers**: Extract features using kernels (filters).
+3. **Activation Functions**: Usually non-linear, such as ReLU.
+4. **Pooling Layers**: Downsample feature maps to reduce spatial dimensions.
+5. **Fully Connected Layer (Linear Layer)**: Produces the final output for classification or regression.
+
+> Note: The specific arrangement of layers varies by task and research updates.
+
+---
+
+## **Visualization Example**
+
+* A sample CNN processes an image (e.g., pizza).
+* The image is converted to an RGB tensor.
+* It passes through a sequence of:
+
+  * Convolutional layers
+  * ReLU layers
+  * Pooling layers
+* Ends with a linear output layer predicting class probabilities.
+
+> Example: The model might output high probability for “pizza” if given a pizza image.
+
+---
+
+## **Deep Learning Insight**
+
+* Adding **more layers** makes the network **deeper**, hence "deep learning".
+* Each layer transforms the data, extracting higher-level features.
+* Layers are stacked to progressively learn more complex patterns.
+* Outputs of one layer become inputs to the next.
+
+---
+
+## **Residual Connections (Brief Mention)**
+
+* Some advanced CNNs use **residual connections**: later layers receive input from earlier layers.
+* These are **not** covered in this video but are important in deeper architectures (e.g., ResNet).
+
+---
+
+## **Interactive Resource: CNN Explainer**
+
+* A **recommended external tool**: \[CNN Explainer Website].
+* Purpose: Visualize how CNNs process data.
+* Features:
+
+  * Demonstrates how kernels slide over images.
+  * Shows changes in output values layer by layer.
+  * Visualizes activations for each hidden unit.
+  * Interactive exploration of convolutional operations.
+
+> Assignment: Spend **20 minutes** exploring the CNN Explainer to deepen understanding.
+
+---
+
+## **Key Takeaways**
+
+* CNNs are powerful tools for image recognition tasks.
+* They operate through layers that perform **mathematical operations** (e.g., convolution, pooling).
+* PyTorch code for building a CNN is coming in the next lecture.
+* Explore the **intuition and theory** via the interactive website if needed before implementation.
+
+---
+
+## **Next Step**
+
+* Start building your **first CNN with PyTorch** in the next video.
+* The code will replicate the architecture shown in the CNN Explainer tool.
