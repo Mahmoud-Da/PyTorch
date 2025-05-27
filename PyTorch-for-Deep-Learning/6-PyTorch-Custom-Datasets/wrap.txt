@@ -202,3 +202,132 @@ In the following sections, we will:
 * Work with a real custom dataset
 * Load and preprocess our own image data
 * Build a computer vision model using this dataset
+
+*** 136. Downloading a Custom Dataset of Pizza, Steak and Sushi Images ***
+## **PyTorch Custom Datasets – Part 2: Obtaining the Dataset**
+
+### **Objective**
+
+Prepare a smaller custom dataset (Pizza, Steak, Sushi) derived from the **Food101 dataset** to practice working with custom data in PyTorch.
+
+---
+
+### **1. Overview:**
+
+* The full **Food101** dataset contains:
+
+  * **101 food categories**
+  * **101,000 images**
+  * Each class has:
+
+    * **750 training images**
+    * **250 test images**
+* For this course, a **smaller subset** was created:
+
+  * **3 categories**: `pizza`, `steak`, `sushi`
+  * **10% of original data**: \~75 train / 25 test images per class
+
+**Reason for Subsetting**:
+Smaller datasets allow **faster experimentation** and **faster model training**. Always begin with a small version of the data and scale up as needed.
+
+---
+
+### **2. Dataset Structure**
+
+Created in **image classification style**:
+
+-------------------code----------------------
+pizza_steak_sushi/
+│
+├── train/
+│   ├── pizza/
+│   ├── steak/
+│   └── sushi/
+│
+└── test/
+    ├── pizza/
+    ├── steak/
+    └── sushi/
+-------------------code----------------------
+
+Creation process documented in the `extras` folder:
+**Extras → Custom Data Creation → pizza\_steak\_sushi notebook**
+
+---
+
+### **3. Downloading the Dataset**
+
+#### **Libraries Used**
+
+-------------------code----------------------
+import requests
+import zipfile
+from pathlib import Path
+-------------------code----------------------
+
+#### **Set Paths**
+
+-------------------code----------------------
+data_path = Path("data")
+image_path = data_path / "pizza_steak_sushi"
+-------------------code----------------------
+
+#### **Check for Existing Data**
+
+-------------------code----------------------
+if image_path.is_dir():
+    print(f"[INFO] {image_path} directory exists. Skipping download.")
+else:
+    print(f"[INFO] {image_path} does not exist. Creating directory...")
+    image_path.mkdir(parents=True, exist_ok=True)
+-------------------code----------------------
+
+#### **Download the Dataset**
+
+Use the **raw** URL from GitHub (important: must use `raw.githubusercontent.com`, not `github.com/blob`):
+
+-------------------code----------------------
+url = "https://raw.githubusercontent.com/mrdbourke/pytorch-deep-learning/main/data/pizza_steak_sushi.zip"
+target_file = data_path / "pizza_steak_sushi.zip"
+
+with open(target_file, "wb") as f:
+    print("[INFO] Downloading pizza_steak_sushi dataset...")
+    request = requests.get(url)
+    f.write(request.content)
+-------------------code----------------------
+
+#### **Unzip the Dataset**
+
+-------------------code----------------------
+with zipfile.ZipFile(target_file, "r") as zip_ref:
+    print("[INFO] Unzipping dataset...")
+    zip_ref.extractall(image_path)
+-------------------code----------------------
+
+#### **Final Structure Check**
+
+Once unzipped, you should see:
+
+-------------------code----------------------
+data/
+└── pizza_steak_sushi/
+    ├── train/
+    │   ├── pizza/
+    │   ├── steak/
+    │   └── sushi/
+    └── test/
+        ├── pizza/
+        ├── steak/
+        └── sushi/
+-------------------code----------------------
+
+---
+
+### **4. Key Takeaways**
+
+* Start small when working on ML projects.
+* Use reproducible scripts to download and set up datasets.
+* Always verify dataset structure before loading into PyTorch.
+* The same setup applies to other custom datasets and domains (text, audio, etc.).
+
+---
