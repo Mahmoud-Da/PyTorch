@@ -423,3 +423,128 @@ data/
 * Continue building the data input pipeline for a computer vision model.
 
 ---
+
+*** 138. Becoming One With the Data (Part 2): Visualizing a Random Image ***
+## **Lecture Summary: Visualizing and Exploring Image Data**
+
+### **Recap**
+
+* Dataset structure:
+
+  * Around 75 training images and 25 testing images per class.
+  * Each image class (e.g., steak, pizza, sushi) is placed in its respective folder:
+
+    -------------------code----------------------
+    train/steak/
+    train/pizza/
+    test/steak/
+    test/pizza/
+    -------------------code----------------------
+  * This is the standard structure for image classification tasks.
+  * When creating your own dataset, follow the same directory-based organization by class.
+
+---
+
+### **Objective**
+
+Transform image files into tensors, but first, **explore and visualize** the data.
+
+---
+
+### **Plan to Visualize a Random Image**
+
+1. **Get all image paths** using `pathlib.Path.glob()`.
+2. **Pick a random image** path using `random.choice()`.
+3. **Extract the image class name** (i.e., folder name) using `.parent.stem`.
+4. **Open the image** using the Pillow library (`PIL.Image.open()`).
+5. **Print image metadata** (class name, width, height).
+6. **Display the image**.
+
+---
+
+### **Implementation Details**
+
+#### 1. **Get All Image Paths**
+
+-------------------code----------------------
+from pathlib import Path
+
+image_path_list = list(Path("data/images").glob("*/*/*.jpg"))
+-------------------code----------------------
+
+* `*/*/*.jpg`: Matches class folders in train/test sets and all `.jpg` images.
+* Helps load all images across different categories and dataset splits.
+
+#### 2. **Set Random Seed**
+
+-------------------code----------------------
+import random
+random.seed(42)
+-------------------code----------------------
+
+* Ensures reproducibility by selecting the same random image.
+
+#### 3. **Select a Random Image**
+
+-------------------code----------------------
+random_image_path = random.choice(image_path_list)
+-------------------code----------------------
+
+#### 4. **Get Image Class Name**
+
+-------------------code----------------------
+image_class = random_image_path.parent.stem
+-------------------code----------------------
+
+#### 5. **Open the Image**
+
+-------------------code----------------------
+from PIL import Image
+img = Image.open(random_image_path)
+-------------------code----------------------
+
+* Pillow (`PIL`) is used to open and process images.
+
+#### 6. **Print Metadata**
+
+-------------------code----------------------
+print(f"Path: {random_image_path}")
+print(f"Class: {image_class}")
+print(f"Width: {img.width}, Height: {img.height}")
+-------------------code----------------------
+
+#### 7. **Display the Image**
+
+-------------------code----------------------
+img.show()
+-------------------code----------------------
+
+---
+
+### **Why Visualize Randomly?**
+
+* Encourages better understanding of the dataset.
+* Random selection helps uncover anomalies or edge cases.
+* Important step before training to avoid surprises later.
+
+---
+
+### **Note on Data Visualization**
+
+* For other domains (e.g., text, audio), similar methods exist:
+
+  * Listen to random audio
+  * Read random text
+* Use domain-specific libraries for loading and displaying data.
+
+---
+
+### **Challenge Before Next Lecture**
+
+**Try to visualize a random image using Matplotlib** instead of `img.show()`:
+
+* Use `matplotlib.pyplot.imshow()`
+* Keep randomness and metadata output
+
+---
+
