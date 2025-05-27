@@ -548,3 +548,80 @@ img.show()
 
 ---
 
+
+*** 139. Becoming One With the Data (Part 3): Visualizing a Random Image with Matplotlib ***
+
+## **Lecture Summary: Visualizing Images with Matplotlib**
+
+### **Recap**
+
+* Previously visualized images using the Pillow (`PIL`) library.
+* Challenge from the last lecture: replicate the image visualization using **Matplotlib**.
+* Goal: Understand how to work with image arrays and prepare for PyTorch.
+
+---
+
+## **Why Use Matplotlib and NumPy?**
+
+* **Matplotlib** is one of the most widely used libraries for data visualization in Python.
+* **NumPy** is needed to convert the image object into an array format for plotting.
+
+---
+
+## **Steps to Visualize an Image with Matplotlib**
+
+### 1. **Convert Image to NumPy Array**
+
+-------------------code----------------------
+import numpy as np
+
+image_as_array = np.array(image)
+-------------------code----------------------
+
+* `image` is the object previously opened using Pillow.
+* Converts the image to a numeric array format that Matplotlib can render.
+
+### 2. **Plot the Image Using Matplotlib**
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 7))
+plt.imshow(image_as_array)
+plt.title(f"{image_class} | Shape: {image_as_array.shape}")
+plt.axis('off')
+plt.show()
+-------------------code----------------------
+
+* `image_class` is the class label (e.g., "pizza", "steak").
+* `image_as_array.shape` returns a tuple in the format: `(height, width, channels)`.
+
+---
+
+## **Understanding Image Shape and Format**
+
+* Example shape: `(512, 363, 3)`
+
+  * **512** = height in pixels
+  * **363** = width in pixels
+  * **3** = number of color channels (RGB)
+
+### **Channel Format**
+
+* **Pillow & Matplotlib**: Use **channels last** format `(H, W, C)`
+* **PyTorch**: Uses **channels first** format `(C, H, W)`
+
+> It's essential to understand shape formatting to prevent mismatched tensor shape errors during model training.
+
+---
+
+## **Summary and Next Steps**
+
+* Visualizing random images is a powerful technique for better data understanding.
+* This process applies across domains (e.g., audio, text).
+* Now that we've explored the structure and shape of our data:
+
+  * Next step: **Convert all images into PyTorch tensors**
+  * Images have varying height and width but consistently 3 color channels.
+
+---
