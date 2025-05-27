@@ -80,3 +80,125 @@ To work with custom data, we will follow a familiar PyTorch workflow:
 Creating a machine learning model is not just science—it's also art. This section emphasizes hands-on, creative development, treating code like a recipe in a kitchen—experiment, build, and iterate.
 
 ---
+
+*** 135. Importing PyTorch and Setting Up Device Agnostic Code ***
+## **Lecture Notes: Setting Up PyTorch for Custom Datasets**
+
+### **1. Objective**
+
+This lecture introduces the initial setup for working with **custom datasets in PyTorch** using Google Colab. The focus is on preparing the environment, understanding the purpose of custom datasets, and reinforcing the use of PyTorch domain libraries.
+
+---
+
+### **2. Google Colab Setup**
+
+* Navigate to: `https://colab.research.google.com`
+* Click **“New Notebook”**
+* Rename the notebook to something meaningful, e.g.,
+  `04_pytorch_custom_datasets_video.ipynb`
+* This notebook will contain all the code from the video and is placed in the **video notebooks** folder of the PyTorch Deep Learning repo.
+
+---
+
+### **3. Notebook Structure**
+
+Add initial markdown cells:
+
+* **Title**: `PyTorch Custom Datasets – Video Notebook`
+* **Resources**:
+
+  * Book version of the course materials
+  * Ground-truth version of Notebook 04 (for reference and validation)
+
+---
+
+### **4. Purpose of This Section**
+
+* Previous lessons used built-in datasets in PyTorch.
+* The goal now is to learn **how to load your own data** into PyTorch.
+* Custom datasets allow you to tackle **real-world problems with your own data**.
+
+---
+
+### **5. Domain Libraries Reminder**
+
+Reiterate the use of **PyTorch domain libraries** depending on the data type:
+
+* `torchvision` for images (vision)
+* `torchtext` for text
+* `torchaudio` for audio
+* `torchrec` for recommendation systems
+
+Each library has dataset modules and helper functions for loading various types of data.
+
+---
+
+### **6. Initial Code Setup**
+
+#### a. **Importing Required Libraries**
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+#### b. **Importing Neural Network Module**
+
+-------------------code----------------------
+from torch import nn
+-------------------code----------------------
+
+#### c. **Checking PyTorch Version**
+
+-------------------code----------------------
+print(torch.__version__)
+-------------------code----------------------
+
+* Ensure PyTorch **v1.10.0 or higher** is installed (minimum requirement for the course).
+
+#### d. **Device Agnostic Code**
+
+Set up the device to use GPU if available:
+
+-------------------code----------------------
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using device: {device}")
+-------------------code----------------------
+
+---
+
+### **7. GPU Setup in Google Colab**
+
+By default, new Colab instances use **CPU**. To enable **GPU**:
+
+* Click `Runtime` → `Change runtime type`
+* Select `GPU` as the **hardware accelerator**
+* Re-run the code to verify CUDA is available
+
+#### Example:
+
+-------------------code----------------------
+!nvidia-smi
+-------------------code----------------------
+
+* Output shows GPU details (e.g., **Tesla P100** with 16GB memory in this case)
+
+> Note: Colab Pro users may have access to faster and more reliable GPUs, but it is **not required** for completing the course.
+
+---
+
+### **8. Summary of This Lecture**
+
+* Introduced the concept and motivation behind using **custom datasets** in PyTorch.
+* Set up a new Colab notebook environment.
+* Reviewed **domain libraries** in PyTorch.
+* Ensured PyTorch version compatibility and **device configuration** for optimized training.
+
+---
+
+### **Next Steps**
+
+In the following sections, we will:
+
+* Work with a real custom dataset
+* Load and preprocess our own image data
+* Build a computer vision model using this dataset
