@@ -948,3 +948,123 @@ print(train_data.samples[0])
 * Many useful attributes are built into `ImageFolder`, allowing for easy exploration and integration.
 
 ---
+
+
+*** 143. Visualizing a Loaded Image From the Train Dataset *** 
+# **Lecture Summary: Visualizing and Preparing Image Data for PyTorch Models**
+
+## **Recap**
+
+* In the previous video, `ImageFolder` was used to load image data and apply a series of transformations using a transform pipeline:
+
+  * Resize to (64, 64)
+  * Random horizontal flip
+  * Convert to PyTorch tensor
+* The resulting dataset is now fully compatible with PyTorch models.
+
+---
+
+## **Visualizing a Sample from the Training Dataset**
+
+### **Accessing Image and Label**
+
+-------------------code----------------------
+image, label = train_data[0]
+-------------------code----------------------
+
+* This returns:
+
+  * `image`: a tensor representing the image.
+  * `label`: a numeric index corresponding to a class.
+
+### **Converting Numeric Label to String**
+
+-------------------code----------------------
+class_names[label]
+-------------------code----------------------
+
+* Converts the numeric label back to a human-readable class name (e.g., "pizza").
+
+---
+
+## **Inspecting the Tensor**
+
+-------------------code----------------------
+print(f"Image Tensor:\n{image}")
+print(f"Image Shape: {image.shape}")
+print(f"Image Dtype: {image.dtype}")
+print(f"Label: {label}")
+print(f"Label Type: {type(label)}")
+-------------------code----------------------
+
+### **Key Takeaways**
+
+* Image shape: `torch.Size([3, 64, 64])` — Channels First (C, H, W)
+* Image dtype: `torch.float32` — Default in PyTorch
+* Label: Integer
+* Label type: `<class 'int'>`
+
+**Note**: Shape, dtype, and device mismatches are common sources of bugs in PyTorch workflows.
+
+---
+
+## **Plotting the Image using Matplotlib**
+
+### **Permute Tensor for Plotting**
+
+-------------------code----------------------
+image_permuted = image.permute(1, 2, 0)
+-------------------code----------------------
+
+* Converts shape from `[C, H, W]` to `[H, W, C]` which is required by Matplotlib.
+
+### **Print New Shape**
+
+-------------------code----------------------
+print(f"Permuted Shape: {image_permuted.shape}")
+-------------------code----------------------
+
+### **Plot the Image**
+
+-------------------code----------------------
+plt.figure(figsize=(10, 7))
+plt.imshow(image_permuted)
+plt.axis(False)
+plt.title(class_names[label], fontsize=14)
+plt.show()
+-------------------code----------------------
+
+* Displays the image with class label as the title.
+
+---
+
+## **Suggestions for Practice**
+
+* Try visualizing a **random image** from the dataset instead of the first one.
+* Modify the **transform pipeline** to experiment with different preprocessing techniques:
+
+  * Increase image size.
+  * Add new transforms from `torchvision.transforms`.
+
+---
+
+## **Next Steps**
+
+* Convert the dataset into a **DataLoader** for batch processing:
+
+  * Allows shuffling, parallel loading, and batching of the dataset.
+  * Recommended for efficient training of PyTorch models.
+
+### **Encouragement for Practice**
+
+* Try writing your own `DataLoader`:
+
+  -------------------code----------------------
+  from torch.utils.data import DataLoader
+
+  train_dataloader = DataLoader(train_data, batch_size=32, shuffle=True)
+  test_dataloader = DataLoader(test_data, batch_size=32)
+  -------------------code----------------------
+* This is an essential step in preparing data for training neural networks.
+
+---
