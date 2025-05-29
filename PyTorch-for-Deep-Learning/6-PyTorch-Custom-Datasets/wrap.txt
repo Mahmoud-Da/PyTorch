@@ -1,0 +1,82 @@
+*** 134. What Is a Custom Dataset and What We Are Going to Cover ***
+## **Lecture Notes: Custom Datasets in PyTorch**
+
+### **1. Introduction to Custom Datasets**
+
+* So far, various PyTorch models have been built using standard datasets (e.g., FashionMNIST).
+* The question arises: *Can PyTorch models be built using your own custom data?*
+* **Answer:** Yes, but the data must go through preprocessing steps to make it compatible with PyTorch.
+
+---
+
+### **2. PyTorch Domain Libraries**
+
+PyTorch offers specialized libraries for different types of data:
+
+* **torchvision**: For image (vision) data (e.g., classifying photos of food).
+* **torchtext**: For natural language/text data (e.g., sentiment analysis).
+* **torchaudio**: For audio data (e.g., identifying music like Shazam).
+* **torchrec**: For recommendation systems (e.g., Netflix home page).
+* **torchdata** (in beta as of April 2022): General data loading utilities.
+
+Each domain library contains:
+
+* Prebuilt datasets.
+* Functions to load and preprocess your own custom data.
+
+---
+
+### **3. Example Use Case: Building a Custom Dataset**
+
+#### Goal:
+
+Build an image classification model named **FoodVision Mini**.
+
+#### Dataset:
+
+* Custom image dataset including: **pizza, sushi, and steak**.
+* Based on the **Food101** dataset.
+
+#### Objective:
+
+* Load images into PyTorch.
+* Train a model to classify images as either pizza, sushi, or steak.
+* Use this model in a practical app (e.g., **NutriFact App**).
+
+---
+
+### **4. The PyTorch Workflow**
+
+To work with custom data, we will follow a familiar PyTorch workflow:
+
+1. **Load the custom dataset** using prebuilt or custom functions.
+2. **Transform and visualize** the data.
+3. **Prepare the data** for modeling (e.g., using transformations).
+4. **Build and train** the model:
+
+   * Define model architecture.
+   * Choose loss function and optimizer.
+   * Write a training loop.
+   * Evaluate performance.
+5. **Improve** the model through experimentation (e.g., data augmentation).
+6. **Make predictions** on new, unseen custom data.
+7. **Save and reload** the trained model.
+
+---
+
+### **5. Summary of What Will Be Learned**
+
+* How to work with **custom datasets** in PyTorch.
+* How to use domain libraries effectively (vision, text, audio, recommendation).
+* How to load and transform your own data for training.
+* How to **build, train, evaluate, and test** a computer vision model.
+* Importance of **predicting on your own data** to validate real-world performance.
+* Intro to **data augmentation** to boost model performance.
+
+---
+
+### **Conclusion**
+
+Creating a machine learning model is not just science—it's also art. This section emphasizes hands-on, creative development, treating code like a recipe in a kitchen—experiment, build, and iterate.
+
+---
