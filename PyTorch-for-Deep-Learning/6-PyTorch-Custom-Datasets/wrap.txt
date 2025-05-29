@@ -625,3 +625,97 @@ plt.show()
   * Images have varying height and width but consistently 3 color channels.
 
 ---
+
+*** 140. Transforming Data (Part 1): Turning Images Into Tensors ***
+# Lecture Notes: Transforming Data for PyTorch
+
+## 1. Introduction
+
+* Previously, we converted an image to a NumPy array, illustrating how images can be represented as arrays.
+* In this lecture, we aim to load images from a **custom dataset** (e.g., Pizza, Steak, Sushi) and transform them for use in PyTorch.
+
+---
+
+## 2. Goal
+
+To use image data with PyTorch, we need to:
+
+1. Convert data into **tensors**.
+2. Wrap data in a **`torch.utils.data.Dataset`** object.
+
+Then, use:
+
+* **`DataLoader`** to create an iterable or batchable dataset.
+
+This applies not only to images but also to text, audio, and other data types.
+
+---
+
+## 3. TorchVision Dataset and Transform
+
+### 3.1 PyTorch Datasets
+
+* PyTorch provides built-in datasets and base classes to define **custom datasets**.
+* Use **`torchvision.datasets.ImageFolder`** for structured image directories.
+* The `transform` parameter is key for preprocessing the data.
+
+---
+
+## 4. Applying Transforms
+
+### 4.1 Why Use Transforms?
+
+* Transforms prepare raw data for use with models.
+* You can chain multiple transforms to manipulate the data before feeding it into the model.
+* Common goals: resizing, normalization, tensor conversion, augmentation.
+
+---
+
+## 5. Example: Defining a Transform Pipeline
+
+-------------------code----------------------
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+-------------------code----------------------
+
+### 5.1 Define a Transform
+
+-------------------code----------------------
+data_transform = transforms.Compose([
+    transforms.Resize((64, 64)),                      # Resize to 64x64
+    transforms.RandomHorizontalFlip(p=0.5),           # Augment with random flip
+    transforms.ToTensor()                             # Convert to tensor (0–1 range)
+])
+-------------------code----------------------
+
+### Explanation:
+
+* **`Resize((64, 64))`**: Matches input size expected by some CV models (e.g., TinyVGG).
+* **`RandomHorizontalFlip(p=0.5)`**: Adds variation to training data via augmentation.
+* **`ToTensor()`**: Converts a PIL image or NumPy array to a `torch.FloatTensor` with shape \[C, H, W] and values scaled from \[0, 255] → \[0, 1].
+
+---
+
+## 6. Testing the Transform
+
+### Single Image Test
+
+-------------------code----------------------
+# Assuming `img` is a PIL image:
+transformed_img = data_transform(img)
+print(transformed_img.shape)     # Expected: [3, 64, 64]
+print(transformed_img.dtype)     # Expected: torch.float32
+-------------------code----------------------
+
+* You must pass a **PIL image**, not a NumPy array.
+* This pipeline resizes, optionally flips, and converts the image.
+
+---
+
+## 7. Next Step
+
+* Currently, the transform is applied to a **single image**.
+* In the next part, we’ll apply transforms to **all images** in a folder and visualize the results.
+* We’ll compare original vs. transformed images side by side.
+
+---
