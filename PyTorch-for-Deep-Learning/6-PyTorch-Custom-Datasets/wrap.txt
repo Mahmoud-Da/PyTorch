@@ -1814,3 +1814,113 @@ display_random_images(train_data_custom, classes=class_names, n=20, seed=42)
 > **Convert the custom dataset (`train_data_custom`, `test_data_custom`) into DataLoaders**, just as was done earlier for the built-in `ImageFolder`.
 
 ---
+
+*** 150. Turning Our Custom Datasets Into DataLoaders ***
+## **Lecture Summary: Creating a DataLoader for a Custom Dataset in PyTorch**
+
+### **1. Overview**
+
+* The goal is to convert a custom dataset into a `DataLoader` to enable batching and efficient loading during model training and evaluation.
+* This allows PyTorch models to work seamlessly with the custom dataset.
+
+---
+
+### **2. Importing Required Module**
+
+-------------------code----------------------
+from torch.utils.data import DataLoader
+-------------------code----------------------
+
+---
+
+### **3. Creating DataLoaders**
+
+#### **3.1 Set Batch Size Parameter**
+
+-------------------code----------------------
+BATCH_SIZE = 32
+-------------------code----------------------
+
+#### **3.2 Training DataLoader**
+
+-------------------code----------------------
+train_dataloader_custom = DataLoader(
+    dataset=train_data_custom,
+    batch_size=BATCH_SIZE,
+    num_workers=0,
+    shuffle=True
+)
+-------------------code----------------------
+
+#### **3.3 Testing DataLoader**
+
+-------------------code----------------------
+test_dataloader_custom = DataLoader(
+    dataset=test_data_custom,
+    batch_size=BATCH_SIZE,
+    num_workers=0,
+    shuffle=False
+)
+-------------------code----------------------
+
+**Note on `num_workers`:**
+
+* `num_workers=0` is the default.
+* It controls how many subprocesses are used for data loading.
+* Higher values may improve performance depending on hardware.
+* Can also set dynamically using:
+
+-------------------code----------------------
+import os
+NUM_WORKERS = os.cpu_count()
+-------------------code----------------------
+
+---
+
+### **4. Verifying DataLoader Output**
+
+#### **4.1 Extract One Batch**
+
+-------------------code----------------------
+image_custom, label_custom = next(iter(train_dataloader_custom))
+-------------------code----------------------
+
+#### **4.2 Check Shapes**
+
+-------------------code----------------------
+print(image_custom.shape)  # torch.Size([32, 3, 64, 64])
+print(label_custom.shape)  # Depends on label encoding
+-------------------code----------------------
+
+* Output shape confirms:
+
+  * Batch size: 32
+  * Channels: 3 (RGB)
+  * Image size: 64x64 (as set by the transform)
+
+---
+
+### **5. Reusability**
+
+* Code for custom dataset and DataLoader can be abstracted into helper modules (e.g., `dataset.py`) for reuse.
+* This mirrors the design of `torchvision.datasets.ImageFolder`.
+
+---
+
+### **6. Batch Size Considerations**
+
+* Changing batch size is as simple as modifying the `BATCH_SIZE` parameter.
+* Optimal batch sizes:
+
+  * Should be a multiple of 8 for better computational efficiency.
+  * Can vary depending on hardware and model.
+
+---
+
+### **7. Summary**
+
+* Custom datasets can be integrated with PyTorch’s `DataLoader` for efficient model training.
+* Reusing modular components makes the workflow more efficient.
+* Next topic: Data augmentation using `torchvision.transforms`.
+
+---
