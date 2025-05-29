@@ -331,3 +331,95 @@ data/
 * The same setup applies to other custom datasets and domains (text, audio, etc.).
 
 ---
+
+*** 137. Becoming One With the Data (Part 1): Exploring the Data Format ***
+## Lecture Summary: Exploring and Preparing Custom Image Data for Classification in PyTorch
+
+### 1. **Recap and Dataset Context**
+
+* In the previous session, we downloaded a custom dataset based on the Food101 dataset.
+* The dataset was reduced from 101 classes to 3: **pizza**, **steak**, and **sushi** for experimentation purposes.
+* Dataset sourced from [TorchVision's Food101 dataset](https://pytorch.org/vision/stable/generated/torchvision.datasets.Food101.html).
+* Data is arranged in the standard **image classification format**:
+
+  -------------------code----------------------
+  dataset/
+  ├── train/
+  │   ├── pizza/
+  │   ├── steak/
+  │   └── sushi/
+  └── test/
+      ├── pizza/
+      ├── steak/
+      └── sushi/
+  -------------------code----------------------
+
+---
+
+### 2. **Section Introduction: Becoming One with the Data**
+
+* This section focuses on **data exploration and preparation**.
+* A humorous, fictional quote is referenced:
+  *"If I had 8 hours to build a machine learning model, I'd spend 6 hours preparing my dataset." — Abraham Loss Function*
+
+---
+
+### 3. **Walking Through Directories**
+
+* Python’s `os.walk()` is used to recursively explore dataset directories.
+* The function returns a tuple:
+
+  -------------------code----------------------
+  (dirpath, dirnames, filenames)
+  -------------------code----------------------
+* This is useful for:
+
+  * Counting the number of images per class
+  * Verifying the directory structure
+
+#### Example Output:
+
+* `data/pizza_steak_sushi/` has 2 directories (`train/`, `test/`)
+* `data/pizza_steak_sushi/test/steak` contains 19 test images
+* `data/pizza_steak_sushi/train/` contains:
+
+  * 78 pizza images
+  * 75 steak images
+  * 72 sushi images
+
+---
+
+### 4. **Dataset Preparation**
+
+* Setting up dataset paths:
+
+  -------------------code----------------------
+  train_dir = "path/to/train"
+  test_dir = "path/to/test"
+  -------------------code----------------------
+* This mirrors standard format expected by PyTorch's `ImageFolder`:
+
+  * Root directory contains subfolders for each class
+  * Class name = folder name
+  * Images for each class go inside corresponding folders
+
+---
+
+### 5. **Why Use This Format?**
+
+* PyTorch's `torchvision.datasets.ImageFolder` expects this format by default.
+* Advantages:
+
+  * Easy to load with built-in tools
+  * Simple structure
+  * Easily scalable (e.g., to 101 classes)
+
+---
+
+### 6. **Next Steps**
+
+* Visualize images for further understanding.
+* Write PyTorch code to convert images into tensors.
+* Continue building the data input pipeline for a computer vision model.
+
+---
