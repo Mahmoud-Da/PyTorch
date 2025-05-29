@@ -2344,7 +2344,7 @@ y = torch.nn.ReLU()(y)
 
 With operator fusion, internally the compiler produces:
 
--------------------code----------------------cpp
+-------------------code----------------------
 fused_conv_relu(x)
 -------------------code----------------------
 
@@ -2369,5 +2369,150 @@ This gets translated to a single, highly optimized CUDA kernel.
   [https://horace.io/brrr\_intro.html](https://horace.io/brrr_intro.html)
 * PyTorch's [TorchScript Optimization](https://pytorch.org/docs/stable/jit.html)
 * NVIDIA's [TensorRT Optimization Guide](https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html)
+
+---
+
+*** 154. Building a Baseline Model (Part 3):Doing a Forward Pass to Test Our Model Shapes ***
+## **Lecture Summary: Forward Pass & Model Shape Debugging**
+
+### **Recap**
+
+* Rebuilt a small CNN architecture similar to the **Tiny VGG** from the CNN Explainer website.
+* This time used **color images** instead of grayscale.
+* Built the model faster than before due to prior experience with PyTorch.
+
+---
+
+## **Testing the Model: Dummy Forward Pass**
+
+### **Purpose**
+
+* Ensure the model’s `forward()` method works correctly.
+* Verify input and output shapes match expectations.
+
+---
+
+## **Step 1: Prepare Input Data**
+
+* Retrieve a **single image batch** and its corresponding label batch from the `train_dataloader`.
+* Use `next(iter(train_dataloader))` to get one batch.
+* Print `image_batch.shape` and `label_batch.shape` to inspect them.
+
+---
+
+## **Step 2: Forward Pass Attempt**
+
+* Try passing the `image_batch` through the model:
+
+  -------------------code----------------------
+  model_0(image_batch)
+  -------------------code----------------------
+
+### **Encountered Error #1**
+
+* **Device mismatch**: Model on CUDA, image batch on CPU.
+* Solution: Move the input batch to the same device as the model.
+
+---
+
+## **Step 3: Fix Device Mismatch**
+
+-------------------code----------------------
+image_batch = image_batch.to(device)
+output = model_0(image_batch)
+-------------------code----------------------
+
+### **Encountered Error #2**
+
+* **Shape mismatch during matrix multiplication** in the linear layer:
+
+  -------------------code----------------------
+  RuntimeError: mat1 and mat2 shapes cannot be multiplied (32x2560 and 10x16)
+  -------------------code----------------------
+
+---
+
+## **Step 4: Analyze Shape Error**
+
+* Root of the issue: Shapes not matching due to misconfigured `in_features` in the classifier layer.
+* Debugging tip: Check the output of the last convolutional block and the flattening layer.
+* Manually calculate or print output shapes to determine the correct number of features.
+
+### **Calculation**
+
+* For example, if output shape is `[32, 10, 16, 16]`:
+
+  -------------------code----------------------
+  Flattened input to linear layer = 10 * 16 * 16 = 2560
+  -------------------code----------------------
+
+---
+
+## **Step 5: Fix Classifier Layer Input**
+
+* Update the classifier’s `in_features` to match the flattened output:
+
+  -------------------code----------------------
+  nn.Linear(2560, ...)
+  -------------------code----------------------
+
+* Re-run the forward pass and verify:
+
+  * Output shape matches expected `[batch_size, num_classes]`, e.g., `[32, 3]`
+  * Model outputs are on the correct device
+
+---
+
+## **Shape Debugging: Padding Adjustment**
+
+* Noticed output shape didn't match CNN Explainer’s output.
+* Hypothesis: The CNN Explainer model might use **no padding** in conv layers.
+* Set all convolution layers' padding to `0`.
+
+### **Recalculate Output Shape**
+
+* Output shape after removing padding becomes:
+
+  -------------------code----------------------
+  Conv block output: [32, 10, 13, 13]
+  Flattened input = 10 * 13 * 13 = 1690
+  -------------------code----------------------
+
+* Update classifier’s `in_features` again:
+
+  -------------------code----------------------
+  nn.Linear(1690, ...)
+  -------------------code----------------------
+
+* Run forward pass to verify that output shape now matches.
+
+---
+
+## **Final Verification**
+
+* Output from forward pass is valid:
+
+  * Shape: `[32, 3]` → corresponds to 32 samples, 3 class predictions
+  * Model is not trained yet; outputs are random
+* Confirms that data flows through the model correctly
+
+---
+
+## **Preview: Using `torchinfo`**
+
+* Next step: Use the `torchinfo` package to visualize model architecture and shapes.
+
+* To try:
+
+  -------------------code----------------------bash
+  pip install torchinfo
+  -------------------code----------------------
+
+  -------------------code----------------------
+  from torchinfo import summary
+  summary(model_0, input_size=(32, 3, 64, 64))
+  -------------------code----------------------
+
+* Benefit: Easily verify layer-by-layer output shapes before training
 
 ---
