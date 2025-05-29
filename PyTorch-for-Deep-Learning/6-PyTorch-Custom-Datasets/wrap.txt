@@ -2766,18 +2766,18 @@ Trains the model for one epoch on a given training DataLoader.
 1. Set model to training mode: `model.train()`
 2. Initialize metrics:
 
-   ```python
+   -------------------code----------------------
    train_loss, train_acc = 0, 0
-   ```
+   -------------------code----------------------
 3. Loop through batches:
 
-   ```python
+   -------------------code----------------------
    for batch, (X, y) in enumerate(data_loader):
        X, y = X.to(device), y.to(device)
        y_pred = model(X)
        loss = loss_fn(y_pred, y)
        train_loss += loss.item()
-   ```
+   -------------------code----------------------
 4. Perform optimization:
 
    * `optimizer.zero_grad()`
@@ -2785,16 +2785,16 @@ Trains the model for one epoch on a given training DataLoader.
    * `optimizer.step()`
 5. Calculate accuracy:
 
-   ```python
+   -------------------code----------------------
    y_pred_class = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
    train_acc += (y_pred_class == y).sum().item() / len(y)
-   ```
+   -------------------code----------------------
 6. Compute average loss and accuracy:
 
-   ```python
+   -------------------code----------------------
    train_loss /= len(data_loader)
    train_acc /= len(data_loader)
-   ```
+   -------------------code----------------------
 
 ---
 
@@ -2816,31 +2816,31 @@ Evaluates the model's performance on the test dataset.
 1. Set model to evaluation mode: `model.eval()`
 2. Initialize metrics:
 
-   ```python
+   -------------------code----------------------
    test_loss, test_acc = 0, 0
-   ```
+   -------------------code----------------------
 3. Use inference mode to save memory:
 
-   ```python
+   -------------------code----------------------
    with torch.inference_mode():
        for batch, (X, y) in enumerate(data_loader):
            X, y = X.to(device), y.to(device)
            test_pred_logits = model(X)
            loss = loss_fn(test_pred_logits, y)
            test_loss += loss.item()
-   ```
+   -------------------code----------------------
 4. Calculate accuracy (optional: skip softmax):
 
-   ```python
+   -------------------code----------------------
    pred_labels = torch.argmax(test_pred_logits, dim=1)
    test_acc += (pred_labels == y).sum().item() / len(pred_labels)
-   ```
+   -------------------code----------------------
 5. Compute averages:
 
-   ```python
+   -------------------code----------------------
    test_loss /= len(data_loader)
    test_acc /= len(data_loader)
-   ```
+   -------------------code----------------------
 6. Return final metrics.
 
 ---
@@ -2854,5 +2854,145 @@ Evaluates the model's performance on the test dataset.
   * `loss_fn`, `optimizer`, `device`, and `epochs`
 
 This will help you consolidate both steps and easily manage training over multiple iterations.
+
+---
+
+*** 157. Creating a Train Function to Train and Evaluate Our Models ***
+## Lecture Summary: Creating a `train()` Function to Train and Evaluate Models
+
+### Objective
+
+To create a unified `train()` function that wraps both the `train_step()` and `test_step()` functions for training and evaluating a model.
+
+---
+
+### Purpose
+
+* Avoid code duplication.
+* Reuse functions to train multiple models efficiently.
+* Create a flexible pipeline for model experimentation.
+
+---
+
+### Steps to Build the `train()` Function
+
+#### 1. **Import tqdm for Progress Bar**
+
+-------------------code----------------------
+from tqdm.auto import tqdm
+-------------------code----------------------
+
+#### 2. **Define the `train()` Function**
+
+Signature:
+
+-------------------code----------------------
+def train(model, train_dataloader, test_dataloader, optimizer, loss_fn=nn.CrossEntropyLoss(), epochs=5, device=device):
+-------------------code----------------------
+
+* `model`: A `torch.nn.Module`.
+* `train_dataloader`: DataLoader for training.
+* `test_dataloader`: DataLoader for testing.
+* `optimizer`: Optimizer (used during training).
+* `loss_fn`: Loss function (used during training and testing).
+* `epochs`: Number of training epochs (default = 5).
+* `device`: Device to train on (CPU or CUDA).
+
+#### 3. **Initialize a Results Dictionary**
+
+Used to store performance metrics across epochs:
+
+-------------------code----------------------
+results = {
+    "train_loss": [],
+    "train_acc": [],
+    "test_loss": [],
+    "test_acc": []
+}
+-------------------code----------------------
+
+---
+
+### 4. **Training and Evaluation Loop**
+
+Loop through the number of epochs using `tqdm`:
+
+-------------------code----------------------
+for epoch in tqdm(range(epochs)):
+-------------------code----------------------
+
+Within the loop:
+
+* Call `train_step()`:
+
+-------------------code----------------------
+train_loss, train_acc = train_step(model, train_dataloader, loss_fn, optimizer, device)
+-------------------code----------------------
+
+* Call `test_step()`:
+
+-------------------code----------------------
+test_loss, test_acc = test_step(model, test_dataloader, loss_fn, device)
+-------------------code----------------------
+
+---
+
+### 5. **Print Metrics per Epoch**
+
+Use formatted print statements to display progress:
+
+-------------------code----------------------
+print(f"Epoch: {epoch} | Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.4f} | Test Loss: {test_loss:.4f} | Test Acc: {test_acc:.4f}")
+-------------------code----------------------
+
+---
+
+### 6. **Update Results Dictionary**
+
+Append values after each epoch:
+
+-------------------code----------------------
+results["train_loss"].append(train_loss)
+results["train_acc"].append(train_acc)
+results["test_loss"].append(test_loss)
+results["test_acc"].append(test_acc)
+-------------------code----------------------
+
+---
+
+### 7. **Return Results**
+
+Return the results dictionary after training:
+
+-------------------code----------------------
+return results
+-------------------code----------------------
+
+---
+
+### Troubleshooting Notes
+
+* Be cautious of missing commas or syntax errors in the function definition.
+* Type annotations for variables like `train_dataloader: torch.utils.data.DataLoader` may cause issues in certain environments (e.g., Google Colab).
+
+---
+
+### What's Next?
+
+* Define a loss function (e.g., `nn.CrossEntropyLoss()`).
+* Choose an optimizer (e.g., `torch.optim.Adam`).
+* Use the `train()` function to train and evaluate Model 0 on a custom dataset.
+
+---
+
+### Current Workflow Progress
+
+* Data preprocessing and conversion to tensors: **Done**
+* Model definition (TinyVGG): **Done**
+* Training loop function creation: **Done**
+* Loss function and optimizer: **To be implemented**
+* Model training and evaluation: **Upcoming**
+* Experimentation and improvement: **Later**
+* Saving and loading model: **Already covered in previous lessons**
 
 ---
