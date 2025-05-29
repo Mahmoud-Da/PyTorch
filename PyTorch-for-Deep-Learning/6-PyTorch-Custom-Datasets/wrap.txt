@@ -2124,3 +2124,250 @@ test_dataloader_simple = DataLoader(dataset=test_data_simple,
                                     num_workers=NUM_WORKERS)
 -------------------code----------------------
 ---
+
+
+*** 153. Building a Baseline Model (Part 2): Replicating Tiny VGG from Scratch ***
+## **Section 7.2: Building the TinyVGG Model (Model 0)**
+
+### **Recap**
+
+* In the previous video, the task was to replicate the TinyVGG architecture from the CNN Explainer website (used in notebook 3).
+* Differences from before:
+
+  * Notebook 3 used grayscale images (1 channel), but now we're using color images (3 channels).
+
+---
+
+### **1. Model Architecture Overview**
+
+**Class Definition:**
+
+-------------------code----------------------
+class TinyVGG(nn.Module):
+-------------------code----------------------
+
+* Inherits from `torch.nn.Module`
+* Constructor accepts:
+
+  * `input_shape` (int): number of input channels (e.g., 3 for RGB)
+  * `hidden_units` (int): number of hidden channels
+  * `output_shape` (int): number of classes (e.g., 3 for pizza, steak, sushi)
+
+**Initialization:**
+
+-------------------code----------------------
+def __init__(self, input_shape: int, hidden_units: int, output_shape: int):
+    super().__init__()
+-------------------code----------------------
+
+---
+
+### **2. Convolutional Blocks**
+
+**Conv Block 1:**
+
+-------------------code----------------------
+self.conv_block_1 = nn.Sequential(
+    nn.Conv2d(in_channels=input_shape, out_channels=hidden_units, kernel_size=3, stride=1, padding=1),
+    nn.ReLU(),
+    nn.Conv2d(in_channels=hidden_units, out_channels=hidden_units, kernel_size=3, stride=1, padding=1),
+    nn.ReLU(),
+    nn.MaxPool2d(kernel_size=2, stride=2)
+)
+-------------------code----------------------
+
+**Conv Block 2:**
+
+* Same structure as Block 1, but input channels set to `hidden_units`.
+
+-------------------code----------------------
+self.conv_block_2 = nn.Sequential(
+    nn.Conv2d(hidden_units, hidden_units, 3, 1, 1),
+    nn.ReLU(),
+    nn.Conv2d(hidden_units, hidden_units, 3, 1, 1),
+    nn.ReLU(),
+    nn.MaxPool2d(2, 2)
+)
+-------------------code----------------------
+
+---
+
+### **3. Classifier Block**
+
+-------------------code----------------------
+self.classifier = nn.Sequential(
+    nn.Flatten(),
+    nn.Linear(in_features=?, out_features=output_shape)
+)
+-------------------code----------------------
+
+* `in_features` must be computed by passing a sample input through the conv blocks.
+* Alternative: calculate the feature map dimensions manually using conv/pooling formulas.
+
+---
+
+### **4. Forward Pass**
+
+**Verbose method (with print debug):**
+
+-------------------code----------------------
+def forward(self, x):
+    x = self.conv_block_1(x)
+    print(x.shape)
+    x = self.conv_block_2(x)
+    print(x.shape)
+    x = self.classifier(x)
+    return x
+-------------------code----------------------
+
+**Operator Fusion (optimized, concise):**
+
+-------------------code----------------------
+def forward(self, x):
+    return self.classifier(self.conv_block_2(self.conv_block_1(x)))
+-------------------code----------------------
+
+* Operator Fusion combines operations into one optimized computation to reduce CPU/GPU memory transfers.
+
+---
+
+### **5. Model Instantiation**
+
+-------------------code----------------------
+model_0 = TinyVGG(input_shape=3, hidden_units=10, output_shape=len(class_names))
+model_0.to(device)
+-------------------code----------------------
+
+* `input_shape = 3` (RGB channels)
+* `hidden_units = 10` (can be any value: 10, 64, 128, etc.)
+* `output_shape = 3` (for 3 classes)
+* Move model to the target device (e.g., GPU via CUDA)
+
+---
+
+### **6. Debugging and Validation**
+
+* Use dummy data to pass through the model and verify:
+
+  * Forward pass is correct.
+  * Shape compatibility at each layer.
+* This will be covered in the next video.
+
+---
+
+### **Additional Resources**
+
+* **Operator Fusion**:
+
+  * Speeds up GPU performance by reducing memory-compute transfers.
+  * Blog post: *"How to Make Your GPUs Go BR From First Principles"* by Horace He
+  * Key concept: fuse operations to avoid unnecessary memory operations.
+
+---
+
+### **What is Operator Fusion?**
+
+**Operator Fusion** is an optimization technique used in deep learning compilers and frameworks to **combine multiple operations (or layers) into a single computational kernel**. This reduces the overhead of moving data between the CPU and GPU or between different memory units on the GPU.
+
+Instead of executing each operation (e.g., convolution → ReLU → batch norm) separately—each involving memory read/write—**operator fusion merges them into one fused operation** that executes more efficiently.
+
+---
+
+### **Why It Matters**
+
+Deep learning models often have many layers, each doing small tasks:
+
+-------------------code----------------------plaintext
+Input → Conv2d → ReLU → BatchNorm → MaxPool → ...
+-------------------code----------------------
+
+Normally, each layer:
+
+1. Takes input from memory
+2. Performs computation
+3. Writes output back to memory
+
+This **read-compute-write cycle** can become a major bottleneck, especially on GPUs where **memory bandwidth** is often the limiting factor, not raw compute.
+
+---
+
+### **How Operator Fusion Works**
+
+Instead of this:
+
+-------------------code----------------------
+x = conv2d(x)
+x = relu(x)
+x = batchnorm(x)
+-------------------code----------------------
+
+Fusion compiles it like this:
+
+-------------------code----------------------
+x = fused_conv_relu_bn(x)
+-------------------code----------------------
+
+All three operations are executed **in one kernel**, reducing:
+
+* Intermediate memory allocations
+* Memory transfers between operations
+* Latency caused by layer-by-layer execution
+
+This leads to:
+
+* Faster model inference/training
+* Lower memory usage
+* Better utilization of GPU parallelism
+
+---
+
+### **Where It's Used**
+
+Modern frameworks and compilers support operator fusion:
+
+* **PyTorch** (with TorchScript and optimized backends like TensorRT or XLA)
+* **TensorFlow** (with XLA compiler)
+* **ONNX Runtime**
+* **TVM**
+* **TensorRT**
+
+---
+
+### **Example: Convolution + ReLU**
+
+Instead of:
+
+-------------------code----------------------
+y = torch.nn.Conv2d(...)(x)
+y = torch.nn.ReLU()(y)
+-------------------code----------------------
+
+With operator fusion, internally the compiler produces:
+
+-------------------code----------------------cpp
+fused_conv_relu(x)
+-------------------code----------------------
+
+This gets translated to a single, highly optimized CUDA kernel.
+
+---
+
+### **Benefits**
+
+| Without Fusion        | With Fusion             |
+| --------------------- | ----------------------- |
+| More memory transfers | Fewer memory accesses   |
+| Higher latency        | Lower latency           |
+| Slower inference      | Faster inference        |
+| Intermediate tensors  | No intermediate tensors |
+
+---
+
+### **Further Reading**
+
+* **"Making Deep Learning Go Brrrr"** by Horace He
+  [https://horace.io/brrr\_intro.html](https://horace.io/brrr_intro.html)
+* PyTorch's [TorchScript Optimization](https://pytorch.org/docs/stable/jit.html)
+* NVIDIA's [TensorRT Optimization Guide](https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html)
+
+---
