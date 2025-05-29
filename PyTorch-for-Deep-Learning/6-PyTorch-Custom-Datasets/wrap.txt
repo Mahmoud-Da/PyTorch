@@ -1566,3 +1566,125 @@ image, label = train_data[0]  # returns (tensor_image, label_int)
 -------------------code----------------------
 
 ---
+
+*** 148. Compare Our Custom Dataset Class. to the Original Imagefolder Class ***
+### **Lecture Summary: Custom Image Folder Dataset in PyTorch**
+
+#### Objective:
+
+To replicate the functionality of PyTorch’s `ImageFolder` dataset class using a custom implementation and verify that it works with image transformations.
+
+---
+
+### 1. **Setting Up Image Transformations**
+
+#### **Train Transformations**
+
+-------------------code----------------------
+from torchvision import transforms
+
+train_transforms = transforms.Compose([
+    transforms.Resize((64, 64)),              # Resize all images to 64x64
+    transforms.RandomHorizontalFlip(),        # Apply random horizontal flip
+    transforms.ToTensor()                     # Convert images to PyTorch tensors
+])
+-------------------code----------------------
+
+#### **Test Transformations**
+
+-------------------code----------------------
+test_transforms = transforms.Compose([
+    transforms.Resize((64, 64)),              # Resize to 64x64
+    transforms.ToTensor()                     # Convert to tensor without augmentation
+])
+-------------------code----------------------
+
+> Note: No augmentation for test data — we only convert them to tensors.
+
+---
+
+### 2. **Testing the Custom Dataset Class**
+
+#### **Initialize the Custom Dataset**
+
+-------------------code----------------------
+train_data_custom = ImageFolderCustom(
+    target=train_dir,
+    transform=train_transforms
+)
+
+test_data_custom = ImageFolderCustom(
+    target=test_dir,
+    transform=test_transforms
+)
+-------------------code----------------------
+
+#### **Correcting Typo**
+
+Make sure variable names match, e.g., `train_transforms` not `traintransform`.
+
+---
+
+### 3. **Inspecting the Custom Dataset**
+
+* Check the dataset type and length:
+
+-------------------code----------------------
+len(train_data_custom)
+len(test_data_custom)
+-------------------code----------------------
+
+* Compare to the original `ImageFolder` datasets:
+
+-------------------code----------------------
+len(train_data) == len(train_data_custom)
+len(test_data) == len(test_data_custom)
+-------------------code----------------------
+
+* Check `.classes` attribute:
+
+-------------------code----------------------
+train_data_custom.classes
+test_data_custom.classes
+-------------------code----------------------
+
+* Verify `class_to_idx`:
+
+-------------------code----------------------
+train_data_custom.class_to_idx
+-------------------code----------------------
+
+> These attributes (e.g., `classes`, `class_to_idx`, `paths`, etc.) are inherited and set up correctly in the custom class.
+
+---
+
+### 4. **Equality Check Between Custom and Original Datasets**
+
+-------------------code----------------------
+print(train_data_custom.classes == train_data.classes)
+print(test_data_custom.classes == test_data.classes)
+-------------------code----------------------
+
+Both should return `True` — confirming the custom class works as intended.
+
+---
+
+### 5. **Takeaways**
+
+* You can build your own custom dataset loader by subclassing `Dataset`, overriding:
+
+  * `__len__`
+  * `__getitem__`
+* This allows flexibility when working with non-standard datasets.
+* Your custom loader can behave identically to standard PyTorch loaders if structured correctly.
+
+---
+
+### 6. **Next Step**
+
+Create a function to **visualize random samples** from the `train_data_custom` dataset.
+
+> Visual validation is often more intuitive than analytical inspection.
+
+---
+
