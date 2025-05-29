@@ -3115,3 +3115,111 @@ Refer to earlier section “02. Improving a Model.” Some suggestions:
 * In the following video: Visualize the training process by **plotting the loss and accuracy curves** from the `model_0_results` dictionary.
 
 ---
+
+
+*** 159. Plotting the Loss Curves of Model 0 ***
+### **Section 7.8: Plotting Loss Curves for Model 0**
+
+#### **Overview**
+
+In the previous section, a convolutional neural network (CNN) was trained on a custom dataset (pizza, steak, and sushi). Although training was successful, the model's performance was limited. To better understand its training behavior and identify ways to improve, the next step is to **visualize the training and testing loss and accuracy** over time using **loss curves**.
+
+---
+
+### **What is a Loss Curve?**
+
+* A **loss curve** tracks a model’s performance (loss and optionally accuracy) during training.
+* It plots **loss/accuracy on the y-axis** against **epochs or steps on the x-axis**.
+* Ideal behavior:
+
+  * **Loss decreases** over time.
+  * **Accuracy increases** over time.
+
+---
+
+### **Purpose**
+
+* Helps to **diagnose training issues** like underfitting or overfitting.
+* Allows tracking **training and evaluation metrics** at each epoch.
+
+---
+
+### **Visual Example**
+
+* Refer to resources like Google’s *Interpreting Loss Curves* guide for visual reference.
+* However, building the function from scratch helps with deeper understanding.
+
+---
+
+### **Creating the Plotting Function**
+
+-------------------code----------------------
+def plot_loss_curves(results: dict[str, list[float]]):
+    """
+    Plots training and testing loss and accuracy curves from a results dictionary.
+    """
+    # Extract loss values
+    loss = results["train_loss"]
+    test_loss = results["test_loss"]
+
+    # Extract accuracy values
+    accuracy = results["train_acc"]
+    test_accuracy = results["test_acc"]
+
+    # Number of epochs
+    epochs = range(len(loss))
+
+    # Set up the figure
+    plt.figure(figsize=(15, 7))
+
+    # Plot loss
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs, loss, label="Train Loss")
+    plt.plot(epochs, test_loss, label="Test Loss")
+    plt.title("Loss")
+    plt.xlabel("Epochs")
+    plt.legend()
+
+    # Plot accuracy
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs, accuracy, label="Train Accuracy")
+    plt.plot(epochs, test_accuracy, label="Test Accuracy")
+    plt.title("Accuracy")
+    plt.xlabel("Epochs")
+    plt.legend()
+-------------------code----------------------
+
+* Call this function with `plot_loss_curves(model_0_results)` to visualize results.
+
+---
+
+### **Interpreting the Output**
+
+* Initial plots may not show optimal results (e.g., 50% test accuracy).
+* The trends are what's most important:
+
+  * If accuracy trends **up** and loss trends **down**, the model is learning.
+  * If curves are flat or diverging, further adjustments are needed.
+
+---
+
+### **Next Steps**
+
+* Try training the model longer (increase epochs).
+* Experiment with:
+
+  * Adding more layers.
+  * Increasing the number of hidden units.
+  * Changing activation functions.
+  * Adjusting the learning rate.
+
+---
+
+### **Optional Reading**
+
+Before moving on to the next section (analyzing different loss curve patterns), it's recommended to read:
+
+* Google's **Interpreting Loss Curves** guide.
+* Topics such as **underfitting**, **overfitting**, and the **ideal loss curve**.
+
+---
