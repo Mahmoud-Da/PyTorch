@@ -2030,3 +2030,97 @@ train_transform = transforms.Compose([
 * Try different augmentations and visualize their effects to find the best fit for your dataset.
 
 ---
+
+*** 152. Building a Baseline Model (Part 1): Loading and Transforming Data ***
+## Lecture Summary: Building a Computer Vision Model (Model 0)
+
+### 1. **Recap: Data Augmentation**
+
+* Previously discussed **TrivialAugmentWide**, a state-of-the-art data augmentation technique used by the PyTorch team for training computer vision models.
+* Demonstrated how it slightly alters images (e.g., shift, rotation) using `torchvision.transforms`.
+
+### 2. **Model 0 Overview**
+
+* Goal: Build a **baseline computer vision model** using a **custom dataset** without applying data augmentation.
+* Will use the **TinyVGG** architecture (covered in a previous section).
+* Dataset includes **3 classes**: `pizza`, `steak`, and `sushi`.
+
+### 3. **Architecture Details**
+
+* Input: Images of size `(64, 64, 3)`.
+* Layers: Convolutional layers, ReLU activations, MaxPooling layers.
+* Output: Adapted to the number of classes (3 in this case).
+
+### 4. **Data Preparation for Model 0**
+
+#### a. **Transformations**
+
+* Define a simple transformation pipeline:
+
+  -------------------code----------------------
+  transforms.Compose([
+      transforms.Resize((64, 64)),
+      transforms.ToTensor()
+  ])
+  -------------------code----------------------
+* This resizes images and converts them to tensors with values in the range `[0, 1]`.
+
+#### b. **Loading the Dataset**
+
+* Use `torchvision.datasets.ImageFolder` to load images:
+
+  * Train dataset path: `data/pizza_steak_sushi/train`
+  * Test dataset path: `data/pizza_steak_sushi/test`
+* Apply the same transform to both datasets.
+
+#### c. **Creating DataLoaders**
+
+* Set batch and worker parameters:
+
+  -------------------code----------------------
+  batch_size = 32
+  num_workers = os.cpu_count()  # "2" Based on Colab's CPU cores
+  -------------------code----------------------
+* Create data loaders using `torch.utils.data.DataLoader`:
+
+  -------------------code----------------------
+  train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+  test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+  -------------------code----------------------
+
+### 5. **Final Notes**
+
+* Successfully loaded and batched the dataset with minimal code.
+* Ready to use the `train_dataloader` and `test_dataloader` with a PyTorch model.
+* Next step: Build the **TinyVGG model** in the upcoming video.
+* Optional: Try implementing the TinyVGG model beforehand by reviewing **notebook #3 (Model 2)**.
+
+
+### 6. full code 
+-------------------code----------------------
+# 1. Load and transform data
+from torchvision import datasets
+train_data_simple = datasets.ImageFolder(root=train_dir,
+                                         transform=simple_transform)
+test_data_simple = datasets.ImageFolder(root=test_dir,
+                                        transform=simple_transform)
+
+# 2. Turn the datasets into DataLoaders
+import os
+from torch.utils.data import DataLoader
+
+# Setup batch size and number of works
+BATCH_SIZE = 32
+NUM_WORKERS = os.cpu_count()
+
+# Create DataLoader's
+train_dataloader_simple = DataLoader(dataset=train_data_simple,
+                                     batch_size=BATCH_SIZE,
+                                     shuffle=True, 
+                                     num_workers=NUM_WORKERS)
+test_dataloader_simple = DataLoader(dataset=test_data_simple,
+                                    batch_size=BATCH_SIZE,
+                                    shuffle=False,
+                                    num_workers=NUM_WORKERS)
+-------------------code----------------------
+---
