@@ -2516,3 +2516,221 @@ output = model_0(image_batch)
 * Benefit: Easily verify layer-by-layer output shapes before training
 
 ---
+
+*** 155. Using the Torchinfo Package to Get a Summary of Our Model ***
+## **Lecture Summary: Visualizing Model Structure with `torchinfo`**
+
+### **Recap**
+
+* Previously verified that the model's forward pass works with no shape errors.
+* Confirmed that data flows correctly through the model on a sample batch.
+
+---
+
+## **Introducing `torchinfo`**
+
+### **Purpose**
+
+* `torchinfo` is a package used to programmatically inspect PyTorch model architectures.
+* Replaces manual `print()` statements for checking input/output shapes.
+* Particularly useful for debugging and understanding model layer structures.
+
+---
+
+## **Setup and Installation**
+
+### **Installation (for Google Colab)**
+
+-------------------code----------------------
+try:
+    from torchinfo import summary
+except ImportError:
+    !pip install torchinfo
+    from torchinfo import summary
+-------------------code----------------------
+
+### **Why Installation May Be Necessary**
+
+* Google Colab does not come with `torchinfo` pre-installed.
+
+---
+
+## **Using `torchinfo`**
+
+### **Basic Usage**
+
+-------------------code----------------------
+summary(model_0, input_size=(1, 3, 64, 64))
+-------------------code----------------------
+
+* `input_size`: Shape of a sample input tensor, including batch size.
+* `(1, 3, 64, 64)` = 1 RGB image of size 64x64.
+* Internally, `torchinfo` performs a **dummy forward pass** with the given shape.
+
+> Note: If the input size is incorrect, it will raise a shape error.
+
+---
+
+## **Clean Output Setup**
+
+* Before using `summary()`, **comment out print statements** in your model’s `forward()` method.
+* Prevents unnecessary console output during forward passes triggered by `torchinfo`.
+
+---
+
+## **What `torchinfo` Displays**
+
+* Hierarchical structure of the model.
+* Each layer inside `nn.Sequential` blocks.
+* Layer names and types (e.g., Conv2d, ReLU, MaxPool2d).
+* Output shape after each layer.
+* Number of parameters per layer.
+
+### **Additional Metadata**
+
+* **Total parameters**: Number of trainable values (weights and biases).
+* **Trainable parameters**: Values updated during training.
+* **Estimated model size**: Memory size if saved/stored.
+
+---
+
+## **Example Output Insights**
+
+* Total parameters: \~8,000 (small model).
+* Practical comparison:
+
+  * Typical deep learning models have **millions to billions** of parameters.
+  * Model file size can range from under 1MB to over 1GB depending on complexity.
+
+### **Relevance**
+
+* Smaller models are ideal for low-storage environments.
+* Understanding layer-wise output helps in model design and debugging.
+
+---
+
+## **Tips and Takeaways**
+
+* Always match `input_size` to the expected shape when using `summary()`.
+* Useful for checking shape consistency during model changes.
+* Can help with:
+
+  * Debugging
+  * Documentation
+  * Understanding architecture flow
+
+---
+
+## **Next Steps**
+
+* Move towards **training the TinyVGG model**.
+* Create training and testing functions.
+* Reference: Section 6.2 (Training/Test Loops).
+* Recommended: Reuse or adapt earlier training loop functions for the custom dataset.
+
+---
+
+What is Parameters in Machine Learning
+In the context of machine learning and deep learning models, **a parameter** is a value that the model learns from the data during training. Parameters are what the model **adjusts** to minimize the loss function and make accurate predictions.
+
+### Two Main Types of Parameters
+
+1. **Weights (also called kernels in convolutional layers)**
+
+   * Represent the strength of the connection between two neurons.
+   * Multiplied with the input to transform the data as it flows through the network.
+
+2. **Biases**
+
+   * Added to the output after the weight is applied.
+   * Help the model shift the activation function to better fit the data.
+
+---
+
+### Where Parameters Exist
+
+Parameters exist in **trainable layers**, such as:
+
+* `nn.Linear` (fully connected layers)
+* `nn.Conv2d` (convolutional layers)
+
+Layers like `ReLU`, `MaxPool2d`, `Flatten`, and `Dropout` **do not have parameters**, as they perform fixed operations and don’t need to learn anything.
+
+---
+
+### Example
+
+Suppose you have a `nn.Linear(4, 3)` layer:
+
+* Input: 4 features
+* Output: 3 features
+
+**Parameters:**
+
+* Weights: 4 (inputs) × 3 (outputs) = **12**
+* Biases: 3 (one for each output)
+* **Total parameters = 12 + 3 = 15**
+
+---
+
+### Why Parameters Matter
+
+* Parameters **define the capacity** of your model to learn.
+* Too few parameters → underfitting (can't learn complex patterns).
+* Too many parameters → overfitting (memorizes data, poor generalization).
+* During training, parameters are **optimized** using algorithms like **SGD**, **Adam**, etc.
+
+---
+
+### In Summary
+
+| Term      | Meaning                                        |
+| --------- | ---------------------------------------------- |
+| Weight    | Learnable scalar used to transform inputs      |
+| Bias      | Learnable scalar added after transformation    |
+| Parameter | Either a weight or a bias in a trainable layer |
+
+---
+
+
+You're welcome! Here's a **very simple explanation** of what a **parameter** means in a model — easy enough for an elementary student:
+
+---
+
+### What is a Parameter in a Model?
+
+Imagine you're trying to guess someone's favorite number. At first, you guess randomly. But every time you guess, someone tells you if you're too high or too low. Over time, you change your guess to get closer to the right answer.
+
+That "guess" you keep changing is just like a **parameter**.
+
+---
+
+### In a Machine Learning Model:
+
+* The model is like a robot trying to get the right answers.
+* **Parameters** are little numbers inside the robot that it can change to become smarter.
+* At the beginning, these numbers are random.
+* Every time the robot gets a question wrong, it learns and updates the numbers to do better next time.
+
+---
+
+### Example:
+
+Let’s say the model is learning to tell if a picture is a cat or a dog.
+
+* It looks at the picture.
+* It uses its **parameters (little numbers)** to make a guess.
+* If it’s wrong, it adjusts the numbers.
+* After many pictures, the model becomes really good at guessing!
+
+---
+
+### Simple Analogy: Toy Car on a Track
+
+* The model is a toy car trying to stay on a track.
+* **Parameters are like the steering settings** inside the car.
+* At first, it wobbles off the track.
+* But each time it goes off, it fixes its steering (changes the parameters).
+* Eventually, it learns to stay on the track smoothly!
+
+---
