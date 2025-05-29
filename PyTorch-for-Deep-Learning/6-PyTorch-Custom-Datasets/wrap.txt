@@ -1190,3 +1190,132 @@ In the following lecture:
 * Learn to integrate it with `DataLoader` when no helper classes are available.
 
 ---
+
+*** 145. Creating a Custom Dataset Class in PyTorch High Level Overview ***
+# Lecture Notes: Creating a Custom Dataset Class in PyTorch
+
+## Overview
+
+In previous lessons, we used `ImageFolder` from `torchvision.datasets` to load image data and convert it into tensors. However, in this session, we explore what to do **if `ImageFolder` didn't exist**—a scenario that encourages a deeper understanding of PyTorch’s dataset utilities by **building a custom dataset class from scratch**.
+
+---
+
+## Goal
+
+To replicate the core functionality of `ImageFolder`:
+
+1. **Load images from files**
+2. **Extract class names from folder structure**
+3. **Create a mapping from class names to class indices (dictionary)**
+4. **Make the dataset compatible with PyTorch's `DataLoader`**
+
+---
+
+## Section 5: Option 2 – Loading Image Data with a Custom Dataset
+
+### Functional Requirements
+
+We want our custom dataset class to:
+
+* Load image data from a directory.
+* Extract class names as a **list**.
+* Create a **dictionary** that maps class names to indices.
+
+---
+
+## Pros and Cons of Custom Datasets
+
+### Pros
+
+* **Flexibility**: You can create datasets from virtually any data source.
+* **Independence**: You're not limited by PyTorch's built-in utilities.
+
+### Cons
+
+* **Complexity**: More code increases the risk of bugs or inefficiencies.
+* **Robustness**: Prebuilt tools are battle-tested; custom code usually isn’t at first.
+
+---
+
+## PyTorch Dataset Foundation
+
+* All custom datasets should inherit from `torch.utils.data.Dataset`.
+* You must **override**:
+
+  * `__getitem__(self, index)`
+  * `__len__(self)`
+
+This base class is the foundation for many standard datasets in PyTorch.
+
+---
+
+## Preparing for the Custom Dataset
+
+### Required Imports
+
+-------------------code----------------------
+import os
+from pathlib import Path
+from PIL import Image
+import torch
+from torch.utils.data import Dataset
+from torchvision import transforms
+from typing import Tuple, Dict, List
+-------------------code----------------------
+
+### Why These Imports?
+
+* `os` / `pathlib`: For file system navigation.
+* `PIL.Image`: To open image files.
+* `torch` & `Dataset`: For PyTorch dataset compatibility.
+* `transforms`: To convert images to tensors.
+* `typing`: For type annotations and cleaner code structure.
+
+---
+
+## Target Functionality to Replicate
+
+We aim to recreate `ImageFolder`-like behavior, particularly:
+
+* `.classes`: List of class names
+* `.class_to_idx`: Dictionary mapping class names to indices
+
+Given a directory structure like:
+
+```
+data/
+  pizza/
+  steak/
+  sushi/
+```
+
+We should be able to:
+
+* Get class names: `['pizza', 'steak', 'sushi']`
+* Get class-to-index mapping: `{'pizza': 0, 'steak': 1, 'sushi': 2}`
+
+---
+
+## Summary
+
+This lecture serves as the foundation for building a **custom PyTorch Dataset**. We've:
+
+* Reviewed why and when to create custom datasets.
+* Identified the core components needed to replicate `ImageFolder`.
+* Outlined the next steps: building helper functions and subclassing `Dataset`.
+
+---
+
+## Next Steps
+
+In the following video, we will:
+
+* Start coding a helper function that:
+
+  * Accepts a file path
+  * Returns a list of class names
+  * Returns a dictionary mapping class names to indices
+
+This helper function will be a building block for our custom dataset class.
+
+---
