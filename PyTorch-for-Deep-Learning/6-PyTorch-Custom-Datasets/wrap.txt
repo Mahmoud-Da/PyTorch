@@ -1444,3 +1444,125 @@ In the next lecture, we will:
 * Begin writing our custom dataset class
 * Subclass `torch.utils.data.Dataset`
 * Integrate this helper function into the dataset initialization logic
+
+*** 147. Writing a PyTorch Custom Dataset Class from Scratch to Load Our Images ***
+## Lecture Summary: Building a Custom Dataset Class in PyTorch
+
+### Recap
+
+* Previously, we created a function `find_classes()` that:
+
+  * Takes in a target directory.
+  * Returns:
+
+    * A list of class names.
+    * A dictionary mapping class names to integer labels.
+
+---
+
+### Goal of This Lecture
+
+Create a **custom dataset** class by **replicating** the functionality of `torchvision.datasets.ImageFolder`.
+
+While `ImageFolder` should generally be used when possible (it's well-tested and efficient), building a custom dataset is helpful when:
+
+* Additional functionality is needed.
+* No suitable built-in dataset class exists.
+
+---
+
+### PyTorch Dataset Subclassing Overview
+
+To create a custom dataset:
+
+* Subclass `torch.utils.data.Dataset`.
+* Implement the following methods:
+
+  1. `__init__()`: Initialize dataset and load metadata.
+  2. `__len__()`: Return the number of samples.
+  3. `__getitem__()`: Return a sample by index.
+
+All datasets in PyTorch represent a **mapping from keys (indices) to samples (data)**.
+
+---
+
+### Steps to Create the Custom Dataset
+
+#### 0. **Import Dependencies**
+
+* Make sure to import `torch.utils.data.Dataset` and `PIL.Image`.
+
+#### 1. **Subclass `Dataset`**
+
+-------------------code----------------------
+class ImageFolderCustom(Dataset):
+-------------------code----------------------
+
+* Inherit from `torch.utils.data.Dataset`.
+
+#### 2. **Initialize the Class**
+
+-------------------code----------------------
+def __init__(self, target_dir: str, transform=None):
+-------------------code----------------------
+
+* `target_dir`: Directory containing the image data.
+* `transform`: Optional transform to apply to images.
+
+#### 3. **Define Class Attributes**
+
+Inside `__init__`:
+
+* `self.paths`: List of all image paths in the target directory.
+* `self.transform`: The transform function.
+* `self.classes`, `self.class_to_idx`: From `find_classes()`.
+
+#### 4. **Create Image Loader Function**
+
+-------------------code----------------------
+def load_image(self, index: int) -> Image.Image:
+-------------------code----------------------
+
+* Uses `self.paths[index]` and `Image.open()` to load an image.
+
+#### 5. **Override `__len__`**
+
+-------------------code----------------------
+def __len__(self):
+    return len(self.paths)
+-------------------code----------------------
+
+* Returns the number of samples (image files).
+
+#### 6. **Override `__getitem__`**
+
+-------------------code----------------------
+def __getitem__(self, index: int) -> Tuple[Tensor, int]:
+-------------------code----------------------
+
+* Loads the image using `load_image()`.
+* Extracts class name from path (e.g., folder name).
+* Maps class name to integer label using `self.class_to_idx`.
+* Applies transform if it exists.
+* Returns `(image_tensor, label_int)`.
+
+---
+
+### Design Notes
+
+* **Path Format Assumption**: `root/class_name/image.jpg`
+* **Customizability**: This structure allows for easy extension to more complex datasets (e.g., multi-label, additional metadata).
+* **Maintainability Risk**: Custom code is more prone to bugs than tested libraries like `ImageFolder`.
+
+---
+
+### Output Behavior
+
+Your class should behave similarly to `ImageFolder`:
+
+-------------------code----------------------
+train_data = ImageFolderCustom(train_dir, transform=transform)
+image, label = train_data[0]  # returns (tensor_image, label_int)
+-------------------code----------------------
+
+---
