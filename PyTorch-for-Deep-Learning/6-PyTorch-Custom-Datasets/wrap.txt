@@ -1688,3 +1688,129 @@ Create a function to **visualize random samples** from the `train_data_custom` d
 
 ---
 
+*** 149. Writing a Helper Function to Visualize Random Images from Our Custom Dataset ***
+### Lecture Summary: Displaying Random Images from a Custom Dataset
+
+#### **Core Principle:**
+
+> *"Visualize, visualize, visualize."* — Key to understanding data is to repeatedly visualize it.
+
+---
+
+### **Function Objective**
+
+Create a reusable function to visualize random samples from a dataset (either the built-in `ImageFolder` dataset or a custom dataset).
+
+---
+
+### **Steps to Build the Function**
+
+#### **1. Function Definition**
+
+-------------------code----------------------
+def display_random_images(dataset, classes=None, n=10, display_shape=True, seed=None):
+-------------------code----------------------
+
+* **`dataset`**: The dataset to visualize samples from.
+* **`classes`**: Optional list of class names.
+* **`n`**: Number of images to show (default 10, capped at 10).
+* **`display_shape`**: Whether to display image shape in the title.
+* **`seed`**: For reproducible random samples.
+
+---
+
+#### **2. Cap the Number of Images**
+
+If `n > 10`, reset `n = 10` and turn off shape display to avoid overcrowding the plot.
+
+-------------------code----------------------
+if n > 10:
+    n = 10
+    display_shape = False
+    print("For display purposes, n shouldn't be larger than 10. Setting to 10 and removing shape display.")
+-------------------code----------------------
+
+---
+
+#### **3. Set Random Seed**
+
+Ensure reproducibility.
+
+-------------------code----------------------
+if seed:
+    random.seed(seed)
+-------------------code----------------------
+
+---
+
+#### **4. Get Random Sample Indexes**
+
+-------------------code----------------------
+random_samples_idx = random.sample(range(len(dataset)), k=n)
+-------------------code----------------------
+
+---
+
+#### **5. Set Up `matplotlib` Plot**
+
+-------------------code----------------------
+plt.figure(figsize=(n * 2, 2))
+-------------------code----------------------
+
+---
+
+#### **6. Loop Through Random Samples and Plot**
+
+-------------------code----------------------
+for i, idx in enumerate(random_samples_idx):
+    img, label = dataset[idx]
+    
+    # Adjust image dimensions for matplotlib (from CHW to HWC)
+    img_adjust = img.permute(1, 2, 0)
+    
+    # Add subplot
+    plt.subplot(1, n, i + 1)
+    plt.imshow(img_adjust)
+    plt.axis("off")
+    
+    # Title from class name (if provided)
+    if classes:
+        title = f"{classes[label]}"
+        if display_shape:
+            title += f"\nShape: {img_adjust.shape}"
+        plt.title(title)
+-------------------code----------------------
+
+---
+
+### **Usage Example**
+
+#### **From `ImageFolder` dataset**
+
+-------------------code----------------------
+display_random_images(train_data, classes=class_names, n=5, seed=None)
+-------------------code----------------------
+
+#### **From Custom Dataset**
+
+-------------------code----------------------
+display_random_images(train_data_custom, classes=class_names, n=20, seed=42)
+# Output: Message that n is capped to 10
+-------------------code----------------------
+
+---
+
+### **Results**
+
+* Random images from both `ImageFolder` and `CustomDataset` display correctly.
+* Shape and class labels are shown when appropriate.
+* Random seed enables consistent visuals across runs.
+* Custom dataset verified to be working both qualitatively (visually) and quantitatively (dimensions).
+
+---
+
+### **Next Step**
+
+> **Convert the custom dataset (`train_data_custom`, `test_data_custom`) into DataLoaders**, just as was done earlier for the built-in `ImageFolder`.
+
+---
