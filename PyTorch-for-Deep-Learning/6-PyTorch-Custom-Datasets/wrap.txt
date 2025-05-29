@@ -1924,3 +1924,109 @@ print(label_custom.shape)  # Depends on label encoding
 * Next topic: Data augmentation using `torchvision.transforms`.
 
 ---
+
+*** 151. Exploring State of the Art Data Augmentation With Torchvision Transforms ***
+## Lecture Notes: Data Augmentation and Image Transforms in PyTorch
+
+### 1. Custom Dataset and Data Transformation
+
+* Previously, we created functions and classes to load a custom dataset.
+* A key step in this process is **transforming the data**, particularly converting target data into tensors.
+
+### 2. TorchVision Transforms
+
+* We explored the `torchvision.transforms` module.
+* It offers multiple image transformations:
+
+  * `Resize`
+  * `CenterCrop`
+  * `FiveCrop`
+  * `Grayscale`
+  * `RandomTransforms` such as:
+
+    * `RandomRotation`
+    * `RandomAffine`
+    * `RandomCrop`
+    * `GaussianBlur`
+  * `AutoAugment`, `RandomAugment`
+
+### 3. What is Data Augmentation?
+
+* **Data Augmentation** artificially increases the diversity of training data.
+* Especially useful for image data: the same image can be manipulated by:
+
+  * Rotating
+  * Shifting (horizontal/vertical)
+  * Zooming
+  * Adjusting brightness, contrast, or colors
+  * Cropping or shearing
+
+**Definition**:
+
+> Data augmentation is the process of artificially adding diversity to your training data by creating modified versions of existing data.
+
+### 4. Purpose of Data Augmentation
+
+* Helps improve generalization.
+* Encourages the model to learn more robust and general patterns.
+* Makes the model more accurate on unseen data by simulating different viewing conditions.
+
+### 5. TrivialAugment
+
+* A specific data augmentation technique used in recent **state-of-the-art PyTorch Vision models**.
+* Introduced in a PyTorch blog post on training best-performing models.
+* Utilized with the transform: `transforms.TrivialAugmentWide()`
+
+#### Usage Example
+
+-------------------code----------------------
+from torchvision import transforms
+
+train_transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.TrivialAugmentWide(num_magnitude_bins=5),
+    transforms.ToTensor()
+])
+-------------------code----------------------
+
+* `num_magnitude_bins`: ranges from 0 to 31, controls intensity of transformation.
+
+  * Lower values = milder transformations
+  * Higher values = more intense changes
+
+### 6. Effect of TrivialAugment
+
+* Applies random transformations at random intensity.
+* Examples of effects:
+
+  * Brightness/contrast change
+  * Color distortion
+  * Random cropping or zooming
+  * Rotation
+* Encourages the model to learn patterns invariant to these changes.
+
+### 7. Visualizing the Transformations
+
+* A function is used to apply the transform and plot sample images:
+
+  * Shows how trivial augment manipulates each image differently.
+  * Demonstrates increased variation in training examples.
+  * Model is trained to recognize the object regardless of the transformations.
+
+### 8. Practical Advice
+
+* There is **no universal best transform** — experimentation is key.
+* Look at successful recipes used by others (e.g. PyTorch blog posts).
+* Try different augmentations on your own dataset.
+* If one doesn’t work, switch to another and evaluate.
+
+---
+
+## Summary
+
+* **Data augmentation** is essential for improving image model generalization.
+* `torchvision.transforms` offers a wide variety of tools to augment data.
+* `TrivialAugmentWide` is a recent technique recommended by the PyTorch team for training high-performance models.
+* Try different augmentations and visualize their effects to find the best fit for your dataset.
+
+---
