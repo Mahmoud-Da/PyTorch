@@ -815,3 +815,136 @@ visualize_transformed_images(
 * Visualization helps confirm the correctness of the transform pipeline before integration.
 
 ---
+
+*** 142. Loading All of Our Images and Turning Them Into Tensors With ImageFolder ***
+# **Part 4: Loading Image Data using `ImageFolder`**
+
+## **Overview**
+
+* We've transformed original images into tensors — the required format for PyTorch models.
+* These transformations include resizing, random horizontal flipping, and conversion to tensors.
+* Visualizing these transformed images confirms the transformations were applied correctly.
+
+---
+
+## **Using `ImageFolder` from `torchvision.datasets`**
+
+### **What is `ImageFolder`?**
+
+* A utility for loading image data stored in the **standard image classification format**:
+
+  -------------------code----------------------
+  root/class_x/xxx.png
+  root/class_x/xxy.png
+  root/class_y/xxz.png
+  -------------------code----------------------
+* Automatically assigns labels based on folder names.
+* Comes with helpful attributes (e.g., class names, targets, samples).
+
+---
+
+## **Code Walkthrough: Loading the Training and Test Data**
+
+### **1. Import Required Module**
+
+-------------------code----------------------
+from torchvision import datasets
+-------------------code----------------------
+
+### **2. Load Training Data**
+
+-------------------code----------------------
+train_data = datasets.ImageFolder(
+    root=train_dir,
+    transform=data_transform,
+    target_transform=None  # optional; default is None
+)
+-------------------code----------------------
+
+### **3. Load Test Data**
+
+-------------------code----------------------
+test_data = datasets.ImageFolder(
+    root=test_dir,
+    transform=data_transform,
+    target_transform=None
+)
+-------------------code----------------------
+
+---
+
+## **Understanding Transforms**
+
+* `transform`: Applied to the image (resizing, flipping, tensor conversion).
+* `target_transform`: Optional transform for labels (e.g., if label manipulation is needed).
+
+Since our labels are inferred from folder names, we do not need `target_transform`.
+
+---
+
+## **Inspecting the Datasets**
+
+### **Dataset Summary**
+
+-------------------code----------------------
+print(train_data)
+print(test_data)
+-------------------code----------------------
+
+* Shows number of samples, root directory, and applied transforms.
+
+### **Class Names**
+
+-------------------code----------------------
+print(train_data.classes)
+-------------------code----------------------
+
+* Output: `['pizza', 'steak', 'sushi']`
+
+### **Class-to-Index Mapping**
+
+-------------------code----------------------
+print(train_data.class_to_idx)
+-------------------code----------------------
+
+* Output: `{'pizza': 0, 'steak': 1, 'sushi': 2}`
+
+### **Dataset Length**
+
+-------------------code----------------------
+len(train_data)
+len(test_data)
+-------------------code----------------------
+
+---
+
+## **Exploring Dataset Internals**
+
+### **Samples and Targets**
+
+* `train_data.samples`: List of (image path, label) tuples.
+* `train_data.targets`: List of labels in order.
+
+### **Example**
+
+-------------------code----------------------
+print(train_data.samples[0])
+# Output: ('path/to/train/pizza/image.png', 0)
+-------------------code----------------------
+
+---
+
+## **Visualization**
+
+* Important for understanding what transformations do to the images.
+* Example: Display a few samples from `train_data` with their labels.
+
+---
+
+## **Conclusion**
+
+* `ImageFolder` simplifies loading datasets formatted for image classification.
+* Transforms are crucial for preprocessing and data augmentation.
+* Many useful attributes are built into `ImageFolder`, allowing for easy exploration and integration.
+
+---
