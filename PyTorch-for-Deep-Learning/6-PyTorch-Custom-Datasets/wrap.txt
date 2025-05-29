@@ -719,3 +719,99 @@ print(transformed_img.dtype)     # Expected: torch.float32
 * We’ll compare original vs. transformed images side by side.
 
 ---
+
+*** 141. Transforming Data (Part 2): Visualizing Transformed Images ***
+## **Lecture Summary: Visualizing Transformed Images in PyTorch**
+
+### **1. Purpose of Image Transforms**
+
+* Transforms help prepare images to be used with models (e.g., converting them into PyTorch tensors, resizing, augmentations).
+* Transforms can be chained using `Compose`.
+* TorchVision provides many predefined transforms including resizing, flipping, cropping, grayscale, etc.
+* Visualizing transformed images is essential to understand the effect of data augmentation.
+
+### **2. Documentation and Further Reading**
+
+* Refer to the [TorchVision Transforms Documentation](https://pytorch.org/vision/stable/transforms.html) for a complete list.
+* Check the [Illustration of Transforms](https://pytorch.org/vision/stable/transforms.html#functional-transforms) for visual examples.
+
+### **3. Goal of This Section**
+
+* Visualize original vs. transformed images side-by-side to understand the impact of transformations.
+
+---
+
+## **4. Function to Visualize Transformed Images**
+
+### **Function Parameters:**
+
+* `image_paths`: List of image paths.
+* `transform`: The transform function to apply.
+* `n`: Number of images to visualize.
+* `seed`: Optional seed for randomness.
+
+### **Function Behavior:**
+
+* Randomly selects `n` image paths from the list.
+* For each selected image:
+
+  * Opens the image using PIL.
+  * Displays original and transformed image side-by-side using Matplotlib.
+  * Applies transform and handles dimension reordering (for Matplotlib: channels last format).
+
+### **Common Error and Fix:**
+
+* **Error**: Invalid shape due to channel order.
+* **Fix**: Use `permute()` to change from `[C, H, W]` to `[H, W, C]`.
+
+---
+
+## **5. Example Use Case**
+
+-------------------code----------------------
+visualize_transformed_images(
+    image_paths=image_path_list,
+    transform=data_transform,
+    n=3,
+    seed=42
+)
+-------------------code----------------------
+
+* **`data_transform`** used includes:
+
+  * Resizing image to 64x64
+  * Random horizontal flipping
+  * Converting to tensor
+
+### **Observations from Output:**
+
+* Images resized to 64x64 show pixelation but maintain recognizable structure.
+* Horizontal flip applied to some images.
+* Final output shape is consistent with the expected input shape for CNN models (e.g., from the CNN Explainer site).
+
+---
+
+## **6. Why Resize to 64x64?**
+
+* Smaller image size reduces computational cost.
+* Risk of losing important features.
+* Image size can be tuned as a hyperparameter.
+
+---
+
+## **7. Key Takeaways**
+
+* Always visualize your data transformations before feeding them into a model.
+* Use transforms to enrich training data and normalize inputs.
+* Explore available transforms and understand their effect on your dataset.
+* Set a seed when you want reproducible augmentations.
+* Maintain shape compatibility when visualizing tensors.
+
+---
+
+## **Next Steps**
+
+* The transform defined here will be reused when loading all dataset images into a TorchVision dataset in the next lecture.
+* Visualization helps confirm the correctness of the transform pipeline before integration.
+
+---
