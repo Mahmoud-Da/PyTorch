@@ -1282,12 +1282,12 @@ We aim to recreate `ImageFolder`-like behavior, particularly:
 
 Given a directory structure like:
 
-```
+-------------------code----------------------
 data/
   pizza/
   steak/
   sushi/
-```
+-------------------code----------------------
 
 We should be able to:
 
@@ -1319,3 +1319,128 @@ In the following video, we will:
 This helper function will be a building block for our custom dataset class.
 
 ---
+
+*** 146. Creating a Helper Function to Get Class Names From a Directory ***
+# Lecture 5.1: Creating a Helper Function to Get Class Names
+
+## Objective
+
+Create a helper function that mimics `ImageFolder`'s functionality by:
+
+1. Scanning a target directory for class folders
+2. Returning a **list of class names**
+3. Returning a **dictionary mapping class names to indices**
+
+This function will serve as a building block for our custom dataset class.
+
+---
+
+## Key Assumptions
+
+* The directory structure follows the **standard image classification format**:
+
+  -------------------code----------------------
+  root/
+    class1/
+      img1.jpg
+      img2.jpg
+    class2/
+      img1.jpg
+      ...
+  -------------------code----------------------
+
+* Example usage directory:
+
+  -------------------code----------------------
+  data/train/pizza/
+  data/train/steak/
+  data/train/sushi/
+  -------------------code----------------------
+
+---
+
+## Implementation Plan
+
+### Step 1: Use `os.scandir()` to Traverse the Directory
+
+We scan the target directory and extract class names from the folder names (not filenames).
+
+### Step 2: Raise an Error If No Class Folders Are Found
+
+We ensure the directory structure is valid. If no folders are found, raise a `FileNotFoundError`.
+
+### Step 3: Return Both a List and a Dictionary
+
+Return:
+
+* `class_names`: A sorted list of class folder names.
+* `class_to_idx`: A dictionary mapping each class name to a unique integer.
+
+---
+
+## Function Definition
+
+-------------------code----------------------
+from typing import List, Dict, Tuple
+import os
+
+def find_classes(directory: str) -> Tuple[List[str], Dict[str, int]]:
+    """
+    Finds class folder names in a target directory.
+
+    Args:
+        directory (str): Path to the dataset root (e.g., data/train).
+
+    Returns:
+        Tuple containing:
+            - A sorted list of class names.
+            - A dictionary mapping class names to integer indices.
+    """
+
+    # Step 1: Get class folder names
+    classes = sorted(
+        entry.name for entry in os.scandir(directory) if entry.is_dir()
+    )
+
+    # Step 2: Raise error if no class directories found
+    if not classes:
+        raise FileNotFoundError(
+            f"Couldn't find any class folders in directory: {directory}. "
+            "Please check the file structure."
+        )
+
+    # Step 3: Create dictionary mapping class names to indices
+    class_to_idx = {class_name: i for i, class_name in enumerate(classes)}
+
+    return classes, class_to_idx
+-------------------code----------------------
+
+---
+
+## Example Usage
+
+-------------------code----------------------
+train_dir = "data/train"
+class_names, class_to_idx = find_classes(train_dir)
+
+print(class_names)      # ['pizza', 'steak', 'sushi']
+print(class_to_idx)     # {'pizza': 0, 'steak': 1, 'sushi': 2}
+-------------------code----------------------
+
+---
+
+## Summary
+
+* This helper function replicates part of the functionality of `torchvision.datasets.ImageFolder`.
+* It will be used as a utility within our custom dataset class to handle class discovery and indexing.
+* Ensures modular, reusable, and testable code for different datasets.
+
+---
+
+## Next Steps
+
+In the next lecture, we will:
+
+* Begin writing our custom dataset class
+* Subclass `torch.utils.data.Dataset`
+* Integrate this helper function into the dataset initialization logic
