@@ -2734,3 +2734,125 @@ Let’s say the model is learning to tell if a picture is a cat or a dog.
 * Eventually, it learns to stay on the track smoothly!
 
 ---
+
+
+*** 156. Creating Training and Testing loop Functions ***
+## **Section 7: Training and Testing Functions for Custom Dataset**
+
+### **Overview**
+
+* The goal is to build reusable **`train_step`** and **`test_step`** functions.
+* These functions are **generic**: they can work with any model and DataLoader.
+* Purpose: streamline the process of training and evaluating models across various datasets and architectures.
+
+---
+
+### **1. `train_step()` Function**
+
+#### **Purpose**
+
+Trains the model for one epoch on a given training DataLoader.
+
+#### **Parameters**
+
+* `model`: a PyTorch model (`torch.nn.Module`)
+* `data_loader`: training DataLoader
+* `loss_fn`: loss function
+* `optimizer`: optimizer for training
+* `device`: device to run on (e.g., `'cuda'` or `'cpu'`)
+
+#### **Steps**
+
+1. Set model to training mode: `model.train()`
+2. Initialize metrics:
+
+   ```python
+   train_loss, train_acc = 0, 0
+   ```
+3. Loop through batches:
+
+   ```python
+   for batch, (X, y) in enumerate(data_loader):
+       X, y = X.to(device), y.to(device)
+       y_pred = model(X)
+       loss = loss_fn(y_pred, y)
+       train_loss += loss.item()
+   ```
+4. Perform optimization:
+
+   * `optimizer.zero_grad()`
+   * `loss.backward()`
+   * `optimizer.step()`
+5. Calculate accuracy:
+
+   ```python
+   y_pred_class = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
+   train_acc += (y_pred_class == y).sum().item() / len(y)
+   ```
+6. Compute average loss and accuracy:
+
+   ```python
+   train_loss /= len(data_loader)
+   train_acc /= len(data_loader)
+   ```
+
+---
+
+### **2. `test_step()` Function**
+
+#### **Purpose**
+
+Evaluates the model's performance on the test dataset.
+
+#### **Parameters**
+
+* `model`: a PyTorch model
+* `data_loader`: test DataLoader
+* `loss_fn`: loss function
+* `device`: computing device
+
+#### **Steps**
+
+1. Set model to evaluation mode: `model.eval()`
+2. Initialize metrics:
+
+   ```python
+   test_loss, test_acc = 0, 0
+   ```
+3. Use inference mode to save memory:
+
+   ```python
+   with torch.inference_mode():
+       for batch, (X, y) in enumerate(data_loader):
+           X, y = X.to(device), y.to(device)
+           test_pred_logits = model(X)
+           loss = loss_fn(test_pred_logits, y)
+           test_loss += loss.item()
+   ```
+4. Calculate accuracy (optional: skip softmax):
+
+   ```python
+   pred_labels = torch.argmax(test_pred_logits, dim=1)
+   test_acc += (pred_labels == y).sum().item() / len(pred_labels)
+   ```
+5. Compute averages:
+
+   ```python
+   test_loss /= len(data_loader)
+   test_acc /= len(data_loader)
+   ```
+6. Return final metrics.
+
+---
+
+### **Next Challenge**
+
+* Create a `train()` function to wrap both `train_step` and `test_step` in a loop over multiple epochs.
+* Parameters to include:
+
+  * `model`, `train_dataloader`, `test_dataloader`
+  * `loss_fn`, `optimizer`, `device`, and `epochs`
+
+This will help you consolidate both steps and easily manage training over multiple iterations.
+
+---
