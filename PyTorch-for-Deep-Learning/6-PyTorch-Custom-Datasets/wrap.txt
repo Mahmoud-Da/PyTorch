@@ -2996,3 +2996,122 @@ return results
 * Saving and loading model: **Already covered in previous lessons**
 
 ---
+
+
+*** 158. Training and Evaluating Model 0 With Our Training Functions ***
+## Section 7.7 – Train and Evaluate Model Zero (Baseline Model)
+
+### Objective
+
+Train and evaluate the baseline model ("Model Zero") using a custom dataset (pizza, steak, sushi) in PyTorch.
+
+---
+
+### 1. **Preparation**
+
+* **Set random seeds** for reproducibility:
+
+  -------------------code----------------------
+  torch.manual_seed(42)
+  torch.cuda.manual_seed(42)
+  -------------------code----------------------
+
+  * *Note:* Random seeds are used here for educational purposes to make results reproducible between runs. In practice, randomness is often left uncontrolled to ensure robustness.
+
+* **Set training parameters:**
+
+  * Epochs: `5`
+
+---
+
+### 2. **Instantiate the Model**
+
+* Recreate an instance of the `TinyVGG` model (our baseline model).
+
+  -------------------code----------------------
+  model_0 = TinyVGG(
+      input_shape=3,             # 3 color channels (RGB)
+      hidden_units=10,           # As used in CNN explainer
+      output_shape=len(class_names)
+  ).to(device)
+  -------------------code----------------------
+
+---
+
+### 3. **Set Loss Function and Optimizer**
+
+* **Loss function:** `nn.CrossEntropyLoss()` (suitable for multi-class classification)
+* **Optimizer:** `torch.optim.Adam(model_0.parameters(), lr=0.001)`
+
+  * *Note:* This is Adam's default learning rate (1e-3). You can tweak it for experimentation.
+
+---
+
+### 4. **Track Training Time**
+
+* Use `timeit.default_timer()` to time the training:
+
+  -------------------code----------------------
+  from timeit import default_timer as timer
+  start_time = timer()
+  -------------------code----------------------
+
+---
+
+### 5. **Train the Model**
+
+* Use the custom training function written earlier:
+
+  -------------------code----------------------
+  model_0_results = train(
+      model=model_0,
+      train_dataloader=train_dataloader_simple,
+      test_dataloader=test_dataloader_simple,
+      optimizer=optimizer,
+      loss_fn=loss_fn,
+      epochs=5
+  )
+  -------------------code----------------------
+
+---
+
+### 6. **Display Training Time**
+
+* Print training duration:
+
+  -------------------code----------------------
+  end_time = timer()
+  print(f"Total training time: {end_time - start_time:.3f} seconds")
+  -------------------code----------------------
+
+---
+
+### 7. **Results**
+
+* Training accuracy: \~40%
+* Test accuracy: \~50%
+* Baseline (random guessing) for 3 classes: \~33%
+
+**Interpretation:**
+Model performs slightly better than random guessing. There is room for improvement.
+
+---
+
+### 8. **Ideas for Model Improvement**
+
+Refer to earlier section “02. Improving a Model.” Some suggestions:
+
+* **Add more layers** (e.g., another convolutional block)
+* **Increase hidden units** (currently 10)
+* **Train for more epochs** (currently 5)
+* **Experiment with different activation functions**
+* **Adjust the learning rate**
+* **Try different loss functions** (though CrossEntropy is generally suitable)
+
+---
+
+### 9. **Next Step**
+
+* In the following video: Visualize the training process by **plotting the loss and accuracy curves** from the `model_0_results` dictionary.
+
+---
