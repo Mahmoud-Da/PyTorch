@@ -3600,3 +3600,84 @@ print(f"Total training time for model_1: {end_time-start_time:.3f} seconds")
 * Suggested action: Use the `plot_loss_curves()` function with the results dictionary from training to explore model behavior.
 
 ---
+
+*** 163. Plotting the Loss Curves of Model 1 ***
+## Lecture Summary: Evaluating Model 1 – Plotting Loss Curves
+
+### 1. **Recap**
+
+* In the previous video, **Model 1** was trained using **data augmentation**.
+* **Quantitative results** showed **no clear improvement** compared to **Model 0**.
+* Now, we continue evaluating **Model 1** to better understand its behavior.
+
+---
+
+### 2. **Loss Curves: A Key Evaluation Tool**
+
+#### 2.1 Purpose of Loss Curves
+
+* Loss curves show **model performance over time**.
+* Helpful to visually identify if a model is:
+
+  * **Underfitting**: model isn't learning enough.
+  * **Overfitting**: model learns the training data too well, fails on unseen data.
+
+#### 2.2 Plotting Model 1's Loss Curves
+
+* Used previously defined `plot_loss_curves()` function with Model 1's results.
+* **Observation**:
+
+  * **Training loss** decreases.
+  * **Test loss** **increases**, which is a sign of potential **overfitting**.
+  * **Accuracy curve** appears inconsistent and unstable.
+
+-------------------code----------------------
+plot_loss_curves(model_1_results)
+-------------------code----------------------
+---
+
+### 3. **Diagnosing Model Behavior**
+
+#### 3.1 Is the Model Underfitting or Overfitting?
+
+* **Training loss is lower** than test loss → indicates **overfitting**.
+* However, **overall loss values are still high** → also suggests **underfitting**.
+* Conclusion: Model may be **both underfitting and overfitting**.
+
+#### 3.2 Ideal Loss Curve (Reference: Section 4 of the PyTorch Audio Book)
+
+* **Training and test loss should both decrease** over time.
+* **Test loss should stay close to training loss**, ideally without diverging.
+
+---
+
+### 4. **Ideas to Improve Model Performance**
+
+#### 4.1 To Address Overfitting
+
+* Collect more training data.
+* Simplify the model architecture.
+* Use transfer learning (to be explored later).
+
+#### 4.2 To Address Underfitting
+
+* Add more convolutional layers (increase depth).
+* Increase number of hidden units per layer (e.g., from 10 to 64).
+* Train for more epochs (e.g., increase from 5 to 20 epochs).
+
+---
+
+### 5. **Suggested Experiments**
+
+* Train both **Model 0** and **Model 1** for **more epochs** to observe longer-term trends.
+* Monitor if **loss curves stabilize** or diverge further.
+* Use this feedback loop to refine model architecture or training strategy.
+
+---
+
+### 6. **Next Step**
+
+* **Compare results of Model 0 and Model 1 side by side**.
+* This helps summarize experiment results and evaluate effectiveness more clearly.
+
+---
