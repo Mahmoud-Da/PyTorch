@@ -3894,3 +3894,105 @@ else:
 * Essentially replicate the preprocessing pipeline used during model training.
 
 ---
+
+*** 166. Predicting on Custom Data (Part 2): Loading In a Custom Image With PyTorch ***
+## Lecture Summary: Predicting on a Custom Image with PyTorch
+
+### Goal
+
+* Make a prediction on a **custom image** using a pre-trained computer vision model.
+* Custom image: a photo of the instructor’s dad eating pizza.
+* Model trained on: **pizza**, **steak**, and **sushi** images.
+* Expected prediction: **pizza**
+
+---
+
+## Steps for Custom Image Prediction
+
+### 1. Ensure Compatibility with Model Input
+
+* The image must be converted to the **same format** as training data:
+
+  * **Tensor form**
+  * **Data type:** `torch.float32`
+  * **Shape:** `[3, 64, 64]` (Channels-Height-Width)
+  * **Same device** as the model (CPU/GPU)
+
+---
+
+## 2. Load Image Using `torchvision`
+
+### a. Importing
+
+-------------------code----------------------
+from torchvision.io import read_image
+-------------------code----------------------
+
+### b. Explore TorchVision Utilities
+
+* Visit [`torchvision`](https://pytorch.org/vision/stable/index.html) docs to explore:
+
+  * Image and video read/write
+  * Other domain libraries like `torchtext`, `torchaudio`, etc.
+
+### c. Use `read_image()` to Load the Image
+
+* Reads JPEG or PNG into a 3D tensor.
+* Output tensor:
+
+  * Type: `torch.uint8`
+  * Format: `[C, H, W]` (channel-first)
+
+-------------------code----------------------
+from torchvision.io import read_image
+
+# Convert path from PosixPath to string
+img_path = str(custom_image_path)
+
+custom_image_uint8 = read_image(img_path)
+-------------------code----------------------
+
+* **Note**: `read_image()` requires the path to be a string, not a `Path` object.
+
+---
+
+## 3. Display the Image
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+
+# Permute to [H, W, C] for plotting
+plt.imshow(custom_image_uint8.permute(1, 2, 0))
+plt.title("Custom Image - Raw Input")
+plt.axis("off")
+plt.show()
+-------------------code----------------------
+
+---
+
+## 4. Inspect Image Metadata
+
+-------------------code----------------------
+print("Custom Image Tensor:\n", custom_image_uint8)
+print("Shape:", custom_image_uint8.shape)
+print("Data type:", custom_image_uint8.dtype)
+-------------------code----------------------
+
+* **Shape**: Likely much larger than `[64, 64]` — needs resizing.
+* **Data type**: `torch.uint8` — needs conversion to `torch.float32`.
+
+---
+
+## 5. Next Steps
+
+* Resize the tensor to `[3, 64, 64]` using transforms.
+* Convert from `uint8` to `float32`.
+* Move image tensor to same device as the model.
+* Pass through the model for prediction.
+
+> **Challenge Exercises:**
+>
+> * Try resizing the tensor using `torchvision.transforms`.
+> * Convert tensor data type using `.type(torch.float32)` or `.float()`.
+
+---
