@@ -3681,3 +3681,158 @@ plot_loss_curves(model_1_results)
 * This helps summarize experiment results and evaluate effectiveness more clearly.
 
 ---
+
+*** 164. Plotting the Loss Curves of All of Our Models Against Each Other ***
+## Lecture Summary: Comparing Model Results and Visualizing Metrics
+
+### 1. **Introduction**
+
+* After evaluating **Model 0** and **Model 1** individually, it's important to **compare their results directly**.
+* This helps determine which model performs better and which changes are worth keeping.
+
+---
+
+### 2. **Methods for Comparing Model Results**
+
+#### 2.1 Manual Comparison (Hard Coding)
+
+* This is the current approach used in the course.
+* Involves manually writing code to:
+
+  * Store metrics in dictionaries
+  * Convert them into DataFrames
+  * Plot graphs using libraries such as Matplotlib
+
+#### 2.2 Experiment Tracking Tools (Optional for Now)
+
+* Mentioned for future use; not part of this course’s main workflow:
+
+  * **TensorBoard** (integrates with PyTorch)
+  * **Weights & Biases (W\&B)**
+  * **MLFlow**
+* These tools help:
+
+  * Automatically track experiments
+  * Visualize metrics
+  * Organize results from multiple models easily
+
+---
+
+### 3. **Hard-Coded Comparison: Implementation Steps**
+
+#### 3.1 Setup
+
+* Create a DataFrame for each model result (`Model 0` and `Model 1`), using metrics stored in dictionaries.
+* Observed that:
+
+  * Training loss decreases
+  * Test loss decreases
+  * Training and test accuracy increase over time
+* These trends indicate learning progress, though effectiveness may vary by model.
+-------------------code----------------------
+import pandas as pd
+model_0_df = pd.DataFrame(model_0_results)
+model_1_df = pd.DataFrame(model_1_results)
+model_0_df
+-------------------code----------------------
+
+#### 3.2 Creating the Plots
+
+* Used `matplotlib.pyplot` to create **four subplots**:
+
+  * Training Loss
+  * Test Loss
+  * Training Accuracy
+  * Test Accuracy
+* Plotted **two lines on each graph**:
+
+  * One for Model 0
+  * One for Model 1
+
+-------------------code----------------------
+# Setup a plot
+plt.figure(figsize=(15, 10))
+
+# Get number of epochs
+epochs = range(len(model_0_df))
+
+# Plot train loss
+plt.subplot(2, 2, 1)
+plt.plot(epochs, model_0_df["train_loss"], label="Model 0")
+plt.plot(epochs, model_1_df["train_loss"], label="Model 1")
+plt.title("Train Loss")
+plt.xlabel("Epochs")
+plt.legend()
+
+# Plot test loss
+plt.subplot(2, 2, 2)
+plt.plot(epochs, model_0_df["test_loss"], label="Model 0")
+plt.plot(epochs, model_1_df["test_loss"], label="Model 1")
+plt.title("Test Loss")
+plt.xlabel("Epochs")
+plt.legend()
+
+# Plot train accuracy
+plt.subplot(2, 2, 3)
+plt.plot(epochs, model_0_df["train_acc"], label="Model 0")
+plt.plot(epochs, model_1_df["train_acc"], label="Model 1")
+plt.title("Train Acc")
+plt.xlabel("Epochs")
+plt.legend()
+
+# Plot test accuracy
+plt.subplot(2, 2, 4)
+plt.plot(epochs, model_0_df["test_acc"], label="Model 0")
+plt.plot(epochs, model_1_df["test_acc"], label="Model 1")
+plt.title("Test Acc")
+plt.xlabel("Epochs")
+plt.legend();
+-------------------code----------------------
+---
+
+### 4. **Analysis of Plots**
+
+#### 4.1 Training Loss
+
+* **Model 0**: Loss decreases consistently.
+* **Model 1**: Initially increases, then begins to decrease. Shows instability.
+* Suggests Model 1 may need more training time for clearer trends.
+
+#### 4.2 Test Loss
+
+* **Model 1** shows signs of **overfitting**: lower training loss but higher test loss.
+* Model 0 performs better in generalization.
+
+#### 4.3 Training Accuracy
+
+* Both models show increasing training accuracy, indicating they are learning from the training data.
+
+#### 4.4 Test Accuracy
+
+* **Model 0** has better test accuracy, showing better generalization.
+* **Model 1** is overfitting—good training accuracy but poor test accuracy.
+
+---
+
+### 5. **Reflection & Recommendations**
+
+#### 5.1 Key Takeaways
+
+* Always compare models **side by side**, not just in isolation.
+* Visualizing all metrics together helps in identifying which modifications improved or worsened performance.
+
+#### 5.2 Possible Next Steps
+
+* Train both models for more epochs.
+* Add more hidden units to layers (increase model capacity).
+* Monitor whether these changes improve test set performance.
+
+---
+
+### 6. **Next Lecture Preview**
+
+* **Objective**: Use the trained model to make a **prediction on a custom image** (not from training or test data).
+* Example use case: Deploy the model in an app (e.g., *Nutri.App*, a food recognition app).
+* Aim: Verify the model’s ability to classify new, unseen images after training.
+
+---
