@@ -3364,3 +3364,123 @@ There are many types of loss curves. Common patterns include:
   * What changes could help the model learn better from the training data?
 
 ---
+
+*** 161. Creating Augmented Training Datasets and DataLoaders for Model 1 ***
+## Lecture Summary: Ideal Loss Curves and Data Augmentation in PyTorch
+
+### 1. **Recap of Loss Curves**
+
+* **Loss curves** help evaluate whether a model is:
+
+  * **Underfitting (Unbefitting)**: Training and test losses are both high.
+  * **Overfitting**: Training loss is much lower than test/validation loss.
+  * **Just Right (Goldilocks Zone)**: Training and test losses are similar over time.
+* These concepts and visualizations are explained in **Section 8** of the notebook:
+
+  * Ideal loss curve examples
+  * Strategies to handle overfitting and underfitting
+  * Further resources provided
+
+---
+
+### 2. **Next Step: Model with Data Augmentation**
+
+* **Objective**: Create another model (TinyVGG) using data augmentation to mitigate overfitting.
+
+#### 2.1 What is Data Augmentation?
+
+* A method to artificially increase the diversity of training data without collecting more data.
+* Example: Rotate images of pizza, sushi, and steak randomly to introduce variance.
+* Helps the model generalize better, though not a guaranteed solution.
+
+---
+
+### 3. **Implementing Data Augmentation in PyTorch**
+
+#### 3.1 Create Transforms
+
+* **Training Transform** (with augmentation):
+
+  * Resize to `(64, 64)`
+  * Apply `TrivialAugmentWide` with `num_magnitude_bins=31` (default)
+  * Convert to tensor
+* **Test Transform** (no augmentation):
+
+  * Resize to `(64, 64)`
+  * Convert to tensor
+* Data augmentation is only applied to training data, not test data.
+-------------------code----------------------
+# Create training transform with TriviailAugment
+from torchvision import transforms
+train_transform_trivial = transforms.Compose([
+                                               transforms.Resize(size=(64, 64)),
+                                               transforms.TrivialAugmentWide(num_magnitude_bins=31),
+                                               transforms.ToTensor()
+])
+
+test_transform_simple = transforms.Compose([
+                                            transforms.Resize(size=(64, 64)),
+                                            transforms.ToTensor()
+])
+-------------------code----------------------
+
+#### 3.2 Create Datasets
+
+* Use `torchvision.datasets.ImageFolder`:
+
+  * `train_data_augmented`: with training transform
+  * `test_data_simple`: with test transform
+-------------------code----------------------
+# Turn image folders into Datasets
+from torchvision import datasets
+train_data_augmented = datasets.ImageFolder(root=train_dir,
+                                            transform=train_transform_trivial)
+test_data_simple = datasets.ImageFolder(root=test_dir,
+                                        transform=test_transform_simple)
+-------------------code----------------------                                        
+
+#### 3.3 Create DataLoaders
+
+* **Settings**:
+
+  * `batch_size = 32`
+  * `num_workers = os.cpu_count()`
+  * `shuffle = True` for training data
+  * `shuffle = False` for test data
+  * Set manual seed: `torch.manual_seed(42)`
+
+* **DataLoader Definitions**:
+
+  * `train_dataloader_augmented` for augmented training dataset
+  * `test_dataloader_simple` for simple test dataset
+
+-------------------code----------------------  
+# Turn our Datasets into DataLoaders
+import os
+from torch.utils.data import DataLoader
+BATCH_SIZE = 32
+NUM_WORKERS = os.cpu_count()
+
+torch.manual_seed(42)
+train_dataloader_augmented = DataLoader(dataset=train_data_augmented,
+                                        batch_size=BATCH_SIZE,
+                                        shuffle=True,
+                                        num_workers=NUM_WORKERS)
+
+test_dataloader_simple = DataLoader(dataset=test_data_simple,
+                                    batch_size=BATCH_SIZE,
+                                    shuffle=False,
+                                    num_workers=NUM_WORKERS)
+-------------------code----------------------                                      
+---
+
+### 4. **Next Steps**
+
+* Use the augmented `train_dataloader` and simple `test_dataloader` to train a new model.
+* Suggested to reuse:
+
+  * **TinyVGG class** to create the model
+  * **Train function** from previous experiments
+* Try implementing it independently before the next video.
+
+---
