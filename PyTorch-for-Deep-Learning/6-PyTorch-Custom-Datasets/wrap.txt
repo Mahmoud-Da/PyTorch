@@ -3836,3 +3836,61 @@ plt.legend();
 * Aim: Verify the model’s ability to classify new, unseen images after training.
 
 ---
+
+*** 165. Predicting on Custom Data (Part 1): Downloading an Image ***
+## Lecture Summary: Making Predictions with a Custom Image Using PyTorch
+
+### Overview
+
+* Transition from training models to **making predictions** using custom images.
+* The goal is to use a **trained model** to classify an image that was **not part of the training or testing dataset**.
+
+### Use Case Example
+
+* A food recognition app (e.g., **"Neutral PHI"**) where:
+
+  * A user takes a photo of food.
+  * The app uses computer vision to identify it.
+  * Nutritional info is retrieved similar to how **QR codes** are scanned.
+
+### Demonstration Example
+
+* Image: Instructor’s dad giving two thumbs up for a pizza.
+* Model prediction: **"Pizza"** (expected output).
+
+### Workflow for Custom Image Prediction
+
+#### Step 1: Prepare Custom Image
+
+* Upload manually via **Google Colab’s Upload button**, or
+* Download **programmatically** using Python code (preferred to avoid losing data on CoLab reset).
+
+#### Step 2: Programmatic Download via `requests`
+
+* Use the `requests` library to fetch an image.
+* Sample image used: **Pizza Dad** (hosted on GitHub).
+* GitHub raw link required for direct file access.
+
+-------------------code----------------------
+if not custom_image_path.is_file():
+    response = requests.get("RAW_GITHUB_IMAGE_URL")
+    with open(custom_image_path, "wb") as f:
+        f.write(response.content)
+else:
+    print(f"{custom_image_path} already exists, skipping download.")
+-------------------code----------------------
+
+* This ensures the image is downloaded only once and re-used if already present.
+
+#### Step 3: Image Storage
+
+* The image is saved in a folder (e.g., `data/`) within the CoLab environment.
+* Important note: Data will disappear if CoLab disconnects, hence the use of scripted downloads.
+
+### Next Steps in Future Videos
+
+* **Transform the image** into tensors.
+* **Pass it through the trained model** for prediction.
+* Essentially replicate the preprocessing pipeline used during model training.
+
+---
