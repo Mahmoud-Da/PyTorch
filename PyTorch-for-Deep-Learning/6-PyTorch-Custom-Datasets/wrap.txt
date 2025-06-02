@@ -4114,3 +4114,87 @@ Making predictions on custom images is a valuable step in deploying and testing 
 A suggestion for next steps is to **functionize** this pipeline so it can be reused cleanly with different images.
 
 ---
+
+*** 168. Predicting on Custom Data (Part4):Turning Our Models Raw Outputs Into Prediction ***
+## Lecture Summary: Converting Model Outputs to Prediction Labels & Function Creation
+
+### 1. **Recap**
+
+* Previously, we obtained **raw model outputs (logits)** from our model.
+* Goal: **Convert these logits into prediction labels** for custom image data.
+
+---
+
+### 2. **Step 1: Convert Logits to Probabilities**
+
+* Use `torch.softmax()` across the first dimension to transform logits into **prediction probabilities**.
+
+-------------------code----------------------
+custom_image_pred_probs = torch.softmax(logits, dim=1)
+-------------------code----------------------
+
+* These probabilities may be **spread out** if the model isn’t performing well.
+* Ideally, we'd see **high confidence** (e.g., >0.8) in the correct class.
+
+---
+
+### 3. **Step 2: Convert Probabilities to Prediction Labels**
+
+* Use `torch.argmax()` to get the **index of the highest probability** (i.e., predicted class).
+
+-------------------code----------------------
+custom_image_pred_labels = torch.argmax(custom_image_pred_probs, dim=1)
+-------------------code----------------------
+
+* The index corresponds to the predicted class.
+
+---
+
+### 4. **Device Consideration**
+
+* Ensure the prediction label is moved to the **CPU** before using it with class names.
+
+-------------------code----------------------
+predicted_class = class_names[custom_image_pred_labels.cpu()]
+-------------------code----------------------
+
+* Example output: `"pizza"`
+
+---
+
+### 5. **Model Confidence**
+
+* The model predicted correctly, but **confidence was low**.
+* The accuracy is not reliable because prediction probabilities are **not sharply peaked**.
+
+---
+
+### 6. **Refactor Code into a Function**
+
+* Purpose: Simplify prediction workflow.
+* Target: Create a function that:
+
+  * Accepts an image file path.
+  * Processes and formats the image.
+  * Passes it to the model.
+  * Displays the image with the predicted class as the title.
+
+---
+
+### 7. **Challenge for the Viewer**
+
+* Try building the prediction function yourself:
+
+  1. Start from reading the image with `torchvision.io.read_image`.
+  2. Apply preprocessing: datatype conversion, shape formatting, device transfer.
+  3. Generate predictions using the model.
+  4. Plot the image with its prediction.
+
+---
+
+### 8. **Next Steps**
+
+* The actual function implementation will be shown in the next video.
+* Until then, it's encouraged to attempt the challenge using the concepts covered so far.
+
+---
