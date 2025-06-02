@@ -4313,3 +4313,112 @@ The function should accept the following parameters:
 * Upcoming: Summary of the topic and exercises in the next video.
 
 ---
+
+*** 170. Summary of What We Have Covered Plus Exercises and Extra-Curriculum ***
+## **Lecture Notes: Predicting on Custom Images & Summary of Custom Datasets**
+
+### **1. Making a Prediction on a Custom Image**
+
+* In the previous video, we successfully made a prediction using our trained model on a custom image.
+* The prediction worked qualitatively, although the image was pixelated and the model's overall quantitative performance was lacking.
+* The key takeaway is the importance of preprocessing: custom data must match the format expected by the trained model.
+
+### **2. Preprocessing Steps for Custom Data**
+
+To ensure your custom data works with your model, follow these key preprocessing steps:
+
+* **Data Type**: Convert data to the correct type (e.g., `torch.float32`).
+* **Device**: Move the data to the same device (CPU or GPU) where the model is located.
+* **Shape**:
+
+  * Add a batch dimension.
+  * Ensure the shape matches what the model expects.
+  * Rearranging image data may be necessary (e.g., `channels_first` vs. `channels_last`).
+
+**Example Shape Flow (Image Data)**:
+
+* Original: `64x64x3` (height, width, color channels)
+* Expected for model: `1x3x64x64` (batch, channels, height, width)
+
+### **3. Summary: Predicting on Custom Data**
+
+Make sure of the following, regardless of modality (images, text, audio):
+
+1. Correct data **type**.
+2. Correct **device**.
+3. Correct **shape**.
+
+### **4. Built-In PyTorch Data Tools**
+
+PyTorch provides several libraries to work with different data types:
+
+* `torchvision`: for image data (used in this lecture)
+* `torchaudio`: for audio data
+* `torchtext`: for text data
+* `torchdata`: an experimental/prototype library for custom datasets
+
+Each of these offers:
+
+* Built-in datasets
+* Transformation utilities
+* Data loading helpers
+
+### **5. Custom Dataset Implementation**
+
+* If built-in data loaders do not meet your needs, you can define your own by subclassing `torch.utils.data.Dataset`.
+* This gives you full control over data loading, transformation, and preprocessing logic.
+* This was demonstrated earlier using Option 2 in the notebook (Custom Dataset implementation).
+
+### **6. Machine Learning Insight**
+
+A major focus in machine learning is the balance between:
+
+* **Overfitting**: Model performs well on training data but poorly on new data.
+* **Underfitting**: Model performs poorly even on training data.
+  This balance is crucial and covered in detail in the course materials and textbook.
+
+### **7. Key Pitfalls When Working With Custom Data**
+
+Be aware of these common mistakes:
+
+* Wrong **data type**
+* Wrong **data shape**
+* Wrong **device**
+
+These errors frequently occur and need to be carefully addressed when making predictions on custom inputs.
+
+---
+
+## **Practice & Exercises**
+
+### **Where to Practice**
+
+* **Exercises Notebook**: "04. PyTorch Custom Datasets Exercises" (template available)
+* **Example Solutions**: Available in the same repository
+
+### **Instructions**
+
+* Work through the exercises using the template.
+* Fill in code based on what you've learned.
+* Use course materials and documentation for reference.
+* If needed, consult the example solutions notebook.
+
+### **Video Walkthrough**
+
+* A live coding walkthrough (including errors and corrections) is available on YouTube.
+* This can help you better understand how to approach problems and resolve issues in real-time.
+
+---
+
+## **Final Note**
+
+All materials, including:
+
+* Exercises
+* Extra curriculum
+* Solutions
+  are located in the **Extras > Exercises and Solutions** section of the PyTorch Deep Learning GitHub repository.
+
+This concludes the section on **PyTorch Custom Datasets**.
+
+---
