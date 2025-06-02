@@ -4198,3 +4198,118 @@ predicted_class = class_names[custom_image_pred_labels.cpu()]
 * Until then, it's encouraged to attempt the challenge using the concepts covered so far.
 
 ---
+
+
+*** 169. Predicting on Custom Data (Part 5): Putting It All Together ***
+## **Lecture Summary: Custom Image Prediction Function**
+
+### **Objective**
+
+Create a reusable function `pred_and_plot_image()` to:
+
+* Predict the class of a custom image using a trained PyTorch model.
+* Plot the image with its predicted label and prediction probability.
+
+---
+
+### **Function Requirements**
+
+The function should accept the following parameters:
+
+* `model`: A trained `torch.nn.Module` model.
+* `image_path`: A string representing the path to the image.
+* `class_names` (optional): A list of class names (strings) to convert predicted index to label.
+* `transform` (optional): A torchvision transform to preprocess the image.
+* `device` (optional): Device to run the model and image tensor on (`'cuda'` or `'cpu'`).
+
+---
+
+### **Step-by-Step Implementation**
+
+#### 1. **Image Loading**
+
+* Use `torchvision.io.read_image(image_path)` to load the image.
+* Convert image to `float32` and normalize pixel values to range `[0, 1]`:
+
+  -------------------code----------------------
+  target_image = target_image.type(torch.float32) / 255
+  -------------------code----------------------
+
+#### 2. **Apply Transform**
+
+* If a transform is provided, apply it to the image:
+
+  -------------------code----------------------
+  if transform:
+      target_image = transform(target_image)
+  -------------------code----------------------
+
+#### 3. **Device Handling**
+
+* Move the model and image to the specified `device`.
+
+#### 4. **Prepare for Inference**
+
+* Set model to evaluation mode: `model.eval()`.
+* Use `torch.inference_mode()` to disable gradients.
+* Add a batch dimension to the image:
+
+  -------------------code----------------------
+  target_image = target_image.unsqueeze(0)
+  -------------------code----------------------
+
+#### 5. **Make Prediction**
+
+* Pass the image through the model to get logits.
+* Apply `torch.softmax()` to obtain probabilities.
+* Use `torch.argmax()` to get the predicted class index.
+
+#### 6. **Plotting**
+
+* Squeeze the batch dimension and rearrange axes to `[H, W, C]` for plotting.
+* Plot the image using `matplotlib`.
+* If `class_names` provided:
+
+  * Retrieve the class name using the predicted index.
+  * Convert tensor values to CPU before plotting (to avoid GPU-related issues).
+* Display the predicted class and its probability in the title.
+
+---
+
+### **Handling Common Errors**
+
+* Always move tensors to CPU before using with matplotlib.
+* Use `squeeze()` and `permute()` to properly format tensors for plotting.
+* Ensure the model and image are on the same device.
+
+---
+
+### **Testing the Function**
+
+* Example usage:
+
+  -------------------code----------------------
+  pred_and_plot_image(
+      model=model,
+      image_path=custom_image_path,
+      class_names=["pizza", "steak", "sushi"],
+      transform=custom_transform,
+      device=device
+  )
+  -------------------code----------------------
+
+* Tested with various models:
+
+  * Some performed better qualitatively than quantitatively.
+  * Highlights the importance of **visual inspection** in model evaluation.
+
+---
+
+### **Conclusion**
+
+* The function `pred_and_plot_image()` encapsulates all necessary steps for single image prediction.
+* Can be reused with any trained model and custom image.
+* Encouraged to try different models and custom images.
+* Upcoming: Summary of the topic and exercises in the next video.
+
+---
