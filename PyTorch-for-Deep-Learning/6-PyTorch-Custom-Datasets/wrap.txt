@@ -3996,3 +3996,121 @@ print("Data type:", custom_image_uint8.dtype)
 > * Convert tensor data type using `.type(torch.float32)` or `.float()`.
 
 ---
+
+*** 167. Predicting on Custom Data (Part3):Getting Our Custom Image Into the Right Format ***
+## **11.2 Making a Prediction on a Custom Image with a Trained PyTorch Model**
+
+### **Overview**
+
+In this section, we used a custom image (e.g., a pizza image) and walked through the process of preparing it for prediction using a trained PyTorch model. We focused on common errors and preprocessing steps necessary to ensure the model can handle the input properly.
+
+---
+
+### **Steps to Predict on a Custom Image**
+
+#### **1. Data Type Compatibility**
+
+* **Problem:** Input image tensor was in `uint8`, but model expects `torch.float32`.
+* **Solution:** Convert image tensor to `torch.float32` using `.type(torch.float32)`.
+
+#### **2. Image Value Scaling**
+
+* **Problem:** Image tensor values were in the range `[0, 255]`.
+* **Solution:** Normalize the image to the range `[0, 1]` by dividing by 255.
+  `image = image / 255`
+
+#### **3. Image Shape Compatibility**
+
+* **Problem:** Image shape was extremely large (e.g., `[3, 4000, 3000]`).
+* **Solution:** Resize the image using torchvision transforms to match the model’s expected input shape (e.g., `[3, 64, 64]`).
+
+-------------------code----------------------
+transform = transforms.Compose([
+    transforms.Resize((64, 64))
+])
+image = transform(image)
+-------------------code----------------------
+
+#### **4. Device Compatibility**
+
+* **Problem:** Image and model were on different devices (e.g., CPU vs. CUDA).
+* **Solution:** Ensure both image and model are on the same device:
+
+-------------------code----------------------
+image = image.to(device)
+-------------------code----------------------
+
+#### **5. Batch Dimension**
+
+* **Problem:** Model expected a batch dimension (e.g., `[1, 3, 64, 64]`).
+* **Solution:** Add a batch dimension using `unsqueeze(0)`:
+
+-------------------code----------------------
+image = image.unsqueeze(0)
+-------------------code----------------------
+
+---
+
+### **Final Workflow Summary**
+
+To make a prediction on a custom image with a trained PyTorch model:
+
+1. **Load image** using `torchvision.io.read_image`.
+2. **Convert to float32**:
+
+   -------------------code----------------------
+   image = image.type(torch.float32)
+   -------------------code----------------------
+3. **Normalize pixel values**:
+
+   -------------------code----------------------
+   image = image / 255
+   -------------------code----------------------
+4. **Resize image** to expected shape:
+
+   -------------------code----------------------
+   transform = transforms.Compose([transforms.Resize((64, 64))])
+   image = transform(image)
+   -------------------code----------------------
+5. **Add batch dimension**:
+
+   -------------------code----------------------
+   image = image.unsqueeze(0)
+   -------------------code----------------------
+6. **Move to same device as model**:
+
+   -------------------code----------------------
+   image = image.to(device)
+   -------------------code----------------------
+7. **Make prediction**:
+
+   -------------------code----------------------
+   with torch.inference_mode():
+       pred = model(image)
+   -------------------code----------------------
+
+---
+
+### **Common Errors and Fixes**
+
+| Error Type           | Cause                                     | Fix                                         |
+| -------------------- | ----------------------------------------- | ------------------------------------------- |
+| Data type mismatch   | Image is `uint8`, model expects `float32` | Convert using `.type(torch.float32)`        |
+| Value range mismatch | Pixel values `[0, 255]`                   | Normalize by dividing by `255`              |
+| Shape mismatch       | Image size too large or wrong format      | Resize to model input size using transforms |
+| Device mismatch      | Model on CUDA, image on CPU or vice versa | Use `.to(device)` for both model and input  |
+| Missing batch size   | Model expects batched input               | Use `unsqueeze(0)` to add batch dimension   |
+
+---
+
+### **Conclusion**
+
+Making predictions on custom images is a valuable step in deploying and testing your model. The key is ensuring your input data mimics the structure and format the model was trained on. The three major areas to always verify:
+
+* **Data Type**
+* **Data Shape**
+* **Device Compatibility**
+
+A suggestion for next steps is to **functionize** this pipeline so it can be reused cleanly with different images.
+
+---
