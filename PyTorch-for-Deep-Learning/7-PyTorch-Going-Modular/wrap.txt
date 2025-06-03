@@ -126,3 +126,98 @@ Each component of the model pipeline is separated into its own script:
 
 ---
 
+*** 172. Going Modular Notebook (Part 1): Running It End to End ***
+## **Lecture Summary: Going Modular with PyTorch**
+
+### **Overview**
+
+This lecture introduces the concept of **going modular** in PyTorch development. It is part of **Section 5** in the course and focuses on transitioning from Jupyter notebooks to modular Python scripts.
+
+---
+
+### **Goals of This Section**
+
+* Familiarize with the modular approach to structuring PyTorch projects.
+* Transition from **notebook-based code** to **reusable Python scripts**.
+* Understand the workflow used in real-world PyTorch projects.
+
+---
+
+### **Resources and Structure**
+
+* **Text-based version** of Section 5 is available in the course's eBook under `05. PyTorch Going Modular`.
+* Two main notebooks:
+
+  * **Part 1: Cell Mode** (used as the baseline)
+  * **Part 2: Script Mode** (final modularized version)
+
+---
+
+### **Why Go Modular?**
+
+* Real-world code is often written in scripts, not notebooks.
+* Modular code is **more reusable**, **maintainable**, and **sharable**.
+* Separates concerns (data handling, modeling, training logic, utilities).
+
+---
+
+### **Cell Mode (Part 1)**
+
+* A condensed version of **notebook 04** (custom datasets).
+* All code runs top-to-bottom as-is.
+* Prepares the foundation for modularization.
+* Includes:
+
+  * Data downloading and setup
+  * Model creation (`TinyVGG`)
+  * Device agnostic code
+  * Training and testing steps
+  * Google-style docstrings added for better documentation
+  * Saving the trained model to a directory
+
+**Key Functions:**
+
+* `train_step`
+* `test_step`
+* `train`
+* `save_model`
+
+**Output Files/Folders:**
+
+* `data/` — contains downloaded dataset
+* `models/` — stores trained models
+
+---
+
+### **Workflow: Accessing and Running the Notebook**
+
+1. Open the notebook from the course homepage → *Going Modular* → *Part 1 (Cell Mode)*.
+2. Click **Open in Colab**.
+3. Click **Copy to Drive** to save a personal version.
+4. Make sure to use GPU runtime.
+5. Run all cells to verify that code works end-to-end.
+
+---
+
+### **Script Mode (Part 2) — The Goal**
+
+* The aim is to transform Part 1 into modular scripts:
+
+  * `going_modular/`
+
+    * `data_setup.py`
+    * `engine.py`
+    * `model_builder.py`
+    * `train.py`
+    * `utils.py`
+* This structure mirrors how PyTorch projects are structured in practice.
+
+---
+
+### **Next Steps**
+
+* Begin converting code cells from Part 1 into standalone Python files.
+* Understand what code belongs in which module.
+* Use Part 2 as a reference to guide the modularization.
+
+---
