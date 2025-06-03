@@ -567,3 +567,84 @@ train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
 * Prepare it before the next session as a practice exercise.
 
 ---
+
+*** 176. Turning Our Model Building Code into a Python Script ***
+### **Lecture Summary: Creating the `model_builder.py` Script**
+
+#### **Objective**
+
+The goal of this lecture was to modularize the code for building a model by converting it from a notebook cell into a standalone Python script: `model_builder.py`.
+
+---
+
+### **Background**
+
+* In the previous lecture, we created `data_setup.py`, which helps prepare PyTorch data loaders and class names.
+* This time, the focus is on modularizing the code that defines the TinyVGG model architecture, previously created in Notebook 04.
+
+---
+
+### **Steps Covered**
+
+#### **1. Preparing the Script**
+
+* A Jupyter magic command (`%%writefile`) is used to write the script:
+
+  -------------------code----------------------
+  %%writefile going_modular/model_builder.py
+  -------------------code----------------------
+* An initial placeholder script is tested with a print statement to ensure writing works.
+
+#### **2. Creating the Model Script**
+
+* The TinyVGG model code is copied from the notebook and added to the script.
+* The script includes:
+
+  * Necessary imports (`torch`, `nn`, etc.).
+  * The `TinyVGG` class with an appropriate Google-style docstring:
+
+    -------------------code----------------------
+    """Creates TinyVGG model architecture from CNN Explainer.
+
+    Args:
+        input_shape (int): Number of input channels.
+        hidden_units (int): Number of hidden units.
+        output_shape (int): Number of output classes.
+
+    Returns:
+        torch.nn.Module: TinyVGG model instance.
+    """
+    -------------------code----------------------
+
+#### **3. Validating the Script**
+
+* The script is tested by importing the model:
+
+  -------------------code----------------------
+  from going_modular import model_builder
+  -------------------code----------------------
+* A model instance is created with:
+
+  -------------------code----------------------
+  model_1 = model_builder.TinyVGG(input_shape=3, hidden_units=10, output_shape=len(class_names))
+  model_1.to(device)
+  -------------------code----------------------
+* A dummy forward pass is performed using a sample image batch to confirm functionality.
+
+---
+
+### **Outcome**
+
+* The TinyVGG model is now saved in a reusable Python module.
+* It can be imported and instantiated easily in any script or notebook.
+* This workflow mirrors real-world ML engineering practices: experiment in notebooks, then modularize for reuse.
+
+---
+
+### **Next Steps**
+
+* The upcoming lecture will focus on moving the training-related functions (`train_step`, `test_step`, `train`) into a new script: `engine.py`.
+* Each function will be enhanced with proper docstrings following Google’s Python style guide.
+
+---
+
