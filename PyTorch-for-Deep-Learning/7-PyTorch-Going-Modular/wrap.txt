@@ -438,3 +438,132 @@ The goal is to **reuse working code** from previous notebooks and **refactor it*
 * Writing meaningful docstrings following a style guide (e.g., Google’s) helps future users and yourself.
 
 ---
+
+*** 175. Creating a Python Script to Create Our PyTorch DataLoaders ***
+## **Lecture Summary: Writing a Python Script for Data Loaders (PyTorch)**
+
+### **Overview**
+
+In this session, the instructor guides us through writing and finalizing a Python script to handle data loading in a PyTorch project. The script includes:
+
+* Creating datasets and dataloaders for training and testing
+* Returning class names
+* Using best practices such as Google-style docstrings and memory pinning
+
+---
+
+### **1. Recap from Previous Lecture**
+
+* Defined a function to create data loaders using parameters:
+
+  * `train_dir`, `test_dir`, `transform`, `batch_size`, `num_workers`
+* Used Google Python style guide for the docstring
+* Saved the code as a Python script using Jupyter magic (`%%writefile`)
+
+---
+
+### **2. Completing the Data Loading Logic**
+
+#### **Dataset Creation**
+
+Used `ImageFolder` from `torchvision.datasets`:
+
+ -------------------code----------------------
+train_data = datasets.ImageFolder(train_dir, transform=transform)
+test_data = datasets.ImageFolder(test_dir, transform=transform)
+ -------------------code----------------------
+
+#### **Class Names Extraction**
+
+ -------------------code----------------------
+class_names = train_data.classes
+ -------------------code----------------------
+
+---
+
+### **3. Creating DataLoaders**
+
+Imported `DataLoader`:
+
+ -------------------code----------------------
+from torch.utils.data import DataLoader
+ -------------------code----------------------
+
+#### **Train DataLoader**
+
+ -------------------code----------------------
+train_dataloader = DataLoader(
+    dataset=train_data,
+    batch_size=batch_size,
+    shuffle=True,
+    num_workers=num_workers,
+    pin_memory=True
+)
+ -------------------code----------------------
+
+#### **Test DataLoader**
+
+ -------------------code----------------------
+test_dataloader = DataLoader(
+    dataset=test_data,
+    batch_size=batch_size,
+    shuffle=False,
+    num_workers=num_workers,
+    pin_memory=True
+)
+ -------------------code----------------------
+
+---
+
+### **4. Explanation of `pin_memory=True`**
+
+* Used to optimize data transfer between CPU and CUDA-enabled GPU
+* Reduces bottlenecks during training by keeping memory on the GPU
+* Recommended when using `DataLoader` with CUDA devices
+
+#### **Further Reading:**
+
+* PyTorch documentation for [`pin_memory`](https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader)
+* Horus.io’s article on deep learning speed optimization: "Make Deep Learning Go BRR"
+
+---
+
+### **5. Saving and Using the Script**
+
+* Saved the script as `data_setup.py` inside `going_modular/` directory
+* Imported and used it as follows:
+
+ -------------------code----------------------
+from going_modular import data_setup
+
+train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=data_transform,
+    batch_size=32
+)
+ -------------------code----------------------
+
+* Verified that:
+
+  * Autocomplete shows function and docstring
+  * The function works and returns the expected class names (e.g., `['pizza', 'steak', 'sushi']`)
+
+---
+
+### **6. Key Takeaways**
+
+* Modularizing reusable code improves project structure and efficiency
+* Google-style docstrings enhance readability and help with autocomplete and documentation
+* Using `pin_memory` improves GPU training performance, especially on large datasets
+* Saved script allows reuse without repeating code blocks
+
+---
+
+### **7. Challenge for Next Lecture**
+
+**Task:** Turn the TinyVGG model creation code cell into a separate script named `model_builder.py`.
+
+* Prepare it before the next session as a practice exercise.
+
+---
