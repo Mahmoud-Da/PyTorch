@@ -648,3 +648,99 @@ The goal of this lecture was to modularize the code for building a model by conv
 
 ---
 
+*** 177. Turning Our Model Training Code into a Python Script ***
+### **Lecture Summary: Creating the `engine.py` Script**
+
+#### **Objective**
+
+The goal of this lecture was to modularize the training and evaluation logic by transferring the `train_step`, `test_step`, and `train` functions from the notebook into a reusable Python script: `engine.py`.
+
+---
+
+### **Background**
+
+* Previously, `data_setup.py` and `model_builder.py` were created to modularize data loading and model building.
+* This lecture focuses on converting training-related code from **Notebook 04** into a script to avoid code duplication and improve reusability.
+
+---
+
+### **Steps Covered**
+
+#### **1. Function Review**
+
+The following functions were taken from the notebook:
+
+* `train_step`: Handles one training iteration.
+* `test_step`: Evaluates model performance on a test set.
+* `train`: Orchestrates multiple training and testing epochs.
+
+Each function was updated with:
+
+* **Google-style docstrings** for documentation.
+* **Python type annotations** for better readability and maintainability.
+
+#### **2. Understanding Type Annotations**
+
+* Python type hints (e.g., `model: torch.nn.Module`) help clarify the expected input/output types.
+* These are optional and not enforced at runtime, but useful for debugging, code editors, and future collaborators.
+
+#### **3. Creating the Script**
+
+A new file `engine.py` was created using the Jupyter magic command:
+
+-------------------code----------------------
+%%writefile going_modular/engine.py
+-------------------code----------------------
+
+**Header and Imports:**
+
+-------------------code----------------------
+"""
+Contains functions for training and testing a PyTorch model.
+"""
+from typing import Dict, List, Tuple
+import torch
+from torch import nn
+from tqdm.auto import tqdm
+-------------------code----------------------
+
+**Functions Added:**
+
+* `train_step()`
+* `test_step()`
+* `train()`
+
+These were directly copied from the notebook, assuming they had been tested and debugged already.
+
+#### **4. Validating the Script**
+
+Once the script was saved:
+
+-------------------code----------------------
+from going_modular import engine
+-------------------code----------------------
+
+You can call the `train()` function:
+
+-------------------code----------------------
+engine.train(...)
+-------------------code----------------------
+
+The function requires parameters such as the model, data loaders, optimizer, loss function, number of epochs, and device.
+
+---
+
+### **Outcome**
+
+* The core training logic is now modularized and reusable.
+* Saves development time and improves maintainability.
+* All core model functions (`data_setup.py`, `model_builder.py`, `engine.py`) now exist as importable modules.
+
+---
+
+### **Next Steps**
+
+* The upcoming video will focus on saving the model to disk.
+* Viewers are encouraged to practice turning the model saving logic into another script: `utils.py`.
+
+---
