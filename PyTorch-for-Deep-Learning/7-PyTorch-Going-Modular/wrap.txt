@@ -744,3 +744,100 @@ The function requires parameters such as the model, data loaders, optimizer, los
 * Viewers are encouraged to practice turning the model saving logic into another script: `utils.py`.
 
 ---
+*** 178. Turning Our Utility Function to Save a Model into a Python Script ***
+### **Lecture Summary: Creating `utils.py` for Utility Functions**
+
+#### **Objective**
+
+To modularize utility logic—specifically the function to **save a model**—into a separate Python script named `utils.py`. This continues the modular approach initiated with `engine.py`.
+
+---
+
+### **Review and Rationale**
+
+* In the last lecture, `engine.py` was created to encapsulate the training and evaluation steps.
+* A natural next step is to refactor the **model-saving logic** into its own utility module.
+* While we could have started with scripts from the beginning, writing the code manually in notebooks provided a valuable learning experience.
+
+---
+
+### **Why Use a `utils.py` File?**
+
+* **Purpose**: Store various utility functions that support training and evaluation.
+* **Reference**: The structure mirrors how the official [PyTorch `torchvision` repo](https://github.com/pytorch/vision) organizes training scripts—e.g., `train.py`, `transforms.py`, and `utils.py`.
+* Example functions in `utils.py` from PyTorch:
+
+  * `save_on_master`
+  * `store_model_weights`
+* These files often include docstrings following a consistent style (e.g., Google-style), similar to what we're now practicing.
+
+---
+
+### **Creating `utils.py`**
+
+#### **Step-by-Step**
+
+1. **Subheading in the Notebook:**
+
+   -------------------code----------------------
+   ## 4.2 Create a file called utils.py with utility functions
+   -------------------code----------------------
+
+2. **Writing the Script with Jupyter Magic:**
+
+   -------------------code----------------------
+   %%writefile going_modular/utils.py
+   """
+   Contains various utility functions for PyTorch model training.
+   """
+   import torch
+
+   def save_model(model: torch.nn.Module,
+                  target_dir: str,
+                  model_name: str):
+       """
+       Saves a PyTorch model to a target directory.
+
+       Args:
+           model (torch.nn.Module): A PyTorch model to save.
+           target_dir (str): Directory to save the model file.
+           model_name (str): Filename for the saved model.
+       """
+       model_path = target_dir + "/" + model_name
+       torch.save(obj=model.state_dict(), f=model_path)
+   -------------------code----------------------
+
+3. **Key Notes:**
+
+   * **Always import dependencies** within the script (e.g., `import torch`). Forgetting to do this will lead to runtime errors.
+   * `save_model()` is currently the only function, but more can be added as the project grows.
+
+---
+
+### **Testing the Script**
+
+* Confirm that `utils.py` is created and works without error.
+* If a red squiggly line appears under `torch`, it means the import is missing.
+* Fix by adding `import torch`, then rerun the cell to overwrite the file.
+
+---
+
+### **Next Steps**
+
+* Combine the modular pieces into a unified training script: `train.py`.
+* This script will:
+
+  * Use `engine.py` for training logic.
+  * Use `utils.py` to save the model.
+  * Be executable from the command line with:
+
+    -------------------code----------------------
+    python going_modular/train.py
+    -------------------code----------------------
+
+#### **Challenge**
+
+* Turn the notebook code that trains, evaluates, and saves the model into `train.py`.
+* This will complete the core training pipeline.
+
+---
