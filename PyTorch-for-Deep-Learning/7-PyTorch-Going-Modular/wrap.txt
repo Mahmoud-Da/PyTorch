@@ -1,0 +1,128 @@
+*** 171. What Is Going Modular and What We Are Going to Cover ***
+## **Lecture Summary: What is Going Modular?**
+
+### **1. Purpose of the Section**
+
+* The goal of this section is to **"go modular"**: turning reusable notebook code into **modular Python scripts**.
+* Focus is on **reusability**, **organization**, and **scalability** of PyTorch projects.
+
+---
+
+### **2. Why Go Modular?**
+
+* Notebooks are great for experimentation and visualization.
+* However, reusable code (e.g., training loops, data loaders) should be extracted into Python scripts.
+* Modular code allows:
+
+  * Easy reuse across projects.
+  * Cleaner project structure.
+  * Easier collaboration and scalability.
+
+---
+
+### **3. Project Recap: FoodVision Mini**
+
+* Dataset: Images of pizza, steak, and sushi.
+* Tasks previously done:
+
+  * Loaded and transformed data.
+  * Built and trained a PyTorch model.
+  * Made predictions (with moderate accuracy).
+
+---
+
+### **4. Modular Directory Structure**
+
+By the end of this section, the project structure will look like:
+
+-------------------code----------------------
+going_modular/
+│
+├── going_modular/
+│   ├── data_setup.py        # Handles data preparation
+│   ├── engine.py            # Contains training/testing functions
+│   ├── model_builder.py     # Builds PyTorch models
+│   ├── train.py             # Trains a model using modular components
+│   ├── utils.py             # Miscellaneous helper functions
+│
+├── models/                  # Stores saved models
+├── data/                    # Image data in standard format
+-------------------code----------------------
+
+---
+
+### **5. Training from the Command Line**
+
+You will be able to train a model using a single command:
+
+-------------------code----------------------
+python train.py --model tiny_vgg --batch_size 32 --learning_rate 0.001 --num_epochs 10
+-------------------code----------------------
+
+* These are called **argument flags**.
+* More hyperparameters can be added, making it customizable.
+* Mimics real-world usage (e.g., Meta's [Detectron2](https://github.com/facebookresearch/detectron2), PyTorch Vision scripts).
+
+---
+
+### **6. Real-World Examples**
+
+* `train.py` scripts are standard in production-level ML codebases (e.g., Meta, PyTorch).
+* Common patterns:
+
+  * Scripts accept hyperparameters via command line.
+  * Modular structure improves maintainability and reproducibility.
+
+---
+
+### **7. Workflow Overview**
+
+**Notebook → Python Scripts Workflow**:
+
+1. Start in Jupyter or Google Colab for prototyping.
+2. Identify reusable code.
+3. Move useful cells into `.py` scripts.
+4. Execute via command line with custom arguments.
+
+---
+
+### **8. How We'll Implement This**
+
+Two parts of this section:
+
+* **Part 1 – Cell Mode Notebook (`05_part1_cell_mode.ipynb`)**:
+
+  * Standard Jupyter notebook to experiment with code.
+* **Part 2 – Script Mode Notebook (`05_part2_script_mode.ipynb`)**:
+
+  * Uses Jupyter magic commands to write code cells to `.py` files.
+
+#### **Example Magic Command**
+
+-------------------code----------------------
+%%writefile going_modular/model_builder.py
+# Contents of the cell are written to the specified file
+-------------------code----------------------
+
+---
+
+### **9. Summary of Python Scripts**
+
+Each component of the model pipeline is separated into its own script:
+
+* `data_setup.py`: Prepares and loads data.
+* `engine.py`: Contains training and evaluation logic.
+* `model_builder.py`: Defines the PyTorch model architecture.
+* `train.py`: Runs the training pipeline using the above components.
+* `utils.py`: Utility functions (e.g., accuracy calculations, timer).
+
+---
+
+### **10. Final Goal**
+
+* Turn useful notebook code into clean, reusable Python scripts.
+* Enable training a PyTorch model from the command line with custom settings.
+* Understand how this mirrors real-world machine learning development workflows.
+
+---
+
