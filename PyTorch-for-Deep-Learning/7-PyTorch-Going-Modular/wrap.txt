@@ -841,3 +841,209 @@ To modularize utility logic—specifically the function to **save a model**—in
 * This will complete the core training pipeline.
 
 ---
+
+*** 179. Creating a Training Script to Train Our Model in One Line of Code ***
+## Lecture Notes: Creating `train.py` and Going Fully Modular
+
+### Overview
+
+* So far, we've created four modular Python scripts:
+
+  1. `data_setup.py`
+  2. `engine.py`
+  3. `model_builder.py`
+  4. `utils.py`
+* Now, the goal is to bring them all together into a single training script: `train.py`.
+* This script will:
+
+  * Train the model
+  * Evaluate it
+  * Save it
+  * All using modular, reusable code
+
+---
+
+### 1. Purpose of `train.py`
+
+* Encapsulate the entire training workflow in one script.
+* Leverage all previously written code.
+* Make the training process reproducible and scriptable.
+
+---
+
+### 2. Desired Command
+
+-------------------code----------------------
+python going_modular/train.py
+-------------------code----------------------
+
+---
+
+### 3. File Purpose
+
+-------------------code----------------------
+# train.py
+"""
+Trains a PyTorch image classification model using device-agnostic code and modular functions.
+"""
+-------------------code----------------------
+
+---
+
+### 4. Modules to Import
+
+* Built-in: `os`, `time`
+* External: `torch`, `torchvision.transforms`
+* Internal (local modules):
+
+  * `data_setup`
+  * `model_builder`
+  * `engine`
+  * `utils`
+
+---
+
+### 5. Hyperparameters & Directory Setup
+
+-------------------code----------------------
+num_epochs = 5
+batch_size = 32
+hidden_units = 10
+learning_rate = 0.001
+
+train_dir = "data/pizza_steak_sushi/train"
+test_dir = "data/pizza_steak_sushi/test"
+-------------------code----------------------
+
+---
+
+### 6. Device Agnostic Code
+
+-------------------code----------------------
+device = "cuda" if torch.cuda.is_available() else "cpu"
+-------------------code----------------------
+
+---
+
+### 7. Transforms
+
+Defined inline for simplicity:
+
+-------------------code----------------------
+data_transform = transforms.Compose([
+    transforms.Resize((64, 64)),
+    transforms.ToTensor()
+])
+-------------------code----------------------
+
+*Note: Could be extracted into `transforms.py` if needed.*
+
+---
+
+### 8. Data Loaders and Class Names
+
+-------------------code----------------------
+train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=data_transform,
+    batch_size=batch_size
+)
+-------------------code----------------------
+
+---
+
+### 9. Model Creation
+
+-------------------code----------------------
+model = model_builder.TinyVGG(
+    input_shape=3,
+    hidden_units=hidden_units,
+    output_shape=len(class_names)
+).to(device)
+-------------------code----------------------
+
+---
+
+### 10. Loss Function and Optimizer
+
+-------------------code----------------------
+loss_fn = torch.nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(params=model.parameters(), lr=learning_rate)
+-------------------code----------------------
+
+---
+
+### 11. Train the Model
+
+-------------------code----------------------
+from time import time
+start_time = time()
+
+engine.train(
+    model=model,
+    train_dataloader=train_dataloader,
+    test_dataloader=test_dataloader,
+    loss_fn=loss_fn,
+    optimizer=optimizer,
+    epochs=num_epochs,
+    device=device
+)
+
+end_time = time()
+print(f"Training time: {end_time - start_time:.3f} seconds")
+-------------------code----------------------
+
+---
+
+### 12. Save the Model
+
+-------------------code----------------------
+utils.save_model(
+    model=model,
+    target_dir="models",
+    model_name="05_going_modular_script_mode_tinyvgg_model.pth"
+)
+-------------------code----------------------
+
+---
+
+### 13. Final Directory Structure
+
+-------------------code----------------------
+project/
+│
+├── data/
+│   └── pizza_steak_sushi/
+│       ├── train/
+│       └── test/
+│
+├── going_modular/
+│   ├── data_setup.py
+│   ├── engine.py
+│   ├── model_builder.py
+│   ├── utils.py
+│   └── train.py
+│
+├── models/
+│   └── 05_going_modular_script_mode_tinyvgg_model.pth
+-------------------code----------------------
+
+---
+
+### 14. Key Takeaways
+
+* Successfully trained a model using **one line of code** by running `train.py`.
+* Transitioned from Jupyter Notebooks to **modular Python scripts**.
+* All reusable components are organized for clarity, reuse, and scale.
+
+---
+
+### 15. Suggested Extensions
+
+* Add CLI argument support via `argparse` to customize hyperparameters dynamically.
+* Extend `utils.py` with more helper functions.
+* Create a `transforms.py` for managing multiple transform pipelines.
+* Enhance model evaluation and logging.
+
+---
