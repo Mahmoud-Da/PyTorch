@@ -1047,3 +1047,101 @@ project/
 * Enhance model evaluation and logging.
 
 ---
+
+*** 180. Going Modular: Summary, Exercises and Extra-Curriculum ***
+## Section Summary: PyTorch Going Modular (Wrap-up & Exercises)
+
+### What We Did
+
+* Created a `train.py` script that integrates all previous scripts.
+* This script enables training a PyTorch model in a **single line of code**.
+* Transitioned from **notebook-based** code to **modular Python script** code.
+
+---
+
+### Modularization Overview
+
+* Took code from **part one** (notebook: cell-based) and transformed it into **part two** (script-based).
+* Encouraged to review:
+
+  * **Section 5: PyTorch Going Modular**
+
+    * Why go modular?
+    * Notebooks vs. Python scripts: pros & cons
+    * Real-world examples and workflow
+
+---
+
+### Instructor’s Workflow
+
+* Prototype code in **Google Colab**.
+* Once working, migrate the code into structured **Python scripts**.
+* Most production and open-source PyTorch codebases use **script mode**, not notebooks.
+
+---
+
+### Exercises
+
+1. **Modularize `get_data()` Code**
+
+   * Turn the notebook code for data retrieval into a Python script.
+   * Hint: Reuse patterns from other modular scripts.
+
+2. **Use `argparse` for Training Parameters**
+
+   * Add command-line argument functionality to `train.py`.
+   * Allows passing custom hyperparameters during training.
+   * Recommended Resources:
+
+     * [Python `argparse` documentation](https://docs.python.org/3/library/argparse.html)
+     * Real Python guide: *"How to Build Command-Line Interfaces in Python"*
+
+3. **Create a Prediction Script**
+
+   * Build `predict.py` to make predictions on a custom image.
+   * Reuse code from section 04 (custom image prediction).
+
+---
+
+### Resources
+
+* **Exercise Template Notebook:**
+
+  * Located in GitHub:
+    `extras/exercises/05_pytorch_going_modular_exercise_template.ipynb`
+
+* **Example Solutions:**
+
+  * Located in GitHub:
+    `extras/solutions/05_pytorch_going_modular_exercise_solutions.ipynb`
+
+* **Walkthrough Videos:**
+
+  * Available on YouTube: live walkthroughs of solving the exercises.
+
+---
+
+### Extra Curriculum & Recommendations
+
+* **How to Structure Python Projects:**
+
+  * Article on project/file organization in modular scripts.
+
+* **Styling Tips:**
+
+  * PyTorch style guide by Igor Symlag (name possibly misspelled).
+  * Inspired the style used in this course's modular code.
+
+* **Advanced Example (`train.py`):**
+
+  * Check PyTorch’s official training scripts for large-scale image classification.
+  * Gives insight into training **state-of-the-art** models.
+
+---
+
+### What’s Next?
+
+* The next section will cover how to improve model performance.
+* Teased upcoming improvements beyond current small-scale models.
+
+---
