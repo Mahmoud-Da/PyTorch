@@ -309,3 +309,132 @@ data/
 ### **Key Takeaway**
 
 The goal is to **reuse working code** from previous notebooks and **refactor it** into clean, well-organized Python modules. This reflects how real-world deep learning projects are structured.
+
+
+
+*** 174. Writing the Outline for Our First Python Script to Setup the Data ***
+## **Going Modular - Part 2: Create Datasets and DataLoaders**
+
+### **Overview**
+
+* In the previous session, we retrieved image data using a code cell.
+* The current goal is to **modularize** this code by converting it into **reusable Python scripts**.
+* The focus is on creating **datasets** and **dataloaders** from image data using `torchvision`.
+
+---
+
+### **Cell Mode vs Script Mode**
+
+* **Cell Mode Notebook**: Contains useful code cells for creating datasets and dataloaders.
+* **Script Mode Notebook**: Takes that code and writes it into `.py` scripts for reuse.
+* This lecture demonstrates how to convert the "create datasets and dataloaders" cell into a Python script.
+
+---
+
+### **Using Jupyter Magic to Write Scripts**
+
+* Jupyter provides a **cell magic** command: `%%writefile filename.py`
+
+  * This writes the contents of the cell into a `.py` file.
+  * Example:
+
+    -------------------code----------------------
+    %%writefile going_modular/data_setup.py
+    -------------------code----------------------
+
+---
+
+### **Steps Taken**
+
+1. **Create a Directory for Scripts**
+
+   * Used Python to make a directory:
+
+     -------------------code----------------------
+     import os
+     os.makedirs("going_modular", exist_ok=True)
+     -------------------code----------------------
+
+2. **Start Writing the Script**
+
+   * Used `%%writefile going_modular/data_setup.py` to begin the script.
+   * Added a module-level docstring describing the file’s purpose.
+
+3. **Imports**
+
+   -------------------code----------------------
+   import os
+   from torchvision import datasets, transforms
+   from torch.utils.data import DataLoader
+   -------------------code----------------------
+
+4. **Set Number of Workers**
+
+   -------------------code----------------------
+   NUM_WORKERS = os.cpu_count()
+   -------------------code----------------------
+
+5. **Function Definition: `create_dataloaders`**
+
+   * Inputs:
+
+     * `train_dir` (str): Path to training data.
+     * `test_dir` (str): Path to testing data.
+     * `transform`: Composed transform to apply to images.
+     * `batch_size` (int): Batch size (default: 32).
+     * `num_workers` (int): Number of subprocesses to use (default: CPU count).
+   * Output:
+
+     * Returns a tuple: `(train_dataloader, test_dataloader, class_names)`
+
+6. **Docstring Example (Google Style)**
+
+   -------------------code----------------------
+   def create_dataloaders(...):
+       """
+       Creates training and testing dataloaders for image classification data.
+
+       Args:
+           train_dir (str): Path to training directory.
+           test_dir (str): Path to testing directory.
+           transform (Compose): Transformations to apply.
+           batch_size (int): Number of samples per batch.
+           num_workers (int): Number of subprocesses for data loading.
+
+       Returns:
+           Tuple[DataLoader, DataLoader, List[str]]: Train loader, test loader, class names.
+       """
+   -------------------code----------------------
+
+7. **Example Usage (to be implemented)**
+
+   -------------------code----------------------
+   train_dataloader, test_dataloader, class_names = create_dataloaders(
+       train_dir="path/to/train",
+       test_dir="path/to/test",
+       transform=some_transform,
+       batch_size=32,
+       num_workers=NUM_WORKERS
+   )
+   -------------------code----------------------
+
+---
+
+### **Challenge**
+
+* Implement the full function body for `create_dataloaders` by:
+
+  * Creating `ImageFolder` datasets.
+  * Wrapping them with `DataLoader`.
+  * Extracting class names.
+* Use the code from previous notebooks (e.g., section 04) as a guide.
+
+---
+
+### **Takeaways**
+
+* Modularization improves reusability and maintainability.
+* `%%writefile` is a useful tool for transitioning from notebooks to scripts.
+* Writing meaningful docstrings following a style guide (e.g., Google’s) helps future users and yourself.
+
+---
