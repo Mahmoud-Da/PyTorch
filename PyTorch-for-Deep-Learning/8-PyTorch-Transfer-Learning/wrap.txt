@@ -1,0 +1,97 @@
+*** 181. Introduction: What is Transfer Learning and Why Use It ***
+## **Lecture Summary: Transfer Learning**
+
+### **What is Transfer Learning?**
+
+* Transfer learning is the process of taking a machine learning model trained on one task and adapting it to a different, but related, task.
+* Instead of building models from scratch, we reuse the learned patterns (weights/parameters) from an existing model trained on a large dataset.
+* This is especially useful when you don’t have a massive dataset for your specific problem.
+
+---
+
+### **Example Use Case: Computer Vision**
+
+* **Task**: Classify food images (e.g., Food Vision Mini).
+* **Source Model**: A model trained on the **ImageNet** dataset (over 1 million images, 1,000 classes).
+* **Approach**:
+
+  * Use the patterns learned from ImageNet.
+  * Customize (fine-tune) those patterns for the food classification task.
+* **Benefit**: The model already knows general visual features (edges, textures, object shapes), which can be fine-tuned for more specific use cases.
+
+---
+
+### **Example Use Case: Natural Language Processing**
+
+* **Task**: Build a spam detection model.
+* **Source Model**: A language model trained on **Wikipedia**.
+* **Approach**:
+
+  * Use the pre-trained model’s understanding of language structure (syntax, semantics).
+  * Customize it for email classification (e.g., spam vs. not spam).
+* **Example**: In a sentence like *“The \_\_\_ jumped over the fence”*, the model might predict “dog” as a likely word due to learned context.
+
+---
+
+### **Key Concept**
+
+* **Transfer Learning** = Pre-train a model on a large, general dataset → Fine-tune on a smaller, task-specific dataset.
+
+---
+
+### **Why Use Transfer Learning?**
+
+#### **Main Benefits**
+
+1. **Leverage Proven Architectures**
+
+   * Use models that have been carefully designed and tested (e.g., EfficientNet, ResNet, Vision Transformers).
+2. **Reuse Learned Patterns**
+
+   * Instead of learning from scratch, start with pre-learned features that are often generalizable.
+3. **Save Resources**
+
+   * Requires **less data**, **less compute**, and **less time** to get good performance.
+4. **Achieve Better Results**
+
+   * Often leads to better model performance compared to training from scratch.
+
+---
+
+### **Research Support**
+
+#### **From “How to Train Your ViT” (Vision Transformer)**
+
+* Most practitioners **use publicly available pre-trained models** rather than training from scratch.
+* **Key Quote**:
+
+  > “Transfer learning remains the best available option, even if the downstream data is only weakly related to the pretraining data.”
+
+---
+
+### **Expert Insight**
+
+* **Jeremy Howard (Founder of FastAI)** in a podcast with Lex Fridman:
+
+  > “The things that really make a difference? Transfer learning. It’s a world-changing thing. More people can do world-class work with fewer resources and less data.”
+
+---
+
+### **Model Improvement Reminder**
+
+From previous lessons on improving models:
+
+* Options to improve include:
+
+  * Add more data
+  * Use better data
+  * Apply data augmentation
+  * **Use transfer learning**
+
+---
+
+### **Next Step**
+
+* In the following session: Learn where to find **publicly available pre-trained models**.
+
+---
