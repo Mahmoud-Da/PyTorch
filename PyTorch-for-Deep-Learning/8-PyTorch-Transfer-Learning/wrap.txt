@@ -1872,3 +1872,105 @@ pred_prob = target_image_pred_probs.max().item()
 * Pass the image path to `pred_and_plot_image()` to see how well the model performs on truly unseen data.
 
 ---
+
+*** 198. Making a Prediction on a Custom Image ***
+## **Lecture Summary: Making Predictions on Custom Images (Pizza Dad)**
+
+---
+
+### **1. Objective**
+
+* Move beyond test set evaluation and make a **prediction on a custom image** ("pizza\_dad.jpeg").
+* Goal: Test how well the model generalizes to real-world data.
+
+---
+
+### **2. Image Setup**
+
+#### **Define Custom Image Path**
+
+-------------------code----------------------
+custom_image_path = data_path / "04-pizza-dad.jpeg"
+-------------------code----------------------
+
+#### **Download Image if It Doesn’t Exist**
+
+* Use the `requests` library to download the image from GitHub if not already present.
+
+-------------------code----------------------
+if not custom_image_path.is_file():
+    with open(custom_image_path, "wb") as f:
+        request = requests.get("https://raw.githubusercontent.com/mrdbourke/pytorch-deep-learning/main/images/04-pizza-dad.jpeg")
+        print(f"Downloading {custom_image_path}...")
+        f.write(request.content)
+else:
+    print(f"{custom_image_path} already exists. Skipping download.")
+-------------------code----------------------
+
+* The GitHub link must point to the **raw** version of the image.
+* Image is relatively large, so it may take some time to render in some environments.
+
+---
+
+### **3. Visual Verification**
+
+* Confirm the image exists and can be visualized (e.g., "pizza\_dad.jpeg").
+* The image contains both **a pizza** and **a person (Daniel’s father)**.
+
+---
+
+### **4. Make a Prediction**
+
+Use the custom image path in the `pred_and_plot_image()` function:
+
+-------------------code----------------------
+pred_and_plot_image(
+    model=model,
+    image_path=custom_image_path,
+    class_names=class_names
+)
+-------------------code----------------------
+
+#### **Expected Outcome**
+
+* Model should ideally predict **"pizza"** as the label.
+* In the lecture:
+
+  * **FoodVision Mini model** predicted `"pizza"` with **\~51.7%** confidence.
+  * The older **TinyVGG model** also predicted `"pizza"` but with a lower confidence of **\~37.3%**.
+
+---
+
+### **5. Analysis**
+
+* This test confirms that:
+
+  * The model can generalize beyond the test set to custom, real-world images.
+  * Transfer learning is effective even with a relatively small dataset (\~70 images per class).
+* The backbone used: **EfficientNetB0**, fine-tuned on the dataset of pizza, steak, and sushi.
+
+---
+
+### **6. Broader Application**
+
+* The same prediction function (`pred_and_plot_image`) can be used with **your own custom images**.
+* Encouraged to try with images of **pizza, steak, or sushi** and see the model's predictions.
+
+#### **Real-World Example**
+
+* The model architecture is similar to one used in the instructor’s production app, **Nutrafol**:
+
+  * Allows users to take a photo of food and get predictions.
+  * Currently supports predictions on \~100 food items.
+  * Example: Predicting “pizza” from the same image works on Nutrafol as well.
+
+---
+
+### **7. Next Steps**
+
+* In the following video:
+
+  * Key takeaways will be discussed.
+  * Exercises and additional challenges will be introduced.
+
+---
