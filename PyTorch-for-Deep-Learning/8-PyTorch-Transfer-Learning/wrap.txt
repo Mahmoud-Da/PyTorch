@@ -95,3 +95,85 @@ From previous lessons on improving models:
 * In the following session: Learn where to find **publicly available pre-trained models**.
 
 ---
+
+*** 182. Where Can You Find Pre-trained Models and What We Are Going to Cover ***
+### **Lecture Summary: Transfer Learning & Pre-trained Models**
+
+#### **1. What is Transfer Learning and Why Use It?**
+
+* **Definition**: Transfer learning involves using pre-trained models on new tasks.
+* **Benefits**:
+
+  * Enables individuals with fewer resources and less data to perform world-class machine learning work.
+  * Saves time and effort by leveraging existing knowledge.
+
+---
+
+#### **2. Sources for Pre-trained Models**
+
+* **Main Resources**:
+
+  * **PyTorch Domain Libraries**:
+
+    * `torchvision` for vision models
+    * `torchtext` for text models
+    * `torchaudio` for audio models
+    * `torchrec` for recommendation models
+  * **Torch Image Models (TIMM)**:
+
+    * A powerful library for computer vision models.
+  * **Hugging Face Hub**:
+
+    * Offers a wide range of models across modalities (vision, NLP, audio, etc.).
+  * **Papers with Code (SOTA - State of the Art)**:
+
+    * Source for the latest top-performing models and benchmarks in various ML domains.
+
+---
+
+#### **3. Deep Dive: TorchVision Models**
+
+* **Accessing Pre-trained Models**:
+
+  * Go to the PyTorch documentation, specifically `torchvision.models`.
+  * Use models with pre-trained weights for tasks like image classification.
+* **Model Examples**:
+
+  * AlexNet, DenseNet, EfficientNet V2, MobileNet V3, Swin Transformer, Vision Transformer, etc.
+* **Version Info**:
+
+  * The lecture references `torchvision` version 0.12.
+  * An unstable (future) release is being used for the demonstration (as of June 24, 2022).
+
+---
+
+#### **4. Why Use These Resources?**
+
+* They provide access to top-tier models without needing to train from scratch.
+* Ideal for experimenting and applying models to real-world problems efficiently.
+* Great starting point for benchmarking and understanding what already works.
+
+---
+
+#### **5. Specific Project Context**
+
+* **Project**: *FoodVision Mini* — an image classification model for food items.
+* **Dataset**: Images of pizza, steak, and sushi.
+* **Objective**: Build and optimize a transfer learning-based classifier using PyTorch.
+* **Steps**:
+
+  * Import modular code from previous sections.
+  * Apply transfer learning concepts using PyTorch code.
+  * Customize and fine-tune a pre-trained model.
+  * Evaluate model performance.
+  * Make predictions on custom input data.
+
+---
+
+#### **6. Final Notes**
+
+* Focus is on PyTorch and its domain libraries.
+* Encouraged to explore other resources like Hugging Face and Papers with Code independently.
+* Suggestions or additional resources can be shared in the course’s GitHub discussions.
+
+---
