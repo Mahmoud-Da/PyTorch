@@ -1375,3 +1375,102 @@ Think of dropout like practicing a team sport where random players sit out each 
 * Open question: Will EfficientNet perform **better or worse** than the previous VGG-based model?
 
 ---
+
+*** 193. Training Our First Transfer Learning Feature Extractor Model ***
+## **Lecture Summary: EfficientNet Transfer Learning (Feature Extraction)**
+
+### **1. EfficientNet Model Summary**
+
+* The model used is **EfficientNet B0**, pre-trained on ImageNet.
+* Input image gets reshaped and transformed across multiple layers, eventually resulting in a **feature vector**.
+* By default, all layers are **trainable**, totaling **\~5 million parameters**.
+
+---
+
+### **2. Freezing Base Layers**
+
+* In a **feature extraction approach**, we **freeze** the base layers and only train the classifier head.
+* This is done by setting `requires_grad = False` for all parameters in `model.features`.
+* Effect:
+
+  * Reduces the number of trainable parameters.
+  * Keeps pre-trained weights intact, leveraging learned patterns from ImageNet.
+
+---
+
+### **3. Modifying the Classifier Head**
+
+* The original classifier head of EfficientNet has:
+
+  * Dropout layer: `p=0.2`
+  * Linear layer: `in_features=1280`, `out_features=1000` (for ImageNet)
+* Modified to:
+
+  * Keep `in_features=1280` (since feature vector shape remains the same).
+  * Set `out_features = len(class_names)` → in this case, `3` (pizza, steak, sushi).
+* Dropout remains to help with **regularization** and **prevent overfitting**.
+
+---
+
+### **4. Summary Check**
+
+* Used `torchinfo.summary()` to verify:
+
+  * Base layers are frozen (`requires_grad=False`)
+  * Only the classifier head is trainable.
+* Final model has:
+
+  * \~5 million total parameters.
+  * Only **\~1.3 million trainable** (classifier head).
+
+---
+
+## **Training the Feature Extraction Model**
+
+### **1. Setup**
+
+* Loss function: `CrossEntropyLoss`
+* Optimizer: `Adam`
+
+  * Learning rate: `0.001`
+* Seed initialization for reproducibility:
+
+  * `torch.manual_seed(42)`
+  * `torch.cuda.manual_seed(42)`
+* Training and testing DataLoaders were reused from earlier.
+* Number of epochs: `5`
+
+---
+
+### **2. Training Process**
+
+* Leveraged `train()` function from the `engine.py` module (Going Modular setup).
+* Started a timer using `timeit.default_timer()` to track training time.
+* Training results stored in a dictionary.
+
+---
+
+### **3. Results**
+
+* Training completed in **13 seconds**.
+* Test Accuracy increased significantly over epochs:
+
+  * Started around 54%
+  * Reached nearly **90% accuracy** by epoch 5.
+* Outperformed the earlier TinyVGG model:
+
+  * TinyVGG: \~20% test accuracy in 65 seconds.
+  * EfficientNet B0: \~90% test accuracy in 13 seconds.
+
+---
+
+### **4. Takeaways**
+
+* **Transfer Learning** using EfficientNet provides massive performance improvements.
+* Freezing base layers reduces training time and memory usage.
+* EfficientNet B0 + a custom classifier is highly effective for small custom datasets like pizza/steak/sushi.
+* **Next step:** Visualize training results using **loss and accuracy curves**.
+
+  * Recommended to use `plot_loss_curves()` from `helper_functions.py`.
+
+---
