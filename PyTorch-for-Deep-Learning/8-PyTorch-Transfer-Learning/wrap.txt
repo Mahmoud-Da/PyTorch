@@ -398,3 +398,136 @@ From previous lessons on improving models:
 * Proceed to the next lecture where the **dataset (pizza, steak, sushi)** will be loaded for training the transfer learning model.
 
 ---
+
+*** 185. Downloading Pizza, Steak, Sushi Image Data from Github ***
+## **Lecture Summary: Downloading and Preparing the Dataset (Pizza, Steak, Sushi)**
+
+### **1. Objective**
+
+* Set up and prepare the **Pizza, Steak, Sushi** image dataset, a subset of the **Food101** dataset, for training.
+* Practice downloading and extracting data using Python instead of relying on pre-cloned folders.
+
+---
+
+### **2. Cloning Consideration**
+
+* Although the data is already available in the cloned `PyTorch-Deep-Learning` GitHub repo, the instructor simulates downloading and preparing it manually for learning purposes.
+* Alternatives:
+
+  * Keep both the `going_modular` and `data` folders from the repo.
+  * Create a reusable function like `download_data(url)` for future datasets.
+
+---
+
+### **3. Required Libraries**
+
+-------------------code----------------------
+import os
+import zipfile
+import requests
+from pathlib import Path
+-------------------code----------------------
+
+---
+
+### **4. Define Paths**
+
+* `data_path`: Root directory for all data.
+* `image_path`: Directory containing the extracted images.
+
+-------------------code----------------------
+data_path = Path("data")
+image_path = data_path / "pizza_steak_sushi"
+-------------------code----------------------
+
+---
+
+### **5. Check if Dataset Already Exists**
+
+-------------------code----------------------
+if image_path.is_dir():
+    print(f"[INFO] {image_path} directory exists, skipping download.")
+else:
+    print(f"[INFO] {image_path} not found, downloading...")
+-------------------code----------------------
+
+---
+
+### **6. Downloading the Dataset**
+
+* If not already present, create necessary directories.
+* Download the `.zip` file using `requests` and save it locally.
+
+-------------------code----------------------
+image_path.mkdir(parents=True, exist_ok=True)
+
+with open(data_path / "pizza_steak_sushi.zip", "wb") as f:
+    request = requests.get("https://raw.githubusercontent.com/mrdbourke/pytorch-deep-learning/main/data/pizza_steak_sushi.zip")
+    print("[INFO] Downloading pizza_steak_sushi.zip...")
+    f.write(request.content)
+-------------------code----------------------
+
+---
+
+### **7. Extracting the Zip File**
+
+-------------------code----------------------
+with zipfile.ZipFile(data_path / "pizza_steak_sushi.zip", "r") as zip_ref:
+    print("[INFO] Unzipping pizza_steak_sushi.zip...")
+    zip_ref.extractall(image_path)
+-------------------code----------------------
+
+---
+
+### **8. Cleanup**
+
+* Delete the zip file after extraction to save space:
+
+-------------------code----------------------
+os.remove(data_path / "pizza_steak_sushi.zip")
+-------------------code----------------------
+
+---
+
+### **9. Inspecting the Dataset**
+
+* Directory structure should now be:
+
+-------------------code----------------------
+data/
+└── pizza_steak_sushi/
+    ├── train/
+    │   ├── pizza/
+    │   ├── steak/
+    │   └── sushi/
+    └── test/
+        ├── pizza/
+        ├── steak/
+        └── sushi/
+-------------------code----------------------
+
+* Example code to verify paths:
+
+-------------------code----------------------
+train_dir = image_path / "train"
+test_dir = image_path / "test"
+
+print(train_dir)
+print(test_dir)
+-------------------code----------------------
+
+---
+
+### **10. Instructor's Tips and Challenges**
+
+* **Extension idea 1**: Write a function `download_data(url, extract_to)` that handles downloading and extracting.
+* **Extension idea 2**: When cloning a GitHub repo, **preserve the `data/` folder** instead of deleting everything except `going_modular`.
+
+---
+
+### **Next Step**
+
+* In the following lecture, you will **turn image folders into PyTorch DataLoaders** for training and testing.
+* There will be a small trick involved in that process, which will be explained next.
+
+---
