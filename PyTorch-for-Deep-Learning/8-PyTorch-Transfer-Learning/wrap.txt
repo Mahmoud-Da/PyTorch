@@ -1143,3 +1143,118 @@ This means:
 * In the next video: Prepare the original model for use as a feature extractor in code.
 
 ---
+
+*** 191. Getting a Summary of the Different Layers of Our Model ***
+# **Lecture Notes: Preparing a Model for Feature Extraction with `torchinfo`**
+
+## **1. Recap and Context**
+
+* Previously discussed types of **transfer learning**: original model, feature extraction, and fine tuning.
+* Focus: **Feature Extraction**.
+* Optional exploration after this module: Look into **fine tuning**, especially useful for larger datasets.
+
+---
+
+## **2. Summarizing the Model with `torchinfo`**
+
+### **A. Purpose of `torchinfo`**
+
+* Provides a detailed summary of a model’s architecture.
+* Helps visualize:
+
+  * Layer structure
+  * Input/output shapes
+  * Number of parameters
+  * Whether layers are trainable
+
+### **B. Setup**
+
+* Ensure `torchinfo` is installed.
+* Import it and use `summary()` to inspect your model.
+
+-------------------code----------------------
+from torchinfo import summary
+summary(
+    model, 
+    input_size=(1, 3, 224, 224),  # (batch size, channels, height, width)
+    col_names=["input_size", "output_size", "num_params", "trainable"],
+    col_width=20,
+    row_settings=["var_names"]
+)
+-------------------code----------------------
+
+---
+
+## **3. Understanding the Output of `torchinfo.summary()`**
+
+### **A. Input and Output Shape**
+
+* Model expects input shape of `(1, 3, 224, 224)`.
+* Final output shape is `(1, 1000)`—reflecting **1000 ImageNet classes**.
+
+### **B. Layer-by-Layer Transformation**
+
+* Each layer transforms the input progressively.
+* Example:
+
+  * Input shape changes across layers.
+  * Feature vector shape before classification: `(1, 1280)`.
+  * Final classification layer transforms this to `(1, 1000)`.
+
+### **C. Parameters**
+
+* Each layer has a number of **parameters** (weights and biases).
+* Total parameters: Over **5 million** for EfficientNet B0.
+* Currently, **all layers are trainable** by default.
+
+---
+
+## **4. Transitioning to Feature Extraction**
+
+### **A. Goal**
+
+* Convert the current **original model** into a **feature extraction model**.
+* **Freeze base layers** (so they are not updated during training).
+* **Only the classifier head** should be **trainable**.
+
+### **B. Why Freeze Layers?**
+
+* Base layers have already learned useful image features from **ImageNet**.
+* Freezing them:
+
+  * Reduces training time.
+  * Requires less data.
+  * Makes computation more efficient.
+
+### **C. Customizing the Classifier Head**
+
+* Change final output from 1000 to match your own class count.
+
+  * Example: For `pizza`, `steak`, and `sushi`, set output to **3**.
+* The only **trainable layer** becomes the new **classifier head**.
+
+---
+
+## **5. Additional Insights from `torchinfo`**
+
+* **Model Size Estimate**: Gives an idea of how much disk space the model might consume.
+
+  * Note: It's only an **estimate**; verify actual size after saving.
+* **Importance of Summary**:
+
+  * Helps in deployment decisions: speed, size, and performance trade-offs.
+  * Useful for debugging and understanding model complexity.
+
+---
+
+## **6. Summary and Next Step**
+
+* We now understand:
+
+  * The structure of EfficientNet B0.
+  * The concept of feature extraction in transfer learning.
+  * Why and how to freeze base layers.
+  * How to replace and train only the classifier head.
+* **Next video**: Implement the process of freezing layers and updating the classifier head in code.
+
+---
