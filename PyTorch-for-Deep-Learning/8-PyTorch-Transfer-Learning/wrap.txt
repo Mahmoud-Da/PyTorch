@@ -1570,3 +1570,63 @@ Think of dropout like practicing a team sport where random players sit out each 
   * Use random images and verify predicted labels.
 
 ---
+
+*** 195. Outlining the Steps to Make Predictions on the Test Images ***
+## **Lecture Summary: Making Predictions on Test and Custom Data**
+
+---
+
+### **1. Introduction**
+
+* After evaluating the model **quantitatively** (loss curves, accuracy), we now move to **qualitative evaluation**.
+* Goal: Make predictions on **test set images** and **custom data** to visualize how well the model performs in practice.
+
+---
+
+### **2. Key Considerations for Inference on Custom/Test Data**
+
+Before making predictions, ensure the following conditions are met:
+
+| Requirement         | Description                                                                |
+| ------------------- | -------------------------------------------------------------------------- |
+| **Same shape**      | Input images must match the shape used during training (e.g., 224x224).    |
+| **Same data type**  | Image data should match the expected tensor type (usually float32).        |
+| **Same device**     | Both model and data must be on the same device (e.g., CPU or GPU).         |
+| **Same transforms** | Apply the same transformations used during training (e.g., normalization). |
+
+* While these aren’t strict requirements in all cases, following them helps ensure reliable and accurate results.
+
+---
+
+### **3. Plan: Create a Prediction and Plotting Function**
+
+Goal: Create a function named `pred_and_plot_image()` that automates the entire inference pipeline.
+
+---
+
+### **4. Step-by-Step Function Design**
+
+| Step | Description                                                                                     |
+| ---- | ----------------------------------------------------------------------------------------------- |
+| 1    | Accept inputs: trained model, class names list, image file path, image size, transform, device. |
+| 2    | Open the image using `PIL.Image.open`.                                                          |
+| 3    | Apply the given transform (or create a default one if missing).                                 |
+| 4    | Ensure model is moved to the **target device** (CPU/GPU).                                       |
+| 5    | Set model to **evaluation mode** (`model.eval()`), disabling layers like dropout.               |
+| 6    | Transform the image, format it as a batch (i.e., add batch dimension).                          |
+| 7    | Move the image to the **same device** as the model.                                             |
+| 8    | Perform a forward pass through the model.                                                       |
+| 9    | Use `torch.softmax` to convert output logits to prediction probabilities.                       |
+| 10   | Use `torch.max` to find the index of the highest probability (i.e., predicted label).           |
+| 11   | Plot the image using `matplotlib`.                                                              |
+| 12   | Set the title to the predicted class name and probability.                                      |
+
+---
+
+### **5. Challenge**
+
+* Try to implement the `pred_and_plot_image()` function yourself using the steps above.
+* Reference: See a similar function in **Section 4**, especially video **11.3** for hints and structure.
+* Try making predictions on **random test images** using the trained model.
+
+---
