@@ -759,3 +759,143 @@ Introduced in `torchvision v0.13`, this new feature lets you automatically creat
 * This new API makes using state-of-the-art models **much more accessible and robust**.
 
 ---
+
+
+*** 188. Which Pre-trained Model Should You Use ***
+## **Lecture Summary: Choosing and Loading Pre-trained Models**
+
+### **1. Preparing to Use a Pre-trained Model**
+
+* Two methods to prepare data for pre-trained models:
+
+  * **Automatic transforms**
+  * **Manual transforms**
+* Next step: **Loading a pre-trained model**
+
+---
+
+### **2. Where to Get Pre-trained Models**
+
+* Common sources:
+
+  1. **PyTorch** – Native models from the framework.
+  2. **TIMM** *(Torch Image Models)* – Community-maintained models.
+  3. **Hugging Face Hub** – Wide range of models and tasks.
+  4. **Papers with Code** – Links to models from research papers across various domains.
+
+---
+
+### **3. How to Choose a Pre-trained Model**
+
+* No definitive answer – it depends on the **use case**.
+* Follow the **machine learning practitioner’s motto**:
+
+  > *Experiment, experiment, experiment.*
+
+#### **Core Principle of Transfer Learning:**
+
+> Use a well-performing model trained on a similar task, and fine-tune it for your problem.
+
+---
+
+### **4. Key Factors When Choosing a Model**
+
+1. **Speed** – How fast does it run? Important for real-time applications.
+2. **Size** – Number of parameters; affects deployability and hardware requirements.
+3. **Performance** – How well does it solve your task?
+
+These factors are **interrelated**. The ideal model balances:
+
+> **Speed**, **Size**, and **Performance**
+
+---
+
+### **5. Deployment Considerations**
+
+* **Where will the model run?**
+
+  * **On-device** (e.g., mobile phones, self-driving cars): Must be small and fast.
+  * **On-server** (e.g., cloud servers): More flexibility, but dependent on network latency.
+
+Example:
+
+* Self-driving car needs **on-device** inference due to real-time constraints. A slow or remotely hosted model won’t work.
+
+---
+
+### **6. Evaluating Model Trade-offs**
+
+* When comparing models:
+
+  * Look at **Accuracy** (performance)
+  * Look at **Number of Parameters** (size)
+  * Use **accuracy-to-parameter ratio** to evaluate efficiency
+
+#### Example Comparison:
+
+* **EfficientNet B0**:
+
+  * \~78% accuracy
+  * \~5 million parameters
+* **Inception V3**:
+
+  * Lower accuracy
+  * \~6x more parameters than EfficientNet B0
+
+> **EfficientNet B0** offers high performance with fewer parameters – a strong candidate.
+
+---
+
+### **7. Alternative Models**
+
+* **MobileNetV3 Large**:
+
+  * \~75% accuracy
+  * Comparable parameter size to EfficientNet B0
+  * Slightly less performance, but highly optimized for mobile
+
+---
+
+### **8. Recommended Model for This Case**
+
+> **EfficientNet B0**
+
+* Excellent **performance-to-size ratio**
+* Suitable for mobile deployment in the **FoodVision Mini** project
+
+---
+
+### **9. General vs Specific Models**
+
+* In constrained environments: prefer **efficient, compact models**
+* With **infinite compute**: opt for the **largest, most general** model possible
+
+#### The “Bitter Lesson” (Richard Sutton):
+
+> General methods that leverage more computation and data ultimately outperform human-designed heuristics.
+
+---
+
+### **10. Summary – What to Keep in Mind**
+
+When selecting a model, always evaluate:
+
+1. **Speed** – Required inference time
+2. **Size** – Deployment hardware and memory constraints
+3. **Performance** – Accuracy or other relevant metrics
+
+For **FoodVision Mini**:
+
+* Must run on mobile (compute-constrained)
+* Needs good accuracy
+* EfficientNet B0 is the best trade-off
+
+---
+
+### **Extra Task**
+
+* Explore the TIMM model list.
+* Try to find a model with a better **accuracy-to-parameter ratio** than EfficientNet B0.
+* Share your findings in the GitHub discussions.
+
+---
