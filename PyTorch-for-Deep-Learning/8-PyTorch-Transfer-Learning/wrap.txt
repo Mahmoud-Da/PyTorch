@@ -177,3 +177,112 @@ From previous lessons on improving models:
 * Suggestions or additional resources can be shared in the course’s GitHub discussions.
 
 ---
+
+
+*** 183. Installing the Latest Versions of Torch and Torchvision ***
+### **Lecture Summary: PyTorch Transfer Learning Setup in Google Colab**
+
+#### **1. Starting the Coding Environment**
+
+* The coding is done in **Google Colab**:
+  [https://colab.research.google.com](https://colab.research.google.com)
+* A new Colab notebook is created and titled:
+  `06 - PyTorch Transfer Learning`
+* The heading inside the notebook is also titled accordingly for clarity.
+
+---
+
+#### **2. Understanding Transfer Learning**
+
+* **Definition**: Transfer learning involves using a model pre-trained on one dataset and adapting it to a new problem.
+* **Terminology**:
+
+  * **Pre-trained models**: Already trained models reused for similar tasks.
+  * **Foundation models**: A broader term used increasingly; often interchangeable with pre-trained models.
+
+---
+
+#### **3. Setting Up the Environment**
+
+* **Runtime Configuration**:
+
+  * Ensure GPU is enabled: `Runtime > Change Runtime Type > GPU`.
+
+* **PyTorch and TorchVision Versions**:
+
+  * The goal is to use **PyTorch ≥ 1.12** and **TorchVision ≥ 0.13**.
+  * At the time of recording:
+
+    * The stable version is **TorchVision 0.12**.
+    * The unstable (beta) version **0.13** includes valuable API updates (e.g., multi-weight support).
+    * Eventually, this unstable version will become stable and standard.
+
+---
+
+#### **4. Multi-weight Support in TorchVision**
+
+* **Purpose**:
+
+  * Enables use of the same architecture with different pre-trained weights.
+  * Facilitates experimentation and flexibility with pre-trained models.
+
+---
+
+#### **5. Verifying Current Versions**
+
+* Check versions with:
+
+  -------------------code----------------------
+  import torch
+  import torchvision
+  print(torch.__version__)
+  print(torchvision.__version__)
+  -------------------code----------------------
+
+* If versions are **not compatible**, upgrade is necessary.
+
+---
+
+#### **6. Installing Nightly Versions**
+
+* **Installation Block**:
+
+  * Installs nightly (development) versions of PyTorch and TorchVision via pip.
+  * Automatically checks versions and installs only if needed.
+  * TorchAudio is **not required** here.
+
+* **Installation Steps**:
+
+  * Downloads and installs new versions.
+  * Uninstalls older versions first.
+  * May take 4–5 minutes depending on connection speed.
+
+---
+
+#### **7. Restarting Runtime**
+
+* After installation, the Colab runtime must be **manually restarted**.
+* Re-run the version check code to verify successful installation:
+
+  * PyTorch ≥ 1.12
+  * TorchVision ≥ 0.13 (often shows as `dev` version with a timestamp)
+
+---
+
+#### **8. Notes and Warnings**
+
+* **Future-proofing**:
+
+  * Eventually, Google Colab will support newer versions by default.
+* **Conditional Execution**:
+
+  * If your versions are already compatible, **you can skip the installation block**.
+  * Keep the code block available in case of future incompatibility.
+
+---
+
+#### **Next Step**
+
+* Proceed to the next video for further setup and code implementation related to transfer learning.
+
+---
