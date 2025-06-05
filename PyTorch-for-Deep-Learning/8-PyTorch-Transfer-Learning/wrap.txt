@@ -1054,3 +1054,92 @@ This means:
 * This method is efficient and leverages the power of deep, pretrained architectures with minimal training.
 
 ---
+
+*** 190. Different Kinds of Transfer Learning ***
+# **Lecture Notes: Transfer Learning and Feature Extraction with EfficientNet**
+
+## **1. Introduction**
+
+* Downloaded and inspected a model from `torchvision.models`.
+* Focus is on **EfficientNet B0** used as a **feature extractor**.
+
+---
+
+## **2. Key Concepts in Transfer Learning**
+
+### **A. Terminology**
+
+* **Backbone**: Core architecture of a model (e.g., EfficientNet B0).
+* **Feature Extractor**: A model used to extract learned features from input data.
+* **Feature**: Patterns learned from data (e.g., the curve of a pizza slice, color of steak).
+* **Frozen Layers**: Layers whose parameters are not updated during training.
+
+---
+
+### **B. Transfer Learning Types**
+
+| Type               | Description                                                                 |
+| ------------------ | --------------------------------------------------------------------------- |
+| Original Model     | Pretrained model (e.g., EfficientNet on ImageNet).                          |
+| Feature Extraction | Use base model with frozen layers; only the output layer is trained.        |
+| Fine Tuning        | Unfreeze and train some of the base layers in addition to the output layer. |
+
+---
+
+## **3. EfficientNet B0 Architecture Overview**
+
+### **Structure**
+
+* **Features Section**: Extracts patterns from images.
+* **Average Pooling Layer**: Converts the feature tensor to a single feature vector.
+
+  * For EfficientNet B0, this vector has size **1280**.
+* **Classifier Head**: Final layer mapping the feature vector to output classes.
+
+  * Pretrained output: 1000 classes (ImageNet).
+  * Custom output: Can be changed (e.g., 3 classes for pizza, steak, sushi).
+
+---
+
+## **4. Feature Extraction Process**
+
+### **A. Model Preparation**
+
+* Use pretrained EfficientNet B0 from `torchvision.models`.
+* Freeze **all base layers** (feature extraction layers).
+* Replace **classifier head** with a new one suited to the target task.
+
+### **B. Example**
+
+* Input: Custom dataset (e.g., pizza, steak, sushi).
+* Feature extraction layers remain frozen.
+* Classifier head is updated to match new classes (e.g., 3 output neurons).
+
+---
+
+## **5. Fine Tuning Overview**
+
+* Suitable for **larger datasets**.
+* Involves unfreezing some of the base layers and retraining them.
+* Typically done **gradually**, layer by layer from top to bottom.
+
+---
+
+## **6. Summary of Transfer Learning Workflow**
+
+1. Start with a **pretrained model** (original/foundation model).
+2. Apply **feature extraction**:
+
+   * Freeze feature layers.
+   * Replace and train the output layer with new data.
+3. Optionally apply **fine tuning**:
+
+   * Unfreeze and train some feature layers if more data is available.
+
+---
+
+## **7. Next Steps**
+
+* In the next video: Prepare the original model for use as a feature extractor in code.
+
+---
