@@ -286,3 +286,115 @@ From previous lessons on improving models:
 * Proceed to the next video for further setup and code implementation related to transfer learning.
 
 ---
+
+*** 184. Downloading Our Previously Written Code from Going Modular ***
+### **Lecture Summary: Setting Up for Transfer Learning in Google Colab**
+
+#### **1. Purpose of the Setup**
+
+* To **avoid rewriting code** from previous sections.
+* Code from Section 5 (Going Modular) will be **imported as reusable scripts** into the current notebook.
+* The goal is to prepare the environment for transfer learning efficiently.
+
+---
+
+#### **2. Importing Pre-Written Modular Code**
+
+* From the previous modularization step, the following scripts are available:
+
+  * `dataset_setup.py`
+  * `engine.py`
+  * `model_builder.py`
+  * `train.py`
+  * `predict.py`
+  * `utils.py`
+
+* These scripts contain essential utilities for:
+
+  * Loading datasets
+  * Training and testing models
+  * Making predictions
+
+---
+
+#### **3. Cloning the GitHub Repository**
+
+* GitHub repo: **`PyTorch-Deep-Learning`**
+* Directory of interest: **`going_modular/`**
+* Steps performed:
+
+  1. Clone the repo using `git clone`.
+  2. Move the `going_modular/` directory into the working directory.
+  3. Clean up unnecessary files from the repo.
+  4. Import the required modules:
+
+     -------------------code----------------------
+     from going_modular import dataset_setup, engine
+     -------------------code----------------------
+
+---
+
+#### **4. Installing Required Packages**
+
+* The script attempts to import `torchinfo`.
+* If `torchinfo` is not available, it is installed via:
+
+  -------------------code----------------------
+  pip install torchinfo
+  -------------------code----------------------
+* `torchinfo` helps visualize model summaries in PyTorch (similar to Keras' `model.summary()`).
+
+---
+
+#### **5. Verifying Script Access**
+
+* After cloning and importing:
+
+  * Confirm access to helper functions such as:
+
+    * `dataset_setup.create_dataloaders()`
+    * `engine.train()`
+* These functions were defined in earlier notebooks and modularized for reuse.
+
+---
+
+#### **6. Setting Up Device-Agnostic Code**
+
+* Enables the notebook to automatically choose **GPU if available**, otherwise CPU:
+
+  -------------------code----------------------
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  -------------------code----------------------
+
+* Check current device and GPU specs:
+
+  -------------------code----------------------
+  !nvidia-smi
+  -------------------code----------------------
+
+* Example output: **Tesla P100** with 16GB memory (using Google Colab Pro).
+
+---
+
+#### **7. Google Colab Considerations**
+
+* Google Colab is used to access **free (or upgraded) GPU resources**.
+* Colab Pro users are more likely to receive high-performance GPUs.
+* Local setups can also work, but must be configured manually.
+
+---
+
+#### **8. Important Notes**
+
+* When revisiting the notebook after a break:
+
+  * **Rerun all setup and import cells** (runtime resets).
+* Scripts and setup process enable efficient reuse of previously written code.
+
+---
+
+#### **Next Steps**
+
+* Proceed to the next lecture where the **dataset (pizza, steak, sushi)** will be loaded for training the transfer learning model.
+
+---
