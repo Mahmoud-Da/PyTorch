@@ -531,3 +531,124 @@ print(test_dir)
 * There will be a small trick involved in that process, which will be explained next.
 
 ---
+
+
+*** 186. Turning Our Data into DataLoaders with Manually Created Transforms ***
+## Lecture Notes: Creating Data Loaders and Manual Transforms for Pretrained Models
+
+### **1. Context Recap**
+
+* In the last session, we:
+
+  * Downloaded the **Pizza, Steak, and Sushi** dataset.
+  * Created directory paths for **train** and **test** sets.
+
+---
+
+### **2. Objective**
+
+* Convert image data into **PyTorch data loaders** using a function called `create_dataloaders()` from `data_setup.py` in the `going_modular` directory.
+
+---
+
+### **3. Dataset Loader Setup**
+
+* The `create_dataloaders()` function:
+
+  * Takes in `train_dir`, `test_dir`, and a **transform**.
+  * Uses `ImageFolder` to wrap datasets.
+  * Returns: `train_dataloader`, `test_dataloader`, and `class_names`.
+
+---
+
+### **4. Image Transformations**
+
+#### **Why Transforms Matter**
+
+* **Important Principle**: When using a **pre-trained model**, your input data must be transformed in **the same way** the model’s training data was.
+* Otherwise, performance will degrade due to distribution mismatch.
+
+---
+
+### **5. Two Ways to Define Transforms**
+
+> Requires **torchvision ≥ 0.13**
+
+#### 1. **Manual Transform Definition**
+
+* You define the preprocessing pipeline.
+* Advantage: **Flexible** — you can tailor it to your model or experiment.
+* Disadvantage: **Error-prone** — mismatched transforms can hurt performance.
+
+#### 2. **Automatic Transform from Model Weights**
+
+* Transform is predefined based on the model's weights (discussed in next lecture).
+
+---
+
+### **6. Manual Transform Details**
+
+#### **Transform Requirements**
+
+For most torchvision pre-trained models:
+
+* Images should be:
+
+  * RGB (3 channels)
+  * Resized to at least `224x224`
+  * Pixel values scaled from 0–1
+  * Normalized using ImageNet statistics:
+
+    * **Mean**: `[0.485, 0.456, 0.406]`
+    * **Std**: `[0.229, 0.224, 0.225]`
+
+#### **Code Example**
+
+-------------------code----------------------
+from torchvision import transforms
+
+manual_transforms = transforms.Compose([
+    transforms.Resize((224, 224)),  # Resize images
+    transforms.ToTensor(),          # Convert to tensor and scale to [0, 1]
+    transforms.Normalize(
+        mean=[0.485, 0.456, 0.406], 
+        std=[0.229, 0.224, 0.225]
+    )  # Match ImageNet distribution
+])
+-------------------code----------------------
+
+#### **Usage with Data Loader Function**
+
+-------------------code----------------------
+from going_modular.going_modular import data_setup
+
+train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=manual_transforms
+)
+-------------------code----------------------
+
+---
+
+### **7. Why Use These Specific Values?**
+
+* These **mean** and **standard deviation** values come from the **ImageNet dataset**.
+* ImageNet is a massive image database used to train many pretrained models.
+* Normalizing with these values ensures our data distribution matches what the model expects.
+
+---
+
+### **8. Summary**
+
+* You now have a dataset on disk and are preparing it for a **pre-trained model**.
+* Today, you learned how to:
+
+  * Use `create_dataloaders()` with a custom transform.
+  * Manually create transforms that align with pretrained model expectations.
+
+---
+
+### **Next Step**
+
+* Explore **automatic transforms** using built-in support in `torchvision.models` and pretrained weights (e.g., using `.weights.transforms()`).
