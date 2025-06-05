@@ -899,3 +899,158 @@ For **FoodVision Mini**:
 * Share your findings in the GitHub discussions.
 
 ---
+
+*** 189. Setting Up a Pre-trained Model with Torch-vision ***
+## **Lecture 3.2: Setting Up a Pre-trained Model (EfficientNet B0)**
+
+### **1. Choosing a Pre-trained Model**
+
+* Selecting the right pre-trained model can be challenging.
+* The course uses **EfficientNet B0** as a default model.
+* Most pre-trained models are derived from research papers and integrated into PyTorch if proven effective.
+* Models in the **TorchVision library** are generally well-tested and reliable.
+
+---
+
+### **2. Instantiating EfficientNet B0**
+
+#### **Old Method (Before TorchVision v0.13)**
+
+-------------------code----------------------
+import torchvision.models as models
+
+model = models.efficientnet_b0(pretrained=True)
+-------------------code----------------------
+
+* This method is deprecated.
+* `pretrained=True` will raise a warning and be removed in v0.15.
+
+#### **New Method (TorchVision v0.13 and Above)**
+
+-------------------code----------------------
+from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights
+
+weights = EfficientNet_B0_Weights.DEFAULT
+model = efficientnet_b0(weights=weights)
+-------------------code----------------------
+
+* Uses `weights=...` instead of `pretrained=True`.
+* `DEFAULT` selects the best available pretrained weights.
+* Different versions of weights (e.g., `IMAGENET1K_V1`, `V2`) are available and can be selected as needed.
+
+---
+
+### **3. Model Architecture Overview**
+
+#### **EfficientNet B0 Model Structure**
+
+* The model has many layers:
+
+  * **Convolutional Layers**
+  * **Activation Layers (SiLU)**
+  * **BatchNorm Layers**
+* These are all pre-defined and built into the architecture via transfer learning.
+
+#### **Sections of the Model**
+
+-------------------code----------------------
+model.features       # Feature extractor layers
+model.avgpool        # Global average pooling layer
+model.classifier     # Fully connected classification head
+-------------------code----------------------
+
+* **`features`**: Extracts patterns and features from images (e.g., edges, textures).
+* **`avgpool`**: Compresses extracted features into a single 1280-length vector.
+* **`classifier`**: Converts the 1280-length vector into prediction logits.
+
+---
+
+### What’s Inside the Model?**
+
+Think of the model as made of 3 parts:
+
+1. **Features**
+
+   * Looks at the image and picks up useful patterns.
+   * Like eyes recognizing shapes and textures.
+
+2. **Average Pool**
+
+   * Compresses all the features into one smaller vector.
+   * Like summarizing everything the model saw into a few important numbers.
+
+3. **Classifier**
+
+   * Makes the final decision: “Is this a pizza, steak, or sushi?”
+   * Originally, this part predicts 1,000 types (ImageNet classes).
+   * We change it to only predict **3** types (our classes).
+
+### **4. Customizing the Model**
+
+#### **ImageNet Limitation**
+
+* The default classifier is built for **ImageNet**, which has **1,000 classes**:
+
+-------------------code----------------------
+model.classifier = nn.Linear(in_features=1280, out_features=1000)
+-------------------code----------------------
+
+#### **Adapting to Custom Dataset**
+
+* For a custom dataset with 3 classes (e.g., **pizza, steak, sushi**), the classifier should be modified:
+
+-------------------code----------------------
+model.classifier = nn.Linear(in_features=1280, out_features=3)
+-------------------code----------------------
+
+---
+
+What Do We Change?**
+
+* We **keep** the first two parts (features and average pool).
+* We **replace** the last part (classifier) to match our problem.
+
+This means:
+
+* Input is 1280 numbers (from the image).
+* Output is 3 numbers (our 3 classes).
+
+
+
+### **5. Concept of Feature Extraction**
+
+* A **Feature Extractor** (also called a **Backbone**) is a truncated version of a full model:
+
+  * Keeps all layers in `features`.
+  * Optionally replaces or fine-tunes the classifier layer.
+
+  in other words:
+  * A **feature extractor** is a model that we use to “see” the image and pull out useful parts.
+  * We don’t change most of the model—just the last layer.
+  * It’s like using a brain that already knows how to see things, and only teaching it new labels.
+
+
+#### **Understanding Features**
+
+* Features can be patterns like:
+
+  * Circular shape for pizza.
+  * Darker texture for steak.
+  * Small rectangular shapes for sushi.
+
+#### **Transformation Pipeline**
+
+1. **Image → Feature Extractor (features)**: Extract raw patterns.
+2. **→ Average Pooling (avgpool)**: Compress patterns into a single vector.
+3. **→ Classifier**: Map to class probabilities.
+
+---
+
+### **6. Summary of Transfer Learning in this Setup**
+
+* EfficientNet B0 is used as a **feature extractor**.
+* All pre-trained layers (except classifier) are retained.
+* Only the **final classifier layer is modified** to suit the custom dataset.
+* This method is efficient and leverages the power of deep, pretrained architectures with minimal training.
+
+---
