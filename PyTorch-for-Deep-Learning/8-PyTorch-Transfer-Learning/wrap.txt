@@ -1258,3 +1258,120 @@ summary(
 * **Next video**: Implement the process of freezing layers and updating the classifier head in code.
 
 ---
+
+
+
+*** 192. Freezing the Base Layers of Our Model and Updating the Classifier Head ***
+## **Feature Extraction with EfficientNet-B0**
+
+### **1. Model Summary Overview**
+
+* Using `torchinfo.summary()`, we analyzed the input and output shape changes across the layers of EfficientNet-B0.
+* Each layer contains parameters that help extract useful features from input images.
+* Initially, all layers of the pre-trained model are **trainable**.
+
+---
+
+### **2. Purpose of Feature Extraction**
+
+* In feature extraction, we **freeze the base layers** of a pre-trained model.
+* These layers retain learned patterns (from ImageNet, in this case).
+* Only the **classifier head** is updated to match our specific classification task (e.g., pizza, steak, sushi).
+
+---
+
+### **3. Freezing the Base Layers**
+
+* To freeze layers:
+
+  -------------------code----------------------
+  for param in model.features.parameters():
+      param.requires_grad = False
+  -------------------code----------------------
+* `requires_grad = False` disables gradient tracking so the optimizer won’t update these weights during training.
+* This preserves the pre-trained knowledge from ImageNet.
+* We verified this by checking that only the output layer remains trainable after freezing.
+
+---
+
+### **4. Updating the Classifier Head**
+
+* We need to **customize the output layer** to match our dataset (with 3 classes).
+* Input size to the classifier is 1280 (from EfficientNet), so we must match that in the new `Linear` layer.
+* Example updated classifier:
+
+  -------------------code----------------------
+  model.classifier = nn.Sequential(
+      nn.Dropout(p=0.2, inplace=True),
+      nn.Linear(in_features=1280, out_features=len(class_names))  # e.g., 3 classes
+  )
+  -------------------code----------------------
+* Set a random seed before defining layers to ensure **reproducibility**:
+
+  -------------------code----------------------
+  torch.manual_seed(42)
+  -------------------code----------------------
+* The model is moved to the correct device (e.g., GPU) for training:
+
+  -------------------code----------------------
+  model = model.to(device)
+  -------------------code----------------------
+
+---
+
+### **5. Explanation of Dropout**
+
+### What is Dropout?
+**Dropout** is a regularization technique used in deep learning to prevent **overfitting**.
+
+### **In simple terms:**
+
+During training, **dropout randomly turns off (sets to zero) some neurons** in a layer. This means those neurons don't participate in that round of learning.
+
+### **Why is this useful?**
+
+If the model relies too much on specific neurons, it may memorize the training data instead of learning general patterns — this is **overfitting**.
+
+By randomly "dropping out" neurons:
+
+* The model is **forced to learn in a more distributed way**.
+* It becomes **more robust**.
+* It learns to **not rely on any single neuron** too much.
+
+### **Analogy:**
+
+Think of dropout like practicing a team sport where random players sit out each practice session. The team learns to play well **regardless of who’s missing**, which makes them stronger overall.
+
+### **Key points:**
+
+* Dropout is **only active during training**, not during testing or inference.
+* You can control how much is dropped out using a **dropout rate** (e.g., 0.5 means half the neurons are randomly turned off).
+
+
+
+* **Dropout** is a **regularization** technique used during training to prevent **overfitting**.
+* It randomly zeros out neurons with a probability `p` during each forward pass.
+* This prevents the network from becoming too reliant on specific neurons and encourages learning more robust patterns.
+
+**Key Quote from the Lecture:**
+
+> "Dropout removes some neurons at random, so the remaining ones hopefully learn more generalizable patterns."
+
+---
+
+### **6. Final Model Summary**
+
+* **Base layers are frozen**, meaning their parameters won't change during training.
+* **Only the classifier head** (dropout + linear layer) is trainable.
+* The number of **trainable parameters is significantly reduced** compared to the original model.
+* This creates an efficient and task-specific **feature extraction model**.
+
+---
+
+### **7. What's Next**
+
+* The model is now ready for training.
+* It will be evaluated on a custom dataset (e.g., pizza, steak, sushi).
+* Open question: Will EfficientNet perform **better or worse** than the previous VGG-based model?
+
+---
