@@ -1974,3 +1974,77 @@ pred_and_plot_image(
   * Exercises and additional challenges will be introduced.
 
 ---
+
+
+
+
+*** 199. Main Takeaways, Exercises and Extra- Curriculum ***
+## **Lecture Summary: Final Thoughts on Transfer Learning + Exercises**
+
+---
+
+### **1. Context**
+
+* You've now successfully built your **first transfer learning model**.
+* The lecture transitions to wrap-up key concepts and point toward exercises for practice.
+
+---
+
+### **2. Key Takeaways on Transfer Learning**
+
+* **Transfer learning** allows you to:
+
+  * Achieve good results with **relatively small amounts of custom data**.
+  * Build on the patterns learned from large datasets (e.g., ImageNet).
+* **Before starting a new problem**, always ask:
+
+  > *"Does a well-performing pre-trained model already exist for this problem?"*
+* **Important Consideration:**
+
+  * When using a pre-trained model, make sure your custom data is **formatted and preprocessed** similarly to the data the original model was trained on.
+  * This ensures the pre-trained model can effectively adapt to your data.
+
+---
+
+### **3. Pre-trained Model Resources**
+
+* Several repositories and libraries provide pre-trained models:
+
+  * These were introduced earlier in the course (e.g., `torchvision.models`, Hugging Face, etc.).
+  * Use them to jumpstart your own model training.
+
+---
+
+### **4. Exercises and Practice**
+
+#### **Where to Find Exercises**
+
+* Exercises are available in:
+
+  * The **book version** of the course under:
+    `PyTorch_Transfer_Learning/exercises`
+  * The **GitHub repo**:
+    `pytorch-deep-learning/extras/exercises/`
+  * Includes:
+
+    * Exercise **template notebook** (with `TODO`s).
+    * **Solutions notebook**.
+    * **YouTube walkthrough** (optional video guide).
+
+#### **How to Use**
+
+* Start with the **template notebook** which includes:
+
+  * Boilerplate code to help get started.
+  * Multiple `TODO` sections for you to complete.
+* Use the **solutions notebook** only after attempting the exercises yourself.
+
+---
+
+### **5. Summary**
+
+* Transfer learning is a **powerful and efficient approach** to solve computer vision problems.
+* You've now built and evaluated a working model using this method.
+* Next up in the course: **PyTorch Experiment Tracking**.
+
+---
