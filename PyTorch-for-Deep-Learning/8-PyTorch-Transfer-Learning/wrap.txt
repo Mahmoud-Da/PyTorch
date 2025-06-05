@@ -1474,3 +1474,99 @@ Think of dropout like practicing a team sport where random players sit out each 
   * Recommended to use `plot_loss_curves()` from `helper_functions.py`.
 
 ---
+
+
+*** 194. Plotting the Loss curves of Our Transfer Learning Model ***
+## **Lecture Summary: Evaluating the Transfer Learning Model (EfficientNet B0)**
+
+### **1. Recap of Achievements**
+
+* Trained the **best-performing model** so far (EfficientNet B0 with transfer learning).
+* Achieved **\~90% test accuracy** in **\~13 seconds** using a micro lab instance.
+* Reminder: Exact results and time may vary depending on hardware and randomness, even with seeds set.
+
+---
+
+### **2. Quantitative Evaluation: Plotting Loss Curves**
+
+#### **a. Setup for Plotting**
+
+* Aim: Visualize training and testing performance over epochs.
+* Function needed: `plot_loss_curves()` from `helper_functions.py`.
+
+#### **b. Import and Download Logic**
+
+* Attempted to import `plot_loss_curves()`:
+
+  -------------------code----------------------
+  from helper_functions import plot_loss_curves
+  -------------------code----------------------
+* If import fails:
+
+  * Print error message and download `helper_functions.py` from the GitHub repository (raw link).
+  * Code used `requests.get()` to download and save the file.
+  * Once downloaded, the function was successfully imported and used.
+
+#### **c. Plotting the Curves**
+
+* Used:
+
+  -------------------code----------------------
+  plot_loss_curves(results)
+  -------------------code----------------------
+* **Results:**
+
+  * **Train/Test Loss:** Both curves decreased over epochs.
+  * **Train/Test Accuracy:** Both curves increased steadily.
+  * Indicates the model is learning effectively.
+
+---
+
+### **3. Interpreting the Loss Curves**
+
+#### **a. Characteristics of Good Loss Curves**
+
+* Ideal (Goldilocks) loss curve:
+
+  * **Train and test loss decrease simultaneously.**
+  * **Overfitting**: Train loss much lower than test loss.
+  * **Underfitting**: Both losses remain high.
+* Current curves suggest:
+
+  * Good generalization.
+  * Minimal overfitting.
+  * Model performance heading in the right direction.
+
+#### **b. Suggested Experiments**
+
+* Try training the model for **more epochs**.
+* Observe:
+
+  * How low the loss can go.
+  * How high the accuracy can reach.
+* Use the ideal loss curve pattern as a reference to assess future models.
+
+---
+
+### **4. Transfer Learning Helps Prevent Overfitting**
+
+* Transfer learning:
+
+  * Utilizes pre-trained weights.
+  * Speeds up convergence.
+  * Reduces overfitting.
+* EfficientNet B0 + custom classifier demonstrated this in practice.
+
+---
+
+### **5. Next Step: Qualitative Evaluation**
+
+* Plan:
+
+  * Evaluate the model by making predictions on images from the **test set**.
+* Challenge:
+
+  * Try this manually using the trained model.
+  * Use random images and verify predicted labels.
+
+---
