@@ -1757,3 +1757,118 @@ def pred_and_plot_image(model: torch.nn.Module,
 * Display the predictions alongside the images using Matplotlib.
 
 ---
+
+*** 197. Making and Plotting Predictions on Test Images ***
+## **Lecture Summary: Making Predictions on the Test Dataset**
+
+---
+
+### **1. Goal**
+
+* Test the `pred_and_plot_image()` function by:
+
+  * Randomly selecting 3 image paths from the **test dataset**.
+  * Running these images through the prediction function.
+  * Plotting the images with predicted labels and probabilities.
+
+---
+
+### **2. Setup**
+
+#### **Imports**
+
+* Import `random` to allow for sampling.
+* Ensure necessary modules like `pathlib`, `glob`, and `matplotlib` are available.
+
+#### **Variables**
+
+* `num_images_to_plot = 3` — Number of random test images to visualize.
+* `test_dir = "data/pizza_steak_sushi/test"` — Directory containing the test images.
+
+---
+
+### **3. Get All Test Image Paths**
+
+Use `Path` and `glob` to collect all `.jpeg` test image paths:
+
+-------------------code----------------------
+test_image_path_list = list(Path(test_dir).glob("*/*.jpeg"))
+-------------------code----------------------
+
+* The pattern `*/*.jpeg` ensures it captures `.jpeg` images across all class subfolders.
+* Example output: 75 test images found.
+
+---
+
+### **4. Randomly Sample Image Paths**
+
+-------------------code----------------------
+test_image_path_sample = random.sample(test_image_path_list, k=num_images_to_plot)
+-------------------code----------------------
+
+* Randomly selects 3 unique image paths from the full test set list.
+
+---
+
+### **5. Run Predictions and Plot**
+
+Loop through the sampled image paths and call the `pred_and_plot_image()` function:
+
+-------------------code----------------------
+for image_path in test_image_path_sample:
+    pred_and_plot_image(
+        model=model,
+        image_path=image_path,
+        class_names=class_names
+    )
+-------------------code----------------------
+
+* Optional: you can specify `image_size` if needed, though it defaults to `(224, 224)`.
+
+---
+
+### **6. Error Handling**
+
+**Error Encountered:**
+
+-------------------code----------------------
+Unsupported format string passed to tensor.format
+-------------------code----------------------
+
+**Cause:**
+
+* Attempted to format a PyTorch tensor directly in a string using `.format()` or f-strings.
+
+**Solution:**
+
+* Extract scalar from tensor using `.max()` or `.item()`:
+
+-------------------code----------------------
+pred_prob = target_image_pred_probs.max().item()
+-------------------code----------------------
+
+* Now this can be formatted into the plot title.
+
+---
+
+### **7. Results**
+
+* After fixing the tensor formatting issue, the function works as expected.
+* Model successfully predicts on unseen test images and displays correct plots.
+* Examples show mostly accurate predictions with occasional misclassifications (e.g., sushi misclassified as steak).
+
+---
+
+### **8. Final Challenge**
+
+**Test your model on a real-world image:**
+
+* Use the provided `pizza_dad.jpeg` image from:
+
+  -------------------code----------------------
+  pytorch-deep-learning/images/04-pizza-dad.jpeg
+  -------------------code----------------------
+* Or use your own custom image (e.g., pizza, steak, or sushi).
+* Pass the image path to `pred_and_plot_image()` to see how well the model performs on truly unseen data.
+
+---
