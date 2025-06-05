@@ -652,3 +652,110 @@ train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
 ### **Next Step**
 
 * Explore **automatic transforms** using built-in support in `torchvision.models` and pretrained weights (e.g., using `.weights.transforms()`).
+
+*** 187. Turning Our Data into DataLoaders with Automatic Created Transforms ***
+## Lecture Summary: Preparing Data for Pre-trained Models (Torchvision v0.13+)
+
+### Key Concepts
+
+#### 1. **Importance of Matching Pre-trained Model Data Format**
+
+* Pre-trained models expect input data in the same format as their training data.
+* Mismatched preprocessing can lead to **performance degradation**.
+
+---
+
+### Manual Transforms
+
+* You can manually create a transform pipeline using `transforms.Compose([...])`.
+* Manual transforms offer **flexibility**: you can add any preprocessing, data augmentation, etc.
+* **Risk**: If the transform doesn’t match the model’s expected input format, it may reduce performance.
+
+---
+
+### Automatic Transforms (Torchvision 0.13+)
+
+Introduced in `torchvision v0.13`, this new feature lets you automatically create the correct transforms from the pre-trained model's weights.
+
+#### Benefits:
+
+* Ensures **consistency** with the model’s training.
+* **Reduces errors** due to manual misconfiguration.
+* Easily switch between models without rewriting preprocessing logic.
+
+#### Usage:
+
+1. **Install/check your torchvision version:**
+
+   -------------------code----------------------
+   import torchvision
+   print(torchvision.__version__)  # Should be >= 0.13
+   -------------------code----------------------
+
+2. **Import model and weights:**
+
+   -------------------code----------------------
+   from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights
+   weights = EfficientNet_B0_Weights.DEFAULT  # Defaults to best available weights
+   -------------------code----------------------
+
+3. **Get automatic transforms:**
+
+   -------------------code----------------------
+   auto_transforms = weights.transforms()
+   -------------------code----------------------
+
+4. **Create data loaders with automatic transforms:**
+
+   -------------------code----------------------
+   from torchvision import datasets
+   from torch.utils.data import DataLoader
+
+   train_dataset = datasets.ImageFolder(root=train_dir, transform=auto_transforms)
+   test_dataset = datasets.ImageFolder(root=test_dir, transform=auto_transforms)
+
+   train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+   test_loader = DataLoader(test_dataset, batch_size=32)
+   -------------------code----------------------
+
+---
+
+### Why This Matters
+
+* This approach simplifies the workflow and ensures **high accuracy** with the appropriate normalization, resizing, cropping, etc.
+* Using `EfficientNet_B0_Weights.DEFAULT` leverages the version trained on **ImageNet-1K** (1000-class ImageNet dataset).
+
+  * Top-1 Accuracy: \~77.6%
+  * Top-5 Accuracy: \~93%
+
+---
+
+### EfficientNet Overview
+
+* Model series: `B0` to `B7`
+* **Bigger number = Larger model**
+* **Tradeoff**:
+
+  * Higher accuracy → Larger size → Slower inference/deployment
+  * Start small (e.g., B0) and scale up **only if necessary**
+
+---
+
+### Extra Curriculum / Homework
+
+* Read through:
+  [Torchvision Models and Pre-trained Weights Documentation](https://pytorch.org/vision/stable/models.html)
+* Focus on:
+
+  * Understanding the `multi-weight support API`
+  * Exploring different models and their available pre-trained weights
+
+---
+
+### Final Thoughts
+
+* Always align your data preprocessing with how the model was trained.
+* For models in `torchvision`, use the **automatic transform method via `.transforms()`** to avoid mismatches.
+* This new API makes using state-of-the-art models **much more accessible and robust**.
+
+---
