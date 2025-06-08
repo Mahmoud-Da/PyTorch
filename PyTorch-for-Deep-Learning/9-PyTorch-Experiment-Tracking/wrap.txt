@@ -68,3 +68,99 @@
 * Machine learning is a blend of **science (structured testing)** and **art (creative intuition)**
 
 ---
+
+*** 201. Getting Setup by Importing Torch Libraries and Going Modular Code ***
+## Lecture Summary: Setting Up for PyTorch Experiment Tracking
+
+### 1. **Initial Setup**
+
+* Open a web browser and navigate to **Google Colab** at `colab.research.google.com`.
+* Create a new notebook and name it:
+
+  * `07_PyTorch_Experiment_Tracking`
+  * Add a tag (e.g., “video”) to indicate it’s linked to the video lesson.
+
+### 2. **Notebook Introduction**
+
+* Add an introductory note:
+
+  * Machine Learning is highly experimental.
+  * Running and comparing multiple experiments helps determine what works and what doesn't.
+  * This notebook demonstrates **programmatic experiment tracking** in PyTorch.
+
+### 3. **References and Resources**
+
+* Link to:
+
+  * The **book version** of the course notebook.
+  * **GitHub Discussions** for course Q\&A.
+  * **MadeWithML.com** for additional resources (e.g., experiment tracking by Goku Mohandas).
+
+### 4. **Preparing the Environment**
+
+* **Use GPU**:
+
+  * Ensure a GPU backend is enabled for better performance.
+  * Colab may restart the runtime when switching to GPU.
+
+* **Torch and TorchVision Versions**:
+
+  * The lesson uses cutting-edge APIs that require:
+
+    * PyTorch ≥ 1.12
+    * TorchVision ≥ 0.13
+  * These versions may not be available by default in Colab.
+  * If needed, install **nightly versions** using provided installation commands.
+  * Installation may take \~3–4 minutes.
+  * Restart the runtime after installation.
+
+* **Verifying Installation**:
+
+  * Check versions with print statements.
+  * Expected:
+
+    * Torch: ≥ 1.13
+    * TorchVision: ≥ 0.14
+
+### 5. **Importing Code and Dependencies**
+
+* Import standard libraries:
+
+  * `torch`, `torchvision`, `matplotlib`, etc.
+
+* Install and import **`torchinfo`** if not already installed:
+
+  * Used for displaying model summaries.
+
+* Import modularized scripts from previous sections:
+
+  * Example: `engine.py` which contains training functions.
+  * These will be modified to include experiment tracking using **TensorBoard**.
+
+### 6. **Set Up Device-Agnostic Code**
+
+* Use the following pattern:
+
+  -------------------code----------------------
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  -------------------code----------------------
+
+### 7. **Random Seed Setup**
+
+* Define a helper function to set random seeds for reproducibility:
+
+  -------------------code----------------------
+  def set_seeds(seed=42):
+      torch.manual_seed(seed)
+      torch.cuda.manual_seed(seed)
+  -------------------code----------------------
+* Call `set_seeds()` before training to ensure consistent results.
+
+### 8. **Important Reminder**
+
+* If you take a break from the notebook:
+
+  * Rerun setup cells upon return.
+  * Especially important for ensuring correct versions of `torch` and `torchvision`.
+
+---
