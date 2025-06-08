@@ -1,0 +1,70 @@
+*** 200. What Is Experiment Tracking and Why Track Experiments ***
+## Lecture Summary: Experiment Tracking in Machine Learning
+
+### 1. **What is Experiment Tracking?**
+
+* **Definition**: The process of keeping a structured record of your modeling experiments to determine which ones perform best.
+* **Purpose**: Helps identify what works and what doesn’t, especially as the number of models increases.
+
+### 2. **Why Is It Important?**
+
+* As more models are created (e.g., `model_0`, `model_1`, `model_2_v3`, etc.), tracking manually becomes chaotic.
+* Helps answer:
+
+  * Which model performs best?
+  * What changes led to improvements or regressions?
+  * What should be repeated or avoided in future experiments?
+
+### 3. **Course Philosophy (Review)**
+
+* Code along actively
+* Explore and experiment
+* Visualize results
+* Ask questions and do exercises
+* Share your work
+
+### 4. **Mottos to Remember**
+
+* **If in doubt, run the code**
+* **Experiment, experiment, experiment**
+* **Visualize, visualize, visualize**
+
+### 5. **Tracking Methods**
+
+* **Basic Tracking**:
+
+  * Python dictionaries
+  * CSV files
+  * Printouts
+* **Intermediate to Advanced Tools**:
+
+  * **TensorBoard** (integrated with PyTorch)
+  * **Weights & Biases (W\&B)**: Third-party tool with powerful UI
+  * **MLflow**: Open-source tracking for the entire ML lifecycle
+  * **Other Tools**: Search "machine learning experiment tracking" for more
+
+### 6. **Recommended Resource**
+
+* **Made With ML – Experiment Tracking** by Goku Mohandas
+
+  * Offers a comprehensive overview of tracking strategies and tools
+
+### 7. **Practical Implementation in the Course**
+
+* Continue working on **FoodVision Mini** project
+* Introduce experiment tracking using **TensorBoard**
+* Build and run multiple models
+* Visualize results:
+
+  * Loss curves
+  * Accuracy curves
+* Evaluate models and determine the best performer
+* Use the best model for making predictions on custom data
+
+### 8. **Metaphor: Scientist + Chef**
+
+* Put on your **scientist’s coat** to systematically track experiments
+* Put on your **chef’s hat** to creatively iterate and refine models
+* Machine learning is a blend of **science (structured testing)** and **art (creative intuition)**
+
+---
