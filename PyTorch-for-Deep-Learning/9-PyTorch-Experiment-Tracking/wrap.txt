@@ -164,3 +164,127 @@
   * Especially important for ensuring correct versions of `torch` and `torchvision`.
 
 ---
+
+*** 202. Creating a Function to Download Data ***
+## **Lecture Notes: PyTorch Experiment Tracking – Setup and Data Download**
+
+### **1. Notebook Initialization**
+
+* Opened a new **Google Colab** notebook titled:
+  `07_pytorch_experiment_tracking_video.ipynb`
+* Added a heading and introductory note about the experimental nature of machine learning.
+* Purpose: **Programmatically track machine learning experiments** to identify what works and what doesn't.
+
+---
+
+### **2. Resources & References**
+
+* **Course Materials**:
+
+  * eBook version of the course
+  * GitHub Discussions for Q\&A
+* **External Resource**:
+
+  * MLB.com for extracurricular exploration
+
+---
+
+### **3. Environment Setup**
+
+* **Enabled GPU** via Colab runtime for faster computation.
+* Installed **nightly versions** of PyTorch and TorchVision (since required versions weren't yet released at time of recording):
+
+  * PyTorch ≥ 1.13
+  * TorchVision ≥ 0.14
+
+#### **Installation Process**
+
+* Included a block from the eBook to install nightly builds if needed.
+* Restarted runtime after installation to apply updates.
+* Confirmed successful installation of required versions.
+
+---
+
+### **4. Import Dependencies**
+
+* Standard libraries: `torch`, `torchvision`, `matplotlib`, and `torchinfo`
+* Installed `torchinfo` if not found (used for model summary).
+* Imported modular code previously written (e.g., `engine.py`) from the GitHub repo to avoid duplication.
+* Set **device-agnostic code**:
+
+  -------------------code----------------------
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  -------------------code----------------------
+
+---
+
+### **5. Random Seed Setup**
+
+* Defined a helper function for reproducibility:
+
+  -------------------code----------------------
+  def set_seeds(seed=42):
+      torch.manual_seed(seed)
+      torch.cuda.manual_seed(seed)
+  -------------------code----------------------
+* Purpose: Makes randomness controllable for reproducible experiments.
+
+---
+
+### **6. Data Acquisition**
+
+#### **Objective**
+
+* Download and prepare the **Pizza, Steak, and Sushi** image dataset for FoodVision Mini project.
+
+#### **Helper Function: `download_data()`**
+
+* A reusable function that:
+
+  * Downloads a `.zip` file from a given source URL
+  * Unzips it into a target destination
+  * Optionally deletes the original `.zip` file after extraction
+
+#### **Function Signature**
+
+-------------------code----------------------
+def download_data(source: str, destination: str, remove_source: bool = True) -> Path:
+-------------------code----------------------
+
+#### **Key Features**
+
+* Uses `pathlib` for path management
+* Checks if the destination directory already exists
+* Downloads file using `requests.get`
+* Unzips using Python’s built-in `zipfile` module
+* Removes `.zip` file if `remove_source` is `True`
+* Returns the final image path
+
+#### **Enhancement Note**
+
+* The current version does **not** check if the destination folder is **empty**. As a result, it might skip downloads even if the folder is created but has no data.
+* Improvement idea: add a condition to check if the folder is empty before skipping the download.
+
+---
+
+### **7. Testing the Download Function**
+
+* Attempted downloading data to:
+
+  -------------------code----------------------
+  image_path = download_data(source, destination="pizza_steak_sushi")
+  -------------------code----------------------
+* Debugged a minor issue (misspelling of `Pathlib` import and folder existence logic).
+* Verified that images like `pizza/sample.jpg` are successfully downloaded and ready to use.
+
+---
+
+### **8. Challenge**
+
+* Convert the downloaded data into **PyTorch `DataLoader` objects**.
+* Options:
+
+  * Manual creation using `torchvision.datasets.ImageFolder` and `DataLoader`
+  * Automatic loading with built-in utilities
+
+---
