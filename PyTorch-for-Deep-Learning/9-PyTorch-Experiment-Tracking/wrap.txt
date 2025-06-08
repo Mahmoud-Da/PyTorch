@@ -288,3 +288,111 @@ def download_data(source: str, destination: str, remove_source: bool = True) -> 
   * Automatic loading with built-in utilities
 
 ---
+
+
+*** 203. Turning Our Data into DataLoaders Using Manual Transforms ***
+## **Lecture Summary: Creating Data Loaders and Manual Transforms in PyTorch**
+
+### **Context Recap**
+
+* Previously, the dataset *Pizza, Steak, and Sushi* was downloaded for the *FoodVision Mini* project.
+* The challenge was to convert the dataset into **PyTorch DataLoaders**.
+* The video focuses on doing this **manually**, while the **automatic transform** method will be covered next.
+
+---
+
+## **Goals of This Section**
+
+* Convert custom image dataset into **PyTorch DataLoaders**.
+* Ensure the custom data is **formatted appropriately** for use with pre-trained models.
+* Use **manual transforms** to control preprocessing and normalization.
+
+---
+
+## **2.1: Creating Data Loaders with Manual Transforms**
+
+### **Why Transforms Are Important**
+
+* Pre-trained models expect data in a specific format (size, range, normalization).
+* Most are trained on **ImageNet**, so replicating its preprocessing ensures optimal performance.
+* Mismatched preprocessing can lead to **performance degradation**.
+
+---
+
+## **Setting Up Paths**
+
+-------------------code----------------------
+train_dir = image_path / "train"
+test_dir = image_path / "test"
+-------------------code----------------------
+
+---
+
+## **Manual Transform Pipeline**
+
+### **Normalization Values (ImageNet)**
+
+-------------------code----------------------
+normalize = transforms.Normalize(
+    mean=[0.485, 0.456, 0.406],
+    std=[0.229, 0.224, 0.225]
+)
+-------------------code----------------------
+
+### **Transform Composition**
+
+-------------------code----------------------
+manual_transforms = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    normalize
+])
+-------------------code----------------------
+
+* **Resize**: Ensures input images are at least 224x224 (required by most ImageNet models).
+* **ToTensor**: Converts images to tensors in range \[0, 1].
+* **Normalize**: Matches ImageNet data distribution.
+
+---
+
+## **Code Reuse via Helper Script**
+
+* Instead of rewriting the dataset and dataloader code, reuse `create_dataloaders` from `data_setup.py` in the `going_modular` directory.
+* Function signature:
+
+-------------------code----------------------
+train_dataloader, test_dataloader, class_names = create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=manual_transforms,
+    batch_size=32
+)
+-------------------code----------------------
+
+### **Improvement Suggestion**
+
+* Enhance `create_dataloaders()` to support separate transforms for training and test sets.
+* Example:
+
+-------------------code----------------------
+train_transform = ...
+test_transform = ...
+-------------------code----------------------
+
+---
+
+## **Outcome**
+
+* Successfully loaded data with manual transforms.
+* Verified classes: `pizza`, `steak`, `sushi`.
+* Manual pipeline offers flexibility but requires careful implementation to avoid mistakes.
+
+---
+
+## **Next Step**
+
+* Implement **automatic transform generation** using model weights (covered in the next video).
+* Suggested model for the upcoming example: **EfficientNet B0**.
+* Practice creating automatic transforms for pre-trained models.
+
+---
