@@ -396,3 +396,111 @@ test_transform = ...
 * Practice creating automatic transforms for pre-trained models.
 
 ---
+
+*** 204. Turning Our Data into DataLoaders Using Automatic Transforms ***
+## **Lecture Summary: Creating Data Loaders with Automatically Created Transforms**
+
+---
+
+### **Context**
+
+* This builds upon the previous video, where we created data loaders using **manual transforms**.
+* The goal now is to create **data loaders using automatic transforms** derived directly from model weights.
+
+---
+
+## **Objective**
+
+* Apply **automatically generated transforms** to ensure custom data is processed in the **same format** as the data used to train **pre-trained models**.
+* This ensures optimal performance when using transfer learning.
+
+---
+
+## **Automatic Transforms via TorchVision (v0.13+)**
+
+### **TorchVision Model Weights API**
+
+* TorchVision now supports a **multi-weight API**.
+* Each pre-trained model (e.g., EfficientNet, ResNet) has associated weight classes.
+* These weight classes contain a `.transforms()` method that returns the **appropriate preprocessing pipeline**.
+
+---
+
+### **Steps to Create Automatic Transforms**
+
+#### 1. **Choose the Model and Import Weights**
+
+-------------------code----------------------
+from torchvision.models import EfficientNet_B0_Weights
+
+weights = EfficientNet_B0_Weights.DEFAULT
+-------------------code----------------------
+
+* `.DEFAULT` refers to the best available pre-trained weights for that model.
+
+#### 2. **Get the Transforms**
+
+-------------------code----------------------
+automatic_transforms = weights.transforms()
+-------------------code----------------------
+
+* This creates a transformation pipeline matching what the pre-trained model expects.
+
+---
+
+## **Creating Data Loaders with Automatic Transforms**
+
+#### 3. **Pass Transforms to Data Loader Function**
+
+Assuming the helper function `create_dataloaders()` is already defined:
+
+-------------------code----------------------
+train_dataloader, test_dataloader, class_names = create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=automatic_transforms,
+    batch_size=32
+)
+-------------------code----------------------
+
+#### 4. **Print to Verify**
+
+-------------------code----------------------
+print(f"Automatically created transforms:\n{automatic_transforms}")
+-------------------code----------------------
+
+---
+
+## **Comparison to Manual Transforms**
+
+| Feature         | Manual Transforms                  | Automatic Transforms                   |
+| --------------- | ---------------------------------- | -------------------------------------- |
+| **Flexibility** | High – user-defined                | Limited to model’s training pipeline   |
+| **Risk**        | High – risk of mismatching formats | Low – guaranteed compatibility         |
+| **Performance** | Depends on correctness of setup    | Optimized for target pre-trained model |
+
+* Manual transforms allow more data augmentation/customization.
+* Automatic transforms are safer for direct use with transfer learning models.
+
+---
+
+## **Conclusion & Next Steps**
+
+* Automatic transforms are simple and reliable, especially when used with TorchVision’s pre-trained models.
+* In the **next video**, the plan is to:
+
+  1. Load a **pre-trained model** (EfficientNet B0),
+  2. **Freeze the base layers**, and
+  3. **Replace the classifier head** to adapt to the new dataset (pizza, steak, sushi).
+
+---
+
+### **Suggested Practice**
+
+* Try replicating the process:
+
+  * Load EfficientNet B0.
+  * Freeze its convolutional base.
+  * Replace its head to match your number of classes.
+
+This is similar to what was done in **Section 6.2: Transfer Learning (3 steps)**.
