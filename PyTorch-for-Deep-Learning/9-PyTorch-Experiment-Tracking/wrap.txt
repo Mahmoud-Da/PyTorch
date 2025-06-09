@@ -637,3 +637,66 @@ summary(
 * **Replace the classifier head** to match the number of classes.
 * Use `torchinfo` to verify model architecture.
 * Prepare for training with efficient logging (e.g., TensorBoard).
+
+### Question:
+
+> If the pre-trained model (like EfficientNet) was not trained on pizza images, will it still work when I use it to classify **pizza**, **sushi**, and **steak**?
+
+---
+
+### **Short Answer:**
+
+**Yes**, it can still work — **very well, in fact**, especially if:
+
+* You **freeze** the base layers (pre-trained on ImageNet),
+* And **train only the classifier head** on your own data (pizza, sushi, steak).
+
+---
+
+###  Why Does This Work?
+
+EfficientNet and similar models are pre-trained on **ImageNet**, which contains 1,000 diverse categories — including many food items like:
+
+* Hamburger
+* Hotdog
+* Spaghetti
+* And sometimes even pizza-like dishes
+
+Even if "pizza" isn't explicitly a category, the model has already **learned to extract powerful visual features**:
+
+* Edges, textures, shapes, colors, etc.
+
+These **generic features** are **transferable** to many tasks — including food classification — without needing to re-train the whole model.
+
+---
+
+PS: 
+- If the pre-trained model was trained on similar foods (e.g., general food datasets like Food-101), it might still perform reasonably well through transfer learning.
+- If it was trained on completely different domains (e.g., cars or animals), you’d likely need to fine-tune the model on pizza/sushi/steak images for good accuracy.
+
+### Example Analogy:
+
+Think of the base layers as a **feature extractor** that says:
+
+> “This looks like a circular object with red and yellow patches.”
+
+The classifier head then learns:
+
+> “If I see those features together, it's probably a pizza.”
+
+---
+
+### Fine-Tuning Options
+
+| Approach               | What You Do                                | When to Use                                                 |
+| ---------------------- | ------------------------------------------ | ----------------------------------------------------------- |
+| **Feature Extraction** | Freeze base layers, train only the head    | When you have a **small dataset**                           |
+| **Fine-Tuning**        | Unfreeze some/all base layers and re-train | When you have a **larger dataset** and want better accuracy |
+
+---
+
+### Takeaway
+
+Even if the original model didn't see pizza specifically, it saw enough **similar patterns** to help distinguish it from other foods when trained with your dataset.
+
+So yes — **using a pre-trained model is absolutely effective** for pizza/sushi/steak classification.
