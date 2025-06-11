@@ -937,3 +937,124 @@ So yes — **using a pre-trained model is absolutely effective** for pizza/sushi
 * PyTorch `SummaryWriter` Docs
 
 ---
+
+
+*** 208. Exploring Our Single Models Results with TensorBoard ***
+## **Lecture Summary: Viewing Model Results with TensorBoard in Google Colab**
+
+### **5. Viewing Model Training Results in TensorBoard**
+
+#### **Purpose**
+
+* To programmatically view and analyze training performance.
+* To explore interactive visualizations such as loss and accuracy curves.
+
+---
+
+### **Ways to View TensorBoard Results**
+
+1. **Directly within the notebook** (Jupyter/Colab) – *Main focus of this lecture.*
+2. **Via VS Code** – Requires setup; link/resource was provided.
+3. **Using [TensorBoard.dev](https://tensorboard.dev)** – Publicly upload and share experiments.
+
+---
+
+### **Using TensorBoard in Colab**
+
+#### **Steps:**
+
+1. **Load TensorBoard Extension:**
+
+   -------------------code----------------------
+   %load_ext tensorboard
+   -------------------code----------------------
+
+2. **Launch TensorBoard Interface:**
+
+   -------------------code----------------------
+   %tensorboard --logdir runs
+   -------------------code----------------------
+
+   * `logdir='runs'` is the default log directory used by PyTorch's `SummaryWriter`.
+
+3. **TensorBoard UI Features:**
+
+   * **Scalars Tab:**
+
+     * Displays loss and accuracy values.
+     * Option to toggle smoothing (set to 0 for raw data).
+     * Can filter for specific runs or tags like `test_loss`, `test_accuracy`.
+     * Interactive zoom and pan (e.g., `Alt + scroll`).
+
+   * **Graphs Tab:**
+
+     * Shows the model architecture and data flow.
+     * Can explore inner modules like:
+
+       * Feature extractor (`EfficientNet`)
+       * Classifier (Dropout, Linear layers)
+     * Useful for visual inspection of model structure.
+
+---
+
+### **Example Insights from TensorBoard**
+
+* **Training vs. Test Accuracy:**
+
+  * Test accuracy was higher than training at the end – worth exploring further.
+
+* **Loss Behavior:**
+
+  * Test loss increased slightly near the end.
+  * Suggests **possible overfitting**.
+
+#### **What is Overfitting?**
+
+* Occurs when training loss continues to decrease but test loss starts to increase.
+* Indicates that the model is fitting too closely to training data and not generalizing well.
+
+---
+
+### **Exploring the Model Graph**
+
+* Input: `32 x 3 x 224 x 224` image tensor.
+* Layers:
+
+  * Convolutional layers
+  * BatchNorm2D
+  * Activation functions (e.g., SiLU)
+  * Dropout and Linear layers in the classifier
+
+#### **Exploration Tip:**
+
+* To understand components like `BatchNorm2D`, consult:
+
+  * PyTorch documentation
+  * Research papers or tutorials (e.g., “What is Batch Normalization?”)
+
+---
+
+### **Additional Functionality with `SummaryWriter`**
+
+* Track various types of data:
+
+  * `add_scalar` – Track single values.
+  * `add_scalars` – Track multiple related values.
+  * `add_image`, `add_images` – Log images.
+  * `add_video`, `add_audio`, `add_text` – Log multimedia or textual data.
+
+#### **Reference:**
+
+* [PyTorch SummaryWriter Documentation](https://pytorch.org/docs/stable/tensorboard.html)
+
+---
+
+### **Next Steps**
+
+* This lecture focused on logging and viewing results for **one model**.
+* In the next lecture:
+
+  * Learn how to track **multiple experiments**.
+  * Modify the training function to accept a custom `writer` argument dynamically.
+
+---
