@@ -835,3 +835,105 @@ So yes — **using a pre-trained model is absolutely effective** for pizza/sushi
 * Launch TensorBoard to visualize training progress.
 
 ---
+
+
+*** 207. Training a Single Model and Saving the Results to TensorBoard ***
+## **Lecture Summary: Tracking a Single Model with TensorBoard**
+
+### **Recap from Previous Video**
+
+* Downloaded and modified a pretrained EfficientNet B0.
+* Froze the base layers (`requires_grad = False`).
+* Modified the classifier head.
+* Checked the model summary.
+* Set up a loss function and optimizer.
+* Introduced TensorBoard and PyTorch’s `SummaryWriter` for experiment tracking.
+
+---
+
+### **Setting Up TensorBoard Tracking**
+
+1. **What is TensorBoard?**
+
+   * A visualization toolkit originally developed for TensorFlow.
+   * Useful for:
+
+     * Tracking and visualizing loss and accuracy.
+     * Visualizing model graphs, histograms, images, text, and more.
+
+2. **What is `SummaryWriter`?**
+
+   * PyTorch utility to interface with TensorBoard.
+   * Writes logs to a default `runs/` directory.
+   * Each log is stored in a subdirectory with:
+
+     * Date/time stamp.
+     * Machine identifier (e.g., Colab instance or computer name).
+
+---
+
+### **Modifying the Train Function**
+
+* Instead of using the default `engine.train`, the train function was imported and modified directly in the notebook.
+* The updated `train()` function:
+
+  * Logs **loss** and **accuracy** using `writer.add_scalars()`:
+
+    -------------------code----------------------
+    writer.add_scalars(main_tag="Loss", scalar_dict={
+        "train_loss": train_loss,
+        "test_loss": test_loss
+    }, global_step=epoch)
+
+    writer.add_scalars(main_tag="Accuracy", scalar_dict={
+        "train_acc": train_acc,
+        "test_acc": test_acc
+    }, global_step=epoch)
+    -------------------code----------------------
+  * Logs the **model graph** using:
+
+    -------------------code----------------------
+    writer.add_graph(model, input_to_model=torch.rand(1, 3, 224, 224).to(device))
+    -------------------code----------------------
+  * Closes the writer after training with `writer.close()`.
+
+---
+
+### **Training the Model**
+
+* The model was trained for 5 epochs using the updated `train()` function.
+
+* High-level training call:
+
+  -------------------code----------------------
+  train(model=model,
+        train_dataloader=train_dataloader,
+        test_dataloader=test_dataloader,
+        optimizer=optimizer,
+        loss_fn=loss_fn,
+        epochs=5,
+        device=device)
+  -------------------code----------------------
+
+* Results:
+
+  * Achieved \~88% test accuracy.
+  * Scalars (loss/accuracy) successfully logged to the `runs/` directory.
+  * Fix: Corrected an earlier issue by updating `train_loss` key to `test_acc` for accuracy logging.
+
+---
+
+### **Next Steps / Challenge**
+
+* Explore how to **view TensorBoard logs within a Jupyter or Google Colab notebook**.
+* Suggested search term:
+  *“How to view TensorBoard in Colab or Jupyter Notebook”*.
+
+---
+
+### **Resources Mentioned**
+
+* TensorBoard Official Site: [https://www.tensorflow.org/tensorboard](https://www.tensorflow.org/tensorboard)
+* PyTorch `SummaryWriter` Docs
+
+---
