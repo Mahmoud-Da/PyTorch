@@ -1058,3 +1058,133 @@ So yes — **using a pre-trained model is absolutely effective** for pizza/sushi
   * Modify the training function to accept a custom `writer` argument dynamically.
 
 ---
+
+*** 209. Creating a Function to Create SummaryWriter Instances ***
+# **TensorBoard Experiment Tracking - Programmatic Setup**
+
+## **Section Overview**
+
+* Focus: Tracking multiple model experiments programmatically using **TensorBoard**.
+* Goal: Create a reusable function to generate a customized `SummaryWriter` for each experiment.
+
+---
+
+## **6. Creating a Function to Prepare a SummaryWriter Instance**
+
+### **Motivation**
+
+* Default behavior: `SummaryWriter` saves logs to a path like `runs/YYYY-MM-DD/hostname`.
+* Problem: Difficult to distinguish between different experiments when they are logged to generic directories.
+* Solution: Design a function that creates a structured and descriptive log directory for each experiment.
+
+---
+
+## **Designing the Log Directory Structure**
+
+### **Tracking Multiple Experiments**
+
+* **One experiment = one folder**
+* Folder naming components:
+
+  * **Date timestamp** (reverse format: `YYYY-MM-DD`)
+  * **Experiment name** (e.g., `data_10_percent`)
+  * **Model name** (e.g., `efficientnet_b0`)
+  * **Extra** (optional metadata, e.g., `5_epochs`)
+
+---
+
+## **Implementation: `create_writer` Function**
+
+### **Function Signature**
+
+-------------------code----------------------
+def create_writer(experiment_name: str, model_name: str, extra: str = None) -> SummaryWriter:
+-------------------code----------------------
+
+### **Docstring**
+
+* Purpose: Creates a `torch.utils.tensorboard.SummaryWriter` instance that logs to a structured directory.
+
+### **Steps Inside the Function**
+
+1. **Import Modules**
+
+   -------------------code----------------------
+   from datetime import datetime
+   import os
+   from torch.utils.tensorboard import SummaryWriter
+   -------------------code----------------------
+
+2. **Generate Timestamp**
+
+   -------------------code----------------------
+   timestamp = datetime.now().strftime("%Y-%m-%d")
+   -------------------code----------------------
+
+3. **Build Log Directory Path**
+
+   -------------------code----------------------
+   if extra:
+       log_dir = os.path.join("runs", timestamp, experiment_name, model_name, extra)
+   else:
+       log_dir = os.path.join("runs", timestamp, experiment_name, model_name)
+   -------------------code----------------------
+
+4. **Instantiate `SummaryWriter`**
+
+   -------------------code----------------------
+   writer = SummaryWriter(log_dir=log_dir)
+   -------------------code----------------------
+
+5. **Print Log Info**
+
+   -------------------code----------------------
+   print(f"Created SummaryWriter saving to {log_dir}")
+   -------------------code----------------------
+
+6. **Return the Writer**
+
+   -------------------code----------------------
+   return writer
+   -------------------code----------------------
+
+---
+
+## **Example Usage**
+
+-------------------code----------------------
+example_writer = create_writer(
+    experiment_name="data_10_percent",
+    model_name="efficientnet_b0",
+    extra="5_epochs"
+)
+-------------------code----------------------
+
+* This creates a directory like:
+
+  -------------------code----------------------
+  runs/2022-06-27/data_10_percent/efficientnet_b0/5_epochs/
+  -------------------code----------------------
+
+---
+
+## **Next Step: Integrate with Training Function**
+
+### **Challenge**
+
+* Modify your `train()` function to accept a `writer` parameter.
+* Use the `create_writer()` function inside `train()` to programmatically manage experiment logging.
+
+### **Why It Matters**
+
+* Enables tracking and comparing multiple experiments easily using TensorBoard.
+* Promotes reproducibility and better organization of experiment metadata.
+
+---
+
+## **TensorBoard**
+
+* After logging, the experiment folder will appear in TensorBoard.
+* You can filter by experiment name, model name, or training conditions like number of epochs.
+
+---
