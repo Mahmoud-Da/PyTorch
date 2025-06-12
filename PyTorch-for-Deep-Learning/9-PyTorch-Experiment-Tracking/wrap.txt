@@ -1188,3 +1188,111 @@ example_writer = create_writer(
 * You can filter by experiment name, model name, or training conditions like number of epochs.
 
 ---
+
+
+*** 210. Adapting Our Train Function to Be Able to Track Multiple Experiments ***
+# **6.1 Updating the `train()` Function to Use a `SummaryWriter`**
+
+## **Objective**
+
+* Modify the `train()` function to accept a `SummaryWriter` instance as a parameter.
+* This enables logging experiment data programmatically, supporting multiple runs and comparisons.
+
+---
+
+## **Why This Matters**
+
+* As machine learning projects grow, it's important to track and compare different experiments.
+* Instead of writing logs to a default location, each experiment should have a unique log directory.
+
+---
+
+## **Steps to Update `train()`**
+
+### **1. Import Required Components**
+
+Ensure you have the necessary functions from the `engine.py` module:
+
+-------------------code----------------------
+from going_modular.going_modular.engine import train_step, test_step
+-------------------code----------------------
+
+### **2. Modify the `train()` Function**
+
+* Add a `writer` parameter to the function signature, with a default value of `None`.
+* This writer can then be used to log data during training.
+
+#### **Function Signature**
+
+-------------------code----------------------
+def train(..., writer: torch.utils.tensorboard.SummaryWriter = None):
+-------------------code----------------------
+
+### **3. Use the Writer Inside the Function**
+
+* Check if the writer exists using an `if writer:` block.
+* Log training metrics (e.g., loss, accuracy) and the model graph.
+* Close the writer at the end of training.
+
+#### **Pseudocode Example**
+
+-------------------code----------------------
+if writer:
+    # log scalars, graphs, etc.
+    writer.add_scalar(...)
+    writer.add_graph(...)
+    writer.close()
+else:
+    pass  # Do nothing if no writer is provided
+-------------------code----------------------
+
+---
+
+## **Integration**
+
+* You don’t need to call `create_writer()` inside the `train()` function.
+* Instead, you create a writer externally and pass it as an argument to `train()`:
+
+-------------------code----------------------
+writer = create_writer("experiment_name", "model_name", "extra_info")
+train(..., writer=writer)
+-------------------code----------------------
+
+---
+
+## **Next Step: Run Multiple Experiments**
+
+### **7. Setting Up a Series of Modeling Experiments**
+
+#### **Challenge: Run Two Experiments**
+
+* Use the **same architecture**: EfficientNet B0.
+* Use the **same dataset**: Pizza, Steak, Sushi (Food101 subset).
+* Vary the **number of epochs**:
+
+  * First experiment: train for **5 epochs**.
+  * Second experiment: train for **10 epochs**.
+
+#### **Suggested Approach**
+
+1. Create a list of epochs:
+
+   -------------------code----------------------
+   epoch_list = [5, 10]
+   -------------------code----------------------
+2. Loop over this list:
+
+   -------------------code----------------------
+   for num_epochs in epoch_list:
+       writer = create_writer("data_10_percent", "efficientnet_b0", f"{num_epochs}_epochs")
+       train(..., num_epochs=num_epochs, writer=writer)
+   -------------------code----------------------
+
+---
+
+## **Outcome**
+
+* You will now have two distinct log folders (under `runs/`) for each experiment.
+* You can view and compare them using TensorBoard, filtered by experiment name or training conditions.
+
+---
