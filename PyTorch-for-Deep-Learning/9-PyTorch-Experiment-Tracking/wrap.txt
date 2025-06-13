@@ -1408,3 +1408,120 @@ There’s no silver bullet — it's all about systematic experimentation.
 * Use **transfer learning** to build upon pretrained models for efficient experimentation.
 
 ---
+
+*** 212. Discussing the Experiments We Are Going to Try ***
+### **Lecture Summary: Designing ML Experiments**
+
+#### **Objective**
+
+To design a set of manageable machine learning experiments by adjusting a few key hyperparameters to evaluate their effect on model performance.
+
+---
+
+### **Key Concept: Hyperparameters as Dials**
+
+Think of each hyperparameter as a "dial" that you can turn to influence your machine learning model’s performance.
+
+For this lecture, we will focus on turning three specific dials:
+
+1. **Model Size**
+2. **Dataset Size**
+3. **Training Time (Epochs)**
+
+---
+
+### **Dial 1: Model Size**
+
+* Models used: **EfficientNet B0** vs **EfficientNet B2**
+* Reason: B2 is roughly twice the size of B0 (in number of parameters).
+* Goal: Test impact of model complexity on performance.
+* Constraint: Prefer smaller models for deployment on mobile/web platforms.
+
+  * EfficientNet B0: \~5 million parameters
+  * EfficientNet B2: \~9 million parameters
+  * Larger models (e.g., 600M parameters) are avoided due to deployment limitations.
+
+---
+
+### **Dial 2: Dataset Size**
+
+* Two configurations:
+
+  * **10%** of the dataset (pizza, steak, sushi images)
+  * **20%** of the dataset
+* Purpose: Evaluate how more data affects performance.
+
+---
+
+### **Dial 3: Training Time**
+
+* Epochs: **5** vs **10**
+* General observation: More epochs can improve performance up to a point.
+
+  * After a certain threshold, continued training can degrade results.
+  * Starting with fewer epochs allows for faster experimentation.
+
+---
+
+### **Why Keep Experiments Small Initially?**
+
+* Faster iterations
+* Quicker feedback on what works and what doesn't
+* Avoids long wait times that hinder productivity
+
+---
+
+### **Model Choices**
+
+* Focused on EfficientNet family for consistency and scalability.
+* Alternatives exist in the TorchVision model zoo, but this project uses B0 and B2 for balance between performance and size.
+
+---
+
+### **Experiment Setup**
+
+Each experiment is a combination of:
+
+* **Model size**
+* **Dataset size**
+* **Number of epochs**
+
+All experiments:
+
+* Use the **same test set** to ensure fair comparison.
+
+---
+
+### **Experiment Examples**
+
+| Experiment | Model                           | Training Data | Epochs |
+| ---------- | ------------------------------- | ------------- | ------ |
+| 1          | EfficientNet B0                 | 10%           | 5      |
+| 2          | EfficientNet B2                 | 10%           | 5      |
+| 3          | EfficientNet B0                 | 10%           | 10     |
+| 4–7        | Other combinations of the above |               |        |
+| 8          | EfficientNet B2                 | 20%           | 10     |
+
+* **Experiment 8** represents doubling all variables from experiment 1.
+
+---
+
+### **Future Experiment Ideas (Optional)**
+
+Not covered in the main plan but encouraged for exploration:
+
+* Learning rate schedules
+* Data augmentation
+* Optimizer tuning
+* Regularization techniques
+
+---
+
+### **Conclusion**
+
+This structured set of experiments will provide insights into the trade-offs between model complexity, training data volume, and training duration. The goal is to identify a good-performing model that is also efficient and deployable.
+
+**Next Step:**
+Prepare the datasets for 10% and 20% training splits.
+
+---
