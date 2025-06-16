@@ -2152,3 +2152,126 @@ for data_loader_name, train_dataloader in train_dataloaders.items():
   * Test loss
 
 ---
+
+*** 218. Viewing Our Modelling Experiments in TensorBoard ***
+# **Lecture Notes: Visualizing and Interpreting PyTorch Experiment Results with TensorBoard**
+
+## **1. Summary of Experiments**
+
+* A series of experiments were run using different configurations:
+
+  * Varying model sizes: EfficientNet B0 and B2
+  * Different data splits: 10% and 20%
+  * Training durations: 5 epochs and 10 epochs
+* All experiments ran without errors.
+* Models and logs were saved:
+
+  * **Models saved under**: `models/`
+  * **Logs saved under**: `runs/`
+
+## **2. The Importance of Fast Initial Experiments**
+
+* Early-stage experiments should run quickly (ideally under 10 minutes).
+* If possible, reduce to under 3 minutes to quickly iterate on model design.
+* This helps determine promising configurations before scaling up.
+
+## **3. Visualizing Experiments with TensorBoard**
+
+### **Steps to Launch TensorBoard in Jupyter/Colab**
+
+1. Load TensorBoard extension:
+
+   -------------------code----------------------
+   %load_ext tensorboard
+   -------------------code----------------------
+2. Launch TensorBoard with the logs directory:
+
+   -------------------code----------------------
+   %tensorboard --logdir runs
+   -------------------code----------------------
+3. On Google Colab, TensorBoard is pre-installed.
+4. In local setups like VS Code, follow platform-specific instructions.
+
+### **Navigating the TensorBoard Interface**
+
+* TensorBoard displays metrics such as training/testing accuracy and loss.
+* Smoothing can be adjusted to view raw or smoothed values.
+* Useful to focus on test accuracy and test loss for comparison.
+
+## **4. Interpreting Results from TensorBoard**
+
+### **Accuracy Trends**
+
+* Best test accuracy:
+
+  * **EfficientNet B2**, **20% data**, **10 epochs**
+  * Test accuracy just under **95%**
+  * Training time: \~1 minute
+* Trade-off insight:
+
+  * Shorter training (e.g., 5 epochs) resulted in slightly lower accuracy but faster results.
+
+### **Loss Trends**
+
+* Lowest test loss:
+
+  * **EfficientNet B0**, **10 epochs**, **10% data**
+  * Slightly better loss than B2, but with lower accuracy
+* Efficiency insight:
+
+  * B2 with 20% data and 10 epochs was slightly worse in loss, but had **best overall accuracy**
+
+### **General Trend**
+
+* More data + bigger model + longer training = better results
+* Important to balance **performance vs speed**
+
+## **5. Identifying the Best Model**
+
+* **Best performing model overall**:
+
+  * **Model**: EfficientNet B2
+  * **Dataset**: Pizza, Steak, Sushi (20%)
+  * **Epochs**: 10
+  * **Accuracy**: Highest among all
+  * **Loss**: Second lowest
+* Trade-off justification: Small loss difference but notable gain in accuracy
+
+## **6. Filtering Models in TensorBoard**
+
+* Use filters to analyze:
+
+  * Models with 10 epochs only
+  * Models with 20% data
+  * Regular expressions can be used for precise log filtering
+
+## **7. Uploading Experiments to TensorBoard.dev**
+
+### **Purpose**
+
+* Share experiment results publicly with collaborators
+
+### **Steps**
+
+1. Install and authenticate:
+
+   -------------------code----------------------
+   !tensorboard dev upload --logdir runs \
+     --name "PyTorch Experiment Tracking - FoodVision Mini" \
+     --description "Comparing different model sizes, training data amounts, and training times."
+   -------------------code----------------------
+2. Follow prompts for authorization code.
+3. After upload, experiment can be accessed at a public TensorBoard.dev link.
+
+### **Important Note**
+
+* Data uploaded to TensorBoard.dev is public.
+* Do not upload sensitive data.
+
+## **8. Final Notes**
+
+* Variation in experiment metrics is expected due to randomness in ML.
+* Focus should be on **trends**, not exact numbers.
+* Next step: Load the best model (EfficientNet B2 with 20% data, 10 epochs) and use it to visualize predictions on test data.
+
+---
