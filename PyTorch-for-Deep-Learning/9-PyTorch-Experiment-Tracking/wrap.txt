@@ -504,3 +504,199 @@ print(f"Automatically created transforms:\n{automatic_transforms}")
   * Replace its head to match your number of classes.
 
 This is similar to what was done in **Section 6.2: Transfer Learning (3 steps)**.
+
+
+*** 205. Preparing a Pretrained Model for Our Own Problem ***
+## Lecture Notes: Using Pre-trained Models in PyTorch (EfficientNet Example)
+
+### 1. **Pre-trained Model Overview**
+
+* A **pre-trained model** uses learned parameters from a large dataset (e.g., ImageNet).
+* When using pre-trained models:
+
+  * **Base layers are frozen** to retain learned features.
+  * The **classifier head** is replaced to suit your specific problem (e.g., number of output classes).
+
+---
+
+### 2. **Old vs New API in `torchvision`**
+
+#### Old Way (Before `torchvision 0.13`)
+
+-------------------code----------------------
+model = torchvision.models.efficientnet_b0(pretrained=True)
+-------------------code----------------------
+
+* This raises a **deprecation warning**:
+
+  * `pretrained=True` is deprecated since `0.13`
+  * Will be **removed in `0.15`**
+  * Use the `weights` argument instead.
+
+#### New Way (From `torchvision 0.13` onwards)
+
+-------------------code----------------------
+from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights
+
+weights = EfficientNet_B0_Weights.DEFAULT
+model = efficientnet_b0(weights=weights)
+-------------------code----------------------
+
+* `weights=EfficientNet_B0_Weights.DEFAULT` uses the **best available weights**.
+* Other weight options are documented on the official PyTorch site.
+
+---
+
+### 3. **Freezing Base Layers**
+
+To **freeze** the model's pre-trained base:
+
+-------------------code----------------------
+for param in model.parameters():
+    param.requires_grad = False
+-------------------code----------------------
+
+* Disables gradient computation for these parameters.
+* Prevents updates during training, making them **unchangeable**.
+
+---
+
+### 4. **Modifying the Classifier Head**
+
+#### Why?
+
+* Pre-trained models are typically trained for 1000 classes.
+* You need to replace the final layer for your specific task (e.g., 3-class classification).
+
+#### How?
+
+-------------------code----------------------
+from torch import nn
+
+model.classifier = nn.Sequential(
+    nn.Dropout(p=0.2, inplace=True),
+    nn.Linear(in_features=1280, out_features=3)  # Replace 3 with len(class_names)
+)
+-------------------code----------------------
+
+* `1280` is the feature vector size of EfficientNet-B0.
+* `out_features` should match the number of target classes.
+
+---
+
+### 5. **Device Setup and Reproducibility**
+
+* **Send model to device** (`cpu` or `cuda`) after modifying the classifier:
+
+-------------------code----------------------
+model.to(device)
+-------------------code----------------------
+
+* **Set random seed** before creating new layers to ensure reproducibility.
+
+---
+
+### 6. **Model Summary**
+
+Use `torchinfo` to inspect the model:
+
+-------------------code----------------------
+from torchinfo import summary
+
+summary(
+    model, 
+    input_size=(32, 3, 224, 224),  # Batch size = 32, RGB image 224x224
+    col_names=["input_size", "output_size", "num_params", "trainable"],
+    col_width=20,
+    row_settings=["var_names"]
+)
+-------------------code----------------------
+
+* Displays:
+
+  * Input/output shape per layer
+  * Number of parameters
+  * Whether each layer is trainable
+* Shows that only the classifier is **trainable**, resulting in faster training.
+
+---
+
+### 7. **Next Step: Training & Logging**
+
+* In the next phase, the model will be trained.
+* Instead of tracking metrics in a dictionary, results will be **saved to a file**.
+* Challenge: Use **TensorBoard** with PyTorch for better visualization.
+
+---
+
+## Summary
+
+* Pre-trained models save time and improve performance.
+* Use the **new `weights` argument** (from `torchvision 0.13+`).
+* **Freeze** base layers to use the model as a feature extractor.
+* **Replace the classifier head** to match the number of classes.
+* Use `torchinfo` to verify model architecture.
+* Prepare for training with efficient logging (e.g., TensorBoard).
+
+### Question:
+
+> If the pre-trained model (like EfficientNet) was not trained on pizza images, will it still work when I use it to classify **pizza**, **sushi**, and **steak**?
+
+---
+
+### **Short Answer:**
+
+**Yes**, it can still work — **very well, in fact**, especially if:
+
+* You **freeze** the base layers (pre-trained on ImageNet),
+* And **train only the classifier head** on your own data (pizza, sushi, steak).
+
+---
+
+###  Why Does This Work?
+
+EfficientNet and similar models are pre-trained on **ImageNet**, which contains 1,000 diverse categories — including many food items like:
+
+* Hamburger
+* Hotdog
+* Spaghetti
+* And sometimes even pizza-like dishes
+
+Even if "pizza" isn't explicitly a category, the model has already **learned to extract powerful visual features**:
+
+* Edges, textures, shapes, colors, etc.
+
+These **generic features** are **transferable** to many tasks — including food classification — without needing to re-train the whole model.
+
+---
+
+PS: 
+- If the pre-trained model was trained on similar foods (e.g., general food datasets like Food-101), it might still perform reasonably well through transfer learning.
+- If it was trained on completely different domains (e.g., cars or animals), you’d likely need to fine-tune the model on pizza/sushi/steak images for good accuracy.
+
+### Example Analogy:
+
+Think of the base layers as a **feature extractor** that says:
+
+> “This looks like a circular object with red and yellow patches.”
+
+The classifier head then learns:
+
+> “If I see those features together, it's probably a pizza.”
+
+---
+
+### Fine-Tuning Options
+
+| Approach               | What You Do                                | When to Use                                                 |
+| ---------------------- | ------------------------------------------ | ----------------------------------------------------------- |
+| **Feature Extraction** | Freeze base layers, train only the head    | When you have a **small dataset**                           |
+| **Fine-Tuning**        | Unfreeze some/all base layers and re-train | When you have a **larger dataset** and want better accuracy |
+
+---
+
+### Takeaway
+
+Even if the original model didn't see pizza specifically, it saw enough **similar patterns** to help distinguish it from other foods when trained with your dataset.
+
+So yes — **using a pre-trained model is absolutely effective** for pizza/sushi/steak classification.
