@@ -2357,3 +2357,93 @@ for data_loader_name, train_dataloader in train_dataloaders.items():
 * EfficientNetB2 is an excellent balance of performance and size for real-world deployment.
 * Using modular code structure simplifies repetitive tasks.
 * Model generalizes well to unseen test data and is ready for testing on out-of-distribution images.
+
+*** 220. Making a Prediction on Our Own Custom Image with the Best Model ***
+## **Lecture Notes: Predicting on a Custom Image & Wrapping Up Experiment Tracking**
+
+### **1. Final Test Predictions**
+
+* Ran three more random predictions from the test set.
+* Results:
+
+  * Correct: Pizza, Pizza, Sushi
+  * Incorrect: One of the "Pizza" predictions was wrong.
+* Indicates room for further improvement.
+* Encouragement to experiment further on your own.
+
+---
+
+### **2. Predict on a Custom Image (Section 9.1)**
+
+* **Goal**: Use the best model to make a prediction on an image *not* in the dataset.
+* Test image: `"pizza_dad.jpg"` – a consistent image used throughout the course.
+* Steps:
+
+  1. **Image Download and Setup**
+
+     * Use `requests` to download the image only if it doesn't already exist.
+     * Save to path:
+
+       -------------------code----------------------
+       from pathlib import Path
+       custom_image_path = Path("data/pizza_dad.jpg")
+       -------------------code----------------------
+     * Download logic:
+
+       -------------------code----------------------
+       import requests
+       if not custom_image_path.exists():
+           with open(custom_image_path, "wb") as f:
+               f.write(requests.get(image_url).content)
+       -------------------code----------------------
+  2. **Prediction**
+
+     * Use the previously defined `pred_and_plot_image()` function.
+     * Parameters:
+
+       -------------------code----------------------
+       pred_and_plot_image(model=best_model,
+                           image_path=custom_image_path,
+                           class_names=class_names)
+       -------------------code----------------------
+     * Output:
+
+       * **Predicted**: Pizza
+       * **Probability**: 0.982
+       * This was the highest confidence prediction so far.
+       * Suggests the model is more confident and possibly better learned than earlier models.
+
+---
+
+### **3. Model Comparison Reflection**
+
+* Compared this model (EfficientNetB2 trained on 20% of data) to previous one (EfficientNetB0, 10% of data, 5 epochs).
+* Key takeaway: Higher prediction confidence, though not always equivalent to higher accuracy.
+* Interpretation: Current model seems to have learned more refined patterns.
+
+---
+
+### **4. Final Remarks and Project Wrap-Up**
+
+* Milestone: **First full experiment cycle completed**.
+* Summary of accomplishments:
+
+  * Downloaded and prepared data.
+  * Trained multiple models.
+  * Logged results with TensorBoard.
+  * Identified the best model through metrics and qualitative evaluation.
+  * Predicted on new test images and a custom image.
+* Encouraged to:
+
+  * Upload and test your own images.
+  * Tweak and improve the model further.
+  * Practice with exercises and explore extra material.
+
+---
+
+### **Key Takeaways**
+
+* EfficientNetB2 performs well in terms of accuracy and confidence.
+* Prediction confidence is useful but must be interpreted carefully.
+* Real-world validation with custom images is a great way to test generalization.
+* Going modular and structuring reusable code was crucial for efficient experimentation.
