@@ -1748,3 +1748,149 @@ Create two functions:
 Each function should return a **fresh instance** of the model (not reused), so experiments stay isolated.
 
 ---
+
+*** 215. Creating Functions to Prepare Our Feature Extractor Models ***
+## **Lecture Summary: Creating EfficientNet Feature Extractors (B0 & B2)**
+
+### **1. Objective**
+
+Create two **feature extractor models** using:
+
+* EfficientNet **B0**
+* EfficientNet **B2**
+
+Both models:
+
+* Use **pre-trained weights** from ImageNet.
+* Have their **backbone layers frozen** (i.e., `requires_grad = False`).
+* Use a **custom classifier head** suitable for 3 output classes (instead of the default 1000).
+
+---
+
+### **2. Dataset Setup**
+
+* Two datasets are used:
+
+  * 10% training data loader
+  * 20% training data loader
+
+---
+
+### **3. EfficientNet Overview**
+
+* EfficientNet B2 is a **scaled-up** version of B0:
+
+  * Same architecture style.
+  * More parameters and layers.
+* Summary:
+
+  * B0 classifier `in_features = 1280`
+  * B2 classifier `in_features = 1408`
+  * These values are important for replacing the classifier head.
+
+---
+
+### **4. Model Construction Goals**
+
+For both B0 and B2:
+
+* Freeze the **base layers** (feature extractor).
+* Replace the **classifier head**:
+
+  -------------------code----------------------
+  nn.Sequential(
+      nn.Dropout(p=0.2, inplace=True),
+      nn.Linear(in_features, 3)
+  )
+  -------------------code----------------------
+
+---
+
+### **5. TorchVision Notes**
+
+* Use `weights = EfficientNet_B0_Weights.DEFAULT` or `EfficientNet_B2_Weights.DEFAULT`.
+* From torchvision ≥ 0.13, use `weights=...` instead of `pretrained=True`.
+
+---
+
+### **6. Model Summary**
+
+Use `torchinfo.summary()` to inspect the model:
+
+* Ensure only the classifier head is trainable.
+* Verify the number of trainable vs. total parameters.
+
+  * EfficientNet B0:
+
+    * \~4.0M total parameters
+    * \~4K trainable
+  * EfficientNet B2:
+
+    * \~7.7M total parameters
+    * \~4K trainable
+
+---
+
+### **7. Function Implementations**
+
+#### **EfficientNet B0**
+
+-------------------code----------------------
+def create_fnet_b0():
+    weights = torchvision.models.EfficientNet_B0_Weights.DEFAULT
+    model = torchvision.models.efficientnet_b0(weights=weights)
+    
+    for param in model.features.parameters():
+        param.requires_grad = False
+
+    model.classifier = nn.Sequential(
+        nn.Dropout(p=0.2, inplace=True),
+        nn.Linear(in_features=1280, out_features=3)
+    )
+
+    model.name = "fnet_b0"
+    print(f"[INFO] Created new model: {model.name}")
+    return model
+-------------------code----------------------
+
+#### **EfficientNet B2**
+
+-------------------code----------------------
+def create_fnet_b2():
+    weights = torchvision.models.EfficientNet_B2_Weights.DEFAULT
+    model = torchvision.models.efficientnet_b2(weights=weights)
+    
+    for param in model.features.parameters():
+        param.requires_grad = False
+
+    model.classifier = nn.Sequential(
+        nn.Dropout(p=0.3, inplace=True),
+        nn.Linear(in_features=1408, out_features=3)
+    )
+
+    model.name = "fnet_b2"
+    print(f"[INFO] Created new model: {model.name}")
+    return model
+-------------------code----------------------
+
+---
+
+### **8. Testing the Models**
+
+* After creation, print model summaries using `torchinfo.summary()` to verify structure.
+* Key checks:
+
+  * All layers except the classifier should have `requires_grad = False`.
+  * Output layer should match the target class count (3).
+
+---
+
+### **9. Next Steps**
+
+* Prepare experiments:
+
+  * Run training using both models on 10% and 20% datasets.
+  * Track results using TensorBoard.
+* Number of epochs is passed as a parameter to the training function.
+
+---
