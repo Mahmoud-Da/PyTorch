@@ -2447,3 +2447,91 @@ for data_loader_name, train_dataloader in train_dataloaders.items():
 * Prediction confidence is useful but must be interpreted carefully.
 * Real-world validation with custom images is a great way to test generalization.
 * Going modular and structuring reusable code was crucial for efficient experimentation.
+
+*** 221. Main Takeaways, Exercises and Extra- Curriculum ***
+## **Lecture Summary: Wrapping Up Milestone Project 1 – PyTorch Experiment Tracking**
+
+### **1. Recap and Full-Circle Workflow**
+
+* Ended the last session with a successful custom prediction using the best model.
+* This section wraps up **Milestone Project 1**.
+* Key achievement: completing a full machine learning workflow using PyTorch.
+
+#### **PyTorch Workflow Recap**:
+
+1. **Get data ready**
+
+   * Processed and converted to tensors.
+2. **Pick or build a model**
+
+   * Used pre-trained models (EfficientNetB0, B2).
+3. **Create loss function and optimizer**
+
+   * Standard practice in model training setup.
+4. **Build training loop**
+
+   * Modularized via `engine.py`.
+5. **Fit model to data**
+6. **Make and evaluate predictions**
+
+   * Both **quantitatively** (accuracy, loss) and **qualitatively** (image predictions).
+
+### **2. Key Concept: Experimentation in ML**
+
+* Machine Learning Practitioner’s Motto:
+  **Experiment, experiment, experiment.**
+* Importance of iteration and testing:
+
+  * Small experiments → fast insights.
+  * Example: Ran 8 models in \~5 minutes.
+  * Failure is informative – knowing what doesn’t work helps refine what does.
+* When something works, **scale up**:
+
+  * Best model: EfficientNetB2.
+  * Suggested next step: Try EfficientNetB2 on all 101 classes of Food101 dataset using only 10% of data.
+
+---
+
+### **3. Experiment Tracking**
+
+* **Programmatic tracking** helps compare multiple models easily.
+* Set up included:
+
+  * TensorBoard: integrated into PyTorch.
+  * Logging experiments using SummaryWriter.
+* Other tools to explore:
+
+  * **Weights & Biases (wandb)**
+  * **MLflow**
+
+---
+
+### **4. Exercises and Next Steps**
+
+* Provided in the final section:
+
+  1. **Pick a larger model**
+
+     * Try scaling up or testing other pretrained networks.
+  2. **Apply data augmentation**
+  3. **Scale up experiments**
+
+     * Move beyond a few classes or increase dataset size.
+
+* Additional materials:
+
+  * **Exercise Template Notebook (Section 7)**
+  * **Solutions Notebook (Section 7)**
+  * Both available via GitHub links provided in the course.
+
+---
+
+### **5. Final Remarks**
+
+* You’ve completed the full cycle of:
+
+  * Loading and preparing data
+  * Building and training models
+  * Tracking and comparing experiments
+  * Making predictions on real-world inputs
+* This foundational workflow sets the stage for more complex and scalable ML projects.
