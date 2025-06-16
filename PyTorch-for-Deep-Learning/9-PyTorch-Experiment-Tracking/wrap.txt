@@ -1894,3 +1894,166 @@ def create_fnet_b2():
 * Number of epochs is passed as a parameter to the training function.
 
 ---
+
+*** 216. Coding Out the Steps to Run a Series of Modelling Experiments ***
+## **Lecture Summary: Running Modeling Experiments**
+
+### **Overview**
+
+* The goal is to run a series of modeling experiments using transfer learning models and evaluate their performance.
+* The experiments involve varying:
+
+  * Training data size (10%, 20%)
+  * Model architecture (EfficientNet B0, EfficientNet B2)
+  * Number of epochs (5, 10)
+
+---
+
+### **Preparatory Steps**
+
+* Ensure all puzzle pieces are in place:
+
+  * Functions to save models (`save_model`)
+  * Different datasets and data loaders
+  * Feature extractor model creation functions
+  * Train function from `engine.py` that supports parameters like number of epochs
+* Use `create_model()` functions to ensure each experiment uses a fresh, untrained model instance
+
+---
+
+### **Why This is Valuable**
+
+* Running a series of well-defined experiments helps determine which transfer learning model performs best.
+* Each experiment is reproducible and structured.
+
+---
+
+### **Experiment Configuration**
+
+* Use a dictionary for data loaders (e.g., `train_dataloader_10`, `train_dataloader_20`)
+* Create a list of model names to iterate through (e.g., `["effnetb0", "effnetb2"]`)
+* Define a list for number of epochs (e.g., `[5, 10]`)
+* Total of **8 experiments** (2 models × 2 data sizes × 2 epoch settings)
+
+---
+
+### **Experimental Process**
+
+1. **Set seeds** to ensure reproducibility.
+2. **Track experiment numbers** to monitor progress.
+3. **Loop structure**:
+
+   * Outer loop: iterate over data loaders
+   * Middle loop: iterate over number of epochs
+   * Inner loop: iterate over model names
+
+---
+
+### **Model Setup Per Experiment**
+
+* For each model:
+
+  * Create a fresh instance using the appropriate `create_model()` function
+  * Initialize new loss function and optimizer:
+
+    * Loss: CrossEntropyLoss
+    * Optimizer: Adam with `lr=0.001`
+* You could extend experiments to include:
+
+  * Different learning rates
+  * Different optimizers (e.g., SGD)
+
+---
+
+### **Training and Tracking**
+
+* Use a custom `train()` function (not the one in `engine.py`) that supports logging via a writer.
+* Use a `create_writer()` function to:
+
+  * Save training logs to uniquely named directories based on:
+
+    * Data size
+    * Model name
+    * Number of epochs
+
+---
+
+### **Model Saving**
+
+* After training, save each model using `save_model()`:
+
+  * Construct a save path string based on model name, data size, and number of epochs
+  * Use `.pth` as the file extension
+  * Save to a designated `models/` directory
+
+---
+
+### **Final Notes**
+
+* The GPU used in the lecture was a Tesla P100.
+* Experiments are expected to complete quickly (within a few minutes).
+* Models will be saved and reusable for further evaluation.
+
+-------------------code----------------------
+%%time
+from going_modular.going_modular.utils import save_model
+
+# Set seeds
+set_seeds(seed=42)
+
+# Keep track of experiment numbers
+experiment_number = 0
+
+# Loop through each DataLoader
+for dataloader_name, train_dataloader in train_dataloaders.items():
+  # Loop through the epochs
+  for epochs in num_epochs:
+    # Loop through each model name and create a new model instance
+    for model_name in models:
+
+      # Print out info
+      experiment_number += 1
+      print(f"[INFO] Experiment number: {experiment_number}")
+      print(f"[INFO] Model: {model_name}")
+      print(f"[INFO] DataLoader: {dataloader_name}")
+      print(f"[INFO] Number of epochs: {epochs}")
+
+      # Select and create the model
+      if model_name == "effnetb0":
+        model = create_effnetb0()
+      else:
+        model = create_effnetb2()
+      
+      # Create a new loss and optimizer for every model
+      loss_fn = nn.CrossEntropyLoss()
+      optimizer = torch.optim.Adam(params=model.parameters(), lr=0.001)
+
+      # Train target model with target dataloader and track experiments 
+      # Note: using train() rather than engine.train()
+      train(model=model,
+            train_dataloader=train_dataloader,
+            test_dataloader=test_dataloader,
+            optimizer=optimizer,
+            loss_fn=loss_fn,
+            epochs=epochs,
+            device=device,
+            writer=create_writer(experiment_name=dataloader_name,
+                                 model_name=model_name,
+                                 extra=f"{epochs}_epochs"))
+      
+      # Save the model to file so we can import it later if need be
+      save_filepath = f"07_{model_name}_{dataloader_name}_{epochs}_epochs.pth"
+      save_model(model=model,
+                 target_dir="models",
+                 model_name=save_filepath)
+      print("-"*50 + "\n")
+-------------------code----------------------
+---
+
+### **Cliffhanger**
+
+* The code is written and ready.
+* Try running it to see how it performs.
+* The actual experiment runs will be demonstrated in the next session.
+
+---
