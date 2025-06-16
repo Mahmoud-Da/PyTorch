@@ -1525,3 +1525,110 @@ This structured set of experiments will provide insights into the trade-offs bet
 Prepare the datasets for 10% and 20% training splits.
 
 ---
+
+*** 213. Downloading Datasets for Our Modelling Experiments ***
+### **Lecture Summary: Running Experiments & Dataset Preparation**
+
+---
+
+### **1. Experiment Plan Recap**
+
+* **Initial Setup:**
+
+  * Start with:
+
+    * 10% training data
+    * EfficientNet B0
+    * 5 epochs
+
+* **Scaling Strategy:**
+  Gradually double:
+
+  * Dataset size
+  * Model size
+  * Training time (epochs)
+
+* **Goal:**
+  Build a **well-performing yet small model** that is deployable on mobile devices or web browsers (i.e., **FoodVision Mini**).
+
+---
+
+### **2. Key Experimental Principle**
+
+* **Start Small, Scale When Necessary:**
+
+  * Keeps experiments fast and manageable
+  * Allows for quick iteration and failure detection
+
+* **General Rule (If Resources Were Infinite):**
+
+  * Use the largest model and dataset available
+  * This reflects **"The Bitter Lesson"**: general methods with more data and compute tend to outperform manually tuned heuristics
+
+---
+
+### **3. Dataset Preparation (Section 7.3)**
+
+* **Objective:**
+  Prepare two datasets:
+
+  1. **Pizza, Steak, Sushi – 10%**
+  2. **Pizza, Steak, Sushi – 20%**
+
+* **Why Start with a Subset (Even If You Have the Full Dataset)?**
+
+  * Full **Food-101** dataset: \~101,000 images
+  * Training on full set slows down iteration
+  * Better to isolate a manageable subset early on
+
+* **Data Sources:**
+
+  * Pre-split versions available:
+
+    * `pizza_steak_sushi_10_percent.zip`
+    * `pizza_steak_sushi_20_percent.zip`
+
+* **Download Method:**
+
+  * Use `download_data()` function
+  * **Make sure to use the raw download link** from GitHub for proper access
+
+---
+
+### **4. Code Workflow Summary**
+
+#### **Downloading Data:**
+
+-------------------code----------------------
+data_10_percent_path = download_data(
+    source="RAW_LINK_TO_10_PERCENT_ZIP",
+    destination="data/pizza_steak_sushi_10_percent"
+)
+
+data_20_percent_path = download_data(
+    source="RAW_LINK_TO_20_PERCENT_ZIP",
+    destination="data/pizza_steak_sushi_20_percent"
+)
+-------------------code----------------------
+
+* Skips re-downloading if files already exist
+* Automatically unzips after download
+
+---
+
+### **5. Next Step: Convert to DataLoaders**
+
+* **Create DataLoaders** using the provided `create_dataloaders()` function (in `dataset_setup.py`)
+* Use:
+
+  * **Same test dataset** for all experiments
+  * Only **training data** changes (10% vs 20%)
+
+---
+
+### **Assignment/Challenge for Next Video:**
+
+* Convert both 10% and 20% datasets into training DataLoaders
+* Create **one** test DataLoader (used across all experiments)
+
+---
