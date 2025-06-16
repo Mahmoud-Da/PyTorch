@@ -1632,3 +1632,119 @@ data_20_percent_path = download_data(
 * Create **one** test DataLoader (used across all experiments)
 
 ---
+
+
+*** 214. Turning Our Datasets into DataLoaders Ready for Experimentation ***
+### **Lecture Summary: Data Loaders and Transforms for Pre-trained Models**
+
+---
+
+#### **Objective**
+
+Transform custom image datasets and prepare them as data loaders suitable for training EfficientNet B0 and B2 models.
+
+---
+
+### **1. Dataset Preparation**
+
+* **Why Transformation is Necessary**:
+  EfficientNet models are pre-trained on ImageNet, so custom data must be formatted similarly.
+
+#### **Required Transformations**:
+
+* **Resize Images**:
+
+  * Resize to `(224, 224)` (standard for EfficientNet).
+* **Convert to Tensors**:
+
+  * Ensure image values are scaled between `0` and `1`.
+* **Normalize**:
+
+  * Match the data distribution of ImageNet.
+
+---
+
+### **2. Directory Setup**
+
+Set paths for datasets:
+
+-------------------code----------------------
+train_dir_10_percent = data_10_percent_path / "train"
+train_dir_20_percent = data_20_percent_path / "train"
+test_dir = data_10_percent_path / "test"  # Shared across experiments
+-------------------code----------------------
+
+---
+
+### **3. Transform Pipeline**
+
+Using `torchvision.transforms`:
+
+-------------------code----------------------
+from torchvision import transforms
+
+simple_transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[...], std=[...])  # Use ImageNet stats
+])
+-------------------code----------------------
+
+---
+
+### **4. Create Data Loaders**
+
+Use a `create_dataloaders` function (likely defined elsewhere):
+
+-------------------code----------------------
+BATCH_SIZE = 32
+
+# 10% Training Data
+train_dataloader_10_percent, test_dataloader = create_dataloaders(
+    train_dir=train_dir_10_percent,
+    test_dir=test_dir,
+    transform=simple_transform,
+    batch_size=BATCH_SIZE
+)
+
+# 20% Training Data
+train_dataloader_20_percent, _ = create_dataloaders(
+    train_dir=train_dir_20_percent,
+    test_dir=test_dir,
+    transform=simple_transform,
+    batch_size=BATCH_SIZE
+)
+-------------------code----------------------
+
+---
+
+### **5. Check Data Loaders**
+
+Confirm number of batches:
+
+-------------------code----------------------
+print(f"Batches in 10% training set: {len(train_dataloader_10_percent)}")
+print(f"Batches in 20% training set: {len(train_dataloader_20_percent)}")
+print(f"Batches in test set: {len(test_dataloader)}")
+
+print(f"Class names: {class_names}")  # Should be ['pizza', 'steak', 'sushi']
+-------------------code----------------------
+
+Expected output:
+
+* More batches in 20% than 10%
+* 3 batches in test set
+* Correct class names
+
+---
+
+### **6. Next Step: Model Creation**
+
+Create two functions:
+
+* One for an EfficientNet **B0** feature extractor
+* One for an EfficientNet **B2** feature extractor
+
+Each function should return a **fresh instance** of the model (not reused), so experiments stay isolated.
+
+---
