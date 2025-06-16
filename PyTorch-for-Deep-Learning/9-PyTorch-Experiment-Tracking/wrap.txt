@@ -1296,3 +1296,115 @@ train(..., writer=writer)
 * You can view and compare them using TensorBoard, filtered by experiment name or training conditions.
 
 ---
+
+
+*** 211. What Experiments Should You Try ***
+# **7.1 - What Kind of Experiments Should You Run?**
+
+## **Objective**
+
+To start setting up a **series of modeling experiments** to **programmatically track** the performance of models on the FoodVision Mini project using TensorBoard.
+
+---
+
+## **Recap of Previous Challenge**
+
+* Train two models using **EfficientNet B0** on the **Pizza, Steak, Sushi** dataset.
+* One model for **5 epochs**, and another for **10 epochs**.
+* Compare results using **TensorBoard**.
+
+---
+
+## **Expanding the Scope**
+
+Instead of just two experiments, begin thinking about designing a **larger series of experiments** to test different hypotheses. This video is an overview of potential experiments and how to approach them.
+
+---
+
+## **Why Run Multiple Experiments?**
+
+* There are **limitless combinations** of model training settings (hyperparameters, data size, architecture).
+* However, **you can't test everything** — you must prioritize meaningful changes.
+
+---
+
+## **What Can You Experiment With?**
+
+### **1. Number of Epochs**
+
+* More epochs may lead to better performance, or overfitting.
+* Example: Try 5, 10, 20 epochs and monitor changes.
+
+### **2. Model Architecture**
+
+* Try different pretrained models from `torchvision.models`.
+* EfficientNet is a good start, but consider trying B1, B2, B3, etc.
+
+### **3. Amount of Training Data**
+
+* Start with a **small subset** for quick iteration.
+* Gradually **increase dataset size** (e.g., from 10% to 20%, or more).
+* More data generally improves model performance.
+
+### **4. Learning Rate**
+
+* Adjust the learning rate (e.g., 0.001, 0.0005).
+* Consider **learning rate scheduling** for dynamic adjustment.
+
+### **5. Data Augmentation**
+
+* Try different data augmentation strategies to prevent overfitting and improve generalization.
+
+### **6. Number of Hidden Units / Layers**
+
+* Change the model’s depth or width if customizing architectures.
+* This is tightly related to model architecture experimentation.
+
+---
+
+## **Why Start Small?**
+
+* Initial experiments should **run quickly** to validate ideas.
+* Helps avoid wasting time on slow runs that don’t work.
+* Once confident, **scale up** experiments with more data and longer training.
+
+---
+
+## **Data Creation Reference**
+
+* Data used: **Pizza, Steak, Sushi (10%)** split from Food-101 dataset.
+* Located in the course GitHub repo under:
+
+  * `extras/04_custom_data_creation.py`
+* You can generate your own splits, including a 20% or full dataset.
+
+---
+
+## **The Core of ML Research**
+
+* Deciding **what to experiment with** is central to ML.
+* All research aims to **improve model performance** through experiments.
+
+---
+
+## **Takeaway**
+
+You can experiment with any **hyperparameter**:
+
+* Epochs
+* Learning rate
+* Model architecture
+* Dataset size
+* Data augmentation
+* Number of hidden units/layers
+
+There’s no silver bullet — it's all about systematic experimentation.
+
+---
+
+## **Next Steps**
+
+* Begin designing structured experiments based on the above variables.
+* Use **transfer learning** to build upon pretrained models for efficient experimentation.
+
+---
