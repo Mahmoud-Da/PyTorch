@@ -2275,3 +2275,85 @@ for data_loader_name, train_dataloader in train_dataloaders.items():
 * Next step: Load the best model (EfficientNet B2 with 20% data, 10 epochs) and use it to visualize predictions on test data.
 
 ---
+
+*** 219. Loading the Best Model and Making Predictions on Random Images from the Test Set ***
+## **Lecture Notes: Using the Best Model for Prediction (FoodVision Mini Project)**
+
+### **1. Loading the Best Model**
+
+* The best model selected: **EfficientNetB2**, trained on 20% of the data.
+* Model file path:
+
+  -------------------code----------------------
+  models/07_effnetb2_data_20_percent.pth
+  -------------------code----------------------
+* This model was saved as a **state dictionary**, so we must:
+
+  1. Instantiate a new `EfficientNetB2` model using the custom `create_effnetb2()` function.
+  2. Load the state dict with:
+
+     -------------------code----------------------
+     best_model.load_state_dict(torch.load(best_model_path))
+     -------------------code----------------------
+
+### **2. Verifying Model File Size**
+
+* Check model size using `pathlib`:
+
+  -------------------code----------------------
+  from pathlib import Path
+  model_size = Path(best_model_path).stat().st_size / (1024 * 1024)  # in MB
+  -------------------code----------------------
+* Result: **\~29 MB**
+* This is a good size for deployment to **mobile devices or web browsers**, balancing performance and size.
+
+### **3. Making Predictions on Test Set Images**
+
+* Goal: Use the best model to make predictions on random test images.
+* Instead of rewriting prediction/plotting code, import from a modular file:
+
+  -------------------code----------------------
+  from going_modular.predictions import pred_and_plot_image
+  -------------------code----------------------
+* Select 3 random images from the 20% test set:
+
+  -------------------code----------------------
+  import random
+  num_images_to_plot = 3
+  test_image_path_list = list(Path("data/20_percent/test").glob("*/*.jpg"))
+  test_image_path_sample = random.sample(test_image_path_list, num_images_to_plot)
+  -------------------code----------------------
+* Loop through selected images and make predictions:
+
+  -------------------code----------------------
+  for image_path in test_image_path_sample:
+      pred_and_plot_image(model=best_model,
+                          image_path=image_path,
+                          class_names=class_names,
+                          image_size=224)
+  -------------------code----------------------
+
+### **4. Observations from Predictions**
+
+* Ran predictions on approximately 12 test images.
+* Only **one incorrect prediction** observed.
+* Achieved roughly **95% accuracy** on the test set.
+* Model demonstrates strong qualitative performance.
+
+### **5. Predicting on a Custom Image**
+
+* Next challenge: Predict on an image outside the dataset (e.g., `pizza_dad.jpg`).
+* Task issued as a challenge:
+  Use the provided helper function to load and predict on a new image.
+* Suggested workflow:
+
+  * Download the image.
+  * Use `pred_and_plot_image()` with the new image path.
+
+---
+
+### **Key Takeaways**
+
+* EfficientNetB2 is an excellent balance of performance and size for real-world deployment.
+* Using modular code structure simplifies repetitive tasks.
+* Model generalizes well to unseen test data and is ready for testing on out-of-distribution images.
