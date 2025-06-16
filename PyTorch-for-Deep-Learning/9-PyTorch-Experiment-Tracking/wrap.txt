@@ -2057,3 +2057,98 @@ for dataloader_name, train_dataloader in train_dataloaders.items():
 * The actual experiment runs will be demonstrated in the next session.
 
 ---
+
+*** 217. Running Eight Different Modelling Experiments in 5 Minutes ***
+## **Lecture Summary: Running and Tracking Modeling Experiments in PyTorch**
+
+### **Objective**
+
+Run a series of transfer learning experiments using different combinations of:
+
+* Training data size (10%, 20%)
+* Model architecture (EfficientNet B0, EfficientNet B2)
+* Training epochs (5, 10)
+
+The goal is to identify which configuration yields the best performance on a food classification task (FoodVision Mini).
+
+---
+
+### **Key Steps in the Experiment Process**
+
+#### 1. **Initial Setup**
+
+* Created modular functions for:
+
+  * Model creation (`create_effnetb0_model`, `create_effnetb2_model`)
+  * Training (`train`)
+  * Saving models (`save_model`)
+  * Logging experiments (`create_writer`)
+* Used different data loaders and feature extractor functions.
+* Set global constants like `device`, `loss_fn`, and optimizer.
+
+#### 2. **Experiment Configuration**
+
+* Used nested loops to iterate through all combinations:
+
+  * **Data size:** 10%, 20%
+  * **Model:** EfficientNet B0, EfficientNet B2
+  * **Epochs:** 5, 10
+
+Example:
+
+-------------------code----------------------
+for data_loader_name, train_dataloader in train_dataloaders.items():
+    for num_epochs in [5, 10]:
+        for model_name in ["effnetb0", "effnetb2"]:
+-------------------code----------------------
+
+#### 3. **Inside Each Loop**
+
+* A fresh model, loss function, and optimizer are initialized per experiment to ensure fairness.
+* Each experiment:
+
+  * Trains the model using the selected combination.
+  * Tracks training using TensorBoard (`SummaryWriter`).
+  * Saves the trained model to disk with a descriptive filename.
+
+#### 4. **Live Commentary**
+
+* Training status and model details are printed during execution for traceability.
+* Each experiment logs details such as:
+
+  * Experiment number
+  * Model name
+  * Dataset percentage
+  * Epoch count
+
+---
+
+### **Execution Results**
+
+* Total of **8 experiments** were run:
+
+  * 2 model types × 2 data sizes × 2 epoch settings = 8 combinations
+* All experiments completed **without error**.
+* Execution time: **\~5 minutes** using a **Tesla P100 GPU**
+* All trained models were **saved to disk** for later evaluation.
+
+---
+
+### **Key Takeaways**
+
+* **Efficiency is important**: Initial experiments should run within a few minutes.
+* **Modular code structure** helps automate and scale experimentation.
+* **Saving models** after training ensures you can later reuse or evaluate the best performing ones.
+* **Tracking via TensorBoard** enables visual comparison of performance metrics.
+
+---
+
+### **Next Steps**
+
+* Visualize the results of all experiments using **TensorBoard**.
+* Identify which model performed best based on metrics like:
+
+  * Test accuracy
+  * Test loss
+
+---
