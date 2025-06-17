@@ -317,3 +317,87 @@ Replicating papers helps you build:
   The **Vision Transformer (ViT)** paper: *"An Image is Worth 16x16 Words"*
 
 ---
+
+*** 225. What We Are Going to Cover ***
+### **Lecture Summary: Replicating a Machine Learning Research Paper – Vision Transformer (ViT)**
+
+---
+
+#### **Recap and Objective**
+
+* In the previous video, several resources were introduced for finding machine learning research papers and corresponding code.
+* The goal of this section is to **replicate the Vision Transformer (ViT) paper** titled *“An Image is Worth 16x16 Words”* using PyTorch and apply it to the **FoodVision Mini** image classification problem.
+
+---
+
+#### **About the Vision Transformer (ViT) Paper**
+
+* This paper introduced the **transformer architecture** to the field of **computer vision**.
+* Prior to this, transformers were mainly used in **natural language processing (NLP)** tasks.
+* The Vision Transformer processes an image by splitting it into **patches**, embedding those patches, and passing them through a **transformer encoder** using **multi-head self-attention**.
+* The final output is passed through a **Multi-Layer Perceptron (MLP)** to produce class predictions.
+
+---
+
+#### **Machine Learning vs Deep Learning Recap**
+
+* **Machine learning** algorithms are typically best suited for structured/tabular data.
+* **Deep learning** algorithms, especially neural networks, are more effective for unstructured data like images, video, and audio.
+* Neural networks discussed previously included:
+
+  * Fully connected (dense) networks
+  * Convolutional Neural Networks (CNNs)
+  * Now adding: **Transformers**
+
+---
+
+#### **Key Concept: Transformers in Vision**
+
+* **Transformers** differ from CNNs in that they primarily use **attention mechanisms** rather than convolutions to learn patterns.
+* Recommended readings:
+
+  * *“Attention is All You Need”* – the original transformer paper
+  * *The Illustrated Transformer* – a visual explanation of how transformers work
+  * Resources on **attention mechanisms** for deeper understanding
+
+---
+
+#### **Application to FoodVision Mini**
+
+* FoodVision Mini is an image classification project (e.g., steak, pizza, sushi).
+* The task now is to replace the CNN model with a **Vision Transformer architecture**.
+* This includes:
+
+  * Splitting input images into patches
+  * Embedding the patches
+  * Passing them through transformer encoder blocks
+  * Feeding the output into an MLP for classification
+
+---
+
+#### **Understanding MLP (Multi-Layer Perceptron)**
+
+* An MLP is a **feedforward neural network** with one or more hidden layers.
+* In the ViT context, the MLP at the end typically includes:
+
+  * Two linear (dense) layers
+  * An activation function like GELU (Gaussian Error Linear Unit)
+
+---
+
+#### **Workflow Overview**
+
+1. **Setup**: Use previously written helper functions and utilities from earlier sections to speed up development.
+2. **Replicate ViT**: Translate the Vision Transformer model into working PyTorch code.
+3. **Train from Scratch**: Train the ViT model on the FoodVision Mini dataset from scratch.
+4. **Compare with Pretrained Model**: Later, compare performance against a pretrained ViT model using **transfer learning**, similar to Section 6 of the course.
+5. **Goal**: Treat the research paper like a **recipe**, and convert it into a working, testable implementation.
+
+---
+
+#### **Final Notes**
+
+* This process simulates a real-world **machine learning engineering challenge**, such as being asked to implement a new research model for a production task.
+* Emphasis is placed on **learning by doing**: reading papers, converting them into code, and applying them to real problems.
+
+---
