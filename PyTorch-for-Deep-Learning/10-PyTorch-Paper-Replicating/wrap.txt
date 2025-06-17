@@ -1,0 +1,103 @@
+*** 222. What Is a Machine Learning Research Paper? ***
+## What is a Machine Learning Research Paper?
+
+### Introduction and Context
+
+* The lecture introduces the **Vision Transformer (ViT)** paper:
+  *“An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale.”*
+* The goal is not just to understand the paper theoretically, but also to turn it into **working PyTorch code**.
+
+---
+
+## What is a Transformer in Machine Learning?
+
+* A **transformer** is a deep learning model that relies on **self-attention** as its primary mechanism.
+* Unlike CNNs (which use convolutional layers), transformers process input by **differentially weighting** its components.
+* Originally developed for **Natural Language Processing (NLP)** but now also widely used in **Computer Vision** (e.g., ViT).
+* The ViT model applies transformer architecture to image recognition tasks.
+
+---
+
+## Anatomy of a Machine Learning Research Paper
+
+Most machine learning papers follow a standard structure:
+
+### 1. **Abstract**
+
+* A brief overview of the paper's purpose, methods, and key findings.
+
+### 2. **Introduction**
+
+* Outlines the main problem and the motivation.
+* Describes what previous work has done and what this paper contributes.
+
+### 3. **Related Work**
+
+* Summarizes prior research that the current study builds upon or contrasts with.
+
+### 4. **Method**
+
+* Detailed explanation of the proposed approach or model.
+* Often includes mathematical equations describing the model (e.g., in PyTorch terms).
+* Similar to a **recipe**: describes how to reproduce the results.
+
+### 5. **Experiments**
+
+* Describes experimental setup: datasets used, hyperparameters, training procedures.
+* Includes figures, visuals, and model architecture diagrams for better understanding.
+
+### 6. **Results**
+
+* Presents the outcomes of experiments.
+* Includes comparisons with previous work or baselines.
+
+### 7. **Conclusion**
+
+* Summarizes key findings.
+* Suggests possible future directions for research.
+
+### 8. **References**
+
+* Lists all prior works cited throughout the paper.
+* For example: the ViT paper references *“Attention Is All You Need” (Vaswani et al., 2017)*, which introduced the original Transformer architecture.
+
+### 9. **Appendix** (Optional)
+
+* Contains supplementary material: extended experiments, proofs, additional visualizations.
+
+> Note: Section names may vary slightly from paper to paper. This structure is flexible, not rigid.
+
+---
+
+## Importance of Reading Research Papers
+
+* Research papers are **collaborative efforts by top experts**, and it’s normal not to understand them on first read.
+* With **repeated practice**, understanding improves.
+* Reading papers is a **key part of participating in ML research**.
+* The paper discussed (ViT) is an example of applying **transformer models to vision**, a relatively recent but impactful area in ML.
+
+---
+
+## Summary Table of Common Sections in ML Research Papers
+
+| Section      | Purpose                                      |
+| ------------ | -------------------------------------------- |
+| Abstract     | Summary of the paper                         |
+| Introduction | Defines the problem and motivation           |
+| Related Work | Surveys previous related research            |
+| Method       | Details the proposed model or technique      |
+| Experiments  | Shows experimental setup and methodology     |
+| Results      | Presents outcomes and performance            |
+| Conclusion   | Discusses implications and future directions |
+| References   | Citations of foundational and related work   |
+| Appendix     | Supplementary information (optional)         |
+
+---
+
+## Key Takeaways
+
+* Understanding research papers is essential for turning **cutting-edge ML ideas into real implementations**.
+* The **Vision Transformer** is an example of how traditional NLP architectures can be adapted for **computer vision**.
+* Mastery of ML research comes with practice: **start by reading, even if slowly**, and **build up comprehension over time**.
+
+---
