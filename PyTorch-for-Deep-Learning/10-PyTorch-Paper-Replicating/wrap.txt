@@ -200,3 +200,120 @@ Replicating papers helps you build:
 * The journey starts with replication, and eventually leads to innovation.
 
 ---
+
+
+*** 224. Where Can You Find Machine Learning Research Papers and Code? ***
+## Recap from Previous Lecture
+
+* We discussed **why** implementing machine learning research papers is valuable.
+* Quoted George Hotz:
+
+  > *"A machine learning engineer downloads a paper, implements it, and keeps doing this until they have skills."*
+* Machine learning engineering involves:
+
+  * Writing code based on research papers.
+  * Building infrastructure (e.g., data pipelines, preprocessing).
+  * Deploying models in real-world applications.
+
+---
+
+## Why Replicate the Latest Papers?
+
+* Research papers are often written by **top experts** in the field.
+* Successfully replicating one shows strong understanding and capability.
+* Benefit: Not only do you learn by reproducing it, but you can also **reuse** the model in your own projects.
+
+---
+
+## Where to Find Machine Learning Research Papers
+
+### 1. **\[arXiv.org ([https://arxiv.org](https://arxiv.org))]**
+
+* Main hub for machine learning and deep learning papers.
+* Hosted papers are often cutting-edge and recently published.
+* Includes fields such as:
+
+  * Computer Science → Machine Learning
+  * Computer Vision
+  * Artificial Intelligence
+* Example:
+
+  * *"An Image is Worth 16x16 Words"*, the Vision Transformer (ViT) paper, is published here.
+* Tip:
+
+  * Use search filters to narrow down topics (e.g., “Computer Vision” if your project is related to images).
+
+---
+
+### 2. **Twitter Accounts Sharing ML Research**
+
+* Example account: **AK (possibly pronounced Akil)**
+
+  * Shares curated machine learning papers and demos.
+  * Useful for discovering **filtered**, relevant research.
+* Common content:
+
+  * DeepMind papers
+  * Demos (e.g., neural rendering, image translation)
+  * Links to open-source implementations
+
+---
+
+### 3. **GitHub Repositories Translating Papers to Code**
+
+* Example: **lucidrains/vit-pytorch**
+
+  * Implements the Vision Transformer in PyTorch.
+  * Offers readable and practical code from academic research.
+* Other notable projects:
+
+  * AlphaFold (protein folding)
+  * DALL·E 2 (text-to-image generation)
+* Value:
+
+  * You can see how research papers are turned into usable models.
+  * Serves as inspiration or foundation for your own implementations.
+
+---
+
+### 4. **\[Papers with Code ([https://paperswithcode.com](https://paperswithcode.com))]**
+
+* A curated collection of research papers **with accompanying code**.
+* Lets you:
+
+  * Browse trending or state-of-the-art papers.
+  * View leaderboards (e.g., top models for image classification).
+  * Directly access GitHub repos linked to papers.
+* Example:
+
+  * ViT-H/14 on CIFAR-10
+  * Links to “An Image is Worth 16x16 Words” paper with code implementation
+
+---
+
+## Summary Table of Resources
+
+| Platform                      | Description                                          | Purpose                            |
+| ----------------------------- | ---------------------------------------------------- | ---------------------------------- |
+| **arXiv.org**                 | Archive of recent scientific research                | Source of raw academic papers      |
+| **Twitter (e.g., AK)**        | Curated ML research highlights and demos             | Quick updates, trending topics     |
+| **GitHub (e.g., lucidrains)** | Code implementations of research papers              | Learning from working examples     |
+| **Papers with Code**          | Research papers linked with official/unofficial code | Comprehensive, searchable resource |
+
+---
+
+## Final Thoughts
+
+* The field of machine learning is **rapidly evolving** with a high volume of new research.
+* It's normal not to understand every detail of every paper.
+* **Filter and focus** on what’s relevant to your project (e.g., computer vision, NLP).
+* This section is deep and foundational—take your time, and refer to **Chapter 8** of the course if needed.
+
+---
+
+## Coming Up Next
+
+* In the next lecture, we’ll break down what we’re going to replicate:
+  The **Vision Transformer (ViT)** paper: *"An Image is Worth 16x16 Words"*
+
+---
