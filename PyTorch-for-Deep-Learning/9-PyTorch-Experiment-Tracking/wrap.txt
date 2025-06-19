@@ -2535,3 +2535,103 @@ for data_loader_name, train_dataloader in train_dataloaders.items():
   * Tracking and comparing experiments
   * Making predictions on real-world inputs
 * This foundational workflow sets the stage for more complex and scalable ML projects.
+
+*** 226. Getting Setup for Coding in Google Colab ***
+## Lecture Notes: PyTorch Paper Replication Setup
+
+### Overview
+
+This lecture introduces the setup process for replicating a machine learning research paper using PyTorch in Google Colab. The chosen paper is the **Vision Transformer (ViT)**.
+
+---
+
+### Resources and Preparation
+
+* **Resources Mentioned**:
+
+  * Explanation of ML research paper replication
+  * Paper: Vision Transformer (ViT)
+  * GitHub repository: [Going Modular](https://github.com/mrdbourke/pytorch-deep-learning/tree/main/going_modular)
+  * Section 08 of the course materials: "PyTorch Paper Replicating"
+* **Recommendation**: Link to the *abstract* page of papers instead of the *PDF*, for faster access on various devices.
+
+---
+
+### Notebook Setup
+
+**Notebook Title**: `08 PyTorch Paper Replicating`
+
+**Purpose**: Replicate the Vision Transformer architecture using PyTorch from scratch.
+
+---
+
+### Step 1: Environment Configuration
+
+1. **Start Google Colab**
+
+2. **Enable GPU**:
+
+   * Navigate to `Runtime` → `Change runtime type` → Set hardware accelerator to `GPU`
+
+3. **Import Required Libraries**:
+
+   -------------------code----------------------
+   import torch
+   import torchvision
+   print(torch.__version__)        # Should be >= 1.12
+   print(torchvision.__version__) # Should be >= 0.13
+   -------------------code----------------------
+
+4. **Install `torchinfo`** (for model summaries):
+
+   -------------------code----------------------
+   !pip install torchinfo
+   -------------------code----------------------
+
+---
+
+### Step 2: Import Modular Codebase
+
+**Goal**: Avoid rewriting boilerplate code by importing previously written modules.
+
+* **Clone GitHub Repository**:
+
+  -------------------code----------------------
+  !git clone https://github.com/mrdbourke/pytorch-deep-learning
+  -------------------code----------------------
+
+* **Navigate to**:
+
+  -------------------code----------------------
+  going_modular/
+    ├── data_setup.py       # Functions to create datasets/dataloaders
+    ├── engine.py           # Train/test loops
+    ├── model_builder.py    # Model architectures
+    ├── utils.py            # Utility functions
+  helper_functions.py       # Plotting, directory helpers, etc.
+  -------------------code----------------------
+
+* **Import the following**:
+
+  -------------------code----------------------
+  from going_modular import data_setup, engine
+  import helper_functions
+  -------------------code----------------------
+
+---
+
+### Step 3: Device Agnostic Setup
+
+-------------------code----------------------
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(device)
+-------------------code----------------------
+
+---
+
+### Next Step
+
+* **Preview**: Load the dataset (coming in the next video).
+* **Optional**: Try loading the data yourself before the next section using provided helper code.
+
+---
