@@ -2812,3 +2812,84 @@ You’ve now:
 * Created PyTorch DataLoaders from raw image folders.
 * Used modular, reusable code to streamline the setup.
 * Prepared for visualizing and feeding data into the model.
+
+*** 229. Visualizing a Single Image ***
+## Lecture Notes: Visualizing a Single Image (Milestone Project 2 — Vision Transformer Replication)
+
+### Objective
+
+Visualize one image from the `train_dataloader` to confirm that:
+
+* Images are correctly loaded and preprocessed.
+* Shapes match the Vision Transformer (ViT) input specifications.
+* Class labels align correctly with images.
+
+---
+
+### Step 1: Get a Batch from the DataLoader
+
+-------------------code----------------------
+# Turn train_dataloader into an iterator and get one batch
+image_batch, label_batch = next(iter(train_dataloader))
+-------------------code----------------------
+
+* `image_batch`: Tensor of shape `(batch_size, 3, 224, 224)`
+* `label_batch`: Tensor of shape `(batch_size,)`
+
+---
+
+### Step 2: Select a Single Image and Label
+
+-------------------code----------------------
+# Get the first image and label
+image, label = image_batch[0], label_batch[0]
+
+# Print shapes
+print(image.shape)  # torch.Size([3, 224, 224])
+print(label)        # e.g., tensor(0)
+-------------------code----------------------
+
+* Confirms the image is 3-channel (RGB) and resized to `224 x 224`
+* Label is a single scalar value (e.g., 0 for pizza)
+
+---
+
+### Step 3: Visualize the Image Using Matplotlib
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+
+# Convert image from [C, H, W] to [H, W, C] for plotting
+image_permuted = image.permute(1, 2, 0)
+
+# Plot the image
+plt.imshow(image_permuted)
+plt.title(class_names[label])  # Convert label to string using class_names list
+plt.axis(False)
+plt.show()
+-------------------code----------------------
+
+> Note: `permute(1, 2, 0)` changes tensor dimensions from `[C, H, W]` to `[H, W, C]`, which is required for `matplotlib`.
+
+---
+
+### Example Output
+
+* An image of **pizza**, **steak**, or **sushi** is shown with a clean plot and a correct label.
+* Confirms that the data pipeline is working as expected.
+
+---
+
+### What's Next?
+
+Now that we’ve:
+
+* Loaded the dataset
+* Transformed and batched it properly
+* Visualized a sample image successfully
+
+We’re ready to start planning how to **replicate the Vision Transformer architecture**.
+
+> Starting point: **Figure 1 of the paper**, which visually outlines the full ViT architecture pipeline (from input image to class output).
+
+---
