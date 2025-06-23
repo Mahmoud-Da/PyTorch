@@ -2893,3 +2893,120 @@ We’re ready to start planning how to **replicate the Vision Transformer archit
 > Starting point: **Figure 1 of the paper**, which visually outlines the full ViT architecture pipeline (from input image to class output).
 
 ---
+
+
+*** 230. Replicating a Vision Transformer - High Level Overview ***
+## Lecture Notes: Conceptual Overview of the Vision Transformer (ViT)
+
+### Objective
+
+Start transitioning from dataset preparation to replicating the **Vision Transformer** architecture using PyTorch, based on the official research paper.
+
+---
+
+### Key Resources from the Paper
+
+To replicate ViT accurately, focus on these **four key components** of the paper:
+
+1. **Figure 1** — Visual overview of the architecture.
+2. **Section 3.1 (Method)** — Textual explanation of how ViT works.
+3. **Four equations** — Define the mechanics of the transformer, especially **self-attention**.
+4. **Table 1** — Lists model configurations (e.g., ViT Base, Large, Huge).
+
+> You’re encouraged to read Section 3.1 multiple times for a deeper understanding.
+
+---
+
+### Additional Reference: Table 3
+
+* **Batch size**: 4096 (used in original paper, but too large for most local setups)
+* **Image size**: 224 × 224
+* **Patch size**: 16 × 16
+
+Note: We are using **ViT-Base** but building it in a flexible way to support scaling up later.
+
+---
+
+### Breaking Down Complex Architectures: A Systematic Approach
+
+To understand and replicate deep learning architectures (like ViT), break them into five components:
+
+#### 1. **Inputs**
+
+* Data going into the model.
+* For ViT: batches of image tensors of shape `[batch_size, 3, 224, 224]`.
+
+#### 2. **Outputs**
+
+* Data coming out of the model.
+* For ViT in this project: classification labels (e.g., `'pizza'`, `'steak'`, `'sushi'`).
+
+#### 3. **Layers**
+
+* Fundamental building units of the model.
+* Each layer takes an input and transforms it using operations (e.g., **self-attention**, **linear layers**, **normalization**).
+
+#### 4. **Blocks**
+
+* A collection of multiple layers.
+* For example, a **Transformer Encoder Block** includes:
+
+  * Layer normalization
+  * Multi-head self-attention
+  * Feed-forward network
+
+#### 5. **Model**
+
+* A full model is a **stack of blocks**.
+* Inputs are progressively transformed through each block until the final output is generated.
+
+> This modular breakdown (inputs → layers → blocks → model → outputs) is crucial when implementing complex architectures like ViT.
+
+---
+
+### Self-Attention Refresher
+
+* Core mechanism of transformers.
+* Operates on **query (Q)**, **key (K)**, and **value (V)** vectors.
+* Formula:
+
+  $$
+  \text{Attention}(Q, K, V) = \text{softmax} \left( \frac{QK^T}{\sqrt{d_k}} \right) V
+  $$
+
+> In **self-attention**, Q, K, and V come from the same source (hence "self").
+
+---
+
+### Implementation Plan
+
+We’ll follow this implementation roadmap:
+
+1. Start with **inputs** (image patches).
+2. Build **layers** (e.g., patch embedding, attention).
+3. Group layers into **blocks** (Transformer Encoder).
+4. Stack blocks to form the **model**.
+5. Train the model to predict **outputs** (food classes).
+
+---
+
+### Summary Recap (in terms of architecture)
+
+| Component | Description                                      |
+| --------- | ------------------------------------------------ |
+| Inputs    | Image tensors                                    |
+| Outputs   | Class labels                                     |
+| Layers    | Functional units (attention, MLP, normalization) |
+| Blocks    | Stacked layers forming encoder modules           |
+| Model     | Collection of blocks                             |
+
+---
+
+### Homework
+
+* Spend 2 minutes reviewing **Figure 1** of the paper.
+* Follow the flow of the architecture visually: from image input to final classification.
+* Understand how the layers and blocks are connected.
+* This mental model will guide coding in the next steps.
+
+---
