@@ -3120,3 +3120,121 @@ We’ll follow this implementation roadmap:
 * Gradually assemble all parts to fully replicate the **Vision Transformer** architecture for **FoodVision Mini**.
 
 ---
+
+
+*** 232. Breaking Down the Four Equations Overview and a Trick for Reading Papers ***
+## Lecture Notes: Breaking Down the Four Equations (Vision Transformer Paper - Section 3.1)
+
+### Recap: Pieces of the Puzzle
+
+We are continuing to dissect the Vision Transformer (ViT) architecture, structured into:
+
+1. **Figure 1** – Visual overview (inputs, outputs, layers, blocks)
+2. **The Four Key Equations** – Define the computations behind each block
+3. **Table 1 & Table 3** – Hyperparameters and training settings
+
+---
+
+## Objective of This Lecture
+
+* Understand the **purpose** of the four equations in the paper.
+* Learn how to **interpret and extract** meaning from mathematical notation.
+* Introduce a **practical trick** using tools like Mathpix to convert LaTeX from research papers into editable, notebook-friendly text.
+* Focus on **Section 3.1** of the paper, which explains each equation in plain language.
+
+---
+
+## Understanding Equation 1
+
+### Step-by-Step Summary:
+
+1. **Input**: Image $X \in \mathbb{R}^{H \times W \times C}$
+
+   * $H$: Height
+   * $W$: Width
+   * $C$: Color channels
+
+2. **Patch Conversion**:
+
+   * Image is split into square patches of size $P \times P$
+   * The total number of patches:
+
+     $$
+     N = \frac{HW}{P^2}
+     $$
+   * Each patch is flattened and represented as a vector
+
+3. **Patch Embeddings**:
+
+   * Each flattened patch is linearly projected (embedded) to a vector of dimension $D$ using a **trainable projection**
+   * This is referred to as the **Patch Embedding**
+
+4. **Input Sequence**:
+
+   * After projection, patches are turned into a sequence of vectors
+
+     $$
+     x_p \in \mathbb{R}^{N \times (P^2 \cdot C)}
+     \rightarrow \text{Embedding} \rightarrow \mathbb{R}^{N \times D}
+     $$
+   * A **learnable class token** is prepended to the sequence
+   * **Position embeddings** are added to retain patch order
+
+---
+
+## Additional Notes
+
+### Terminology Clarification
+
+| Term               | Meaning                                                               |
+| ------------------ | --------------------------------------------------------------------- |
+| $\mathbb{R}$       | Set of real numbers (image pixel values are real numbers)             |
+| Patch Embedding    | Flattened image patches mapped to a latent space using a linear layer |
+| Learnable          | Trainable through backpropagation                                     |
+| Linear Projection  | A linear layer (no activation) that transforms input dimensions       |
+| Position Embedding | Encodes positional information of patches in the sequence             |
+| Class Token        | A learnable vector added to the beginning of the patch sequence       |
+
+---
+
+## 🛠️ Pro Tip: Using Mathpix for Paper Replication
+
+### Problem:
+
+* Copy-pasting LaTeX or math-rich text from PDFs is messy and unreadable.
+
+### Solution:
+
+* Use [**Mathpix**](https://mathpix.com) to:
+
+  * Take a screenshot of paper content (e.g., Section 3.1)
+  * Convert it to clean LaTeX and markdown
+  * Paste directly into Google Colab or Jupyter Notebooks for easy reading/editing
+
+### Bonus:
+
+* You can convert images, tables, and equations from PDFs
+* Helpful for visually aligning code with theory
+
+---
+
+## Suggested Exercises
+
+### Task:
+
+1. Read **Section 3.1** of the Vision Transformer paper fully.
+2. Identify how each paragraph relates to the **equations**.
+3. Use **Mathpix** or similar OCR tool to format the section into your notebook.
+4. Highlight/annotate where each **equation (1–4)** is described.
+
+---
+
+## Next Steps
+
+* In the next videos:
+
+  * **Dive deeper into Equations 2, 3, and 4**
+  * Write **code implementations** for each equation
+  * Begin replicating the full ViT architecture using PyTorch
+
+---
