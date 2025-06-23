@@ -3010,3 +3010,113 @@ We’ll follow this implementation roadmap:
 * This mental model will guide coding in the next steps.
 
 ---
+
+*** 231. Breaking Down Figure 1 of the ViT Paper ***
+## Lecture Notes: Breaking Down a Machine Learning Research Paper
+
+### Overview: Understanding Paper Replication
+
+* **Goal**: Break down a complex machine learning research paper (e.g., Vision Transformer) into manageable components—like Lego pieces.
+* **Approach**: Understand each part independently—figures, equations, tables, and text—then reconstruct the architecture step by step.
+
+---
+
+## Key Components of the Vision Transformer Paper
+
+### 1. **Figure 1** – *Visual Overview of Architecture*
+
+* Shows how the image is processed through the Vision Transformer.
+* **Input**: Image.
+* **Intermediate**: Split into patches → Embedded → Transformer Encoder.
+* **Output**: Class prediction (e.g., bird, ball, car).
+* Originally trained on ImageNet; in this project, used for *FoodVision Mini*.
+
+> First task: **Map FoodVision inputs and outputs** to this figure.
+
+---
+
+### 2. **Four Core Equations** – *Mathematical Formulations*
+
+* Define the transformations and operations in the model.
+* Include notation like `z₀`, which represents input embeddings.
+* These equations describe how data flows through the layers.
+
+---
+
+### 3. **Table 1** – *Model Hyperparameters*
+
+* Details different configurations of the Vision Transformer (e.g., VIT Base).
+* Includes parameters like:
+
+  * Patch size
+  * Hidden dimensions
+  * Number of layers/heads
+  * Training setup
+
+---
+
+### 4. **Surrounding Text** – *Explanations & Context*
+
+* Provides context for:
+
+  * Why each part of the architecture is designed the way it is.
+  * Descriptions of terms like embeddings, attention, normalization, etc.
+
+---
+
+## Deep Dive: Figure 1 – Architecture Overview
+
+### What Figure 1 Shows
+
+* An **image** is input.
+* **Split into fixed-size patches.**
+* **Each patch is linearly embedded** and has **position embeddings** added.
+* This is passed into a **transformer encoder** with:
+
+  * Normalization layers
+  * Multi-head attention
+  * Residual connections
+  * MLP (multi-layer perceptron)
+
+### Important Concepts:
+
+* **Embedding** = Learnable representation
+  → Initialized with random values, optimized over time.
+* **Position Embedding** = Encodes the position of patches.
+* **MLP** = Two-layer fully connected network (in this case).
+* **Residual (Skip) Connection** = Adds original input to later outputs to preserve information.
+* **Transformer Encoder** = A stack of blocks (Norm + Attention + Norm + MLP).
+* **Block** = A set of layers grouped together.
+
+---
+
+## Mapping to FoodVision Mini
+
+### Workflow:
+
+1. Input image of pizza.
+2. Split into patches.
+3. Pass through layers (embedding → attention → MLP, etc.).
+4. Output: predicted class = pizza.
+
+---
+
+## Summary of Key Definitions
+
+| Term                    | Meaning                                                              |
+| ----------------------- | -------------------------------------------------------------------- |
+| **Embedding**           | Learnable representation of input (e.g., patches → vectors)          |
+| **Position Embedding**  | Encodes position information for each patch                          |
+| **Transformer Encoder** | Stack of blocks that process the sequence of embeddings              |
+| **Residual Connection** | Adds input back into output to preserve signal through deep networks |
+| **MLP**                 | Multi-layer perceptron (simple feedforward neural network)           |
+
+---
+
+##  What's Next?
+
+* Provide an overview of the **four equations** and **Table 1**.
+* Begin implementing code to replicate these components step by step.
+* Gradually assemble all parts to fully replicate the **Vision Transformer** architecture for **FoodVision Mini**.
+
+---
