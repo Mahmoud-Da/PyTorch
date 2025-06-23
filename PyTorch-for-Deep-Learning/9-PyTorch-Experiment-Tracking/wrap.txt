@@ -2706,3 +2706,109 @@ test_dir = image_path / "test"
 * Next step: use the `create_dataloaders()` function from `data_setup.py` in the `going_modular` module.
 
 ---
+
+*** 228. Turning Our Food Vision Mini Images into PyTorch DataLoaders ***
+## Lecture Notes: Creating Transforms and DataLoaders (Milestone Project 2 - Vision Transformer Replication)
+
+### Goal
+
+Begin replicating the **Vision Transformer (ViT)** paper by preparing the dataset for training.
+
+---
+
+### Recap
+
+* Previously downloaded the **FoodVision Mini** dataset with `train/` and `test/` folders.
+* Now: create **transforms** and **PyTorch DataLoaders** using `create_dataloaders()`.
+
+---
+
+### Step 1: Understand the Paper's Input Requirements
+
+From the Vision Transformer paper (page 13, Table 3):
+
+* **Training image resolution**: `224 x 224`
+* **Batch size used in paper**: `4096` (very large)
+
+> NOTE: Since Google Colab has limited resources, use a smaller **batch size of 32**.
+
+---
+
+### Step 2: Set Up Transformations
+
+Transform images to match ViT input requirements.
+
+-------------------code----------------------
+from torchvision import transforms
+
+# Image size and batch size
+IMAGE_SIZE = 224
+BATCH_SIZE = 32
+
+# Manual transform
+manual_transforms = transforms.Compose([
+    transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+    transforms.ToTensor()
+])
+-------------------code----------------------
+
+Purpose of transforms:
+
+* Resize images to match model input size.
+* Convert images to PyTorch tensors.
+
+---
+
+### Step 3: Import and Use `create_dataloaders()`
+
+-------------------code----------------------
+from going_modular.data_setup import create_dataloaders
+
+train_dir = image_path / "train"
+test_dir = image_path / "test"
+
+train_dataloader, test_dataloader, class_names = create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=manual_transforms,
+    batch_size=BATCH_SIZE
+)
+-------------------code----------------------
+
+* Uses reusable code from `data_setup.py`.
+* Keeps workflow modular and clean.
+
+---
+
+### Step 4: Verify Output
+
+Check the structure and size of the data.
+
+-------------------code----------------------
+len(train_dataloader)  # ~8 batches
+len(test_dataloader)   # ~3 batches
+print(class_names)     # ['pizza', 'steak', 'sushi']
+-------------------code----------------------
+
+---
+
+### Step 5: (Challenge) Visualize a Sample Image
+
+**Challenge for next section**:
+
+* Iterate over `train_dataloader`
+* Extract a single image and label
+* Plot the image with its label as the title using `matplotlib`
+
+This helps confirm the data is being read correctly and builds intuition about the input format.
+
+---
+
+### Summary
+
+You’ve now:
+
+* Matched input size requirements for ViT.
+* Created PyTorch DataLoaders from raw image folders.
+* Used modular, reusable code to streamline the setup.
+* Prepared for visualizing and feeding data into the model.
