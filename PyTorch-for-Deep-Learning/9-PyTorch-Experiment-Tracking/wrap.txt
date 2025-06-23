@@ -2635,3 +2635,74 @@ print(device)
 * **Optional**: Try loading the data yourself before the next section using provided helper code.
 
 ---
+
+*** 227. Downloading Data for Food Vision Mini ***
+## Lecture Notes: Milestone Project 2 — PyTorch Paper Replication (Vision Transformer)
+
+### Objective
+
+Replicate the **Vision Transformer (ViT)** architecture and apply it to the **FoodVision Mini** dataset (Pizza, Steak, and Sushi).
+This is **Milestone Project 2** in the course.
+
+---
+
+### Why Replicate a Research Paper?
+
+* Research papers (e.g., ViT) claim strong performance such as:
+
+  * State-of-the-art results on datasets like ImageNet.
+  * Efficient training with fewer computational resources.
+* Goal: Validate these claims on your own task or dataset.
+* In this case: apply ViT to the FoodVision Mini dataset to compare with previous CNN-based models.
+
+---
+
+### Dataset
+
+**FoodVision Mini**: Contains images of `Pizza`, `Steak`, and `Sushi`.
+
+#### Why Use the Same Dataset?
+
+* Ensures **fair comparison** between models.
+* Lets us evaluate how ViT performs versus previous CNN models on an identical task (apples to apples).
+
+---
+
+### Step-by-Step: Data Setup
+
+#### 1. **Download the Data**
+
+* Use the `download_data()` function from `helper_functions.py` (created in Section 7).
+* This downloads and extracts the dataset into the working directory.
+
+-------------------code----------------------
+from helper_functions import download_data
+
+image_path = download_data(source=some_url, destination="data/")
+-------------------code----------------------
+
+* Confirm that folders are created:
+
+  -------------------code----------------------
+  data/
+    ├── pizza_steak_sushi/
+        ├── train/
+        └── test/
+  -------------------code----------------------
+
+#### 2. **Define Directory Paths**
+
+-------------------code----------------------
+train_dir = image_path / "train"
+test_dir = image_path / "test"
+-------------------code----------------------
+
+---
+
+### Summary
+
+* Downloaded and verified the dataset.
+* Ready to move on to converting raw image directories into **PyTorch `DataLoader`s**.
+* Next step: use the `create_dataloaders()` function from `data_setup.py` in the `going_modular` module.
+
+---
