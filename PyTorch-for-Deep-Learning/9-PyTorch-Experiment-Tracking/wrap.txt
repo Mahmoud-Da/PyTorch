@@ -3816,3 +3816,125 @@ y = Linear(LayerNorm(x))
   * \[CLS] token setup
 
 ---
+
+*** 237. Calculating the Input and Output Shape of the Embedding Layer by Hand ***
+## **Vision Transformer (ViT) — Lecture Summary: Patch + Position + Class Embedding (Equation 1)**
+
+### **1. Recap of Progress**
+
+* So far, we've covered:
+
+  * **Figure 1** (architecture overview)
+  * **Equations 1–4** (core transformations)
+  * **Table 1** (hyperparameters of ViT variants)
+* We're starting implementation with **ViT-Base**, using a patch size of **16x16**.
+* Focus now is **Equation 1**, the **input embedding layer**.
+
+---
+
+### **2. Goal of Equation 1**
+
+> Transform a single image (e.g., 224×224×3) into a sequence of embedded patches suitable for input into a transformer.
+
+#### **Embedding Components**
+
+* **Patch Embedding**: Convert image patches into vectors.
+* **Class Token**: Add a learnable token for classification prepended to the sequence.
+* **Position Embedding**: Add positional information to maintain spatial structure.
+
+---
+
+### **3. Input and Output Shapes**
+
+#### **Input Image Shape**
+
+* Input: $\text{Height} \times \text{Width} \times \text{Channels}$
+* Example: $224 \times 224 \times 3$
+
+#### **Patch Embedding Output Shape**
+
+* Patch size $P = 16$
+* Number of patches $N = \frac{H \times W}{P^2} = \frac{224 \times 224}{16^2} = 196$
+* Each patch becomes a flattened vector of size: $P^2 \times C = 16^2 \times 3 = 768$
+* So output shape before adding class token: $(196, 768)$
+
+#### **Final Output Shape After Embedding**
+
+* Add \[CLS] token → sequence length becomes $196 + 1 = 197$
+* Final embedded sequence shape: $(197, 768)$
+
+---
+
+### **4. Key Variables Summary**
+
+| Symbol | Meaning                | Example Value (ViT-Base) |
+| ------ | ---------------------- | ------------------------ |
+| H, W   | Image height and width | 224                      |
+| C      | Number of channels     | 3                        |
+| P      | Patch size             | 16                       |
+| N      | Number of patches      | 196                      |
+| D      | Embedding dimension    | 768                      |
+
+* $N = \frac{H \times W}{P^2}$
+* $D = P^2 \times C = 768$
+
+---
+
+### **5. Visualization Workflow (Summary of Animation)**
+
+1. **Image** → split into patches (e.g., 16×16)
+2. **Patches** → flattened into vectors
+3. Each patch → embedded into D-dimensional vectors
+4. **\[CLS] token** prepended
+5. **Positional embeddings** added to all tokens
+6. Resulting sequence passed to Transformer Encoder
+
+---
+
+### **6. Implementation Strategy (PyTorch-Oriented)**
+
+* Step-by-step breakdown before coding:
+
+  * Create dummy image input: $(224, 224, 3)$
+  * Reshape it into 196 patches of shape $(16 \times 16 \times 3)$
+  * Flatten each patch to a vector of size 768
+  * Add a learnable \[CLS] token of size $(1, 768)$
+  * Add positional embedding of shape $(197, 768)$
+* Validate all shapes manually before coding
+
+---
+
+### **7. Example Values (Used for Shape Debugging)**
+
+-------------------code----------------------
+# Constants
+height, width, channels = 224, 224, 3
+patch_size = 16
+
+# Number of patches
+num_patches = (height * width) // (patch_size ** 2)  # 196
+
+# Patch embedding vector size
+embedding_dim = (patch_size ** 2) * channels  # 768
+
+# Output shape before class token: (196, 768)
+# Output shape after class token: (197, 768)
+-------------------code----------------------
+
+---
+
+### **8. Takeaway**
+
+* Understanding **input and output shapes** is essential before implementation.
+* Equation 1 builds the foundation for everything that follows in the Vision Transformer.
+* Getting this step right ensures the data flows correctly through the subsequent transformer layers.
+
+---
+
+In the next step, we'll start writing PyTorch code to:
+
+1. Slice images into patches
+2. Flatten and embed them
+3. Add \[CLS] token and positional embeddings
+
+This forms the **input embedding module** of the Vision Transformer.
