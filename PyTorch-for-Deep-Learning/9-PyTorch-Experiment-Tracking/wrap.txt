@@ -3711,3 +3711,108 @@ y = Linear(LayerNorm(x))
   Try breaking down Table 1 from the paper yourself to understand different model variants.
 
 ---
+
+*** 236. Breaking Down Table 1 ***
+## **Vision Transformer (ViT) — Lecture Summary: Hyperparameters & Architecture**
+
+### **1. Recap of Progress**
+
+* **Previous coverage**:
+
+  * Broke down **Figure 1** into: Inputs, Outputs, Layers, and Blocks.
+  * Explained the **four main equations**, which define the behavior of each component (embedding, attention, MLP, residuals).
+* **Current focus**: **Table 1** – Hyperparameter configurations of various ViT model variants.
+
+---
+
+### **2. ViT Model Pipeline (Equation Overview)**
+
+#### **Equation 1: Patch + Position Embedding**
+
+* **Image is split** into fixed-size patches.
+* Each patch is **flattened and linearly projected** into an embedding vector.
+* A **learnable \[CLS] token** is prepended.
+* **Positional embeddings** are added to maintain spatial information.
+
+#### **Equation 2: Transformer Encoder**
+
+* Input embeddings are passed through **L layers** of transformer encoder blocks.
+* Each block includes:
+
+  * **LayerNorm**
+  * **Multi-Head Self-Attention (MHSA)**
+  * **Residual connection**
+
+#### **Equation 3: MLP Block**
+
+* Each block also includes:
+
+  * **MLP (usually 2 layers)**
+  * **LayerNorm**
+  * **Residual connection**
+
+#### **Equation 4**: Not described in detail here but typically involves final normalization and projection for classification.
+
+---
+
+### **3. Table 1 – Hyperparameters of ViT Variants**
+
+| Variant   | Layers (L) | Hidden Size (D) | MLP Size | Heads | Parameters |
+| --------- | ---------- | --------------- | -------- | ----- | ---------- |
+| ViT-Base  | 12         | 768             | 3072     | 12    | 86M        |
+| ViT-Large | 24         | 1024            | 4096     | 16    | 307M       |
+| ViT-Huge  | 32         | 1280            | 5120     | 16    | 632M       |
+
+* **Trend**: Increasing these values improves performance, but also increases computational cost and model size.
+
+---
+
+### **4. Notation and Key Concepts**
+
+* **Patch Size**: e.g., 16x16 — determines how images are divided.
+
+  * **Smaller patches** ⇒ more patches ⇒ longer input sequence ⇒ higher computation.
+  * Sequence length ∝ (Image Height × Width) / (Patch Size)²
+* **D (Hidden Size)**: Embedding dimension for each patch.
+* **MLP Size**: Number of neurons in the hidden layer of the MLP.
+* **Heads**: Number of attention heads in MHSA.
+* **L (Layers)**: Number of transformer encoder blocks.
+
+---
+
+### **5. Practical Strategy for Replication**
+
+* **Start with ViT-Base** to keep things manageable.
+* Design your model class with configurable hyperparameters (layers, hidden size, MLP size, heads).
+* Define:
+
+  * Patch embedding module
+  * Positional embedding
+  * Transformer encoder layers
+  * Final classification head
+
+---
+
+### **6. Implementation Hints (PyTorch)**
+
+* Use `torch.nn.MultiheadAttention` with:
+
+  * `embed_dim = D`
+  * `num_heads = H`
+* For MLP:
+
+  * Two linear layers with GELU or ReLU
+* Add `LayerNorm` and **residual connections** around MHSA and MLP.
+
+---
+
+### **7. Next Step**
+
+* Begin implementing:
+
+  * Patch splitting
+  * Patch embedding (`Linear` layer)
+  * Position embedding (`nn.Parameter`)
+  * \[CLS] token setup
+
+---
