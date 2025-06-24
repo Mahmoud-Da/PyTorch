@@ -3938,3 +3938,120 @@ In the next step, we'll start writing PyTorch code to:
 3. Add \[CLS] token and positional embeddings
 
 This forms the **input embedding module** of the Vision Transformer.
+
+*** 238. Turning a Single Image into Patches (Part 1: Patching the Top Row) ***
+### **Lecture Summary: Visualizing Patch Embedding in Vision Transformers**
+
+---
+
+#### **1. Goal and Context**
+
+* **Objective**: Understand how to break an image into patches — the first step in a Vision Transformer (ViT) pipeline.
+* **Context**:
+
+  * Building on Equation 1 of the Vision Transformer paper.
+  * Section 4.1: Manual computation of input/output shapes to understand each layer.
+  * Main idea: Matching PyTorch layer outputs to the expected dimensions by computing shapes ourselves.
+
+---
+
+#### **2. Starting with an Image**
+
+* Load and visualize a single image using:
+
+  -------------------code----------------------
+  plt.imshow(image.permute(...))
+  -------------------code----------------------
+* Add a title and remove axes using:
+
+  -------------------code----------------------
+  plt.title(class_names[label])
+  plt.axis("off")
+  -------------------code----------------------
+
+---
+
+#### **3. Understanding Patch Dimensions**
+
+* **Input tensor shape**: (C, H, W), typically (3, 224, 224).
+* **Desired output shape**: (N, D)
+
+  * **N** = number of patches
+  * **D** = embedding dimension
+* **Embedding dimension D** is calculated as:
+
+  -------------------code----------------------
+  patch_size * patch_size * color_channels
+  -------------------code----------------------
+
+---
+
+#### **4. Visualizing a Portion of the Image**
+
+* Focused on plotting just the **top row** of the image:
+
+  * Convert image format to HWC (channels last) to match matplotlib expectations.
+  * Use `image[:, :patch_size, :]` to get the top 16 pixels of height.
+* Patch size is set to:
+
+  -------------------code----------------------
+  patch_size = 16
+  -------------------code----------------------
+
+---
+
+#### **5. Patchifying the Top Row**
+
+* **Why**: Helps build intuition by viewing individual patches visually.
+* **How**:
+
+  1. Check that the image size is divisible by the patch size:
+
+     -------------------code----------------------
+     assert image_size % patch_size == 0
+     -------------------code----------------------
+  2. Compute number of patches per row:
+
+     -------------------code----------------------
+     num_patches = image_size // patch_size
+     -------------------code----------------------
+  3. Set up subplots with:
+
+     -------------------code----------------------
+     fig, axes = plt.subplots(1, num_patches, figsize=(...), sharex=True, sharey=True)
+     -------------------code----------------------
+  4. Loop over the width of the image in steps of `patch_size`:
+
+     -------------------code----------------------
+     for i, patch_start in enumerate(range(0, image_size, patch_size)):
+         axes[i].imshow(image[:, patch_start:patch_start + patch_size, :])
+     -------------------code----------------------
+
+---
+
+#### **6. Notes on Plotting and Debugging**
+
+* Demonstrated how to use `enumerate` and subplot indexing.
+* Discussed `sharex` and `sharey` to synchronize axis scaling across subplots.
+* Used labels and visual spacing to improve plot readability.
+
+---
+
+#### **7. Key Takeaway**
+
+* Patch embedding is crucial — a good embedding leads to better learning.
+* The process of patchifying builds the foundation for tokenizing image input to the transformer.
+* Emphasis: "It’s all about the embedding."
+
+---
+
+#### **8. Final Challenge**
+
+* Current setup visualizes **only the top row** of patches.
+* **Next step** (challenge to the learner):
+
+  * Extend this method to patchify the **entire image**.
+  * Requires **nested loops**: iterate over both height and width dimensions.
+  * Aim: Create a full grid of 16x16 patches for a 224x224 image.
+
+---
