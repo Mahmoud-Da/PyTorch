@@ -4170,3 +4170,156 @@ This forms the **input embedding module** of the Vision Transformer.
 * Ready to proceed to **embedding** those patches to build the Vision Transformer input.
 
 ---
+
+*** 240. Creating Patch Embeddings with a Convolutional Layer ***
+
+## **Section 4.3: Creating Image Patches and Turning Them into Patch Embeddings**
+
+---
+
+### **Overview**
+
+* This section focuses on turning an image into **patches** and then converting those patches into **embeddings**, using PyTorch layers.
+* The process involves two key steps:
+
+  1. Splitting the image into patches.
+  2. Turning those patches into embeddings using a convolutional layer.
+
+---
+
+### Why do we turn **patches into embeddings** in ViT?
+
+The Vision Transformer (ViT) treats an image kind of like a sentence made of words. But instead of words, we use **image patches** (small pieces of the image, like 16x16 pixel blocks).
+
+But here’s the key:
+
+> The transformer model doesn’t understand images — it understands **vectors** (lists of numbers).
+
+So we need to **convert each image patch into a vector of numbers**. That’s what we call an **embedding**.
+
+---
+
+### Think of it like this:
+
+* Imagine you cut a photo into small square tiles (patches).
+* Now you want a computer to "read" them, but it doesn’t understand images or colors — only numbers.
+* So you flatten each tile (like turning the tile into a long line of numbers) and use a small neural network (usually a linear layer) to **turn that into a fixed-size vector**.
+* These vectors are now the "words" of our sentence — they’re the **embeddings**.
+
+---
+
+### Why embeddings are important:
+
+* They give each patch a **standard format** the transformer can work with.
+* They help the model learn what features are important in each part of the image.
+* Without embeddings, the transformer wouldn’t know how to process visual information.
+
+---
+
+### In short:
+
+> We turn patches into embeddings so that the transformer model can understand and learn from images — just like it understands and learns from words in text.
+
+
+### **Why Do This?**
+
+* Transformers require vector inputs.
+* To apply transformers to images (like Vision Transformers), we need to convert image regions (patches) into numerical vectors called **embeddings**.
+* This allows the model to process the image similarly to how it processes words in NLP.
+
+---
+
+### **Conceptual Analogy**
+
+* **Image → Patches → Embeddings**
+* Similar to how words are embedded in NLP, image patches are embedded in ViT.
+* A **convolutional layer** with the right kernel and stride size acts as the patch extraction and embedding mechanism.
+
+---
+
+### **Using Convolution to Extract Patch Embeddings**
+
+* We can simulate patch extraction using a `Conv2D` layer with:
+
+  * **Kernel size** = patch size (e.g., 16x16)
+  * **Stride** = patch size (to avoid overlap)
+  * **In channels** = 3 (for RGB images)
+  * **Out channels** = embedding dimension (e.g., 768)
+
+#### PyTorch Code Snippet
+
+-------------------code----------------------
+import torch
+from torch import nn
+
+# Define patch size and embedding dimension
+patch_size = 16
+embedding_dim = 768
+
+# Create the Conv2D layer for patch embedding
+conv2d_layer = nn.Conv2d(
+    in_channels=3, 
+    out_channels=embedding_dim,
+    kernel_size=patch_size, 
+    stride=patch_size, 
+    padding=0
+)
+-------------------code----------------------
+
+* This operation:
+
+  * Slides a 16×16 kernel across the image.
+  * Outputs a tensor where each 16×16 patch is now represented by a 768-dimensional vector.
+  * Creates a grid of patch embeddings (e.g., 14×14 grid for a 224×224 image).
+
+---
+
+### **Visual Interpretation**
+
+* Using CNN explainer, a 2D convolution is shown sliding over an input image.
+* Each step extracts a patch and converts it into a learnable feature map.
+* These feature maps are the **patch embeddings**.
+
+---
+
+### **Output Shape Explanation**
+
+Assuming input image size is 224×224:
+
+* After `Conv2D`, output shape is:
+  `[batch_size, embedding_dim, num_patches_height, num_patches_width]`
+  e.g., `[1, 768, 14, 14]` → 196 patches in total.
+
+---
+
+### **Next Step: Flattening for Transformer Input**
+
+* The ViT expects a flat sequence, not a grid.
+* Use `torch.nn.Flatten` to flatten the spatial dimensions:
+
+  -------------------code----------------------
+  flatten = nn.Flatten(start_dim=2)
+  patches = flatten(patch_embeddings)
+  patches = patches.permute(0, 2, 1)  # Shape: [batch_size, num_patches, embedding_dim]
+  -------------------code----------------------
+
+---
+
+### **Reference from ViT Paper**
+
+* Section 3.1 of the paper mentions using CNN feature maps as an alternative to raw image patches.
+* This hybrid approach means:
+
+  * CNN can extract richer features.
+  * Then we flatten and project these to the transformer’s input dimension.
+
+---
+
+### **Summary**
+
+* Patch embeddings can be created using a convolutional layer.
+* Set kernel size and stride to the patch size (e.g., 16).
+* This generates a sequence of learnable embeddings, one for each patch.
+* Flattening is the next step to prepare this data for input into a transformer.
+
+---
