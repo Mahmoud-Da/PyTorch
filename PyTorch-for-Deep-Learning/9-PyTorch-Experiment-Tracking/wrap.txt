@@ -4055,3 +4055,118 @@ This forms the **input embedding module** of the Vision Transformer.
   * Aim: Create a full grid of 16x16 patches for a 224x224 image.
 
 ---
+
+*** 239. Turning a Single Image into Patches (Part 2: Patching the Entire Image) ***
+### **Lecture: Visualizing and Patchifying an Image for Vision Transformers**
+
+---
+
+#### **1. Introduction**
+
+* The goal is to turn an input image into **patches**, the first step in a Vision Transformer (ViT).
+* Previously: Turned a small section (top row) of the image into patches.
+* This time: Patchify the **entire image** and visualize all patches.
+
+---
+
+#### **2. Patchifying Setup**
+
+* **Image Size**: `224`
+* **Patch Size**: `16`
+* **Number of Patches per Row/Column**:
+
+  -------------------code----------------------
+  num_patches = image_size // patch_size
+  total_patches = num_patches * num_patches  # 196 patches (14x14)
+  -------------------code----------------------
+* Ensure image size is divisible by patch size:
+
+  -------------------code----------------------
+  assert image_size % patch_size == 0
+  -------------------code----------------------
+
+---
+
+#### **3. Preparing to Visualize Patches**
+
+* Use `matplotlib.pyplot.subplots()` to create a grid of subplots:
+
+  -------------------code----------------------
+  fig, axes = plt.subplots(
+      nrows=num_patches, 
+      ncols=num_patches, 
+      figsize=(num_patches, num_patches), 
+      sharex=True, 
+      sharey=True
+  )
+  -------------------code----------------------
+* This creates a 14x14 grid (for 224×224 image and 16×16 patch size).
+
+---
+
+#### **4. Iterating Over the Image and Extracting Patches**
+
+* Loop through **height** and **width** in steps of patch size:
+
+  -------------------code----------------------
+  for i, patch_y in enumerate(range(0, image_size, patch_size)):
+      for j, patch_x in enumerate(range(0, image_size, patch_size)):
+          patch = image[patch_y:patch_y+patch_size, patch_x:patch_x+patch_size, :]
+          axes[i, j].imshow(patch)
+  -------------------code----------------------
+* Each subplot displays one patch from the original image.
+
+---
+
+#### **5. Subplot Aesthetics**
+
+* Label each axis:
+
+  -------------------code----------------------
+  axes[i, j].set_ylabel(str(i + 1), rotation=0, labelpad=20)
+  axes[i, j].set_xlabel(str(j + 1))
+  -------------------code----------------------
+* Remove axis ticks to clean up the plot:
+
+  -------------------code----------------------
+  axes[i, j].set_xticks([])
+  axes[i, j].set_yticks([])
+  axes[i, j].label_outer()
+  -------------------code----------------------
+
+---
+
+#### **6. Plotting and Title**
+
+* Add a **title** to the whole plot using `fig.suptitle()` with the class label.
+* Finally, render the plot:
+
+  -------------------code----------------------
+  plt.show()
+  -------------------code----------------------
+
+---
+
+#### **7. Result**
+
+* Image is now divided into 196 small patches (14x14 grid).
+* Visualization confirms the patchification process works as expected.
+
+---
+
+#### **8. Key Insight**
+
+* This visualization step is only for understanding — it’s too slow for real-time model training.
+* **Next Step**: Embed each 16x16 patch into a vector of size 768.
+* **Hint for Embedding**:
+
+  > "What layer slides over an image like a window?" — Refers to **convolutional layers**.
+
+---
+
+#### **Conclusion**
+
+* Successfully visualized how a single image is divided into patches.
+* Ready to proceed to **embedding** those patches to build the Vision Transformer input.
+
+---
