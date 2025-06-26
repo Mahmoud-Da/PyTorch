@@ -4323,3 +4323,91 @@ Assuming input image size is 224×224:
 * Flattening is the next step to prepare this data for input into a transformer.
 
 ---
+
+*** 241. Exploring the Outputs of Our Convolutional Patch Embedding Layer ***
+## Lecture Notes: Turning Image Patches into Patch Embeddings
+
+### 1. **Patch Embedding via Convolutional Layer**
+
+* We're taking an **unpatchified image** and turning it into **patches** using a **Conv2D layer**.
+* **Kernel size and stride** are both set to the patch size (e.g., 16×16) to divide the image into non-overlapping patches.
+* Each patch is passed through the convolutional layer and becomes an **embedding vector**.
+* The number of output channels of the convolutional layer determines the **embedding dimension `D`**, as defined in Table 1 (e.g., 768 for ViT-Base).
+
+---
+
+### 2. **Understanding Output Tensor Shape**
+
+After passing a single image through the Conv2D layer, the output tensor shape is:
+
+```
+(batch_size, embedding_dim, feature_map_height, feature_map_width)
+```
+
+* `batch_size`: number of images in a batch.
+* `embedding_dim`: dimensionality of each patch embedding (e.g., 768).
+* `feature_map_height` and `feature_map_width`: number of patches along height and width.
+
+---
+
+### 3. **Gradients and Learnability**
+
+* The output tensor requires gradients (`requires_grad=True`), meaning it is **learnable**.
+* PyTorch will automatically track gradients and update them during backpropagation using `optimizer.step()`.
+
+---
+
+### 4. **Visualization of Convolutional Feature Maps**
+
+To understand what's being learned:
+
+* Randomly select **5 indices** from the 768 feature maps.
+* Plot them using `matplotlib.pyplot` to visualize what the feature maps look like.
+* Must use:
+
+  * `.squeeze()` to remove the batch dimension.
+  * `.detach().numpy()` to convert the tensor for plotting.
+
+#### Example Plotting Code:
+
+-------------------code----------------------
+fig, axes = plt.subplots(1, 5)
+for i, idx in enumerate(random_indexes):
+    feature_map = image_out_of_conv[0, idx, :, :]
+    axes[i].imshow(feature_map.detach().numpy())
+    axes[i].set_xticks([])
+    axes[i].set_yticks([])
+-------------------code----------------------
+
+---
+
+### 5. **Feature Map Observations**
+
+* Feature maps often appear abstract but can reveal **edges** or **outlines** of the image (e.g., the outline of a pizza).
+* These maps evolve during training to better represent the key features of images.
+
+---
+
+### 6. **Goal: Flatten Spatial Dimensions into a Sequence**
+
+* Transformers work with **sequences**, not 2D grids.
+* Need to flatten `feature_map_height × feature_map_width` (e.g., 14×14 = 196) into a single sequence:
+
+  ```
+  New shape: (batch_size, embedding_dim, num_patches)
+  Example: (1, 768, 196)
+  ```
+
+#### Challenge Given:
+
+* Use `torch.flatten()` to transform the output from shape `(1, 768, 14, 14)` to `(1, 768, 196)`.
+* Try writing code to perform this operation as practice.
+
+---
+
+### 7. **Next Step**
+
+* Flatten the patch embeddings using `torch.flatten(start_dim=2)` to prepare them for the transformer input.
+* This will be covered in more detail in the next video.
+
+---
