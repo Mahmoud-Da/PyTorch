@@ -4568,3 +4568,85 @@ flattened = flattened.permute(0, 2, 1)  # Shape: (1, 196, 768)
   * Output: sequence of patch embeddings with shape `(batch_size, num_patches, embedding_dim)`
 
 ---
+
+*** 243. Visualizing a Single Sequence Vector of Patch Embeddings ***
+## Lecture Notes: Visualizing Flattened Patch Embeddings and Next Steps
+
+### 1. **Recap of Progress So Far**
+
+* We've completed three key steps:
+
+  1. **Image → Patches** using patchifying logic.
+  2. **Patches → Patch Embeddings** via a convolutional layer.
+  3. **Patch Embeddings → Flattened Sequence** using `torch.nn.Flatten`.
+* We now have the correct input shape for the Vision Transformer encoder:
+
+  -------------------code----------------------
+  (batch_size, number_of_patches, embedding_dim)
+  -------------------code----------------------
+
+---
+
+### 2. **Visualizing a Flattened Patch Embedding**
+
+* Goal: See what a single **flattened patch embedding vector** looks like.
+
+#### Steps:
+
+* Extract one vector from the flattened patch sequence:
+
+  -------------------code----------------------
+  image_out_flat = image_out_of_conv_flattened.permute(0, 2, 1)
+  single_patch_embedding = image_out_flat[0, 0, :]  # shape: (768,)
+  -------------------code----------------------
+
+* This vector is one of 196 patch embeddings that now represent the input image.
+
+* Each vector has 768 values (for ViT-Base), and will be updated during training.
+
+* This vector is a **learnable embedding**—the model will learn better representations over time.
+
+---
+
+### 3. **Plotting the Flattened Patch Embedding**
+
+* Use `matplotlib` to visualize the embedding as an image:
+
+  -------------------code----------------------
+  import matplotlib.pyplot as plt
+
+  plt.figure(figsize=(2.2, 2.2))
+  plt.imshow(single_patch_embedding.detach().numpy().reshape(22, 22))  # Optional reshaping for display
+  plt.axis("off")
+  plt.title("Flattened Patch Embedding")
+  plt.show()
+  -------------------code----------------------
+* Note: Plot may look abstract, but it shows what the transformer will process internally.
+
+---
+
+### 4. **Summary of What We've Done**
+
+* We’ve recreated the **Patch Embedding** section of Equation 1 from the ViT paper.
+* This includes:
+
+  * Breaking down the image into patches.
+  * Embedding each patch.
+  * Flattening the spatial dimensions into a 1D sequence.
+* The result is a sequence of embedding vectors, ready to be passed into a **transformer encoder**.
+
+---
+
+### 5. **Next Steps**
+
+* **To Do:**
+
+  * Add the **\[CLS] token** (a learnable embedding that summarizes the image).
+  * Add **positional embeddings** (so the transformer knows the order of patches).
+* Before that:
+
+  * Refactor the current patchification pipeline (Conv2D + Flatten + Permute) into a **single PyTorch layer or module**.
+  * This modular approach allows passing an image tensor and receiving a transformer-ready embedding sequence with one call.
+
+---
+
