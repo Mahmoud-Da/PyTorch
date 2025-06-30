@@ -4922,3 +4922,7 @@ You now have a working **class token prepended** to the sequence of embedded ima
 ## **Next Step**
 
 Add **position embeddings** to this `[CLS] + patch embedding` sequence to encode positional information.
+
+*** 246. Creating the Class Token Embedding - Less Birds ***
+
+duplication with 245
