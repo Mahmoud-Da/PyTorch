@@ -4782,3 +4782,143 @@ out = patch_embed(image)
 These components will complete the full patch embedding input preparation before feeding into the transformer encoder.
 
 ---
+
+*** 245. Creating the Class Token Embedding ***
+## **Lecture Summary: Adding a Learnable Class Token in ViT**
+
+### **Context**
+
+* In the previous step, we built the **patch embedding layer** to turn an image into a sequence of embedded patches.
+* Now, we're extending the sequence by adding a **learnable class token**—an essential step for enabling classification in ViT.
+* This aligns with the ViT paper (Equation 1 and Figure 1), where the class token is prepended to the embedded patch sequence.
+
+---
+
+In simple terms:
+
+### **A class token is a special learnable vector added to the input of a Vision Transformer (ViT) so the model can use it to make predictions.**
+
+---
+
+### Here's an analogy:
+
+Imagine you're reading a book, and you want to write a summary of the whole thing.
+You take notes on each chapter (these are like **patches** of the image).
+But at the top of your notebook, you leave **one special page** to write your final summary.
+
+That special page is the **class token**.
+
+---
+
+### More technically:
+
+* The image is split into small parts (patches), and each part is turned into a vector.
+* A **class token** is an extra vector added at the beginning.
+* As the transformer processes all these vectors (patches + class token), the **class token gathers important information** from the whole image.
+* At the end, we use **only the class token** to make a prediction (e.g., what object is in the image).
+
+---
+
+### Why use it?
+
+Because transformers are designed for sequences (like words in a sentence), and the class token gives them **a dedicated place to store a summary** for classification.
+
+## **Step-by-Step: Creating and Adding the Class Token**
+
+### **1. Purpose of the Class Token**
+
+* A **learnable embedding** prepended to the sequence of patch embeddings.
+* Acts similarly to BERT’s `[CLS]` token.
+* Used as the final output representation for classification.
+* Final output shape becomes `[batch_size, num_patches + 1, embed_dim]`.
+
+---
+
+### **2. Verify Image Size Compatibility**
+
+Before anything, ensure the input image dimensions are divisible by the patch size:
+
+-------------------code----------------------
+assert image_size % patch_size == 0, "Input image size must be divisible by patch size"
+-------------------code----------------------
+
+---
+
+### **3. Create a Learnable Class Token**
+
+Use `nn.Parameter` so PyTorch tracks gradients and updates this token during training:
+
+-------------------code----------------------
+import torch.nn as nn
+import torch
+
+class_token = nn.Parameter(
+    torch.ones(1, 1, embed_dim),  # Shape: [1, 1, embedding_dim]
+    requires_grad=True
+)
+-------------------code----------------------
+
+* You can use `torch.rand` instead of `ones` for randomness:
+
+  -------------------code----------------------
+  torch.rand(1, 1, embed_dim)
+  -------------------code----------------------
+
+---
+
+### **4. Match Token Shape with Batch**
+
+Broadcast the token across the batch:
+
+-------------------code----------------------
+batch_size = patch_embeddings.shape[0]  # From [B, N, D]
+class_token = class_token.expand(batch_size, -1, -1)  # Now [B, 1, D]
+-------------------code----------------------
+
+---
+
+### **5. Concatenate Class Token to Patches**
+
+Use `torch.cat` to prepend along the patch (sequence) dimension (dim=1):
+
+-------------------code----------------------
+patch_embeddings = torch.cat([class_token, patch_embeddings], dim=1)
+-------------------code----------------------
+
+---
+
+### **6. Final Output Shape**
+
+* Original shape of patch embeddings: `[B, 196, D]` (if using 224×224 image and 16×16 patches)
+* After prepending class token: `[B, 197, D]`
+
+---
+
+## **Verification**
+
+Print shapes and values for confirmation:
+
+-------------------code----------------------
+print(patch_embeddings.shape)  # Should be [B, 197, D]
+-------------------code----------------------
+
+---
+
+### **Key Concept Recap**
+
+* `nn.Parameter`: makes a tensor trainable
+* `requires_grad=True`: allows gradient updates
+* `expand`: repeats the learnable token for all batch samples
+* `torch.cat`: used to prepend along a specific dimension
+
+---
+
+### **Outcome**
+
+You now have a working **class token prepended** to the sequence of embedded image patches. This token is learnable and will be used as the final feature vector for classification.
+
+---
+
+## **Next Step**
+
+Add **position embeddings** to this `[CLS] + patch embedding` sequence to encode positional information.
