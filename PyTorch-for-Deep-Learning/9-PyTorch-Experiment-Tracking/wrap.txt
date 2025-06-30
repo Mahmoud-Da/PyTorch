@@ -4650,3 +4650,135 @@ flattened = flattened.permute(0, 2, 1)  # Shape: (1, 196, 768)
 
 ---
 
+
+*** 244. Creating the Patch Embedding Layer with PyTorch ***
+## **Lecture Summary: Turning the ViT Patch Embedding into a PyTorch Module**
+
+### **Context & Objective**
+
+* We're transforming a 2D input image into a 1D sequence of learnable patch embeddings.
+* The goal is to implement this step as a **reusable PyTorch module**, aligning with the structure described in the Vision Transformer (ViT) paper.
+* This module corresponds to the **linear projection of flattened patches**, as described in **Equation 1** of the paper.
+
+---
+
+## **Section 4.5: Turning Patch Embedding into a PyTorch Module**
+
+We aim to modularize the patch embedding process using PyTorch. This involves:
+
+1. Creating a class
+2. Setting up key layers
+3. Defining the forward pass
+
+---
+
+### **Step-by-Step Plan**
+
+#### 1. **Create the Class**
+
+-------------------code----------------------
+class PatchEmbedding(nn.Module):
+-------------------code----------------------
+
+* Name: `PatchEmbedding`
+* Inherits from `nn.Module`
+
+#### 2. **Initialize with Hyperparameters**
+
+-------------------code----------------------
+def __init__(self, in_channels: int = 3, patch_size: int = 16, embed_dim: int = 768):
+-------------------code----------------------
+
+* `in_channels`: usually 3 (RGB)
+* `patch_size`: default 16
+* `embed_dim`: default 768 (from ViT Base)
+
+#### 3. **Image → Embedded Patches Layer**
+
+Use `nn.Conv2d`:
+
+-------------------code----------------------
+self.patchify = nn.Conv2d(
+    in_channels=in_channels,
+    out_channels=embed_dim,
+    kernel_size=patch_size,
+    stride=patch_size,
+    padding=0
+)
+-------------------code----------------------
+
+#### 4. **Flatten Feature Maps**
+
+-------------------code----------------------
+self.flatten = nn.Flatten(start_dim=2, end_dim=3)
+-------------------code----------------------
+
+* Converts \[B, C, H, W] → \[B, C, HW]
+
+#### 5. **Define Forward Pass**
+
+-------------------code----------------------
+def forward(self, x):
+-------------------code----------------------
+
+* Ensure input image is divisible by patch size:
+
+-------------------code----------------------
+assert image_resolution % patch_size == 0
+-------------------code----------------------
+
+* Apply patching:
+
+-------------------code----------------------
+x = self.patchify(x)
+x = self.flatten(x)
+-------------------code----------------------
+
+* Rearrange the dimensions:
+
+-------------------code----------------------
+x = x.permute(0, 2, 1)  # [B, C, N] → [B, N, C]
+-------------------code----------------------
+
+* Output: \[Batch Size, Num Patches, Embedding Dimension]
+
+---
+
+### **Testing the Module**
+
+1. Instantiate the module:
+
+-------------------code----------------------
+patch_embed = PatchEmbedding(patch_size=16, embed_dim=768)
+-------------------code----------------------
+
+2. Pass an image tensor (e.g. \[1, 3, 224, 224]):
+
+-------------------code----------------------
+out = patch_embed(image)
+-------------------code----------------------
+
+3. Output shape:
+
+* Input: `[1, 3, 224, 224]`
+* Output: `[1, 196, 768]`
+  (Since $224 / 16 = 14$; $14^2 = 196$ patches)
+
+---
+
+### **What We’ve Achieved**
+
+* Created a modular **patch embedding** layer.
+* Converted an image to a **sequence of flattened and embedded patches**.
+* Completed the **linear projection part of Equation 1** in the ViT paper.
+
+---
+
+### **Next Steps**
+
+* Add **\[CLS] token**
+* Add **position embeddings**
+
+These components will complete the full patch embedding input preparation before feeding into the transformer encoder.
+
+---
