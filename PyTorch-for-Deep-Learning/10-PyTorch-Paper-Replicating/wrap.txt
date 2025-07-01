@@ -401,3 +401,2703 @@ Replicating papers helps you build:
 * Emphasis is placed on **learning by doing**: reading papers, converting them into code, and applying them to real problems.
 
 ---
+
+*** 226. Getting Setup for Coding in Google Colab ***
+## Lecture Notes: PyTorch Paper Replication Setup
+
+### Overview
+
+This lecture introduces the setup process for replicating a machine learning research paper using PyTorch in Google Colab. The chosen paper is the **Vision Transformer (ViT)**.
+
+---
+
+### Resources and Preparation
+
+* **Resources Mentioned**:
+
+  * Explanation of ML research paper replication
+  * Paper: Vision Transformer (ViT)
+  * GitHub repository: [Going Modular](https://github.com/mrdbourke/pytorch-deep-learning/tree/main/going_modular)
+  * Section 08 of the course materials: "PyTorch Paper Replicating"
+* **Recommendation**: Link to the *abstract* page of papers instead of the *PDF*, for faster access on various devices.
+
+---
+
+### Notebook Setup
+
+**Notebook Title**: `08 PyTorch Paper Replicating`
+
+**Purpose**: Replicate the Vision Transformer architecture using PyTorch from scratch.
+
+---
+
+### Step 1: Environment Configuration
+
+1. **Start Google Colab**
+
+2. **Enable GPU**:
+
+   * Navigate to `Runtime` → `Change runtime type` → Set hardware accelerator to `GPU`
+
+3. **Import Required Libraries**:
+
+   -------------------code----------------------
+   import torch
+   import torchvision
+   print(torch.__version__)        # Should be >= 1.12
+   print(torchvision.__version__) # Should be >= 0.13
+   -------------------code----------------------
+
+4. **Install `torchinfo`** (for model summaries):
+
+   -------------------code----------------------
+   !pip install torchinfo
+   -------------------code----------------------
+
+---
+
+### Step 2: Import Modular Codebase
+
+**Goal**: Avoid rewriting boilerplate code by importing previously written modules.
+
+* **Clone GitHub Repository**:
+
+  -------------------code----------------------
+  !git clone https://github.com/mrdbourke/pytorch-deep-learning
+  -------------------code----------------------
+
+* **Navigate to**:
+
+  -------------------code----------------------
+  going_modular/
+    ├── data_setup.py       # Functions to create datasets/dataloaders
+    ├── engine.py           # Train/test loops
+    ├── model_builder.py    # Model architectures
+    ├── utils.py            # Utility functions
+  helper_functions.py       # Plotting, directory helpers, etc.
+  -------------------code----------------------
+
+* **Import the following**:
+
+  -------------------code----------------------
+  from going_modular import data_setup, engine
+  import helper_functions
+  -------------------code----------------------
+
+---
+
+### Step 3: Device Agnostic Setup
+
+-------------------code----------------------
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(device)
+-------------------code----------------------
+
+---
+
+### Next Step
+
+* **Preview**: Load the dataset (coming in the next video).
+* **Optional**: Try loading the data yourself before the next section using provided helper code.
+
+---
+
+*** 227. Downloading Data for Food Vision Mini ***
+## Lecture Notes: Milestone Project 2 — PyTorch Paper Replication (Vision Transformer)
+
+### Objective
+
+Replicate the **Vision Transformer (ViT)** architecture and apply it to the **FoodVision Mini** dataset (Pizza, Steak, and Sushi).
+This is **Milestone Project 2** in the course.
+
+---
+
+### Why Replicate a Research Paper?
+
+* Research papers (e.g., ViT) claim strong performance such as:
+
+  * State-of-the-art results on datasets like ImageNet.
+  * Efficient training with fewer computational resources.
+* Goal: Validate these claims on your own task or dataset.
+* In this case: apply ViT to the FoodVision Mini dataset to compare with previous CNN-based models.
+
+---
+
+### Dataset
+
+**FoodVision Mini**: Contains images of `Pizza`, `Steak`, and `Sushi`.
+
+#### Why Use the Same Dataset?
+
+* Ensures **fair comparison** between models.
+* Lets us evaluate how ViT performs versus previous CNN models on an identical task (apples to apples).
+
+---
+
+### Step-by-Step: Data Setup
+
+#### 1. **Download the Data**
+
+* Use the `download_data()` function from `helper_functions.py` (created in Section 7).
+* This downloads and extracts the dataset into the working directory.
+
+-------------------code----------------------
+from helper_functions import download_data
+
+image_path = download_data(source=some_url, destination="data/")
+-------------------code----------------------
+
+* Confirm that folders are created:
+
+  -------------------code----------------------
+  data/
+    ├── pizza_steak_sushi/
+        ├── train/
+        └── test/
+  -------------------code----------------------
+
+#### 2. **Define Directory Paths**
+
+-------------------code----------------------
+train_dir = image_path / "train"
+test_dir = image_path / "test"
+-------------------code----------------------
+
+---
+
+### Summary
+
+* Downloaded and verified the dataset.
+* Ready to move on to converting raw image directories into **PyTorch `DataLoader`s**.
+* Next step: use the `create_dataloaders()` function from `data_setup.py` in the `going_modular` module.
+
+---
+
+*** 228. Turning Our Food Vision Mini Images into PyTorch DataLoaders ***
+## Lecture Notes: Creating Transforms and DataLoaders (Milestone Project 2 - Vision Transformer Replication)
+
+### Goal
+
+Begin replicating the **Vision Transformer (ViT)** paper by preparing the dataset for training.
+
+---
+
+### Recap
+
+* Previously downloaded the **FoodVision Mini** dataset with `train/` and `test/` folders.
+* Now: create **transforms** and **PyTorch DataLoaders** using `create_dataloaders()`.
+
+---
+
+### Step 1: Understand the Paper's Input Requirements
+
+From the Vision Transformer paper (page 13, Table 3):
+
+* **Training image resolution**: `224 x 224`
+* **Batch size used in paper**: `4096` (very large)
+
+> NOTE: Since Google Colab has limited resources, use a smaller **batch size of 32**.
+
+---
+
+### Step 2: Set Up Transformations
+
+Transform images to match ViT input requirements.
+
+-------------------code----------------------
+from torchvision import transforms
+
+# Image size and batch size
+IMAGE_SIZE = 224
+BATCH_SIZE = 32
+
+# Manual transform
+manual_transforms = transforms.Compose([
+    transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+    transforms.ToTensor()
+])
+-------------------code----------------------
+
+Purpose of transforms:
+
+* Resize images to match model input size.
+* Convert images to PyTorch tensors.
+
+---
+
+### Step 3: Import and Use `create_dataloaders()`
+
+-------------------code----------------------
+from going_modular.data_setup import create_dataloaders
+
+train_dir = image_path / "train"
+test_dir = image_path / "test"
+
+train_dataloader, test_dataloader, class_names = create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=manual_transforms,
+    batch_size=BATCH_SIZE
+)
+-------------------code----------------------
+
+* Uses reusable code from `data_setup.py`.
+* Keeps workflow modular and clean.
+
+---
+
+### Step 4: Verify Output
+
+Check the structure and size of the data.
+
+-------------------code----------------------
+len(train_dataloader)  # ~8 batches
+len(test_dataloader)   # ~3 batches
+print(class_names)     # ['pizza', 'steak', 'sushi']
+-------------------code----------------------
+
+---
+
+### Step 5: (Challenge) Visualize a Sample Image
+
+**Challenge for next section**:
+
+* Iterate over `train_dataloader`
+* Extract a single image and label
+* Plot the image with its label as the title using `matplotlib`
+
+This helps confirm the data is being read correctly and builds intuition about the input format.
+
+---
+
+### Summary
+
+You’ve now:
+
+* Matched input size requirements for ViT.
+* Created PyTorch DataLoaders from raw image folders.
+* Used modular, reusable code to streamline the setup.
+* Prepared for visualizing and feeding data into the model.
+
+*** 229. Visualizing a Single Image ***
+## Lecture Notes: Visualizing a Single Image (Milestone Project 2 — Vision Transformer Replication)
+
+### Objective
+
+Visualize one image from the `train_dataloader` to confirm that:
+
+* Images are correctly loaded and preprocessed.
+* Shapes match the Vision Transformer (ViT) input specifications.
+* Class labels align correctly with images.
+
+---
+
+### Step 1: Get a Batch from the DataLoader
+
+-------------------code----------------------
+# Turn train_dataloader into an iterator and get one batch
+image_batch, label_batch = next(iter(train_dataloader))
+-------------------code----------------------
+
+* `image_batch`: Tensor of shape `(batch_size, 3, 224, 224)`
+* `label_batch`: Tensor of shape `(batch_size,)`
+
+---
+
+### Step 2: Select a Single Image and Label
+
+-------------------code----------------------
+# Get the first image and label
+image, label = image_batch[0], label_batch[0]
+
+# Print shapes
+print(image.shape)  # torch.Size([3, 224, 224])
+print(label)        # e.g., tensor(0)
+-------------------code----------------------
+
+* Confirms the image is 3-channel (RGB) and resized to `224 x 224`
+* Label is a single scalar value (e.g., 0 for pizza)
+
+---
+
+### Step 3: Visualize the Image Using Matplotlib
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+
+# Convert image from [C, H, W] to [H, W, C] for plotting
+image_permuted = image.permute(1, 2, 0)
+
+# Plot the image
+plt.imshow(image_permuted)
+plt.title(class_names[label])  # Convert label to string using class_names list
+plt.axis(False)
+plt.show()
+-------------------code----------------------
+
+> Note: `permute(1, 2, 0)` changes tensor dimensions from `[C, H, W]` to `[H, W, C]`, which is required for `matplotlib`.
+
+---
+
+### Example Output
+
+* An image of **pizza**, **steak**, or **sushi** is shown with a clean plot and a correct label.
+* Confirms that the data pipeline is working as expected.
+
+---
+
+### What's Next?
+
+Now that we’ve:
+
+* Loaded the dataset
+* Transformed and batched it properly
+* Visualized a sample image successfully
+
+We’re ready to start planning how to **replicate the Vision Transformer architecture**.
+
+> Starting point: **Figure 1 of the paper**, which visually outlines the full ViT architecture pipeline (from input image to class output).
+
+---
+
+
+*** 230. Replicating a Vision Transformer - High Level Overview ***
+## Lecture Notes: Conceptual Overview of the Vision Transformer (ViT)
+
+### Objective
+
+Start transitioning from dataset preparation to replicating the **Vision Transformer** architecture using PyTorch, based on the official research paper.
+
+---
+
+### Key Resources from the Paper
+
+To replicate ViT accurately, focus on these **four key components** of the paper:
+
+1. **Figure 1** — Visual overview of the architecture.
+2. **Section 3.1 (Method)** — Textual explanation of how ViT works.
+3. **Four equations** — Define the mechanics of the transformer, especially **self-attention**.
+4. **Table 1** — Lists model configurations (e.g., ViT Base, Large, Huge).
+
+> You’re encouraged to read Section 3.1 multiple times for a deeper understanding.
+
+---
+
+### Additional Reference: Table 3
+
+* **Batch size**: 4096 (used in original paper, but too large for most local setups)
+* **Image size**: 224 × 224
+* **Patch size**: 16 × 16
+
+Note: We are using **ViT-Base** but building it in a flexible way to support scaling up later.
+
+---
+
+### Breaking Down Complex Architectures: A Systematic Approach
+
+To understand and replicate deep learning architectures (like ViT), break them into five components:
+
+#### 1. **Inputs**
+
+* Data going into the model.
+* For ViT: batches of image tensors of shape `[batch_size, 3, 224, 224]`.
+
+#### 2. **Outputs**
+
+* Data coming out of the model.
+* For ViT in this project: classification labels (e.g., `'pizza'`, `'steak'`, `'sushi'`).
+
+#### 3. **Layers**
+
+* Fundamental building units of the model.
+* Each layer takes an input and transforms it using operations (e.g., **self-attention**, **linear layers**, **normalization**).
+
+#### 4. **Blocks**
+
+* A collection of multiple layers.
+* For example, a **Transformer Encoder Block** includes:
+
+  * Layer normalization
+  * Multi-head self-attention
+  * Feed-forward network
+
+#### 5. **Model**
+
+* A full model is a **stack of blocks**.
+* Inputs are progressively transformed through each block until the final output is generated.
+
+> This modular breakdown (inputs → layers → blocks → model → outputs) is crucial when implementing complex architectures like ViT.
+
+---
+
+### Self-Attention Refresher
+
+* Core mechanism of transformers.
+* Operates on **query (Q)**, **key (K)**, and **value (V)** vectors.
+* Formula:
+
+  $$
+  \text{Attention}(Q, K, V) = \text{softmax} \left( \frac{QK^T}{\sqrt{d_k}} \right) V
+  $$
+
+> In **self-attention**, Q, K, and V come from the same source (hence "self").
+
+---
+
+### Implementation Plan
+
+We’ll follow this implementation roadmap:
+
+1. Start with **inputs** (image patches).
+2. Build **layers** (e.g., patch embedding, attention).
+3. Group layers into **blocks** (Transformer Encoder).
+4. Stack blocks to form the **model**.
+5. Train the model to predict **outputs** (food classes).
+
+---
+
+### Summary Recap (in terms of architecture)
+
+| Component | Description                                      |
+| --------- | ------------------------------------------------ |
+| Inputs    | Image tensors                                    |
+| Outputs   | Class labels                                     |
+| Layers    | Functional units (attention, MLP, normalization) |
+| Blocks    | Stacked layers forming encoder modules           |
+| Model     | Collection of blocks                             |
+
+---
+
+### Homework
+
+* Spend 2 minutes reviewing **Figure 1** of the paper.
+* Follow the flow of the architecture visually: from image input to final classification.
+* Understand how the layers and blocks are connected.
+* This mental model will guide coding in the next steps.
+
+---
+
+*** 231. Breaking Down Figure 1 of the ViT Paper ***
+## Lecture Notes: Breaking Down a Machine Learning Research Paper
+
+### Overview: Understanding Paper Replication
+
+* **Goal**: Break down a complex machine learning research paper (e.g., Vision Transformer) into manageable components—like Lego pieces.
+* **Approach**: Understand each part independently—figures, equations, tables, and text—then reconstruct the architecture step by step.
+
+---
+
+## Key Components of the Vision Transformer Paper
+
+### 1. **Figure 1** – *Visual Overview of Architecture*
+
+* Shows how the image is processed through the Vision Transformer.
+* **Input**: Image.
+* **Intermediate**: Split into patches → Embedded → Transformer Encoder.
+* **Output**: Class prediction (e.g., bird, ball, car).
+* Originally trained on ImageNet; in this project, used for *FoodVision Mini*.
+
+> First task: **Map FoodVision inputs and outputs** to this figure.
+
+---
+
+### 2. **Four Core Equations** – *Mathematical Formulations*
+
+* Define the transformations and operations in the model.
+* Include notation like `z₀`, which represents input embeddings.
+* These equations describe how data flows through the layers.
+
+---
+
+### 3. **Table 1** – *Model Hyperparameters*
+
+* Details different configurations of the Vision Transformer (e.g., VIT Base).
+* Includes parameters like:
+
+  * Patch size
+  * Hidden dimensions
+  * Number of layers/heads
+  * Training setup
+
+---
+
+### 4. **Surrounding Text** – *Explanations & Context*
+
+* Provides context for:
+
+  * Why each part of the architecture is designed the way it is.
+  * Descriptions of terms like embeddings, attention, normalization, etc.
+
+---
+
+## Deep Dive: Figure 1 – Architecture Overview
+
+### What Figure 1 Shows
+
+* An **image** is input.
+* **Split into fixed-size patches.**
+* **Each patch is linearly embedded** and has **position embeddings** added.
+* This is passed into a **transformer encoder** with:
+
+  * Normalization layers
+  * Multi-head attention
+  * Residual connections
+  * MLP (multi-layer perceptron)
+
+### Important Concepts:
+
+* **Embedding** = Learnable representation
+  → Initialized with random values, optimized over time.
+* **Position Embedding** = Encodes the position of patches.
+* **MLP** = Two-layer fully connected network (in this case).
+* **Residual (Skip) Connection** = Adds original input to later outputs to preserve information.
+* **Transformer Encoder** = A stack of blocks (Norm + Attention + Norm + MLP).
+* **Block** = A set of layers grouped together.
+
+---
+
+## Mapping to FoodVision Mini
+
+### Workflow:
+
+1. Input image of pizza.
+2. Split into patches.
+3. Pass through layers (embedding → attention → MLP, etc.).
+4. Output: predicted class = pizza.
+
+---
+
+## Summary of Key Definitions
+
+| Term                    | Meaning                                                              |
+| ----------------------- | -------------------------------------------------------------------- |
+| **Embedding**           | Learnable representation of input (e.g., patches → vectors)          |
+| **Position Embedding**  | Encodes position information for each patch                          |
+| **Transformer Encoder** | Stack of blocks that process the sequence of embeddings              |
+| **Residual Connection** | Adds input back into output to preserve signal through deep networks |
+| **MLP**                 | Multi-layer perceptron (simple feedforward neural network)           |
+
+---
+
+##  What's Next?
+
+* Provide an overview of the **four equations** and **Table 1**.
+* Begin implementing code to replicate these components step by step.
+* Gradually assemble all parts to fully replicate the **Vision Transformer** architecture for **FoodVision Mini**.
+
+---
+
+
+*** 232. Breaking Down the Four Equations Overview and a Trick for Reading Papers ***
+## Lecture Notes: Breaking Down the Four Equations (Vision Transformer Paper - Section 3.1)
+
+### Recap: Pieces of the Puzzle
+
+We are continuing to dissect the Vision Transformer (ViT) architecture, structured into:
+
+1. **Figure 1** – Visual overview (inputs, outputs, layers, blocks)
+2. **The Four Key Equations** – Define the computations behind each block
+3. **Table 1 & Table 3** – Hyperparameters and training settings
+
+---
+
+## Objective of This Lecture
+
+* Understand the **purpose** of the four equations in the paper.
+* Learn how to **interpret and extract** meaning from mathematical notation.
+* Introduce a **practical trick** using tools like Mathpix to convert LaTeX from research papers into editable, notebook-friendly text.
+* Focus on **Section 3.1** of the paper, which explains each equation in plain language.
+
+---
+
+## Understanding Equation 1
+
+### Step-by-Step Summary:
+
+1. **Input**: Image $X \in \mathbb{R}^{H \times W \times C}$
+
+   * $H$: Height
+   * $W$: Width
+   * $C$: Color channels
+
+2. **Patch Conversion**:
+
+   * Image is split into square patches of size $P \times P$
+   * The total number of patches:
+
+     $$
+     N = \frac{HW}{P^2}
+     $$
+   * Each patch is flattened and represented as a vector
+
+3. **Patch Embeddings**:
+
+   * Each flattened patch is linearly projected (embedded) to a vector of dimension $D$ using a **trainable projection**
+   * This is referred to as the **Patch Embedding**
+
+4. **Input Sequence**:
+
+   * After projection, patches are turned into a sequence of vectors
+
+     $$
+     x_p \in \mathbb{R}^{N \times (P^2 \cdot C)}
+     \rightarrow \text{Embedding} \rightarrow \mathbb{R}^{N \times D}
+     $$
+   * A **learnable class token** is prepended to the sequence
+   * **Position embeddings** are added to retain patch order
+
+---
+
+## Additional Notes
+
+### Terminology Clarification
+
+| Term               | Meaning                                                               |
+| ------------------ | --------------------------------------------------------------------- |
+| $\mathbb{R}$       | Set of real numbers (image pixel values are real numbers)             |
+| Patch Embedding    | Flattened image patches mapped to a latent space using a linear layer |
+| Learnable          | Trainable through backpropagation                                     |
+| Linear Projection  | A linear layer (no activation) that transforms input dimensions       |
+| Position Embedding | Encodes positional information of patches in the sequence             |
+| Class Token        | A learnable vector added to the beginning of the patch sequence       |
+
+---
+
+## 🛠️ Pro Tip: Using Mathpix for Paper Replication
+
+### Problem:
+
+* Copy-pasting LaTeX or math-rich text from PDFs is messy and unreadable.
+
+### Solution:
+
+* Use [**Mathpix**](https://mathpix.com) to:
+
+  * Take a screenshot of paper content (e.g., Section 3.1)
+  * Convert it to clean LaTeX and markdown
+  * Paste directly into Google Colab or Jupyter Notebooks for easy reading/editing
+
+### Bonus:
+
+* You can convert images, tables, and equations from PDFs
+* Helpful for visually aligning code with theory
+
+---
+
+## Suggested Exercises
+
+### Task:
+
+1. Read **Section 3.1** of the Vision Transformer paper fully.
+2. Identify how each paragraph relates to the **equations**.
+3. Use **Mathpix** or similar OCR tool to format the section into your notebook.
+4. Highlight/annotate where each **equation (1–4)** is described.
+
+---
+
+## Next Steps
+
+* In the next videos:
+
+  * **Dive deeper into Equations 2, 3, and 4**
+  * Write **code implementations** for each equation
+  * Begin replicating the full ViT architecture using PyTorch
+
+---
+
+**LaTeX** (pronounced “Lay-tech” or “Lah-tech”) is a **typesetting system** used to produce high-quality documents, especially those that include **mathematics, symbols, and technical content**.
+
+### What LaTeX Is:
+
+* A **markup language** like HTML, but designed for documents (especially academic and scientific ones).
+* Widely used in:
+
+  * Academic writing (e.g., research papers, theses)
+  * Mathematical documents (equations, proofs)
+  * Computer science and physics papers
+  * CVs and resumes (for precise formatting)
+
+---
+
+### Example: LaTeX for an Equation
+
+To write the equation:
+
+$$
+E = mc^2
+$$
+
+You would write this in LaTeX as:
+
+-------------------code----------------------
+E = mc^2
+-------------------code----------------------
+
+Or inside a full equation environment:
+
+-------------------code----------------------
+\[
+E = mc^2
+\]
+-------------------code----------------------
+
+---
+
+### Basic Syntax
+
+| LaTeX Code         | Output             |
+| ------------------ | ------------------ |
+| `\frac{a}{b}`      | $\frac{a}{b}$      |
+| `\sum_{i=1}^{n} i` | $\sum_{i=1}^{n} i$ |
+| `x^2`              | $x^2$              |
+| `\int_0^1 x dx`    | $\int_0^1 x \, dx$ |
+| `\mathbb{R}`       | $\mathbb{R}$       |
+
+---
+
+### Where LaTeX Is Used
+
+* **Overleaf** (online LaTeX editor)
+* **TeXShop** / **TeXworks** (desktop LaTeX editors)
+* **Jupyter Notebooks**, **Google Colab**, and **Markdown files** support LaTeX equations
+* **Research papers** and **scientific journals**
+
+---
+
+### Summary
+
+| Feature        | Description                                  |
+| -------------- | -------------------------------------------- |
+| Purpose        | Typesetting scientific and mathematical text |
+| Main Use Cases | Papers, books, reports, academic documents   |
+| Strengths      | Complex math, precise formatting, structure  |
+| Common Tools   | Overleaf, TeX Live, MikTeX, Mathpix, etc.    |
+
+---
+
+*** 233. Breaking Down Equation 1 ***
+## Lecture Notes: Breaking Down Equation 1 of the Vision Transformer
+
+### Goal
+
+Understand **Equation 1** from the Vision Transformer (ViT) paper and how it maps the **input image** to a **sequence of embedded vectors** used by the Transformer encoder.
+
+---
+
+### Recap
+
+* The ViT paper includes **Figure 1** (visual overview), **four equations** (core components), and **Tables 1 & 3** (hyperparameters).
+* **Equation 1** specifically describes how an image is converted into **patch embeddings + class token + position embeddings**—this forms the input to the Transformer encoder.
+
+---
+
+## Understanding LaTeX and Tools
+
+* Many ML papers use **LaTeX** to typeset equations.
+* **Google Colab** supports LaTeX-like syntax using Markdown (surrounded by `$...$` or `$$...$$`).
+* **Mathpix** is a useful tool for converting images or handwritten math into LaTeX/Markdown text.
+* Be cautious when searching "Logitech" (commonly confused with LaTeX); use the correct context or term.
+
+---
+
+## Overview of Equation 1: Patch Embedding Pipeline
+
+### Visual Mapping from Figure 1
+
+1. **Input Image**: $X \in \mathbb{R}^{H \times W \times C}$
+2. **Split into Patches**: Divide image into fixed-size patches ($P \times P$)
+3. **Flatten and Embed**:
+
+   * Each patch → Flattened vector
+   * Apply trainable **linear projection** → Convert to embedding of dimension $D$
+4. **Add Learnable Class Token**:
+
+   * A special token prepended to the sequence
+   * Helps with classification task
+5. **Add Position Embeddings**:
+
+   * Preserve spatial order of patches and class token
+
+### Final Output of Equation 1
+
+A sequence of vectors:
+
+* Class token + Patch 1 + Patch 2 + ... + Patch N
+  All are embedded and positionally encoded.
+
+---
+
+## Key Concepts
+
+| Term                 | Description                                                |
+| -------------------- | ---------------------------------------------------------- |
+| $X$                  | Input image tensor                                         |
+| Patch                | Square region of image (size $P \times P$)                 |
+| $N = \frac{HW}{P^2}$ | Number of patches in the image                             |
+| Embedding            | Learnable vector representation via linear projection      |
+| Class Token          | Learnable vector prepended to sequence for classification  |
+| Position Embedding   | Encoded position information added to each embedded vector |
+| Transformer Encoder  | Takes the full sequence as input                           |
+
+---
+
+**Pseudocode** is a **simple, human-readable way to describe algorithms or code logic** without worrying about the exact syntax of a specific programming language.
+
+---
+
+### Purpose of Pseudocode
+
+* Communicate **ideas clearly** without needing to write actual code
+* Focus on **logic and structure**, not syntax
+* Used in **planning**, teaching, interviews, and research papers
+
+---
+
+### Key Characteristics
+
+| Feature           | Description                                           |
+| ----------------- | ----------------------------------------------------- |
+| Language-agnostic | Not tied to Python, Java, C++, etc.                   |
+| Readable          | Written in plain English mixed with coding structure  |
+| Abstract          | Omits specific syntax, data types, imports, etc.      |
+| Focused on logic  | Describes **what** the code does, not **how** it runs |
+
+---
+
+### Example: Sum of Numbers from 1 to N
+
+**In Python:**
+
+-------------------code----------------------
+total = 0
+for i in range(1, N+1):
+    total += i
+print(total)
+-------------------code----------------------
+
+**In Pseudocode:**
+
+-------------------code----------------------
+SET total TO 0
+FOR each number i FROM 1 TO N
+    ADD i TO total
+PRINT total
+-------------------code----------------------
+
+---
+
+### Example: Pseudocode for ViT Equation 1
+
+-------------------code----------------------
+Input: Image X
+Split X into patches
+Flatten each patch
+Project each patch to a D-dimensional embedding
+Prepend a learnable class token to the sequence
+Add position embeddings to each element
+Return the final input sequence to the transformer encoder
+-------------------code----------------------
+
+---
+
+### Why Pseudocode Is Useful
+
+* **Quickly sketch** algorithm ideas
+* **Explain logic** to non-programmers
+* **Collaborate** without worrying about language-specific syntax
+* Often used in **interviews** or when studying algorithms
+
+---
+
+
+## Equation 1 in Pseudocode
+
+-------------------code----------------------
+# Inputs
+x_input = Image        # Shape: [H, W, C]
+
+# Step 1: Split image into patches and flatten
+patches = split_into_patches(x_input)     # -> N patches
+flattened_patches = flatten(patches)
+
+# Step 2: Linearly embed patches
+patch_embeddings = linear_projection(flattened_patches)  # Shape: [N, D]
+
+# Step 3: Add learnable class token
+class_token = learnable_vector(shape=[1, D])
+sequence = concatenate(class_token, patch_embeddings)     # Shape: [N+1, D]
+
+# Step 4: Add position embeddings
+position_embeddings = learnable_vectors(shape=[N+1, D])
+input_to_transformer = sequence + position_embeddings
+-------------------code----------------------
+
+---
+
+## Key Insight from Section 3.1
+
+* **"Flatten and map to D dimensions"** = Apply trainable linear layer to patches.
+* **"Resulting sequence of embedding vectors"** = Class token + patch embeddings + position embeddings.
+* This **entire sequence** becomes the **input to the transformer encoder**.
+
+---
+
+## Visual Summary (from lecture)
+
+| Step | Description                                             |
+| ---- | ------------------------------------------------------- |
+| 1    | Input image $X \in \mathbb{R}^{H \times W \times C}$    |
+| 2    | Split into patches → flatten                            |
+| 3    | Apply trainable linear projection → patch embeddings    |
+| 4    | Prepend learnable class token                           |
+| 5    | Add 1D position embeddings                              |
+| 6    | Final output: Input sequence to the transformer encoder |
+
+---
+
+## Challenge Task (Optional)
+
+Try to perform a similar breakdown and mapping for the other equations:
+
+| Equation | Component                    | Hint                              |
+| -------- | ---------------------------- | --------------------------------- |
+| Eq. 2    | Multi-Head Self-Attention    | This block: MSA                   |
+| Eq. 3    | Multi-Layer Perceptron (MLP) | This block: MLP                   |
+| Eq. 4    | Layer Normalization (LN)     | Normalization layers before/after |
+
+---
+
+## Next Step
+
+In the next lecture, we will dive into **Equation 2**, which defines the **multi-head self-attention mechanism** within the Vision Transformer architecture.
+
+*** 234. Breaking Down Equation 2 and 3 ***
+## **Lecture Summary: Vision Transformer Equations 2 & 3 Breakdown**
+
+### **Context Recap**
+
+In the previous lecture, the first core equation of the Vision Transformer (ViT) was broken down. This session continues with **equations two and three**, which correspond to core components of the **Transformer Encoder block**.
+
+---
+
+### **Transformer Encoder Architecture Overview**
+
+The **Transformer Encoder** is composed of alternating blocks of:
+
+* **Multi-Head Self-Attention (MSA)**
+* **MLP (Feed-Forward Neural Network)**
+* **Layer Normalization (LayerNorm)**
+* **Residual Connections** (also called Skip Connections)
+
+Each layer follows this consistent structure:
+
+-------------------code----------------------
+Input → LayerNorm → [MSA or MLP] → Add Input (Residual)
+-------------------code----------------------
+
+---
+
+### **Detailed Layer Analysis**
+
+#### **1. Multi-Head Self-Attention (MSA) Block – Equation 2**
+
+* Equation 2 corresponds to the **MSA block**.
+
+* Structure:
+
+  1. **Layer Normalization**
+  2. **Multi-Head Self-Attention**
+  3. **Residual Addition (input added back)**
+
+* **Pseudocode** for Equation 2:
+
+-------------------code----------------------
+# Pseudocode for MSA Block
+x = x_input
+x = MSA(LayerNorm(x)) + x  # residual connection
+-------------------code----------------------
+
+#### **2. MLP Block – Equation 3**
+
+* Equation 3 corresponds to the **MLP block**, which follows the MSA block.
+
+* Structure:
+
+  1. **Layer Normalization**
+  2. **MLP (usually 2 linear layers with a non-linearity in between)**
+  3. **Residual Addition**
+
+* **Pseudocode** for Equation 3:
+
+-------------------code----------------------
+# Pseudocode for MLP Block
+x = x_msa_output
+x = MLP(LayerNorm(x)) + x  # residual connection
+-------------------code----------------------
+
+---
+
+### **Residual Connections (Skip Connections)**
+
+* Purpose: Helps mitigate vanishing gradients and training instability in deep networks.
+* Mechanism: Adds the input of a block directly to its output.
+* Example:
+
+  * Given input `x`, and a function `F(x)` (e.g., MSA or MLP), the residual output is:
+    `Output = F(x) + x`
+* Benefit: Easier to learn residuals than full transformations; encourages identity mappings when needed.
+
+---
+
+### **Resource References and Further Reading**
+
+To understand the components more deeply, several resources were suggested:
+
+* **Layer Normalization**: Available as `torch.nn.LayerNorm` in PyTorch.
+* **Multi-Head Self Attention**:
+
+  * PyTorch implementation: `torch.nn.MultiheadAttention`
+  * Visual/Conceptual explanation:
+
+    * *"Transformers Explained Visually"* (blog series)
+    * *"The Illustrated Transformer"* by Jay Alammar
+* **Residual Connections**:
+
+  * Googling "residual connections explained" or "identity mapping in deep learning" can help
+  * Originates from **ResNet** architecture (Deep Residual Learning)
+
+---
+
+### **Key Takeaways**
+
+* The Transformer encoder alternates between **MSA** and **MLP blocks**, each preceded by **LayerNorm** and followed by **Residual Connections**.
+* Equations 2 and 3 describe the mathematical operations of these blocks.
+* Understanding the flow through pseudocode helps simplify the conceptual complexity before diving into implementation.
+
+---
+
+### **Next Steps / Challenge**
+
+* Try to understand and decode **Equation 4** from the Vision Transformer paper.
+* This will likely complete the core forward pass through the Transformer encoder.
+
+---
+
+*** 235. Breaking Down Equation 4 ***
+## **Lecture Summary: Vision Transformer — Equation 4 Breakdown**
+
+### **Context Recap**
+
+* In previous lectures, we translated **Equations 1, 2, and 3** from the Vision Transformer (ViT) paper into pseudocode.
+* These correspond to the input patch embedding, the MSA (Multi-Head Self-Attention) block, and the MLP block within the Transformer Encoder.
+* In this lecture, we explore **Equation 4**, the final step of the encoder before classification.
+
+---
+
+### **Objective**
+
+* Understand and convert **Equation 4** into pseudocode.
+* This equation represents the **final classification step** using the **class token**.
+
+---
+
+### **Key Concepts Introduced**
+
+#### **Multilayer Perceptron (MLP)**
+
+* A **Multilayer Perceptron** is a feedforward artificial neural network.
+* It maps input vectors to output vectors through one or more linear layers (with activations in between).
+* In the ViT paper:
+
+  * **Pre-training phase**: An MLP with **1 hidden layer** is used.
+  * **Fine-tuning phase**: A **single linear layer** is used.
+
+#### **BERT and Class Token**
+
+* **BERT** is a Transformer-based model designed for natural language processing (NLP).
+* The **class token** (`[CLS]`) is a learnable embedding prepended to the input sequence. It is used to aggregate the sequence information for classification.
+* ViT adopts a similar idea by prepending a learnable **class embedding** to image patch embeddings.
+
+---
+
+### **Equation 4 Breakdown**
+
+#### **From the Paper**
+
+* Equation 4:
+  **`y = LN(z₀ᴸ)`**
+
+  * `z₀ᴸ`: Output of the **class token** from the **last encoder layer** (`L`)
+  * `LN`: Layer Normalization
+  * `y`: The final image representation, to be passed into a classification head (MLP)
+
+#### **Classification Head**
+
+* Applied on top of `z₀ᴸ`:
+
+  * MLP with 1 hidden layer (pre-training)
+  * Linear layer (fine-tuning)
+
+---
+
+### **Pseudocode for Equation 4**
+
+-------------------code----------------------
+# Output of MLP block is passed into the classification head
+x = x_output_mlp_block  # This is z₀ᴸ
+
+# Apply LayerNorm, followed by classification head
+# For pre-training (MLP with one hidden layer):
+y = MLP(LayerNorm(x))
+
+# For fine-tuning (single linear layer):
+y = Linear(LayerNorm(x))
+-------------------code----------------------
+
+---
+
+### **Overall Pipeline (Equations 1–4 Recap)**
+
+1. **Equation 1**: Patch + Position Embedding
+   Converts image into embedded patches + class token.
+2. **Equation 2**: MSA Block
+   Applies LayerNorm → Multi-head Self Attention → Residual connection.
+3. **Equation 3**: MLP Block
+   Applies LayerNorm → Feedforward MLP → Residual connection.
+4. **Equation 4**: Classification
+   Uses class token from final encoder output → LayerNorm → (MLP or Linear) → Final prediction `y`.
+
+---
+
+### **Next Steps**
+
+* Begin converting the pseudocode for Equations 1–4 into **PyTorch code**.
+* The next lecture will explore **Table 1** from the paper, which defines the model configurations (ViT-Base, ViT-Large, etc.).
+* Suggested challenge:
+  Try breaking down Table 1 from the paper yourself to understand different model variants.
+
+---
+
+*** 236. Breaking Down Table 1 ***
+## **Vision Transformer (ViT) — Lecture Summary: Hyperparameters & Architecture**
+
+### **1. Recap of Progress**
+
+* **Previous coverage**:
+
+  * Broke down **Figure 1** into: Inputs, Outputs, Layers, and Blocks.
+  * Explained the **four main equations**, which define the behavior of each component (embedding, attention, MLP, residuals).
+* **Current focus**: **Table 1** – Hyperparameter configurations of various ViT model variants.
+
+---
+
+### **2. ViT Model Pipeline (Equation Overview)**
+
+#### **Equation 1: Patch + Position Embedding**
+
+* **Image is split** into fixed-size patches.
+* Each patch is **flattened and linearly projected** into an embedding vector.
+* A **learnable \[CLS] token** is prepended.
+* **Positional embeddings** are added to maintain spatial information.
+
+#### **Equation 2: Transformer Encoder**
+
+* Input embeddings are passed through **L layers** of transformer encoder blocks.
+* Each block includes:
+
+  * **LayerNorm**
+  * **Multi-Head Self-Attention (MHSA)**
+  * **Residual connection**
+
+#### **Equation 3: MLP Block**
+
+* Each block also includes:
+
+  * **MLP (usually 2 layers)**
+  * **LayerNorm**
+  * **Residual connection**
+
+#### **Equation 4**: Not described in detail here but typically involves final normalization and projection for classification.
+
+---
+
+### **3. Table 1 – Hyperparameters of ViT Variants**
+
+| Variant   | Layers (L) | Hidden Size (D) | MLP Size | Heads | Parameters |
+| --------- | ---------- | --------------- | -------- | ----- | ---------- |
+| ViT-Base  | 12         | 768             | 3072     | 12    | 86M        |
+| ViT-Large | 24         | 1024            | 4096     | 16    | 307M       |
+| ViT-Huge  | 32         | 1280            | 5120     | 16    | 632M       |
+
+* **Trend**: Increasing these values improves performance, but also increases computational cost and model size.
+
+---
+
+### **4. Notation and Key Concepts**
+
+* **Patch Size**: e.g., 16x16 — determines how images are divided.
+
+  * **Smaller patches** ⇒ more patches ⇒ longer input sequence ⇒ higher computation.
+  * Sequence length ∝ (Image Height × Width) / (Patch Size)²
+* **D (Hidden Size)**: Embedding dimension for each patch.
+* **MLP Size**: Number of neurons in the hidden layer of the MLP.
+* **Heads**: Number of attention heads in MHSA.
+* **L (Layers)**: Number of transformer encoder blocks.
+
+---
+
+### **5. Practical Strategy for Replication**
+
+* **Start with ViT-Base** to keep things manageable.
+* Design your model class with configurable hyperparameters (layers, hidden size, MLP size, heads).
+* Define:
+
+  * Patch embedding module
+  * Positional embedding
+  * Transformer encoder layers
+  * Final classification head
+
+---
+
+### **6. Implementation Hints (PyTorch)**
+
+* Use `torch.nn.MultiheadAttention` with:
+
+  * `embed_dim = D`
+  * `num_heads = H`
+* For MLP:
+
+  * Two linear layers with GELU or ReLU
+* Add `LayerNorm` and **residual connections** around MHSA and MLP.
+
+---
+
+### **7. Next Step**
+
+* Begin implementing:
+
+  * Patch splitting
+  * Patch embedding (`Linear` layer)
+  * Position embedding (`nn.Parameter`)
+  * \[CLS] token setup
+
+---
+
+*** 237. Calculating the Input and Output Shape of the Embedding Layer by Hand ***
+## **Vision Transformer (ViT) — Lecture Summary: Patch + Position + Class Embedding (Equation 1)**
+
+### **1. Recap of Progress**
+
+* So far, we've covered:
+
+  * **Figure 1** (architecture overview)
+  * **Equations 1–4** (core transformations)
+  * **Table 1** (hyperparameters of ViT variants)
+* We're starting implementation with **ViT-Base**, using a patch size of **16x16**.
+* Focus now is **Equation 1**, the **input embedding layer**.
+
+---
+
+### **2. Goal of Equation 1**
+
+> Transform a single image (e.g., 224×224×3) into a sequence of embedded patches suitable for input into a transformer.
+
+#### **Embedding Components**
+
+* **Patch Embedding**: Convert image patches into vectors.
+* **Class Token**: Add a learnable token for classification prepended to the sequence.
+* **Position Embedding**: Add positional information to maintain spatial structure.
+
+---
+
+### **3. Input and Output Shapes**
+
+#### **Input Image Shape**
+
+* Input: $\text{Height} \times \text{Width} \times \text{Channels}$
+* Example: $224 \times 224 \times 3$
+
+#### **Patch Embedding Output Shape**
+
+* Patch size $P = 16$
+* Number of patches $N = \frac{H \times W}{P^2} = \frac{224 \times 224}{16^2} = 196$
+* Each patch becomes a flattened vector of size: $P^2 \times C = 16^2 \times 3 = 768$
+* So output shape before adding class token: $(196, 768)$
+
+#### **Final Output Shape After Embedding**
+
+* Add \[CLS] token → sequence length becomes $196 + 1 = 197$
+* Final embedded sequence shape: $(197, 768)$
+
+---
+
+### **4. Key Variables Summary**
+
+| Symbol | Meaning                | Example Value (ViT-Base) |
+| ------ | ---------------------- | ------------------------ |
+| H, W   | Image height and width | 224                      |
+| C      | Number of channels     | 3                        |
+| P      | Patch size             | 16                       |
+| N      | Number of patches      | 196                      |
+| D      | Embedding dimension    | 768                      |
+
+* $N = \frac{H \times W}{P^2}$
+* $D = P^2 \times C = 768$
+
+---
+
+### **5. Visualization Workflow (Summary of Animation)**
+
+1. **Image** → split into patches (e.g., 16×16)
+2. **Patches** → flattened into vectors
+3. Each patch → embedded into D-dimensional vectors
+4. **\[CLS] token** prepended
+5. **Positional embeddings** added to all tokens
+6. Resulting sequence passed to Transformer Encoder
+
+---
+
+### **6. Implementation Strategy (PyTorch-Oriented)**
+
+* Step-by-step breakdown before coding:
+
+  * Create dummy image input: $(224, 224, 3)$
+  * Reshape it into 196 patches of shape $(16 \times 16 \times 3)$
+  * Flatten each patch to a vector of size 768
+  * Add a learnable \[CLS] token of size $(1, 768)$
+  * Add positional embedding of shape $(197, 768)$
+* Validate all shapes manually before coding
+
+---
+
+### **7. Example Values (Used for Shape Debugging)**
+
+-------------------code----------------------
+# Constants
+height, width, channels = 224, 224, 3
+patch_size = 16
+
+# Number of patches
+num_patches = (height * width) // (patch_size ** 2)  # 196
+
+# Patch embedding vector size
+embedding_dim = (patch_size ** 2) * channels  # 768
+
+# Output shape before class token: (196, 768)
+# Output shape after class token: (197, 768)
+-------------------code----------------------
+
+---
+
+### **8. Takeaway**
+
+* Understanding **input and output shapes** is essential before implementation.
+* Equation 1 builds the foundation for everything that follows in the Vision Transformer.
+* Getting this step right ensures the data flows correctly through the subsequent transformer layers.
+
+---
+
+In the next step, we'll start writing PyTorch code to:
+
+1. Slice images into patches
+2. Flatten and embed them
+3. Add \[CLS] token and positional embeddings
+
+This forms the **input embedding module** of the Vision Transformer.
+
+*** 238. Turning a Single Image into Patches (Part 1: Patching the Top Row) ***
+### **Lecture Summary: Visualizing Patch Embedding in Vision Transformers**
+
+---
+
+#### **1. Goal and Context**
+
+* **Objective**: Understand how to break an image into patches — the first step in a Vision Transformer (ViT) pipeline.
+* **Context**:
+
+  * Building on Equation 1 of the Vision Transformer paper.
+  * Section 4.1: Manual computation of input/output shapes to understand each layer.
+  * Main idea: Matching PyTorch layer outputs to the expected dimensions by computing shapes ourselves.
+
+---
+
+#### **2. Starting with an Image**
+
+* Load and visualize a single image using:
+
+  -------------------code----------------------
+  plt.imshow(image.permute(...))
+  -------------------code----------------------
+* Add a title and remove axes using:
+
+  -------------------code----------------------
+  plt.title(class_names[label])
+  plt.axis("off")
+  -------------------code----------------------
+
+---
+
+#### **3. Understanding Patch Dimensions**
+
+* **Input tensor shape**: (C, H, W), typically (3, 224, 224).
+* **Desired output shape**: (N, D)
+
+  * **N** = number of patches
+  * **D** = embedding dimension
+* **Embedding dimension D** is calculated as:
+
+  -------------------code----------------------
+  patch_size * patch_size * color_channels
+  -------------------code----------------------
+
+---
+
+#### **4. Visualizing a Portion of the Image**
+
+* Focused on plotting just the **top row** of the image:
+
+  * Convert image format to HWC (channels last) to match matplotlib expectations.
+  * Use `image[:, :patch_size, :]` to get the top 16 pixels of height.
+* Patch size is set to:
+
+  -------------------code----------------------
+  patch_size = 16
+  -------------------code----------------------
+
+---
+
+#### **5. Patchifying the Top Row**
+
+* **Why**: Helps build intuition by viewing individual patches visually.
+* **How**:
+
+  1. Check that the image size is divisible by the patch size:
+
+     -------------------code----------------------
+     assert image_size % patch_size == 0
+     -------------------code----------------------
+  2. Compute number of patches per row:
+
+     -------------------code----------------------
+     num_patches = image_size // patch_size
+     -------------------code----------------------
+  3. Set up subplots with:
+
+     -------------------code----------------------
+     fig, axes = plt.subplots(1, num_patches, figsize=(...), sharex=True, sharey=True)
+     -------------------code----------------------
+  4. Loop over the width of the image in steps of `patch_size`:
+
+     -------------------code----------------------
+     for i, patch_start in enumerate(range(0, image_size, patch_size)):
+         axes[i].imshow(image[:, patch_start:patch_start + patch_size, :])
+     -------------------code----------------------
+
+---
+
+#### **6. Notes on Plotting and Debugging**
+
+* Demonstrated how to use `enumerate` and subplot indexing.
+* Discussed `sharex` and `sharey` to synchronize axis scaling across subplots.
+* Used labels and visual spacing to improve plot readability.
+
+---
+
+#### **7. Key Takeaway**
+
+* Patch embedding is crucial — a good embedding leads to better learning.
+* The process of patchifying builds the foundation for tokenizing image input to the transformer.
+* Emphasis: "It’s all about the embedding."
+
+---
+
+#### **8. Final Challenge**
+
+* Current setup visualizes **only the top row** of patches.
+* **Next step** (challenge to the learner):
+
+  * Extend this method to patchify the **entire image**.
+  * Requires **nested loops**: iterate over both height and width dimensions.
+  * Aim: Create a full grid of 16x16 patches for a 224x224 image.
+
+---
+
+*** 239. Turning a Single Image into Patches (Part 2: Patching the Entire Image) ***
+### **Lecture: Visualizing and Patchifying an Image for Vision Transformers**
+
+---
+
+#### **1. Introduction**
+
+* The goal is to turn an input image into **patches**, the first step in a Vision Transformer (ViT).
+* Previously: Turned a small section (top row) of the image into patches.
+* This time: Patchify the **entire image** and visualize all patches.
+
+---
+
+#### **2. Patchifying Setup**
+
+* **Image Size**: `224`
+* **Patch Size**: `16`
+* **Number of Patches per Row/Column**:
+
+  -------------------code----------------------
+  num_patches = image_size // patch_size
+  total_patches = num_patches * num_patches  # 196 patches (14x14)
+  -------------------code----------------------
+* Ensure image size is divisible by patch size:
+
+  -------------------code----------------------
+  assert image_size % patch_size == 0
+  -------------------code----------------------
+
+---
+
+#### **3. Preparing to Visualize Patches**
+
+* Use `matplotlib.pyplot.subplots()` to create a grid of subplots:
+
+  -------------------code----------------------
+  fig, axes = plt.subplots(
+      nrows=num_patches, 
+      ncols=num_patches, 
+      figsize=(num_patches, num_patches), 
+      sharex=True, 
+      sharey=True
+  )
+  -------------------code----------------------
+* This creates a 14x14 grid (for 224×224 image and 16×16 patch size).
+
+---
+
+#### **4. Iterating Over the Image and Extracting Patches**
+
+* Loop through **height** and **width** in steps of patch size:
+
+  -------------------code----------------------
+  for i, patch_y in enumerate(range(0, image_size, patch_size)):
+      for j, patch_x in enumerate(range(0, image_size, patch_size)):
+          patch = image[patch_y:patch_y+patch_size, patch_x:patch_x+patch_size, :]
+          axes[i, j].imshow(patch)
+  -------------------code----------------------
+* Each subplot displays one patch from the original image.
+
+---
+
+#### **5. Subplot Aesthetics**
+
+* Label each axis:
+
+  -------------------code----------------------
+  axes[i, j].set_ylabel(str(i + 1), rotation=0, labelpad=20)
+  axes[i, j].set_xlabel(str(j + 1))
+  -------------------code----------------------
+* Remove axis ticks to clean up the plot:
+
+  -------------------code----------------------
+  axes[i, j].set_xticks([])
+  axes[i, j].set_yticks([])
+  axes[i, j].label_outer()
+  -------------------code----------------------
+
+---
+
+#### **6. Plotting and Title**
+
+* Add a **title** to the whole plot using `fig.suptitle()` with the class label.
+* Finally, render the plot:
+
+  -------------------code----------------------
+  plt.show()
+  -------------------code----------------------
+
+---
+
+#### **7. Result**
+
+* Image is now divided into 196 small patches (14x14 grid).
+* Visualization confirms the patchification process works as expected.
+
+---
+
+#### **8. Key Insight**
+
+* This visualization step is only for understanding — it’s too slow for real-time model training.
+* **Next Step**: Embed each 16x16 patch into a vector of size 768.
+* **Hint for Embedding**:
+
+  > "What layer slides over an image like a window?" — Refers to **convolutional layers**.
+
+---
+
+#### **Conclusion**
+
+* Successfully visualized how a single image is divided into patches.
+* Ready to proceed to **embedding** those patches to build the Vision Transformer input.
+
+---
+
+*** 240. Creating Patch Embeddings with a Convolutional Layer ***
+
+## **Section 4.3: Creating Image Patches and Turning Them into Patch Embeddings**
+
+---
+
+### **Overview**
+
+* This section focuses on turning an image into **patches** and then converting those patches into **embeddings**, using PyTorch layers.
+* The process involves two key steps:
+
+  1. Splitting the image into patches.
+  2. Turning those patches into embeddings using a convolutional layer.
+
+---
+
+### Why do we turn **patches into embeddings** in ViT?
+
+The Vision Transformer (ViT) treats an image kind of like a sentence made of words. But instead of words, we use **image patches** (small pieces of the image, like 16x16 pixel blocks).
+
+But here’s the key:
+
+> The transformer model doesn’t understand images — it understands **vectors** (lists of numbers).
+
+So we need to **convert each image patch into a vector of numbers**. That’s what we call an **embedding**.
+
+---
+
+### Think of it like this:
+
+* Imagine you cut a photo into small square tiles (patches).
+* Now you want a computer to "read" them, but it doesn’t understand images or colors — only numbers.
+* So you flatten each tile (like turning the tile into a long line of numbers) and use a small neural network (usually a linear layer) to **turn that into a fixed-size vector**.
+* These vectors are now the "words" of our sentence — they’re the **embeddings**.
+
+---
+
+### Why embeddings are important:
+
+* They give each patch a **standard format** the transformer can work with.
+* They help the model learn what features are important in each part of the image.
+* Without embeddings, the transformer wouldn’t know how to process visual information.
+
+---
+
+### In short:
+
+> We turn patches into embeddings so that the transformer model can understand and learn from images — just like it understands and learns from words in text.
+
+
+### **Why Do This?**
+
+* Transformers require vector inputs.
+* To apply transformers to images (like Vision Transformers), we need to convert image regions (patches) into numerical vectors called **embeddings**.
+* This allows the model to process the image similarly to how it processes words in NLP.
+
+---
+
+### **Conceptual Analogy**
+
+* **Image → Patches → Embeddings**
+* Similar to how words are embedded in NLP, image patches are embedded in ViT.
+* A **convolutional layer** with the right kernel and stride size acts as the patch extraction and embedding mechanism.
+
+---
+
+### **Using Convolution to Extract Patch Embeddings**
+
+* We can simulate patch extraction using a `Conv2D` layer with:
+
+  * **Kernel size** = patch size (e.g., 16x16)
+  * **Stride** = patch size (to avoid overlap)
+  * **In channels** = 3 (for RGB images)
+  * **Out channels** = embedding dimension (e.g., 768)
+
+#### PyTorch Code Snippet
+
+-------------------code----------------------
+import torch
+from torch import nn
+
+# Define patch size and embedding dimension
+patch_size = 16
+embedding_dim = 768
+
+# Create the Conv2D layer for patch embedding
+conv2d_layer = nn.Conv2d(
+    in_channels=3, 
+    out_channels=embedding_dim,
+    kernel_size=patch_size, 
+    stride=patch_size, 
+    padding=0
+)
+-------------------code----------------------
+
+* This operation:
+
+  * Slides a 16×16 kernel across the image.
+  * Outputs a tensor where each 16×16 patch is now represented by a 768-dimensional vector.
+  * Creates a grid of patch embeddings (e.g., 14×14 grid for a 224×224 image).
+
+---
+
+### **Visual Interpretation**
+
+* Using CNN explainer, a 2D convolution is shown sliding over an input image.
+* Each step extracts a patch and converts it into a learnable feature map.
+* These feature maps are the **patch embeddings**.
+
+---
+
+### **Output Shape Explanation**
+
+Assuming input image size is 224×224:
+
+* After `Conv2D`, output shape is:
+  `[batch_size, embedding_dim, num_patches_height, num_patches_width]`
+  e.g., `[1, 768, 14, 14]` → 196 patches in total.
+
+---
+
+### **Next Step: Flattening for Transformer Input**
+
+* The ViT expects a flat sequence, not a grid.
+* Use `torch.nn.Flatten` to flatten the spatial dimensions:
+
+  -------------------code----------------------
+  flatten = nn.Flatten(start_dim=2)
+  patches = flatten(patch_embeddings)
+  patches = patches.permute(0, 2, 1)  # Shape: [batch_size, num_patches, embedding_dim]
+  -------------------code----------------------
+
+---
+
+### **Reference from ViT Paper**
+
+* Section 3.1 of the paper mentions using CNN feature maps as an alternative to raw image patches.
+* This hybrid approach means:
+
+  * CNN can extract richer features.
+  * Then we flatten and project these to the transformer’s input dimension.
+
+---
+
+### **Summary**
+
+* Patch embeddings can be created using a convolutional layer.
+* Set kernel size and stride to the patch size (e.g., 16).
+* This generates a sequence of learnable embeddings, one for each patch.
+* Flattening is the next step to prepare this data for input into a transformer.
+
+---
+
+*** 241. Exploring the Outputs of Our Convolutional Patch Embedding Layer ***
+## Lecture Notes: Turning Image Patches into Patch Embeddings
+
+### 1. **Patch Embedding via Convolutional Layer**
+
+* We're taking an **unpatchified image** and turning it into **patches** using a **Conv2D layer**.
+* **Kernel size and stride** are both set to the patch size (e.g., 16×16) to divide the image into non-overlapping patches.
+* Each patch is passed through the convolutional layer and becomes an **embedding vector**.
+* The number of output channels of the convolutional layer determines the **embedding dimension `D`**, as defined in Table 1 (e.g., 768 for ViT-Base).
+
+---
+
+### 2. **Understanding Output Tensor Shape**
+
+After passing a single image through the Conv2D layer, the output tensor shape is:
+
+-------------------code----------------------
+(batch_size, embedding_dim, feature_map_height, feature_map_width)
+-------------------code----------------------
+
+* `batch_size`: number of images in a batch.
+* `embedding_dim`: dimensionality of each patch embedding (e.g., 768).
+* `feature_map_height` and `feature_map_width`: number of patches along height and width.
+
+---
+
+### 3. **Gradients and Learnability**
+
+* The output tensor requires gradients (`requires_grad=True`), meaning it is **learnable**.
+* PyTorch will automatically track gradients and update them during backpropagation using `optimizer.step()`.
+
+---
+
+### 4. **Visualization of Convolutional Feature Maps**
+
+To understand what's being learned:
+
+* Randomly select **5 indices** from the 768 feature maps.
+* Plot them using `matplotlib.pyplot` to visualize what the feature maps look like.
+* Must use:
+
+  * `.squeeze()` to remove the batch dimension.
+  * `.detach().numpy()` to convert the tensor for plotting.
+
+#### Example Plotting Code:
+
+-------------------code----------------------
+fig, axes = plt.subplots(1, 5)
+for i, idx in enumerate(random_indexes):
+    feature_map = image_out_of_conv[0, idx, :, :]
+    axes[i].imshow(feature_map.detach().numpy())
+    axes[i].set_xticks([])
+    axes[i].set_yticks([])
+-------------------code----------------------
+
+---
+
+### 5. **Feature Map Observations**
+
+* Feature maps often appear abstract but can reveal **edges** or **outlines** of the image (e.g., the outline of a pizza).
+* These maps evolve during training to better represent the key features of images.
+
+---
+
+### 6. **Goal: Flatten Spatial Dimensions into a Sequence**
+
+* Transformers work with **sequences**, not 2D grids.
+* Need to flatten `feature_map_height × feature_map_width` (e.g., 14×14 = 196) into a single sequence:
+
+  -------------------code----------------------
+  New shape: (batch_size, embedding_dim, num_patches)
+  Example: (1, 768, 196)
+  -------------------code----------------------
+
+#### Challenge Given:
+
+* Use `torch.flatten()` to transform the output from shape `(1, 768, 14, 14)` to `(1, 768, 196)`.
+* Try writing code to perform this operation as practice.
+
+---
+
+### 7. **Next Step**
+
+* Flatten the patch embeddings using `torch.flatten(start_dim=2)` to prepare them for the transformer input.
+* This will be covered in more detail in the next video.
+
+---
+
+
+*** 242. Flattening Our Convolutional Feature Maps into a Sequence of Patch Embeddings ***
+## Lecture Notes: Flattening Patch Embeddings for Vision Transformer Input
+
+### 1. **Recap: Feature Maps from Conv2D Layer**
+
+* A single input image (e.g., a pizza image) is passed through a `Conv2D` layer.
+* This produces **768 feature maps**, as determined by the embedding size.
+* These feature maps are the **learnable patch embeddings**—the computer will learn to represent images using these.
+* We're focusing on **one image** to simplify the explanation.
+
+---
+
+### 2. **Goal: Prepare Input for Transformer**
+
+* We want to **flatten the patch embeddings** into a sequence for the Vision Transformer (ViT) encoder.
+* According to the hybrid ViT architecture:
+
+  * **Input = sequence of patch embeddings**, where the **spatial dimensions** (height × width) are **flattened**.
+
+---
+
+### 3. **Using `torch.nn.Flatten`**
+
+* `torch.nn.Flatten(start_dim, end_dim)` is used to flatten specific dimensions of a tensor.
+
+#### Current Tensor Shape:
+
+-------------------code----------------------
+(batch_size, embedding_dim, feature_map_height, feature_map_width)
+-------------------code----------------------
+
+#### Goal Shape (before rearranging):
+
+-------------------code----------------------
+(batch_size, embedding_dim, number_of_patches)
+-------------------code----------------------
+
+* We flatten dimensions 2 and 3 (the spatial dimensions).
+
+#### Code:
+
+-------------------code----------------------
+from torch.nn import Flatten
+
+flatten_layer = Flatten(start_dim=2, end_dim=3)
+flattened = flatten_layer(image_out_of_conv)
+-------------------code----------------------
+
+### **Flatten layer in machine learning**
+
+A **Flatten layer** turns a multi-dimensional input (like a 2D image or a 3D feature map) into a **1D vector**.
+
+#### Think of it like this:
+
+If you have a matrix (or cube) of numbers, **flattening** just takes all the numbers and **lays them out in a single line**.
+
+---
+
+### **Why use it?**
+
+* Neural networks (like fully connected layers or transformers) often expect 1D input.
+* So we **flatten** the output from previous layers (like CNNs) to prepare the data for the next stage.
+
+---
+
+### **Example:**
+
+You have a 2D image (or a feature map) of shape `3 x 3`:
+
+-------------------code----------------------
+[[1, 2, 3],
+ [4, 5, 6],
+ [7, 8, 9]]
+-------------------code----------------------
+
+After flattening, it becomes:
+
+-------------------code----------------------
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+-------------------code----------------------
+
+If it was a 3D shape (like `3 x 3 x 2`), flattening still turns it into one long 1D vector.
+
+---
+
+### In PyTorch:
+
+-------------------code----------------------
+import torch
+x = torch.randn(1, 3, 3)
+flattened = x.flatten()
+print(flattened.shape)  # torch.Size([9])
+-------------------code----------------------
+
+
+---
+
+### 4. **Final Target Shape**
+
+* Transformers expect input as:
+
+-------------------code----------------------
+(batch_size, number_of_patches, embedding_dim)
+-------------------code----------------------
+
+* To reach this shape, we **rearrange (permute)** the dimensions.
+
+#### Code:
+
+-------------------code----------------------
+flattened = flattened.permute(0, 2, 1)  # From (B, D, N) to (B, N, D)
+-------------------code----------------------
+
+---
+
+### 5. **Step-by-Step Summary in Code**
+
+-------------------code----------------------
+# Add batch dimension to input image
+image = image.unsqueeze(0)  
+
+# Pass through convolutional patch embedding layer
+image_out_of_conv = conv2d_layer(image)
+
+# Flatten spatial dimensions (14x14 → 196)
+flatten_layer = Flatten(start_dim=2, end_dim=3)
+flattened = flatten_layer(image_out_of_conv)  # Shape: (1, 768, 196)
+
+# Rearrange for transformer input
+flattened = flattened.permute(0, 2, 1)  # Shape: (1, 196, 768)
+-------------------code----------------------
+
+---
+
+### 6. **Validation**
+
+* Printed shapes:
+
+  * Input image shape: `(3, 224, 224)`
+  * After conv layer: `(1, 768, 14, 14)`
+  * After flattening: `(1, 768, 196)`
+  * After permuting: `(1, 196, 768)`
+* **Success**: The final shape is the exact format required for the transformer encoder.
+
+---
+
+### 7. **Challenge**
+
+* **Visualize** one of the patch embeddings in the final sequence.
+* **Wrap** the Conv2D and Flatten logic into a single custom PyTorch layer, so that:
+
+  * Input: an image or a batch of images
+  * Output: sequence of patch embeddings with shape `(batch_size, num_patches, embedding_dim)`
+
+---
+
+*** 243. Visualizing a Single Sequence Vector of Patch Embeddings ***
+## Lecture Notes: Visualizing Flattened Patch Embeddings and Next Steps
+
+### 1. **Recap of Progress So Far**
+
+* We've completed three key steps:
+
+  1. **Image → Patches** using patchifying logic.
+  2. **Patches → Patch Embeddings** via a convolutional layer.
+  3. **Patch Embeddings → Flattened Sequence** using `torch.nn.Flatten`.
+* We now have the correct input shape for the Vision Transformer encoder:
+
+  -------------------code----------------------
+  (batch_size, number_of_patches, embedding_dim)
+  -------------------code----------------------
+
+---
+
+### 2. **Visualizing a Flattened Patch Embedding**
+
+* Goal: See what a single **flattened patch embedding vector** looks like.
+
+#### Steps:
+
+* Extract one vector from the flattened patch sequence:
+
+  -------------------code----------------------
+  image_out_flat = image_out_of_conv_flattened.permute(0, 2, 1)
+  single_patch_embedding = image_out_flat[0, 0, :]  # shape: (768,)
+  -------------------code----------------------
+
+* This vector is one of 196 patch embeddings that now represent the input image.
+
+* Each vector has 768 values (for ViT-Base), and will be updated during training.
+
+* This vector is a **learnable embedding**—the model will learn better representations over time.
+
+---
+
+### 3. **Plotting the Flattened Patch Embedding**
+
+* Use `matplotlib` to visualize the embedding as an image:
+
+  -------------------code----------------------
+  import matplotlib.pyplot as plt
+
+  plt.figure(figsize=(2.2, 2.2))
+  plt.imshow(single_patch_embedding.detach().numpy().reshape(22, 22))  # Optional reshaping for display
+  plt.axis("off")
+  plt.title("Flattened Patch Embedding")
+  plt.show()
+  -------------------code----------------------
+* Note: Plot may look abstract, but it shows what the transformer will process internally.
+
+---
+
+### 4. **Summary of What We've Done**
+
+* We’ve recreated the **Patch Embedding** section of Equation 1 from the ViT paper.
+* This includes:
+
+  * Breaking down the image into patches.
+  * Embedding each patch.
+  * Flattening the spatial dimensions into a 1D sequence.
+* The result is a sequence of embedding vectors, ready to be passed into a **transformer encoder**.
+
+---
+
+### 5. **Next Steps**
+
+* **To Do:**
+
+  * Add the **\[CLS] token** (a learnable embedding that summarizes the image).
+  * Add **positional embeddings** (so the transformer knows the order of patches).
+* Before that:
+
+  * Refactor the current patchification pipeline (Conv2D + Flatten + Permute) into a **single PyTorch layer or module**.
+  * This modular approach allows passing an image tensor and receiving a transformer-ready embedding sequence with one call.
+
+---
+
+
+*** 244. Creating the Patch Embedding Layer with PyTorch ***
+## **Lecture Summary: Turning the ViT Patch Embedding into a PyTorch Module**
+
+### **Context & Objective**
+
+* We're transforming a 2D input image into a 1D sequence of learnable patch embeddings.
+* The goal is to implement this step as a **reusable PyTorch module**, aligning with the structure described in the Vision Transformer (ViT) paper.
+* This module corresponds to the **linear projection of flattened patches**, as described in **Equation 1** of the paper.
+
+---
+
+## **Section 4.5: Turning Patch Embedding into a PyTorch Module**
+
+We aim to modularize the patch embedding process using PyTorch. This involves:
+
+1. Creating a class
+2. Setting up key layers
+3. Defining the forward pass
+
+---
+
+### **Step-by-Step Plan**
+
+#### 1. **Create the Class**
+
+-------------------code----------------------
+class PatchEmbedding(nn.Module):
+-------------------code----------------------
+
+* Name: `PatchEmbedding`
+* Inherits from `nn.Module`
+
+#### 2. **Initialize with Hyperparameters**
+
+-------------------code----------------------
+def __init__(self, in_channels: int = 3, patch_size: int = 16, embed_dim: int = 768):
+-------------------code----------------------
+
+* `in_channels`: usually 3 (RGB)
+* `patch_size`: default 16
+* `embed_dim`: default 768 (from ViT Base)
+
+#### 3. **Image → Embedded Patches Layer**
+
+Use `nn.Conv2d`:
+
+-------------------code----------------------
+self.patchify = nn.Conv2d(
+    in_channels=in_channels,
+    out_channels=embed_dim,
+    kernel_size=patch_size,
+    stride=patch_size,
+    padding=0
+)
+-------------------code----------------------
+
+#### 4. **Flatten Feature Maps**
+
+-------------------code----------------------
+self.flatten = nn.Flatten(start_dim=2, end_dim=3)
+-------------------code----------------------
+
+* Converts \[B, C, H, W] → \[B, C, HW]
+
+#### 5. **Define Forward Pass**
+
+-------------------code----------------------
+def forward(self, x):
+-------------------code----------------------
+
+* Ensure input image is divisible by patch size:
+
+-------------------code----------------------
+assert image_resolution % patch_size == 0
+-------------------code----------------------
+
+* Apply patching:
+
+-------------------code----------------------
+x = self.patchify(x)
+x = self.flatten(x)
+-------------------code----------------------
+
+* Rearrange the dimensions:
+
+-------------------code----------------------
+x = x.permute(0, 2, 1)  # [B, C, N] → [B, N, C]
+-------------------code----------------------
+
+* Output: \[Batch Size, Num Patches, Embedding Dimension]
+
+---
+
+### **Testing the Module**
+
+1. Instantiate the module:
+
+-------------------code----------------------
+patch_embed = PatchEmbedding(patch_size=16, embed_dim=768)
+-------------------code----------------------
+
+2. Pass an image tensor (e.g. \[1, 3, 224, 224]):
+
+-------------------code----------------------
+out = patch_embed(image)
+-------------------code----------------------
+
+3. Output shape:
+
+* Input: `[1, 3, 224, 224]`
+* Output: `[1, 196, 768]`
+  (Since $224 / 16 = 14$; $14^2 = 196$ patches)
+
+---
+
+### **What We’ve Achieved**
+
+* Created a modular **patch embedding** layer.
+* Converted an image to a **sequence of flattened and embedded patches**.
+* Completed the **linear projection part of Equation 1** in the ViT paper.
+
+---
+
+### **Next Steps**
+
+* Add **\[CLS] token**
+* Add **position embeddings**
+
+These components will complete the full patch embedding input preparation before feeding into the transformer encoder.
+
+---
+
+*** 245. Creating the Class Token Embedding ***
+## **Lecture Summary: Adding a Learnable Class Token in ViT**
+
+### **Context**
+
+* In the previous step, we built the **patch embedding layer** to turn an image into a sequence of embedded patches.
+* Now, we're extending the sequence by adding a **learnable class token**—an essential step for enabling classification in ViT.
+* This aligns with the ViT paper (Equation 1 and Figure 1), where the class token is prepended to the embedded patch sequence.
+
+---
+
+In simple terms:
+
+### **A class token is a special learnable vector added to the input of a Vision Transformer (ViT) so the model can use it to make predictions.**
+
+---
+
+### Here's an analogy:
+
+Imagine you're reading a book, and you want to write a summary of the whole thing.
+You take notes on each chapter (these are like **patches** of the image).
+But at the top of your notebook, you leave **one special page** to write your final summary.
+
+That special page is the **class token**.
+
+---
+
+### More technically:
+
+* The image is split into small parts (patches), and each part is turned into a vector.
+* A **class token** is an extra vector added at the beginning.
+* As the transformer processes all these vectors (patches + class token), the **class token gathers important information** from the whole image.
+* At the end, we use **only the class token** to make a prediction (e.g., what object is in the image).
+
+---
+
+### Why use it?
+
+Because transformers are designed for sequences (like words in a sentence), and the class token gives them **a dedicated place to store a summary** for classification.
+
+## **Step-by-Step: Creating and Adding the Class Token**
+
+### **1. Purpose of the Class Token**
+
+* A **learnable embedding** prepended to the sequence of patch embeddings.
+* Acts similarly to BERT’s `[CLS]` token.
+* Used as the final output representation for classification.
+* Final output shape becomes `[batch_size, num_patches + 1, embed_dim]`.
+
+---
+
+### **2. Verify Image Size Compatibility**
+
+Before anything, ensure the input image dimensions are divisible by the patch size:
+
+-------------------code----------------------
+assert image_size % patch_size == 0, "Input image size must be divisible by patch size"
+-------------------code----------------------
+
+---
+
+### **3. Create a Learnable Class Token**
+
+Use `nn.Parameter` so PyTorch tracks gradients and updates this token during training:
+
+-------------------code----------------------
+import torch.nn as nn
+import torch
+
+class_token = nn.Parameter(
+    torch.ones(1, 1, embed_dim),  # Shape: [1, 1, embedding_dim]
+    requires_grad=True
+)
+-------------------code----------------------
+
+* You can use `torch.rand` instead of `ones` for randomness:
+
+  -------------------code----------------------
+  torch.rand(1, 1, embed_dim)
+  -------------------code----------------------
+
+---
+
+### **4. Match Token Shape with Batch**
+
+Broadcast the token across the batch:
+
+-------------------code----------------------
+batch_size = patch_embeddings.shape[0]  # From [B, N, D]
+class_token = class_token.expand(batch_size, -1, -1)  # Now [B, 1, D]
+-------------------code----------------------
+
+---
+
+### **5. Concatenate Class Token to Patches**
+
+Use `torch.cat` to prepend along the patch (sequence) dimension (dim=1):
+
+-------------------code----------------------
+patch_embeddings = torch.cat([class_token, patch_embeddings], dim=1)
+-------------------code----------------------
+
+---
+
+### **6. Final Output Shape**
+
+* Original shape of patch embeddings: `[B, 196, D]` (if using 224×224 image and 16×16 patches)
+* After prepending class token: `[B, 197, D]`
+
+---
+
+## **Verification**
+
+Print shapes and values for confirmation:
+
+-------------------code----------------------
+print(patch_embeddings.shape)  # Should be [B, 197, D]
+-------------------code----------------------
+
+---
+
+### **Key Concept Recap**
+
+* `nn.Parameter`: makes a tensor trainable
+* `requires_grad=True`: allows gradient updates
+* `expand`: repeats the learnable token for all batch samples
+* `torch.cat`: used to prepend along a specific dimension
+
+---
+
+### **Outcome**
+
+You now have a working **class token prepended** to the sequence of embedded image patches. This token is learnable and will be used as the final feature vector for classification.
+
+---
+
+## **Next Step**
+
+Add **position embeddings** to this `[CLS] + patch embedding` sequence to encode positional information.
+
+*** 246. Creating the Class Token Embedding - Less Birds ***
+
+duplication with 245
+
+
+*** 247. Creating the Position Embedding ***
+## **Lecture Summary: Position Embedding in Vision Transformers (ViT)**
+
+### **Context**
+
+* In the previous steps, we:
+
+  * Split an image into patches.
+  * Converted them into embeddings using a Conv2D layer.
+  * Created and prepended a **learnable class token**.
+* Now we are adding **position embeddings** to preserve the spatial layout of the original image.
+
+---
+
+## **4.7 Creating the Position Embedding**
+
+### **Goal**
+
+* Add a **learnable 1D position embedding** to the entire sequence (patch embeddings + class token).
+* Final result: tensor of shape `[batch_size, num_patches + 1, embed_dim]` with positional information included.
+
+---
+
+### **Why Position Embedding?**
+
+* When the image is turned into a sequence of patches, positional information is lost.
+* Position embeddings help the transformer **understand the order and location** of patches.
+* This allows the model to better reconstruct spatial relationships between parts of the image.
+
+---
+
+## **What is a Position Embedding?**
+
+A **position embedding** is information added to each image patch (or token) to tell the model **where** it came from in the original image.
+
+### Why do we need it?
+
+Transformers **don’t understand order** by default.
+Unlike CNNs or RNNs, transformers treat every token as **independent** unless we **explicitly tell them the order**.
+
+So, we add a **position embedding** to each patch embedding to tell the model:
+
+> "This patch is from the top-left",
+> "This one is from the bottom-right", etc.
+
+---
+
+### Think of it like this:
+
+Imagine someone sends you 10 puzzle pieces, but doesn't tell you where each one goes.
+You'll struggle to build the full picture.
+
+But if each piece comes **labeled with a position**, like “Row 1, Column 3”, you can reconstruct the image much better.
+
+That label is like a **position embedding**.
+
+---
+
+## **What’s the difference between Class Token and Position Embedding?**
+
+| Feature                        | Class Token                                           | Position Embedding                                      |
+| ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------- |
+| **Purpose**                    | Used to summarize the entire input for classification | Used to tell the model where each patch comes from      |
+| **Applies to**                 | One special token added at the start of the sequence  | Every token in the sequence (including the class token) |
+| **Learnable?**                 | Yes (usually initialized randomly and trained)        | Yes (can be learned) or fixed (sinusoidal, etc.)        |
+| **Shape (ViT Example)**        | `[1, 1, 768]`                                         | `[1, 197, 768]` (if 196 patches + 1 class token)        |
+| **Used for final prediction?** | Yes, we use the class token as the final output       | No, position embeddings are just added to help learning |
+
+---
+
+### Summary:
+
+* **Class token** = "Final summary" vector, used for prediction.
+* **Position embedding** = "Location hint" added to each input so the model understands order or layout.
+
+
+
+### **Steps to Add Position Embedding**
+
+#### 1. **Calculate Number of Patches**
+
+-------------------code----------------------
+num_patches = int((height / patch_size) * (width / patch_size))  # Should be 196 for 224x224 with patch size 16
+-------------------code----------------------
+
+#### 2. **Get Embedding Dimension**
+
+-------------------code----------------------
+embedding_dim = patch_embedded_with_class.shape[-1]  # e.g., 768
+-------------------code----------------------
+
+#### 3. **Create Learnable Position Embedding**
+
+-------------------code----------------------
+position_embedding = nn.Parameter(
+    torch.ones(1, num_patches + 1, embedding_dim)  # Shape: [1, 197, 768]
+)
+-------------------code----------------------
+
+* `+1` accounts for the **class token** at the start.
+* Using `torch.ones` for clarity; in practice, `torch.randn` is preferred.
+
+#### 4. **Add Position Embedding to the Sequence**
+
+-------------------code----------------------
+patch_and_position_embedding = patch_embedded_with_class + position_embedding
+-------------------code----------------------
+
+---
+
+### **Final Tensor Shape**
+
+* The result is a tensor of shape:
+  **`[batch_size, num_patches + 1, embedding_dim]`**, e.g., `[1, 197, 768]`
+* This tensor now includes:
+
+  * Embedded patches
+  * Class token at the front
+  * Positional context
+
+---
+
+## **Visual Recap**
+
+* Start: Patch embeddings only → `[1, 196, 768]`
+* After class token: → `[1, 197, 768]`
+* After adding position embedding: → still `[1, 197, 768]` but now enriched with spatial info.
+
+---
+
+### **Key Notes**
+
+* **Class token** is for summarizing the image for classification.
+* **Position embedding** encodes patch order/location.
+* Both are **learnable parameters** (`nn.Parameter`) and updated during training.
+
+---
+
+## Conclusion
+
+* We've successfully replicated **Equation 1** from the ViT paper.
+* The full input representation (patch + class + position) is now ready for the transformer encoder.
+
+---
+
+## Next Challenge
+
+Try to:
+
+* Wrap this entire logic into a single module or script.
+* Input: raw image tensor.
+* Output: position-aware, class-token-prepended patch embeddings ready for transformer input.
+
+
+*** 248. Equation 1: Putting it All Together ***
+## **Lecture Summary: From Image to Embedding (Equation 1 Complete)**
+
+### **Context**
+
+We've built up individual components:
+
+* Patch embedding (using Conv2D).
+* Learnable class token.
+* Learnable position embedding.
+
+Now, we combine these into a single cell to generate a **position-aware embedding sequence** ready for the transformer encoder.
+
+---
+
+## **Section 4.8: Full Pipeline - From Image to Embedding**
+
+### **1. Set Up for Reproducibility**
+
+-------------------code----------------------
+torch.manual_seed(42)
+-------------------code----------------------
+
+* Ensures consistent results across runs, especially useful when working with random image inputs.
+
+---
+
+### **2. Input Image and Shape Inspection**
+
+-------------------code----------------------
+image_tensor.shape  # (C, H, W)
+height, width = image_tensor.shape[1], image_tensor.shape[2]
+-------------------code----------------------
+
+* Confirm image dimensions.
+* Required for calculating number of patches.
+
+---
+
+### **3. Add Batch Dimension**
+
+-------------------code----------------------
+x = image_tensor.unsqueeze(0)  # Add batch size dimension
+-------------------code----------------------
+
+* Input shape becomes `[1, C, H, W]` (batch of 1).
+
+---
+
+### **4. Create Patch Embedding Layer**
+
+-------------------code----------------------
+patch_embed_layer = PatchEmbedding(
+    in_channels=3,
+    patch_size=16,
+    embedding_dim=768
+)
+-------------------code----------------------
+
+* Follows the base ViT configuration (patch size = 16, embedding dim = 768).
+
+---
+
+### **5. Generate Patch Embeddings**
+
+-------------------code----------------------
+patch_embedding = patch_embed_layer(x)
+# Shape: [batch_size, num_patches, embedding_dim] → e.g. [1, 196, 768]
+-------------------code----------------------
+
+---
+
+### **6. Create Learnable Class Token**
+
+-------------------code----------------------
+batch_size = patch_embedding.shape[0]
+embedding_dim = patch_embedding.shape[-1]
+
+class_token = nn.Parameter(torch.ones(batch_size, 1, embedding_dim))
+# Shape: [1, 1, 768]
+-------------------code----------------------
+
+* `nn.Parameter` makes it learnable.
+* Using `torch.ones()` for demonstration; usually use `torch.randn()`.
+
+---
+
+### **7. Prepend Class Token**
+
+-------------------code----------------------
+patch_embedding_with_cls = torch.cat(
+    [class_token, patch_embedding], dim=1
+)
+# Shape becomes: [1, 197, 768]
+-------------------code----------------------
+
+---
+
+### **8. Create Learnable Position Embedding**
+
+-------------------code----------------------
+num_patches = int((height / patch_size) * (width / patch_size))
+position_embedding = nn.Parameter(
+    torch.ones(1, num_patches + 1, embedding_dim)
+)
+# Shape: [1, 197, 768]
+-------------------code----------------------
+
+* `+1` accounts for the class token.
+
+---
+
+### **9. Add Position Embedding**
+
+-------------------code----------------------
+patch_pos_embedding = patch_embedding_with_cls + position_embedding
+# Final shape: [1, 197, 768]
+-------------------code----------------------
+
+* Element-wise addition; shapes match exactly.
+
+---
+
+### **10. Result**
+
+-------------------code----------------------
+print(patch_pos_embedding.shape)  # Should be: [1, 197, 768]
+-------------------code----------------------
+
+---
+
+## **Equation 1 Completed**
+
+### Final Result:
+
+You now have a **flattened sequence of patch embeddings** with:
+
+* Class token prepended.
+* Positional information added.
+* Ready to feed into the **Transformer encoder**.
+
+---
+
+## **Suggested Extension**
+
+* Incorporate class token and position embedding logic **inside the `PatchEmbedding` class**.
+* This will streamline your code and encapsulate all logic for creating the input representation.
+
+---
+
+## **Next Step**
+
+> Move to **Equation 2**: the first layer of the Transformer encoder.
