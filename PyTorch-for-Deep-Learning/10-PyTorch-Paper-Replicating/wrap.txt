@@ -3604,3 +3604,114 @@ self.msa = nn.MultiheadAttention(
 * Hyperparameters not explicitly mentioned in the paper (like epsilon in normalization) are inferred or use defaults.
 
 ---
+
+*** 252. Checking the Inputs and Outputs of Equation ***
+## Lecture Summary: Testing the MSA Block
+
+---
+
+### Goal of the Lecture
+
+* **Test the Multi-Head Self Attention (MSA) Block** we previously implemented (Equation 2).
+* **Pass a patch + positional embedding tensor** through the MSA block and observe the output.
+* Prepare to move on to the next component: the **MLP block (Equation 3)**.
+
+---
+
+### Steps Covered
+
+#### 1. **Instantiate the MSA Block**
+
+-------------------code----------------------
+msa_block = MultiHeadSelfAttentionBlock(
+    embedding_dim=768,
+    num_heads=12,
+    attention_dropout=0
+)
+-------------------code----------------------
+
+* Parameters are aligned with the **ViT Base model** (as per the paper’s Table 1).
+* Dropout is set to `0` (paper doesn’t use attention dropout).
+
+#### 2. **Pass Input Through the MSA Block**
+
+-------------------code----------------------
+patched_image_through_msa_block = msa_block(patch_and_position_embedding)
+-------------------code----------------------
+
+* The input `patch_and_position_embedding` was previously constructed by embedding an image and adding positional encodings.
+* The MSA block is applied to this input, combining:
+
+  * Layer normalization
+  * Multi-head self-attention
+
+---
+
+### Debugging Encountered
+
+#### Error:
+
+-------------------code----------------------plaintext
+Cannot assign module before __init__ call
+-------------------code----------------------
+
+* Cause: `super().__init__()` was missing in the custom `nn.Module` class.
+* Fix: Add `super().__init__()` in the class constructor.
+
+---
+
+### Input/Output Shapes
+
+-------------------code----------------------
+print(patch_and_position_embedding.shape)
+# torch.Size([1, 197, 768])
+
+print(patched_image_through_msa_block.shape)
+# torch.Size([1, 197, 768])
+-------------------code----------------------
+
+* **Shape stays the same**: `(batch, sequence_length, embedding_dim)` → `[1, 197, 768]`
+* This is expected: attention operates on the sequence without changing its shape.
+* **However, values do change**, meaning the representation is transformed.
+
+---
+
+### Representation Learning Insight
+
+* Output values may seem meaningless at first glance (e.g. random floats).
+* But these are **learnable representations**—the model will update them during training.
+* Right now, the MSA block produces randomized outputs since weights are untrained.
+
+---
+
+### What's Missing?
+
+* **Skip connection** is not yet implemented (e.g. `x + attention_output`).
+
+  * Will be handled later in the full **Transformer Encoder Block**.
+* So far, the output reflects only:
+
+  * Layer normalization
+  * Multi-head attention
+  * (Without residual connection or further transformation)
+
+---
+
+### Transition to Next Step
+
+* Next component: **Equation 3 – MLP Block (a feed-forward network)**
+* Challenge:
+
+  * Replicate the process used here to implement the MLP block.
+  * Replace `MultiHeadAttention` with a feed-forward (`nn.Linear`) network.
+
+---
+
+### Summary
+
+* We successfully validated the **MSA block** with realistic input.
+* Observed shape consistency and value transformation.
+* Ready to proceed with **MLP block implementation**.
+* Slowly building toward the full **Vision Transformer (ViT)** architecture.
+
+---
