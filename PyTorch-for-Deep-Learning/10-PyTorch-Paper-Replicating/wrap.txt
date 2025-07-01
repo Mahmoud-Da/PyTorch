@@ -3294,3 +3294,196 @@ Instead of writing MSA from scratch:
 | **Multi-head**     | Parallel attention mechanisms for richer representation    |
 
 ---
+
+
+*** 250. Equation 2: Layernorm Overview ***
+## Lecture Summary: Multi-Head Self-Attention & Layer Normalization (Transformer Encoder - Equation 2)
+
+---
+
+### **Recap of Previous Video**
+
+* **Multi-Head Self-Attention (MSA)**:
+
+  * Helps the model learn **which parts of a sequence should focus on others**.
+  * In our case: Embedded **image patches** attending to each other.
+  * The model learns relationships between patches automatically.
+  * This learning leads to better **representations** of the image content.
+
+---
+
+### **Understanding MSA Mechanism**
+
+* **"Self"** attention: Input attends to **itself** (i.e., all parts of a sequence).
+* Each **patch embedding** is processed to determine which other patches are most relevant.
+* Allows patches to "communicate" and **influence each other's representations**.
+
+---
+
+### **MSA in PyTorch**
+
+* PyTorch provides a ready-to-use layer:
+
+  -------------------code----------------------
+  torch.nn.MultiheadAttention
+  -------------------code----------------------
+
+* Takes three inputs:
+
+  * **Query (Q)**
+  * **Key (K)**
+  * **Value (V)**
+
+* In **self-attention**, all three are usually the **same input**:
+
+  -------------------code----------------------
+  Q = K = V = normalized_input
+  -------------------code----------------------
+
+* These are derived from the **same embedding (X)**, passed through **LayerNorm** before attention.
+
+---
+
+### **Layer Normalization (LayerNorm)**
+
+#### What does **"normalize"** mean in simple words?
+
+**Normalize** means to **make things more consistent or balanced**.
+
+In machine learning, when we **normalize data**, we usually adjust it so that:
+
+* The **average (mean)** is around **0**
+* The **spread (standard deviation)** is around **1**
+
+---
+
+### Why do we normalize?
+
+Imagine you're comparing test scores from two students:
+
+* One scored out of 100
+* Another out of 10
+
+You can’t fairly compare them unless you **bring them to the same scale** — that’s normalization.
+
+In deep learning, we normalize to:
+
+* **Stabilize training**
+* **Make learning faster**
+* **Help the model treat each feature equally**
+
+---
+
+### Simple Analogy
+
+Imagine you're walking down stairs:
+
+* If each stair is a different height, it’s **hard** to walk smoothly.
+* If all stairs are the **same size**, you can walk **faster and easier**.
+
+Normalization makes the “stairs” (data) more **even**.
+
+---
+
+### Example:
+
+Before normalization:
+
+-------------------code----------------------
+[10, 20, 30]
+-------------------code----------------------
+
+After normalization:
+
+-------------------code----------------------
+[-1.2, 0.0, 1.2]
+-------------------code----------------------
+
+* Mean is now 0
+* Spread is balanced
+
+---
+
+#### Definition:
+
+> LayerNorm is a technique to **normalize the distribution** of intermediate layer activations across the embedding dimension.
+
+#### Benefits:
+
+* Smoother gradients
+* Faster training
+* Better generalization
+
+#### What it does:
+
+* Makes the **mean = 0** and **standard deviation = 1** across the embedding dimension.
+* Think of it as adjusting the "scale" of each input feature to be consistent.
+
+#### PyTorch Implementation:
+
+-------------------code----------------------
+torch.nn.LayerNorm(normalized_shape)
+-------------------code----------------------
+
+* `normalized_shape` = the embedding dimension
+  (e.g., `768` if that's the patch embedding size)
+
+---
+
+### Analogy: LayerNorm as Equal Stairs
+
+* Imagine training (gradient descent) as walking **down a staircase**.
+* If the stairs are all **different heights and widths**, it’s hard to walk smoothly.
+* LayerNorm **standardizes** all steps to be the same:
+
+  * Easier to step down → **faster and more stable training**.
+
+---
+
+### Bringing it Together – Equation 2 (MSA Block)
+
+#### **What we've got:**
+
+* **LayerNorm** before attention
+* **Multi-Head Self Attention (MSA)** layer
+* **Residual connection** (input + output)
+
+#### **Structure:**
+
+-------------------code----------------------
+Z' = MSA(LayerNorm(X)) + X
+-------------------code----------------------
+
+---
+
+### Your Coding Challenge (Before Next Video)
+
+Create a class that wraps all this:
+
+-------------------code----------------------
+class MultiHeadSelfAttentionBlock(nn.Module):
+    def __init__(self, embed_dim, num_heads):
+        super().__init__()
+        self.layernorm = nn.LayerNorm(embed_dim)
+        self.msa = nn.MultiheadAttention(embed_dim, num_heads)
+
+    def forward(self, x):
+        # x: (sequence_length, batch_size, embed_dim)
+        x_norm = self.layernorm(x)
+        attn_output, _ = self.msa(x_norm, x_norm, x_norm)
+        return attn_output + x  # Residual connection
+-------------------code----------------------
+
+---
+
+### Summary Table
+
+| Concept                  | Description                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| **Self-Attention**       | Each part of input attends to other parts of the same input                                |
+| **Multi-Head Attention** | Multiple self-attention layers run in parallel, capturing different types of relationships |
+| **LayerNorm**            | Normalizes across the embedding dimension for smoother training                            |
+| **Residuals**            | Adds the original input back after MSA for better gradient flow                            |
+| **PyTorch Layers Used**  | `nn.LayerNorm`, `nn.MultiheadAttention`                                                    |
+
+---
