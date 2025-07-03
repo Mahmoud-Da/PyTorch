@@ -3901,3 +3901,110 @@ class MLPBlock(nn.Module):
 * Once MSA and MLP blocks are complete and tested, we’ll move on to assembling the **entire ViT encoder**.
 
 ---
+
+*** 254. Turning Equation 3 into Code ***
+### **Lecture Summary: Implementing Equation 3 - MLP Block (Multi-Layer Perceptron Block) in PyTorch**
+
+---
+
+#### **Objective**
+
+Turn Equation 3 of the Vision Transformer paper into reusable PyTorch code for the MLP Block. This block forms part of the Transformer Encoder and includes:
+
+* Layer normalization
+* Two linear layers with GELU activation in between
+* Dropout for regularization
+
+---
+
+#### **1. Parameters Needed**
+
+* **`embedding_dim`**: Dimension of the input embeddings (constant across the model)
+* **`mlp_size`**: Size of the hidden layer in the MLP (default = **3072** for ViT-Base)
+* **`dropout`**: Dropout rate (default = **0.1**, found in Table 3 of the paper)
+
+---
+
+#### **2. Initial Setup**
+
+Initialize the class and define:
+
+-------------------code----------------------
+super().__init__()
+self.layernorm = nn.LayerNorm(embedding_dim)
+-------------------code----------------------
+
+---
+
+#### **3. Define the MLP**
+
+Based on Section 3.1 and Appendix B of the paper:
+
+* 2 linear layers
+* GELU non-linearity
+* Dropout applied after each linear layer
+
+-------------------code----------------------
+self.mlp = nn.Sequential(
+    nn.Linear(embedding_dim, mlp_size),
+    nn.GELU(),
+    nn.Dropout(dropout),
+    nn.Linear(mlp_size, embedding_dim),
+    nn.Dropout(dropout)
+)
+-------------------code----------------------
+
+---
+
+#### **4. Forward Method**
+
+-------------------code----------------------
+def forward(self, x):
+    x = self.layernorm(x)
+    x = self.mlp(x)
+    return x
+-------------------code----------------------
+
+Alternatively, the two steps above can be combined into a single return statement for brevity:
+
+-------------------code----------------------
+return self.mlp(self.layernorm(x))
+-------------------code----------------------
+
+---
+
+#### **5. Testing the Block**
+
+Create an instance and perform a forward pass to test input/output shapes:
+
+-------------------code----------------------
+mlp_block = MLPBlock(embedding_dim=768, mlp_size=3072, dropout=0.1)
+
+# Simulate output from MSA block (Equation 2)
+x = torch.rand(1, 196, 768)  # e.g., 196 image patches, each 768-dimensional
+output = mlp_block(x)
+
+print("Input shape:", x.shape)
+print("Output shape:", output.shape)
+-------------------code----------------------
+
+---
+
+#### **6. Observation**
+
+* Input and output shapes remain the same
+* Actual tensor values are modified due to transformations in the MLP
+* The model is not yet trained, so the representation is still random
+* Residual connections have not been added yet — they will be included when building the full Transformer Encoder
+
+---
+
+#### **7. Next Step (Challenge)**
+
+Now that we’ve implemented the MLP block and previously implemented the MSA block, you are encouraged to:
+
+* Create a full Transformer Encoder block by **stacking Equation 2 (MSA)** and **Equation 3 (MLP)**
+* Add **residual (skip) connections**
+* Wrap it into a reusable PyTorch class
+
+---
