@@ -3715,3 +3715,189 @@ print(patched_image_through_msa_block.shape)
 * Slowly building toward the full **Vision Transformer (ViT)** architecture.
 
 ---
+
+*** 253. Equation 3: Replication Overview ***
+## Lecture Summary: Implementing the MLP Block (Equation 3)
+
+---
+
+### Overview
+
+* This lecture focuses on replicating **Equation 3** of the Vision Transformer (ViT) paper: the **MLP Block**.
+* The MLP Block is used **in alternation with the MSA Block** within each Transformer Encoder layer.
+* We translate this block from the paper into **reusable PyTorch code**.
+
+---
+
+### Key Concepts
+
+#### 1. **Structure of the Transformer Encoder (Recap)**
+
+* Each encoder block alternates between:
+
+  * **Multi-Head Self Attention (MSA) Block** — Equation 2
+  * **Multi-Layer Perceptron (MLP) Block** — Equation 3
+* Each block includes:
+
+  * A **Layer Normalization** step before the core layer (either MSA or MLP)
+  * A **residual (skip) connection** after the block, which will be implemented later.
+
+
+An **MLP Block** (Multi-Layer Perceptron Block) is a **small neural network** used to process information and learn patterns in data. Here's a simple breakdown:
+
+---
+
+### In Simple Terms:
+
+* It takes a bunch of **numbers as input** (like features from an image or text).
+* It **transforms** those numbers through **a series of layers**:
+
+  1. A **Linear Layer**: mixes the numbers using weights.
+  2. A **Non-linear Activation Function** (like GELU or ReLU): helps the model learn complex patterns.
+  3. (Optional) **Dropout**: randomly turns off some neurons during training to prevent overfitting.
+  4. Another **Linear Layer**: brings the output back to the original size.
+
+---
+
+### Example:
+
+Imagine you give it a list of 768 numbers (features).
+The MLP Block might:
+
+1. Expand it to 3072 numbers.
+2. Apply the GELU function.
+3. Drop some values (Dropout).
+4. Reduce it back to 768 numbers.
+
+---
+
+### Why Use It?
+
+* It helps the model **learn richer and more abstract representations** of the input.
+* In a Vision Transformer, it follows the attention layer to further process the features.
+
+---
+
+
+### Real-Life Example: Making a Smoothie
+
+Think of an **MLP block** like a **blender making a smoothie** from fruits.
+
+#### Step-by-Step:
+
+1. **Input = Fruits**
+   You put in 4 different fruits: banana, apple, strawberry, and mango.
+   → This is like your **input vector** (e.g., `[banana, apple, strawberry, mango]`).
+
+2. **First Linear Layer = Cutting and Mixing**
+   The blender cuts and mixes the fruits into a thick pulp.
+   → This is like transforming the input into a new shape (e.g., 4 → 8 features).
+
+3. **Activation Function = Add Flavor**
+   You add yogurt or honey to make the taste smoother and nicer.
+   → This is the **non-linearity** (e.g., ReLU or GELU) that helps the model learn complex patterns.
+
+4. **Second Linear Layer = Final Blend**
+   You blend everything again into a perfect smoothie.
+   → This reduces the size back (e.g., 8 → 4) and produces the **final output**.
+
+5. **Output = Smoothie**
+   The final drink is very different from just raw fruits — it’s smoother, more useful, and ready to consume.
+   → This is like the **transformed representation**, ready for the next step in the model.
+
+---
+
+### Summary:
+
+* **Input**: Raw ingredients (data)
+* **MLP Block**: A few steps of transformation
+* **Output**: A refined, useful result (like a smoothie)
+
+This is what an MLP does — takes raw inputs, processes them with layers and activations, and produces something more meaningful for the model.
+
+
+#### 2. **What is an MLP Block in This Context?**
+
+* According to Section 3.1 of the ViT paper:
+
+  * The MLP block contains **two fully connected (dense/linear) layers**.
+  * It uses the **GELU activation function** (Gaussian Error Linear Unit).
+  * **Dropout** is applied after each dense layer.
+
+#### 3. **Terminology Clarification**
+
+* **Dense / Fully Connected / Linear / Feedforward** — All refer to the same kind of layer.
+* In **PyTorch**, it's called `nn.Linear`.
+* In **TensorFlow**, it’s often `tf.keras.layers.Dense`.
+
+---
+
+### GELU Activation Function
+
+* The paper uses **GELU**, not ReLU.
+* GELU is smoother than ReLU and allows some small negative values to pass through.
+* PyTorch implementation:
+
+  -------------------code----------------------
+  nn.GELU()
+  -------------------code----------------------
+
+---
+
+### Dropout
+
+* Dropout is applied **after each linear (dense) layer**.
+* The paper does not mention exact dropout values, but it is typically added to prevent overfitting.
+* Dropout is **not applied in the MSA attention projections**, only after linear layers in the MLP block.
+
+---
+
+### MLP Block: Pseudocode Structure
+
+Here’s a high-level breakdown of the MLP block:
+
+-------------------code----------------------
+class MLPBlock(nn.Module):
+    def __init__(self, embedding_dim, hidden_dim, dropout):
+        super().__init__()
+        self.linear1 = nn.Linear(embedding_dim, hidden_dim)
+        self.activation = nn.GELU()
+        self.dropout1 = nn.Dropout(dropout)
+        self.linear2 = nn.Linear(hidden_dim, embedding_dim)
+        self.dropout2 = nn.Dropout(dropout)
+    
+    def forward(self, x):
+        x = self.linear1(x)
+        x = self.activation(x)
+        x = self.dropout1(x)
+        x = self.linear2(x)
+        x = self.dropout2(x)
+        return x
+-------------------code----------------------
+
+#### Notes:
+
+* `embedding_dim`: the dimension of input and output.
+* `hidden_dim`: intermediate dimension (typically larger, e.g. 3072 for ViT-Base).
+* `dropout`: a float value, e.g. 0.1.
+
+---
+
+### MLP Block Usage Flow
+
+1. **Input** → Layer Norm (handled outside this block in full encoder)
+2. → Linear Layer (projects to higher dimension)
+3. → GELU Activation
+4. → Dropout
+5. → Linear Layer (projects back to original embedding dimension)
+6. → Dropout
+7. → **Output**
+
+---
+
+### What’s Next?
+
+* Implement the residual connection when integrating MSA + MLP into the full **Transformer Encoder Block**.
+* Once MSA and MLP blocks are complete and tested, we’ll move on to assembling the **entire ViT encoder**.
+
+---
