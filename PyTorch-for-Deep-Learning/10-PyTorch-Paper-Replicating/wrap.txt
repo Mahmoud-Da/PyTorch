@@ -4008,3 +4008,128 @@ Now that we’ve implemented the MLP block and previously implemented the MSA bl
 * Wrap it into a reusable PyTorch class
 
 ---
+
+*** 255. Transformer Encoder Overview ***
+### **Lecture Summary: Building the Transformer Encoder Block**
+
+---
+
+#### **What We’ve Done So Far**
+
+* Implemented:
+
+  * **Equation 1**: Patch Embedding
+  * **Equation 2**: Multi-Head Self-Attention (MSA Block)
+  * **Equation 3**: MLP Block
+* Coded each as **reusable PyTorch modules**
+
+---
+
+### **Now: Create the Transformer Encoder Block**
+
+#### The Transformer Encoder = Repeated combination of:
+
+1. **Multi-Head Self-Attention (MSA) Block**
+2. **MLP Block**
+3. **Residual Connections**
+4. **Layer Normalization**
+
+---
+
+### **Residual Connections**
+
+* Definition: **Add a layer’s input to its output**
+* Purpose:
+
+  * Helps with **gradient flow** in deep networks
+  * Prevents vanishing/exploding gradients
+  * Encourages identity mappings when needed
+
+#### Example (in pseudocode):
+
+-------------------code----------------------
+msa_output = MSA(x)
+x = x + msa_output  # residual connection
+
+mlp_output = MLP(x)
+x = x + mlp_output  # residual connection
+-------------------code----------------------
+
+---
+
+
+### **What is an Encoder in ML?**
+
+* An **encoder** turns a **sequence into a learnable representation**
+* Examples:
+
+  * In image classification: transforms image patches into a useful embedding
+  * In translation: transforms a sentence into a numerical representation
+
+### **What is a Decoder?**
+
+* A **decoder** turns a **representation back into a sequence**
+* Examples:
+
+  * Translating the embedding into another language
+  * Generating captions for images
+
+---
+
+### **Encoder–Decoder in NLP (seq2seq)**
+
+* Originally introduced in tasks like machine translation
+* Input: `"Machine learning is amazing"`
+* Encoder: turns it into a latent vector
+* Decoder: generates `"機械学習は素晴らしいです"`
+
+---
+
+### **Transformer Encoder Block Overview**
+
+1. **Input**: Embedded image patches (from Equation 1)
+2. **Step 1**: Pass through MSA block
+3. **Step 2**: Add residual connection (input + MSA output)
+4. **Step 3**: Pass result through MLP block
+5. **Step 4**: Add another residual connection
+
+---
+
+### **Pseudocode of the Transformer Encoder**
+
+-------------------code----------------------
+x = input  # embedded patches
+
+# Equation 2: Multi-Head Self Attention block
+msa_out = MSA(x)
+x = x + msa_out  # Residual connection
+
+# Equation 3: MLP block
+mlp_out = MLP(x)
+x = x + mlp_out  # Residual connection
+-------------------code----------------------
+
+---
+
+### **Plan for PyTorch Class**
+
+* Name: `TransformerEncoderBlock`
+* Inherit from `nn.Module`
+* Contains:
+
+  * `MSA` block
+  * `MLP` block
+  * Residual connections
+  * Optional LayerNorm before blocks (pre-norm)
+
+---
+
+### Challenge / Task
+
+* Create the `TransformerEncoderBlock` class in PyTorch
+* Use your previously defined MSA and MLP blocks
+* Add **residual connections**
+* Implement a `forward()` method that replicates the above pseudocode
+
+---
+
