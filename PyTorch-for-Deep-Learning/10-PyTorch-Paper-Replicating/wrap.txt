@@ -3487,3 +3487,120 @@ class MultiHeadSelfAttentionBlock(nn.Module):
 | **PyTorch Layers Used**  | `nn.LayerNorm`, `nn.MultiheadAttention`                                                    |
 
 ---
+
+*** 251. Turning Equation 2 into Code ***
+## Lecture Summary: Building the MSA Block (Equation 2)
+
+### Context and Purpose
+
+* We are implementing **Equation 2**, the **Multi-Head Self-Attention (MSA) Block**, as introduced in the Transformer and ViT (Vision Transformer) papers.
+* This block is part of a **Transformer Encoder**, used to process embedded image patches.
+* The goal is to **replicate the behavior of multi-head self-attention** using PyTorch.
+
+---
+
+### Key Concepts Reviewed
+
+* **Multi-Head Self-Attention** allows a model to attend to different parts of a sequence in parallel.
+* Attention mechanism is derived from:
+
+  * *“Attention is All You Need”* paper.
+  * Lanham’s work in ViT.
+* **Query (Q), Key (K), Value (V)** projections are central to self-attention.
+* **Dropout** is not used in attention layers (as clarified in the paper’s Appendix B), but it is used after dense layers elsewhere in the network.
+
+---
+
+### Code Walkthrough of the MSA Block
+
+#### 1. **Initialization Parameters**
+
+* `embedding_dim = 768` → The hidden size, from Table 1 of the paper.
+* `num_heads = 12` → Number of attention heads.
+* `attention_dropout` → Not used in attention layers, but can be left as a parameter for experimentation.
+
+#### 2. **Layer Normalization**
+
+-------------------code----------------------
+self.norm = nn.LayerNorm(normalized_shape=embedding_dim)
+-------------------code----------------------
+
+* Normalizes input over the last dimension (D).
+* Helps stabilize and accelerate training.
+
+#### 3. **Multi-Head Attention Layer**
+
+-------------------code----------------------
+self.msa = nn.MultiheadAttention(
+    embed_dim=embedding_dim,
+    num_heads=num_heads,
+    dropout=attention_dropout,
+    batch_first=True
+)
+-------------------code----------------------
+
+* Uses PyTorch’s built-in `nn.MultiheadAttention`.
+* `batch_first=True` implies input shape: `(batch, sequence, feature)`.
+
+#### Input Shape Terminology
+
+* **Batch** → Number of images.
+* **Sequence** → Number of image patches.
+* **Feature** → Embedding dimension per patch.
+
+---
+
+### Forward Pass Logic
+
+#### Input:
+
+* Embedded patch sequence `x`.
+
+#### Process:
+
+1. **Layer Normalization**:
+
+   -------------------code----------------------
+   x = self.norm(x)
+   -------------------code----------------------
+
+2. **Apply MSA**:
+
+   -------------------code----------------------
+   attn_output, _ = self.msa(x, x, x)
+   -------------------code----------------------
+
+   * Query, Key, Value are all the same (self-attention).
+   * Discards attention weights using `_`.
+
+3. **Return Output**:
+
+   -------------------code----------------------
+   return attn_output
+   -------------------code----------------------
+
+---
+
+### Discussion Points
+
+* Skip connection is not yet implemented but will be included when building the full Transformer Encoder later.
+* The MSA block is now encapsulated into a **reusable class**, which can be plugged into larger models.
+* Residual connections will wrap around the MSA block and layer norm in the full encoder structure.
+
+---
+
+### Next Steps
+
+* Implement the **residual connection**.
+* Use this MSA block within the **full Transformer Encoder**.
+* Test with actual patch embeddings as inputs.
+
+---
+
+### Final Thoughts
+
+* Complex math and architecture can be simplified and better understood by writing and running code.
+* Equations in the paper were distilled into \~24 lines of PyTorch code.
+* Hyperparameters not explicitly mentioned in the paper (like epsilon in normalization) are inferred or use defaults.
+
+---
