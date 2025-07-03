@@ -3101,3 +3101,196 @@ You now have a **flattened sequence of patch embeddings** with:
 ## **Next Step**
 
 > Move to **Equation 2**: the first layer of the Transformer encoder.
+
+*** 249. Equation 2: Multihead Attention Overview ***
+### **Lecture Summary: Transformer Encoder – Multi-Head Self Attention (MSA) Block**
+
+#### **Progress So Far**
+
+* Implemented **Equation 1**:
+
+  * Image → Patchification → Flattened Patch Embeddings.
+  * Linear projection of flattened image patches completed.
+* Added:
+
+  * **Class token embedding**.
+  * **Positional embeddings**.
+
+Now moving on to **Transformer Encoder**, specifically **Equation 2: Multi-Head Self Attention (MSA) Block**.
+
+---
+
+### **Transformer Encoder Overview**
+
+* Transformer Encoder is made up of **two main blocks**:
+
+  1. **MSA Block (Equation 2)**
+  2. **MLP Block (Equation 3)**
+
+Each block includes:
+
+* **LayerNorm before each block** (pre-norm).
+* **Residual connection** after each block.
+
+So the data flow looks like:
+
+-------------------code----------------------
+Z’ = MSA(LayerNorm(Z)) + Z
+-------------------code----------------------
+
+(Residual = input + output of block)
+
+---
+
+### **Equation 2 – MSA Block**
+
+### **What is Self-Attention?** (Simple Explanation)
+
+**Self-attention** is a way for a model to **look at all parts of the input and decide which parts are important for each other**.
+
+#### Example (Text):
+
+> Sentence: "The animal didn't cross the road because it was too tired."
+
+* What does **"it"** refer to?
+  → "Animal", not "road".
+
+Self-attention helps the model understand that **"it" should focus more on "animal"**, because they’re related.
+
+#### Example (Image):
+
+* You break an image into small patches.
+* Self-attention helps each patch **"look at" all other patches** and decide:
+
+  > "Which other patches should I care about to understand the image better?"
+
+---
+
+### **What is Multi-Head Self-Attention?** (Simple Explanation)
+
+**Multi-head self-attention** is like **running self-attention several times in parallel**, each time with a different "focus" or "lens".
+
+* Imagine you're looking at a photo with **different glasses**:
+
+  * One pair focuses on **colors**
+  * One on **shapes**
+  * One on **edges**
+* Each head learns to **focus on a different type of relationship** between the parts.
+
+Afterward, the results from each head are **combined**, giving the model a richer understanding.
+
+---
+
+### Summary
+
+| Term               | Meaning                                                                                                    |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| **Self-Attention** | Each part of input decides which other parts to focus on.                                                  |
+| **Multi-Head**     | Do self-attention multiple times in parallel, each with a different perspective, then combine the results. |
+
+
+
+#### **Terminology**
+
+* **MSA** = Multi-Head Self Attention
+* Introduced in *Attention is All You Need* (Vaswani et al., 2017)
+
+---
+
+### **Understanding Self Attention**
+
+Self-attention allows each token (e.g., image patch or word) to "attend to" other tokens in the sequence.
+
+#### **Example from NLP**:
+
+* Sentence: “The animal didn’t cross the road because it was too tired.”
+* The word **"it"** attends most to **"animal"**.
+* This concept is extended to **image patches**: which patch is most related to another?
+
+---
+
+### **How Self-Attention Works**
+
+Self-attention maps a **Query (Q)**, **Key (K)**, and **Value (V)** to an output:
+
+**Formula:**
+
+-------------------code----------------------
+Attention(Q, K, V) = softmax(QKᵀ / √d_k) · V
+-------------------code----------------------
+
+Where:
+
+* `Q`, `K`, `V` = same input (self-attention)
+* `d_k` = dimension of the key vector
+
+#### **Steps**:
+
+1. Compute dot product between `Q` and `Kᵀ`.
+2. Scale the result by `√d_k`.
+3. Apply softmax → get attention weights.
+4. Multiply attention weights with `V`.
+
+This results in a representation where each token's output is influenced by all others, weighted by learned importance.
+
+---
+
+### **Multi-Head Self Attention**
+
+Instead of doing one attention calculation:
+
+* Split the input into **multiple heads** (i.e., multiple subspaces).
+* Perform self-attention for each head in parallel.
+* Concatenate the results.
+* Project the result back to original dimension.
+
+---
+
+### **PyTorch Implementation Tip**
+
+Instead of writing MSA from scratch:
+
+* Use built-in PyTorch module:
+
+  -------------------code----------------------
+  torch.nn.MultiheadAttention
+  -------------------code----------------------
+* `query`, `key`, and `value` are all the same input in self-attention.
+
+---
+
+### **Self-Attention in Vision Transformers (ViT)**
+
+* Patchified image → sequence of embeddings.
+* Self-attention helps the model learn relationships between patches:
+
+  * Which patch is related to which others?
+  * These relationships are **learned**, not hardcoded.
+
+---
+
+### **Next Steps**
+
+1. **Replicate Equation 2 in code**:
+
+   * Implement MSA block using PyTorch's `MultiheadAttention`.
+2. **Challenge**:
+
+   * Before continuing, understand **LayerNorm**.
+   * Look up what Layer Normalization is.
+   * Find how to use it in PyTorch: `torch.nn.LayerNorm`.
+
+---
+
+### **Summary of Key Components**
+
+| Concept            | Description                                                |
+| ------------------ | ---------------------------------------------------------- |
+| **Patchification** | Turning image into flattened patches (Equation 1)          |
+| **MSA Block**      | Multi-head self attention + pre-norm + residual connection |
+| **LayerNorm**      | Applied before MSA/MLP blocks                              |
+| **Residuals**      | Added after each block (input + output)                    |
+| **Self-Attention** | Learn which parts of input relate most to others           |
+| **Multi-head**     | Parallel attention mechanisms for richer representation    |
+
+---
