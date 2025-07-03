@@ -4133,3 +4133,108 @@ x = x + mlp_out  # Residual connection
 
 ---
 
+*** 256. Combining equation 2 and 3 to Create the Transformer Encoder ***
+## **Lecture Summary: Implementing the Transformer Encoder Block in PyTorch**
+
+---
+
+### **1. Background**
+
+* Previously implemented:
+
+  * **Equation 1**: Patch Embedding
+  * **Equation 2**: Multi-Head Self Attention (MSA Block)
+  * **Equation 3**: MLP Block
+* Goal: Combine **Equation 2** and **Equation 3** into a reusable **Transformer Encoder Block** using PyTorch.
+
+---
+
+### **2. Transformer Encoder Block Structure**
+
+#### Inputs:
+
+* `embedding_dim` (default: 768) – from Table 1
+* `num_heads` – for the MSA block
+* `mlp_size` (default: 3072) – for hidden units in MLP, also from Table 1
+* `mlp_dropout` (default: 0.1) – from Table 3
+* `attention_dropout` (default: 0.0)
+
+---
+
+### **3. PyTorch Implementation**
+
+#### **Initialization (`__init__` method):**
+
+-------------------code----------------------
+self.msa_block = MultiHeadSelfAttentionBlock(
+    embedding_dim=embedding_dim,
+    num_heads=num_heads,
+    attention_dropout=attention_dropout
+)
+
+self.mlp_block = MLPBlock(
+    embedding_dim=embedding_dim,
+    mlp_size=mlp_size,
+    dropout=mlp_dropout
+)
+-------------------code----------------------
+
+---
+
+#### **Forward Pass:**
+
+-------------------code----------------------
+def forward(self, x):
+    x = x + self.msa_block(x)  # Residual connection after MSA
+    x = x + self.mlp_block(x)  # Residual connection after MLP
+    return x
+-------------------code----------------------
+
+* This pattern is called **residual connection** or **skip connection**.
+* Originated from the ResNet architecture.
+* Helps with training deeper networks by maintaining gradient flow.
+
+---
+
+### **4. Model Testing with `torchinfo.summary`**
+
+#### Example:
+
+-------------------code----------------------
+from torchinfo import summary
+
+model = TransformerEncoderBlock()
+summary(model, input_size=(1, 197, 768))
+-------------------code----------------------
+
+* Input: a batch of embedded patches (`[batch_size, num_patches, embedding_dim]`)
+* Output: same shape, but values modified by MSA and MLP
+* Output includes:
+
+  * Input and output shapes of each layer
+  * Number of parameters
+  * Trainability of each layer
+
+---
+
+### **5. Observations from Summary**
+
+* Model input and output shape: `(1, 197, 768)`
+* The shape changes **internally** in the MLP block due to expansion to `mlp_size = 3072`, then back to 768
+* The summary helps verify:
+
+  * Layer connections
+  * Parameter counts
+  * Shape consistency
+
+---
+
+### **6. Final Thoughts**
+
+* All three equations from the paper are now implemented in modular PyTorch code.
+* You can now:
+
+  * Stack multiple `TransformerEncoderBlock` instances to build the full transformer architecture.
+  * Think about how to generalize and shorten the implementation using loops or containers (e.g., `nn.Sequential`, `nn.ModuleList`).
+
+---
