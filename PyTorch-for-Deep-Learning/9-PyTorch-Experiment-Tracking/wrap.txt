@@ -5081,4 +5081,157 @@ Try to:
 * Input: raw image tensor.
 * Output: position-aware, class-token-prepended patch embeddings ready for transformer input.
 
-Let me know if you want the complete code that does this end-to-end.
+
+*** 248. Equation 1: Putting it All Together ***
+## **Lecture Summary: From Image to Embedding (Equation 1 Complete)**
+
+### **Context**
+
+We've built up individual components:
+
+* Patch embedding (using Conv2D).
+* Learnable class token.
+* Learnable position embedding.
+
+Now, we combine these into a single cell to generate a **position-aware embedding sequence** ready for the transformer encoder.
+
+---
+
+## **Section 4.8: Full Pipeline - From Image to Embedding**
+
+### **1. Set Up for Reproducibility**
+
+-------------------code----------------------
+torch.manual_seed(42)
+-------------------code----------------------
+
+* Ensures consistent results across runs, especially useful when working with random image inputs.
+
+---
+
+### **2. Input Image and Shape Inspection**
+
+-------------------code----------------------
+image_tensor.shape  # (C, H, W)
+height, width = image_tensor.shape[1], image_tensor.shape[2]
+-------------------code----------------------
+
+* Confirm image dimensions.
+* Required for calculating number of patches.
+
+---
+
+### **3. Add Batch Dimension**
+
+-------------------code----------------------
+x = image_tensor.unsqueeze(0)  # Add batch size dimension
+-------------------code----------------------
+
+* Input shape becomes `[1, C, H, W]` (batch of 1).
+
+---
+
+### **4. Create Patch Embedding Layer**
+
+-------------------code----------------------
+patch_embed_layer = PatchEmbedding(
+    in_channels=3,
+    patch_size=16,
+    embedding_dim=768
+)
+-------------------code----------------------
+
+* Follows the base ViT configuration (patch size = 16, embedding dim = 768).
+
+---
+
+### **5. Generate Patch Embeddings**
+
+-------------------code----------------------
+patch_embedding = patch_embed_layer(x)
+# Shape: [batch_size, num_patches, embedding_dim] → e.g. [1, 196, 768]
+-------------------code----------------------
+
+---
+
+### **6. Create Learnable Class Token**
+
+-------------------code----------------------
+batch_size = patch_embedding.shape[0]
+embedding_dim = patch_embedding.shape[-1]
+
+class_token = nn.Parameter(torch.ones(batch_size, 1, embedding_dim))
+# Shape: [1, 1, 768]
+-------------------code----------------------
+
+* `nn.Parameter` makes it learnable.
+* Using `torch.ones()` for demonstration; usually use `torch.randn()`.
+
+---
+
+### **7. Prepend Class Token**
+
+-------------------code----------------------
+patch_embedding_with_cls = torch.cat(
+    [class_token, patch_embedding], dim=1
+)
+# Shape becomes: [1, 197, 768]
+-------------------code----------------------
+
+---
+
+### **8. Create Learnable Position Embedding**
+
+-------------------code----------------------
+num_patches = int((height / patch_size) * (width / patch_size))
+position_embedding = nn.Parameter(
+    torch.ones(1, num_patches + 1, embedding_dim)
+)
+# Shape: [1, 197, 768]
+-------------------code----------------------
+
+* `+1` accounts for the class token.
+
+---
+
+### **9. Add Position Embedding**
+
+-------------------code----------------------
+patch_pos_embedding = patch_embedding_with_cls + position_embedding
+# Final shape: [1, 197, 768]
+-------------------code----------------------
+
+* Element-wise addition; shapes match exactly.
+
+---
+
+### **10. Result**
+
+-------------------code----------------------
+print(patch_pos_embedding.shape)  # Should be: [1, 197, 768]
+-------------------code----------------------
+
+---
+
+## **Equation 1 Completed**
+
+### Final Result:
+
+You now have a **flattened sequence of patch embeddings** with:
+
+* Class token prepended.
+* Positional information added.
+* Ready to feed into the **Transformer encoder**.
+
+---
+
+## **Suggested Extension**
+
+* Incorporate class token and position embedding logic **inside the `PatchEmbedding` class**.
+* This will streamline your code and encapsulate all logic for creating the input representation.
+
+---
+
+## **Next Step**
+
+> Move to **Equation 2**: the first layer of the Transformer encoder.
