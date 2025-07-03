@@ -4340,9 +4340,9 @@ Assuming input image size is 224×224:
 
 After passing a single image through the Conv2D layer, the output tensor shape is:
 
-```
+-------------------code----------------------
 (batch_size, embedding_dim, feature_map_height, feature_map_width)
-```
+-------------------code----------------------
 
 * `batch_size`: number of images in a batch.
 * `embedding_dim`: dimensionality of each patch embedding (e.g., 768).
@@ -4393,10 +4393,10 @@ for i, idx in enumerate(random_indexes):
 * Transformers work with **sequences**, not 2D grids.
 * Need to flatten `feature_map_height × feature_map_width` (e.g., 14×14 = 196) into a single sequence:
 
-  ```
+  -------------------code----------------------
   New shape: (batch_size, embedding_dim, num_patches)
   Example: (1, 768, 196)
-  ```
+  -------------------code----------------------
 
 #### Challenge Given:
 
@@ -4409,5 +4409,162 @@ for i, idx in enumerate(random_indexes):
 
 * Flatten the patch embeddings using `torch.flatten(start_dim=2)` to prepare them for the transformer input.
 * This will be covered in more detail in the next video.
+
+---
+
+
+*** 242. Flattening Our Convolutional Feature Maps into a Sequence of Patch Embeddings ***
+## Lecture Notes: Flattening Patch Embeddings for Vision Transformer Input
+
+### 1. **Recap: Feature Maps from Conv2D Layer**
+
+* A single input image (e.g., a pizza image) is passed through a `Conv2D` layer.
+* This produces **768 feature maps**, as determined by the embedding size.
+* These feature maps are the **learnable patch embeddings**—the computer will learn to represent images using these.
+* We're focusing on **one image** to simplify the explanation.
+
+---
+
+### 2. **Goal: Prepare Input for Transformer**
+
+* We want to **flatten the patch embeddings** into a sequence for the Vision Transformer (ViT) encoder.
+* According to the hybrid ViT architecture:
+
+  * **Input = sequence of patch embeddings**, where the **spatial dimensions** (height × width) are **flattened**.
+
+---
+
+### 3. **Using `torch.nn.Flatten`**
+
+* `torch.nn.Flatten(start_dim, end_dim)` is used to flatten specific dimensions of a tensor.
+
+#### Current Tensor Shape:
+
+-------------------code----------------------
+(batch_size, embedding_dim, feature_map_height, feature_map_width)
+-------------------code----------------------
+
+#### Goal Shape (before rearranging):
+
+-------------------code----------------------
+(batch_size, embedding_dim, number_of_patches)
+-------------------code----------------------
+
+* We flatten dimensions 2 and 3 (the spatial dimensions).
+
+#### Code:
+
+-------------------code----------------------
+from torch.nn import Flatten
+
+flatten_layer = Flatten(start_dim=2, end_dim=3)
+flattened = flatten_layer(image_out_of_conv)
+-------------------code----------------------
+
+### **Flatten layer in machine learning**
+
+A **Flatten layer** turns a multi-dimensional input (like a 2D image or a 3D feature map) into a **1D vector**.
+
+#### Think of it like this:
+
+If you have a matrix (or cube) of numbers, **flattening** just takes all the numbers and **lays them out in a single line**.
+
+---
+
+### **Why use it?**
+
+* Neural networks (like fully connected layers or transformers) often expect 1D input.
+* So we **flatten** the output from previous layers (like CNNs) to prepare the data for the next stage.
+
+---
+
+### **Example:**
+
+You have a 2D image (or a feature map) of shape `3 x 3`:
+
+-------------------code----------------------
+[[1, 2, 3],
+ [4, 5, 6],
+ [7, 8, 9]]
+-------------------code----------------------
+
+After flattening, it becomes:
+
+-------------------code----------------------
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+-------------------code----------------------
+
+If it was a 3D shape (like `3 x 3 x 2`), flattening still turns it into one long 1D vector.
+
+---
+
+### In PyTorch:
+
+-------------------code----------------------
+import torch
+x = torch.randn(1, 3, 3)
+flattened = x.flatten()
+print(flattened.shape)  # torch.Size([9])
+-------------------code----------------------
+
+
+---
+
+### 4. **Final Target Shape**
+
+* Transformers expect input as:
+
+-------------------code----------------------
+(batch_size, number_of_patches, embedding_dim)
+-------------------code----------------------
+
+* To reach this shape, we **rearrange (permute)** the dimensions.
+
+#### Code:
+
+-------------------code----------------------
+flattened = flattened.permute(0, 2, 1)  # From (B, D, N) to (B, N, D)
+-------------------code----------------------
+
+---
+
+### 5. **Step-by-Step Summary in Code**
+
+-------------------code----------------------
+# Add batch dimension to input image
+image = image.unsqueeze(0)  
+
+# Pass through convolutional patch embedding layer
+image_out_of_conv = conv2d_layer(image)
+
+# Flatten spatial dimensions (14x14 → 196)
+flatten_layer = Flatten(start_dim=2, end_dim=3)
+flattened = flatten_layer(image_out_of_conv)  # Shape: (1, 768, 196)
+
+# Rearrange for transformer input
+flattened = flattened.permute(0, 2, 1)  # Shape: (1, 196, 768)
+-------------------code----------------------
+
+---
+
+### 6. **Validation**
+
+* Printed shapes:
+
+  * Input image shape: `(3, 224, 224)`
+  * After conv layer: `(1, 768, 14, 14)`
+  * After flattening: `(1, 768, 196)`
+  * After permuting: `(1, 196, 768)`
+* **Success**: The final shape is the exact format required for the transformer encoder.
+
+---
+
+### 7. **Challenge**
+
+* **Visualize** one of the patch embeddings in the final sequence.
+* **Wrap** the Conv2D and Flatten logic into a single custom PyTorch layer, so that:
+
+  * Input: an image or a batch of images
+  * Output: sequence of patch embeddings with shape `(batch_size, num_patches, embedding_dim)`
 
 ---
