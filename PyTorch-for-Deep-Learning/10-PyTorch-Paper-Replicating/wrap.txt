@@ -4238,3 +4238,131 @@ summary(model, input_size=(1, 197, 768))
   * Think about how to generalize and shorten the implementation using loops or containers (e.g., `nn.Sequential`, `nn.ModuleList`).
 
 ---
+
+
+
+*** 257. Creating a Transformer Encoder Layer with In-Built PyTorch Layer ***
+## **Lecture Summary: Transformer Encoder Layer – Custom vs PyTorch Built-In**
+
+---
+
+### **1. Recap**
+
+* Previously implemented:
+
+  * Equation 2: Multi-Head Self Attention (MSA block)
+  * Equation 3: MLP block
+  * Combined them with residual connections to create a custom **Transformer Encoder Block**
+* Used `torchinfo.summary()` to inspect the architecture and parameters
+* In ViT-Base (Vision Transformer), **12 Transformer Encoder Blocks** are stacked, as specified in **Table 1 of the paper**
+
+---
+
+### **2. Visual Review**
+
+* **MSA block (Equation 2)** → Self-attention
+* **MLP block (Equation 3)** → Two dense layers with non-linearity and dropout
+* **Residual connections** around both blocks
+* Result: A **Transformer Encoder Block** that follows the architecture from the paper
+
+---
+
+### **3. PyTorch Built-In: `TransformerEncoderLayer`**
+
+#### **Motivation**
+
+* PyTorch includes a built-in `nn.TransformerEncoderLayer` that replicates most of what we implemented manually
+
+#### **Constructor Parameters**
+
+-------------------code----------------------
+nn.TransformerEncoderLayer(
+    d_model=768,                  # Embedding size (from Table 1)
+    nhead=12,                     # Number of attention heads (from Table 1)
+    dim_feedforward=3072,         # MLP hidden size (from Table 1)
+    dropout=0.1,                  # Dropout rate (from Table 3)
+    activation='gelu',           # Activation function used in MLP
+    batch_first=True,            # Match our input shape convention: [B, N, D]
+    norm_first=True              # Match ViT: normalization *before* attention/MLP
+)
+-------------------code----------------------
+
+* Matches the custom implementation closely
+* `norm_first=True` is important for matching ViT paper behavior (LayerNorm before each block)
+
+---
+
+### **4. Comparison: Custom vs Built-In**
+
+#### **Same number of parameters**:
+
+* Both custom and built-in implementations yield:
+
+  * **7,087,872 parameters**
+  * Same transformations on input shape
+  * Similar performance output
+
+#### **Ordering Difference**:
+
+* The built-in implementation may order components sequentially
+* Ours uses modular blocks, which improves flexibility and clarity
+
+---
+
+### **5. Why Write Custom Code If PyTorch Has It Built-In?**
+
+#### **Answer: Practice and Understanding**
+
+* Replicating equations from scratch helps:
+
+  * Understand the transformer internals
+  * Modify or extend components (e.g., custom normalization, attention variants)
+  * Translate from academic papers to production code
+
+---
+
+### **6. Benefits of PyTorch Built-In Layers**
+
+* **Less error-prone**: PyTorch layers are tested and maintained
+* **Performance-optimized**:
+
+  * PyTorch 1.12 introduced a **fast path** for transformers
+  * If certain conditions are met, you get **up to 2x inference speed-up**
+  * Faster training and inference when using default configurations
+
+#### **Related Resources**:
+
+* PyTorch Docs: [`nn.TransformerEncoderLayer`](https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html)
+* PyTorch Blog: *Better Transformer* — optimized transformer inference path
+* Course eBook links for deeper dives into `torch.nn.TransformerEncoder` and `TransformerEncoderLayer`
+
+---
+
+### **7. Stacking Encoder Layers**
+
+* PyTorch also provides `nn.TransformerEncoder`:
+
+-------------------code----------------------
+nn.TransformerEncoder(
+    encoder_layer=...,    # An instance of TransformerEncoderLayer
+    num_layers=12         # For ViT-Base
+)
+-------------------code----------------------
+
+* Easily stacks multiple encoder layers to replicate the complete transformer encoder stack
+
+---
+
+### **8. Final Thoughts**
+
+* Now you have two working implementations of a **Transformer Encoder Block**:
+
+  * From scratch using modular PyTorch code
+  * Using the PyTorch built-in `TransformerEncoderLayer`
+* You can now:
+
+  * Choose the approach that best suits your needs (custom vs built-in)
+  * Stack multiple encoder layers
+  * Prepare for building the **complete Vision Transformer (ViT)** architecture
+
+---
