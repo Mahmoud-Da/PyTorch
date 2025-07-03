@@ -4926,3 +4926,159 @@ Add **position embeddings** to this `[CLS] + patch embedding` sequence to encode
 *** 246. Creating the Class Token Embedding - Less Birds ***
 
 duplication with 245
+
+
+*** 247. Creating the Position Embedding ***
+## **Lecture Summary: Position Embedding in Vision Transformers (ViT)**
+
+### **Context**
+
+* In the previous steps, we:
+
+  * Split an image into patches.
+  * Converted them into embeddings using a Conv2D layer.
+  * Created and prepended a **learnable class token**.
+* Now we are adding **position embeddings** to preserve the spatial layout of the original image.
+
+---
+
+## **4.7 Creating the Position Embedding**
+
+### **Goal**
+
+* Add a **learnable 1D position embedding** to the entire sequence (patch embeddings + class token).
+* Final result: tensor of shape `[batch_size, num_patches + 1, embed_dim]` with positional information included.
+
+---
+
+### **Why Position Embedding?**
+
+* When the image is turned into a sequence of patches, positional information is lost.
+* Position embeddings help the transformer **understand the order and location** of patches.
+* This allows the model to better reconstruct spatial relationships between parts of the image.
+
+---
+
+## **What is a Position Embedding?**
+
+A **position embedding** is information added to each image patch (or token) to tell the model **where** it came from in the original image.
+
+### Why do we need it?
+
+Transformers **don’t understand order** by default.
+Unlike CNNs or RNNs, transformers treat every token as **independent** unless we **explicitly tell them the order**.
+
+So, we add a **position embedding** to each patch embedding to tell the model:
+
+> "This patch is from the top-left",
+> "This one is from the bottom-right", etc.
+
+---
+
+### Think of it like this:
+
+Imagine someone sends you 10 puzzle pieces, but doesn't tell you where each one goes.
+You'll struggle to build the full picture.
+
+But if each piece comes **labeled with a position**, like “Row 1, Column 3”, you can reconstruct the image much better.
+
+That label is like a **position embedding**.
+
+---
+
+## **What’s the difference between Class Token and Position Embedding?**
+
+| Feature                        | Class Token                                           | Position Embedding                                      |
+| ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------- |
+| **Purpose**                    | Used to summarize the entire input for classification | Used to tell the model where each patch comes from      |
+| **Applies to**                 | One special token added at the start of the sequence  | Every token in the sequence (including the class token) |
+| **Learnable?**                 | Yes (usually initialized randomly and trained)        | Yes (can be learned) or fixed (sinusoidal, etc.)        |
+| **Shape (ViT Example)**        | `[1, 1, 768]`                                         | `[1, 197, 768]` (if 196 patches + 1 class token)        |
+| **Used for final prediction?** | Yes, we use the class token as the final output       | No, position embeddings are just added to help learning |
+
+---
+
+### Summary:
+
+* **Class token** = "Final summary" vector, used for prediction.
+* **Position embedding** = "Location hint" added to each input so the model understands order or layout.
+
+
+
+### **Steps to Add Position Embedding**
+
+#### 1. **Calculate Number of Patches**
+
+-------------------code----------------------
+num_patches = int((height / patch_size) * (width / patch_size))  # Should be 196 for 224x224 with patch size 16
+-------------------code----------------------
+
+#### 2. **Get Embedding Dimension**
+
+-------------------code----------------------
+embedding_dim = patch_embedded_with_class.shape[-1]  # e.g., 768
+-------------------code----------------------
+
+#### 3. **Create Learnable Position Embedding**
+
+-------------------code----------------------
+position_embedding = nn.Parameter(
+    torch.ones(1, num_patches + 1, embedding_dim)  # Shape: [1, 197, 768]
+)
+-------------------code----------------------
+
+* `+1` accounts for the **class token** at the start.
+* Using `torch.ones` for clarity; in practice, `torch.randn` is preferred.
+
+#### 4. **Add Position Embedding to the Sequence**
+
+-------------------code----------------------
+patch_and_position_embedding = patch_embedded_with_class + position_embedding
+-------------------code----------------------
+
+---
+
+### **Final Tensor Shape**
+
+* The result is a tensor of shape:
+  **`[batch_size, num_patches + 1, embedding_dim]`**, e.g., `[1, 197, 768]`
+* This tensor now includes:
+
+  * Embedded patches
+  * Class token at the front
+  * Positional context
+
+---
+
+## **Visual Recap**
+
+* Start: Patch embeddings only → `[1, 196, 768]`
+* After class token: → `[1, 197, 768]`
+* After adding position embedding: → still `[1, 197, 768]` but now enriched with spatial info.
+
+---
+
+### **Key Notes**
+
+* **Class token** is for summarizing the image for classification.
+* **Position embedding** encodes patch order/location.
+* Both are **learnable parameters** (`nn.Parameter`) and updated during training.
+
+---
+
+## Conclusion
+
+* We've successfully replicated **Equation 1** from the ViT paper.
+* The full input representation (patch + class + position) is now ready for the transformer encoder.
+
+---
+
+## Next Challenge
+
+Try to:
+
+* Wrap this entire logic into a single module or script.
+* Input: raw image tensor.
+* Output: position-aware, class-token-prepended patch embeddings ready for transformer input.
+
+Let me know if you want the complete code that does this end-to-end.
