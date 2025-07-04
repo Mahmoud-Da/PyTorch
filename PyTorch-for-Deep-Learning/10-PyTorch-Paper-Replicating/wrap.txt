@@ -4650,3 +4650,134 @@ print(output.shape)  # Expected: (32, num_classes)
 * Optionally, use `torchsummary` or similar tools to inspect the model architecture.
 
 ---
+
+*** 260. Getting a Visual Summary of Our Custom Vision Transformer ***
+## **Lecture Summary: Testing and Summarizing the Vision Transformer (ViT)**
+
+---
+
+### **Objective**
+
+* Confirm the ViT model works correctly.
+* Pass a sample image through the model.
+* Generate a visual summary of the architecture.
+* Prepare for training the model on a real dataset (pizza, steak, sushi).
+
+---
+
+### **1. Create a Random Input Tensor**
+
+* Start by simulating a single image input to test the model.
+
+-------------------code----------------------
+random_image_tensor = torch.rand(1, 3, 224, 224)  # (batch_size, channels, height, width)
+-------------------code----------------------
+
+---
+
+### **2. Instantiate the ViT Model**
+
+* Instantiate the model using default settings (e.g. 1000 classes for ImageNet).
+* Modular design allows for easy adaptation (e.g. for 3-class food classification).
+
+-------------------code----------------------
+vit = VisionTransformer(num_classes=1000)  # or num_classes=3
+-------------------code----------------------
+
+---
+
+### **3. Forward Pass**
+
+* Pass the random image through the model to verify output shape.
+
+-------------------code----------------------
+logits = vit(random_image_tensor)
+print(logits.shape)  # Expected: (1, 1000) or (1, 3)
+-------------------code----------------------
+
+* With random inputs and weights, this output doesn't carry meaningful predictions yet.
+* Confirming the shape is correct is the key step here.
+
+---
+
+### **4. Adapting for a Custom Dataset**
+
+* For classification tasks like pizza, steak, and sushi:
+
+  * Adjust `num_classes` to `3`
+  * Confirm that the output shape becomes `(batch_size, 3)`
+
+-------------------code----------------------
+vit = VisionTransformer(num_classes=3)
+-------------------code----------------------
+
+---
+
+### **5. Model Summary with `torchinfo`**
+
+* Use the `summary` function from `torchinfo` to visualize the model architecture.
+
+-------------------code----------------------
+from torchinfo import summary
+summary(model=vit, input_size=(1, 3, 224, 224))
+-------------------code----------------------
+
+* Displays:
+
+  * Layer types
+  * Output shapes
+  * Parameter counts
+  * Total number of parameters
+
+---
+
+### **6. Interpreting the Summary**
+
+* Shows flow of data through:
+
+  * Patch embedding
+  * Positional + class token addition
+  * Dropout
+  * Stacked transformer blocks (alternating MSA and MLP)
+  * Classifier head
+
+* Confirms:
+
+  * Final output shape matches `num_classes`
+  * Number of parameters is approximately **85 million**
+
+---
+
+### **7. Next Challenge: Train the Model**
+
+* Use existing training utilities (`engine.py`, `train()` function) to train ViT.
+* What you’ll need:
+
+  1. **Model** instance (`VisionTransformer`)
+  2. **Loss function**, e.g. `nn.CrossEntropyLoss()`
+  3. **Optimizer**, e.g. `torch.optim.Adam()`
+  4. Your **data loaders**
+  5. **Training loop**
+
+---
+
+### **8. Final Thoughts**
+
+* You've replicated a machine learning research paper (ViT) in PyTorch.
+* The architecture was recreated from:
+
+  * Equations (1–4)
+  * Tables (1 and 3)
+  * Figure 1
+* You now have a flexible and modular vision transformer.
+* The final goal is to test it on real data and evaluate its performance.
+
+---
+
+### **Reflection Challenge**
+
+* Can this smaller ViT perform well on a smaller dataset (e.g., food images)?
+* If it performs poorly, why? (e.g., data size, training duration, architecture scaling)
+* Experiment and explore.
+
+---
