@@ -4781,3 +4781,127 @@ summary(model=vit, input_size=(1, 3, 224, 224))
 * Experiment and explore.
 
 ---
+
+
+*** 261. Creating a Loss Function and Optimizer from the ViT Paper ***
+## **Lecture Summary: Setting Up Training for Vision Transformer (ViT)**
+
+---
+
+### **Objective**
+
+Train the custom-built Vision Transformer model on the FoodVision Mini dataset.
+
+---
+
+### **Section 9: Training Setup**
+
+#### **Step 1: Review the Goal**
+
+* We've successfully replicated the ViT architecture.
+* The next milestone is to **train and evaluate its performance** on a real-world dataset (e.g., pizza, steak, sushi).
+
+---
+
+### **Step 2: Define the Optimizer**
+
+#### **Choosing the Optimizer**
+
+* The ViT paper uses the **Adam optimizer**.
+* Source: Section 4 of the original paper ("Training and Fine-tuning").
+* **Adam** is chosen over SGD due to better performance on most datasets.
+
+#### **Adam Hyperparameters (from paper)**
+
+* `beta1 = 0.9`
+* `beta2 = 0.999`
+* `weight_decay = 0.1`
+
+#### **What is Weight Decay?**
+
+* Weight decay is a **regularization technique**.
+* It adds a small penalty (L2 norm of weights) to the loss function.
+* Helps to **prevent overfitting** by discouraging large weights.
+
+#### **Implementing Adam Optimizer**
+
+-------------------code----------------------
+optimizer = torch.optim.Adam(
+    params=vit.parameters(),
+    lr=1e-3,              # learning rate from Table 3 in the paper
+    betas=(0.9, 0.999),   # optional, these are the default values
+    weight_decay=0.1      # as specified in the paper
+)
+-------------------code----------------------
+
+---
+
+### **Step 3: Define the Loss Function**
+
+#### **Loss Function in the Paper**
+
+* The paper does **not explicitly mention** the loss function.
+* Since it is a **multiclass classification** problem, the standard choice is:
+
+-------------------code----------------------
+loss_fn = torch.nn.CrossEntropyLoss()
+-------------------code----------------------
+
+---
+
+### **Step 4: Summary of What We Have**
+
+* **Model**: `VisionTransformer`
+* **Optimizer**: `Adam`
+* **Loss function**: `CrossEntropyLoss`
+* **Data**: `FoodVision Mini` (pizza, steak, sushi)
+* **Next step**: Call the training function
+
+---
+
+### **Step 5: Set Up the Training Loop**
+
+Assuming you have the `train()` function defined in `engine.py`, use it as follows:
+
+-------------------code----------------------
+from going_modular import engine
+
+results = engine.train(
+    model=vit,
+    train_dataloader=train_dataloader,
+    test_dataloader=test_dataloader,
+    optimizer=optimizer,
+    loss_fn=loss_fn,
+    epochs=10,
+    device=device
+)
+-------------------code----------------------
+
+Make sure:
+
+* `train_dataloader` and `test_dataloader` are correctly set up.
+* `device` is set to `'cuda'` if GPU is available, otherwise `'cpu'`.
+
+-------------------code----------------------
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+-------------------code----------------------
+
+---
+
+### **Final Challenge**
+
+You now have all components to train the ViT model:
+
+1. **Architecture**
+2. **Loss function**
+3. **Optimizer**
+4. **Training loop**
+
+Your challenge is:
+
+* Complete the training process using your data.
+* Monitor the loss and accuracy.
+* Compare performance against previous CNN models.
+* Analyze results and consider improvements (e.g., learning rate warmup, augmentation, fine-tuning).
+
+---
