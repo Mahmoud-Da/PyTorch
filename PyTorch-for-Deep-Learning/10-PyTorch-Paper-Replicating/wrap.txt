@@ -5097,3 +5097,120 @@ Your challenge is:
 * Then, move to experiment with techniques (starting with increasing data and training time).
 
 ---
+
+*** 264. Plotting a Loss Curve for Our ViT Model ***
+### **Lecture Notes: Diagnosing Our Vision Transformer’s Performance and Next Steps**
+
+#### **1. Recap**
+
+* The previous lecture discussed why our ViT model underperformed.
+* **Main issue identified:** Lack of scale in our training setup, particularly in data volume.
+
+---
+
+### **2. Key Elements Missing in Our Training Setup**
+
+#### **A. Insufficient Data**
+
+* Our dataset: only **225 training images** (Food Vision Mini).
+* Original ViT paper: trained on **millions of images** (ImageNet, ImageNet-21k, JFT-300M).
+* **Actionable Step:** Use a larger dataset (e.g., full **Food101** dataset).
+
+  * Available via `torchvision.datasets.Food101`.
+  * 101,000 images across 101 food classes.
+  * Can be tried in Google Colab.
+
+#### **B. Missing Training Techniques**
+
+To prevent overfitting and improve training stability:
+
+1. **Gradient Clipping**
+
+   * Prevents gradients from becoming too large and destabilizing training.
+
+2. **Learning Rate Warmup**
+
+   * Starts with a small learning rate and gradually increases to a base value.
+   * Stabilizes early training.
+
+3. **Learning Rate Decay**
+
+   * Gradually decreases the learning rate as training progresses.
+   * Helps the model settle into a better minimum (like taking smaller steps near the goal).
+
+* These are **regularization techniques** used to **prevent overfitting**.
+
+---
+
+### **3. Diagnosing the Model: Loss Curve Analysis**
+
+* **Goal:** Determine if the model is overfitting, underfitting, or both.
+* **Method:** Plot loss curves using:
+
+  -------------------code----------------------
+  from helper_functions import plot_loss_curves
+  plot_loss_curves(results)
+  -------------------code----------------------
+
+#### **Loss Curve Interpretation**
+
+* Training loss decreases, then flattens.
+* Test loss remains high and erratic (“mountain” shape).
+* Accuracy curve shows poor performance.
+
+**Conclusion:**
+
+* The model is likely both:
+
+  * **Underfitting** (can’t learn enough from limited data).
+  * **Overfitting** (model memorizes training data but fails on test data).
+
+**Ideal scenario:** Training and test loss curves decrease together smoothly (Goldilocks zone).
+
+---
+
+### **4. Solution Direction: Transfer Learning**
+
+* **Motivation:** What if more data isn’t available?
+
+  * E.g., a real-world scenario where a startup only provides 225 images.
+
+* **Recommended Approach:** **Transfer Learning**
+
+  * Reuse a pre-trained model trained on a large dataset (like ImageNet).
+  * Fine-tune or use as a feature extractor for our small dataset.
+
+#### **Available Pretrained Vision Transformers**
+
+* `torchvision.models.vit_b_16` with pretrained weights.
+
+  * Trained on **ImageNet-1K**.
+  * Input size: **224x224**.
+  * Accuracy: **81% on ImageNet**.
+
+#### **Challenge for You**
+
+* Try setting up a **feature extractor** using `vit_b_16`:
+
+  * Load pretrained model from `torchvision.models`.
+  * Freeze base layers.
+  * Replace classifier head with one for your task (3 food classes).
+  * Use the small Food Vision Mini dataset.
+
+#### **Reminder**
+
+* You’ve previously implemented a feature extractor setup.
+* Look back to the section on **"Setting up a pre-trained model"**.
+
+---
+
+### **5. Summary**
+
+| Problem               | Explanation                      | Potential Solution                      |
+| --------------------- | -------------------------------- | --------------------------------------- |
+| Too little data       | Only 225 training images         | Use full Food101 dataset                |
+| Underfitting          | Training loss flattens early     | More epochs, more data                  |
+| Overfitting           | Test loss remains high           | Regularization: warmup, decay, clipping |
+| Generalization issues | Can't improve with current setup | Use **Transfer Learning**               |
+
+---
