@@ -5214,3 +5214,157 @@ To prevent overfitting and improve training stability:
 | Generalization issues | Can't improve with current setup | Use **Transfer Learning**               |
 
 ---
+
+*** 265. Getting a Pretrained Vision Transformer from Torchvision and Setting it Up ***
+### **Lecture Notes: Transfer Learning with a Pretrained Vision Transformer (ViT)**
+
+---
+
+#### **1. Recap: Plotting Loss Curves**
+
+* In the previous video, loss curves showed the model was **both underfitting and overfitting**.
+* Ideal training: both **train and test losses decrease** together (Goldilocks zone).
+* Conclusion: Transfer learning can help address both underfitting and overfitting.
+
+---
+
+#### **2. Why Use Transfer Learning?**
+
+* **Transfer learning**: Using a **pretrained model** on a related task, then fine-tuning or adapting it to a new, smaller dataset.
+* Benefits:
+
+  * Requires **less data**.
+  * Reduces **training time**.
+  * Yields **better results faster**, especially on small datasets like *Food Vision Mini* (225 images).
+
+---
+
+#### **3. Pretrained Vision Transformer (ViT) from TorchVision**
+
+* TorchVision provides pretrained ViT models (e.g., `vit_b_16`).
+* These models were trained on large datasets like ImageNet-1K.
+
+##### **Why This Matters**
+
+* The original ViT paper used **TPU v3 with 8 cores** for **30 days**.
+
+* Estimated cost:
+  `30 days * 24 hours * $8/hour = $5,760 USD`
+  *(on-demand, not including discounts)*
+
+* Most practitioners (especially beginners) don’t have these resources.
+
+* Pretrained models enable high performance **without** large-scale compute.
+
+---
+
+#### **4. Setup for Using Pretrained ViT**
+
+##### **A. Version Requirements**
+
+* `torch >= 0.12`, `torchvision >= 0.13`
+* These versions support the latest API for pretrained model weights.
+
+##### **B. Import & Device Setup**
+
+-------------------code----------------------
+import torch
+import torchvision
+from torchvision.models import vit_b_16, ViT_B_16_Weights
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+-------------------code----------------------
+
+##### **C. Load Pretrained Weights**
+
+-------------------code----------------------
+pretrained_vit_weights = ViT_B_16_Weights.DEFAULT
+pretrained_vit = vit_b_16(weights=pretrained_vit_weights).to(device)
+-------------------code----------------------
+
+---
+
+#### **5. Freezing Base Parameters (Feature Extraction)**
+
+* We freeze all base parameters to prevent them from being updated during training:
+
+-------------------code----------------------
+for param in pretrained_vit.parameters():
+    param.requires_grad = False
+-------------------code----------------------
+
+* Only the **classifier head** will be trained.
+
+---
+
+#### **6. Inspecting the Model**
+
+* Use a summary function to inspect the architecture.
+* Original classifier head outputs 1000 classes (ImageNet).
+* We need to modify this to output **3 classes** (our custom classes).
+
+---
+
+#### **7. Replacing the Classifier Head**
+
+-------------------code----------------------
+from torch import nn
+
+# Set random seeds for reproducibility
+torch.manual_seed(42)
+
+# Replace the head
+pretrained_vit.heads = nn.Linear(in_features=768, out_features=3).to(device)
+-------------------code----------------------
+
+* After replacement:
+
+  * **Total parameters** remain the same.
+  * **Trainable parameters** drop to \~2,300 (just the new head).
+  * **Frozen parameters**: rest of the ViT backbone.
+
+---
+
+#### **8. Comparison with Custom Model**
+
+* Our **hand-built ViT** has the **same number of total parameters** as TorchVision's `vit_b_16`.
+* This confirms our architecture is consistent with the official implementation.
+* A great validation of our work building a ViT from scratch.
+
+---
+
+#### **9. Real-World Applications and Inspiration**
+
+* Vision Transformers are now being used in:
+
+  * **Object detection** (e.g., Facebook’s recent research).
+  * **Medical imaging**, **satellite vision**, etc.
+* Understanding ViT architecture opens doors to advanced projects.
+
+---
+
+#### **10. Next Step: Train the Pretrained ViT**
+
+* Use the same training loop used previously for the custom model.
+
+* Compare performance of:
+
+  * **Pretrained ViT (feature extractor)**
+  * vs
+  * **Custom ViT trained from scratch**
+
+* Key evaluation: Does transfer learning reduce underfitting/overfitting?
+
+---
+
+### **Summary Table**
+
+| Step                    | Action                                      |
+| ----------------------- | ------------------------------------------- |
+| Load Pretrained Weights | `ViT_B_16_Weights.DEFAULT` from TorchVision |
+| Freeze Base Layers      | Set `requires_grad = False`                 |
+| Replace Classifier Head | New `nn.Linear(768, 3)`                     |
+| Move to Device          | Use GPU if available                        |
+| Train & Compare         | Evaluate against custom-trained ViT         |
+
+---
