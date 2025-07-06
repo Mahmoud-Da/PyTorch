@@ -4905,3 +4905,76 @@ Your challenge is:
 * Analyze results and consider improvements (e.g., learning rate warmup, augmentation, fine-tuning).
 
 ---
+
+*** 262. Training our Custom ViT on Food Vision Mini ***
+### **Training the Vision Transformer (ViT) Model**
+
+#### **1. Overview**
+
+* This section covers training the custom Vision Transformer (ViT) model built from scratch.
+* If you previously completed the training challenge, reflect on your results.
+* If not, this section guides you through training the model.
+
+---
+
+#### **2. Training Setup**
+
+* **Optimizer**: `Adam` optimizer is used.
+
+  * The code is reorganized so that the optimizer instance is created inside the same cell as the training code to keep things consistent.
+* **Seed Setting**: Seeds are set to make results as reproducible as possible.
+* **Training Engine**: Utilizes `engine.train()` from the earlier modular PyTorch setup.
+
+---
+
+#### **3. Parameters Passed to the Engine**
+
+* **Model**: The custom ViT model instance.
+* **Train Dataloader**: Instance created in earlier section for training data.
+* **Test Dataloader**: Corresponding instance for test data.
+* **Epochs**: Training for 10 epochs.
+* **Optimizer**: Adam.
+* **Loss Function**: Predefined earlier.
+* **Device**: Ensures computation is done on GPU (CUDA) if available.
+
+---
+
+#### **4. Observations During Training**
+
+* Training begins without errors.
+* Progress bar confirms training is running.
+* Initial accuracy surpasses 50%, then quickly drops under 20%.
+* Epoch time: \~5.5 seconds.
+* Model size is relatively large, while the dataset is small.
+* Final test accuracy hovers around 26%.
+* Training accuracy increases, but test metrics fluctuate.
+
+---
+
+#### **5. Preliminary Analysis**
+
+* **Possible Issue**: Underfitting.
+
+  * Training accuracy is increasing, but test accuracy and loss are unstable.
+* **Key Question**: Why does this model underperform compared to the original paper?
+
+---
+
+#### **6. Suggested Next Steps**
+
+* **Investigate Differences**:
+
+  * **Dataset**: What dataset was used in the original paper?
+  * **Model Variants**: Are we using the same variant as in the paper?
+  * **Training Setup**: How does our training/fine-tuning process differ?
+  * **Results**: Compare performance metrics with those reported in the paper.
+
+---
+
+#### **7. Summary**
+
+* The ViT model was successfully trained on the Food Vision Mini dataset.
+* Despite subpar performance, this is a significant milestone: training a transformer model from scratch.
+* Next focus: exploring ways to improve model performance by aligning closer to the original setup.
+
+---
