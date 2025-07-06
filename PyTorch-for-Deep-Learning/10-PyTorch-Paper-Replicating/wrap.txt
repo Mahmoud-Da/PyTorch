@@ -5696,3 +5696,83 @@ print(f"Pretrained ViT model size: {pretrained_model_size:.2f} MB")
   * Consider model compression techniques (e.g., quantization, pruning)
 
 ---
+
+*** 269. Discussing the Trade-Offs Between Using a Larger Model for Deployments ***
+### **Lecture Notes: Model Size Comparison and Deployment Considerations**
+
+---
+
+#### **Recap**
+
+* We **saved our best performing model**, a **pretrained Vision Transformer (ViT)** with a custom classification head trained on the Food Vision Mini dataset.
+* We then checked its file size: **327 MB**.
+* This size may pose challenges for **deployment to mobile/web applications** due to compute and memory constraints.
+
+---
+
+### **Section Review: Is Bigger Always Better?**
+
+#### **Comparative Analysis**
+
+| Model                                   | Size   | Test Accuracy | Test Loss                 |
+| --------------------------------------- | ------ | ------------- | ------------------------- |
+| **ViT (pretrained, fine-tuned)**        | 327 MB | \~93.8%       | Lower test loss           |
+| **EfficientNet B2 (feature extractor)** | 29 MB  | \~93.8%       | Slightly higher test loss |
+
+> Note: EfficientNet B2 was trained on **only 20%** of the pizza/steak/sushi dataset
+> → To make a fair comparison, you would need to **retrain ViT on 20%** of the data.
+
+---
+
+#### **Key Question: Is it worth using a bigger model?**
+
+* **ViT model is \~11x larger** than EfficientNet B2.
+* **Performance (accuracy) is very similar.**
+* **ViT has slightly better test loss**, which may indicate better calibration or confidence.
+
+---
+
+### **Deployment Considerations**
+
+* **Large models** like ViT may perform slightly better, but come with:
+
+  * Longer loading and inference times
+  * Higher memory and compute needs
+  * Potential poor user experience in low-resource settings
+
+* **Smaller models** (like EfficientNet B2):
+
+  * Load and infer faster (good UX)
+  * Easier to deploy to browsers or mobile apps
+
+---
+
+### **Real-World Example: Nutrafol App**
+
+* Nutrafol is a prototype app that runs in the **browser with no GPU**.
+* When uploading an image (e.g., pizza), the model makes a **fast and accurate prediction**.
+* This highlights the power and utility of **small, efficient models** for real-time inference on consumer devices.
+
+---
+
+### **Exercise: Custom Image Prediction with Pretrained ViT**
+
+> Challenge: Replicate the custom image prediction process using the **pretrained ViT feature extractor**, just like we did earlier with EfficientNet B2.
+
+#### Steps:
+
+1. Load your saved ViT model (`08_pretrained_vit_feature_extractor_pizza_steak_sushi.pth`)
+2. Preprocess a custom image using the **same transforms** used during training
+3. Use the model to make a prediction
+4. Output the prediction and verify accuracy
+
+---
+
+### **Conclusion**
+
+* **Model size vs performance** is a practical trade-off to always consider.
+* ViT gives **slightly better loss**, but its **large size (327 MB)** might be a bottleneck in real-world deployment.
+* EfficientNet B2 may be more practical when resources are limited, especially in mobile/web apps.
+* Final takeaway: choose the model that best balances **accuracy, size, speed**, and **deployment constraints** for your use case.
+
+---
