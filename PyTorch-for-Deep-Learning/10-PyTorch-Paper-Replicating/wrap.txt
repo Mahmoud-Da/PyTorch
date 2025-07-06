@@ -5586,3 +5586,113 @@ torch.save(pretrained_vit.state_dict(), "pretrained_vit_feature_extractor.pth")
 * Although the model performs best, its **large size** may be a bottleneck for deployment.
 
 ---
+
+*** 268. Saving Our Pretrained ViT Model to File and Inspecting Its Size ***
+### **Lecture Notes: Saving and Evaluating Pretrained ViT Feature Extractor Model**
+
+---
+
+#### **Objective**
+
+Now that we have trained a **pretrained ViT feature extractor** model and achieved strong performance, it's time to:
+
+* Save the model to disk
+* Check its file size
+* Consider whether the model is suitable for deployment (e.g., on mobile or web)
+
+---
+
+#### **Section 10.6: Save the Best Performing ViT Model**
+
+##### **Why Save the Model?**
+
+* To reuse it for inference (e.g., in apps or production)
+* To avoid retraining every time
+* To prepare for deployment to devices like smartphones or browsers
+
+---
+
+#### **Saving the Model**
+
+1. **Import save utility**
+
+-------------------code----------------------
+from going_modular.going_modular import utils
+-------------------code----------------------
+
+2. **Define model details**
+
+-------------------code----------------------
+model = pretrained_vit
+target_dir = "models"
+model_name = "08_pretrained_vit_feature_extractor_pizza_steak_sushi.pth"
+-------------------code----------------------
+
+3. **Save the model**
+
+-------------------code----------------------
+utils.save_model(model=model, target_dir=target_dir, model_name=model_name)
+-------------------code----------------------
+
+> Output:
+> `Saving model to models/08_pretrained_vit_feature_extractor_pizza_steak_sushi.pth`
+
+---
+
+#### **Check Model File Size**
+
+1. **Import `Path` from `pathlib`**
+
+-------------------code----------------------
+from pathlib import Path
+-------------------code----------------------
+
+2. **Calculate file size in MB**
+
+-------------------code----------------------
+pretrained_model_path = Path("models/08_pretrained_vit_feature_extractor_pizza_steak_sushi.pth")
+pretrained_model_size = pretrained_model_path.stat().st_size / (1024 * 1024)
+print(f"Pretrained ViT model size: {pretrained_model_size:.2f} MB")
+-------------------code----------------------
+
+> **Model Size**: `327 MB`
+
+---
+
+#### **Deployment Considerations**
+
+| Model           | Size   | Notes                             |
+| --------------- | ------ | --------------------------------- |
+| Pretrained ViT  | 327 MB | High performance, large file size |
+| EfficientNet B2 | 29 MB  | Smaller size, decent performance  |
+
+##### **Key Points**
+
+* **327 MB** may be too large for some **mobile or browser** applications
+* **Deployment constraints** include:
+
+  * Limited storage
+  * Limited compute power (especially on mobile)
+  * Slow download times over network
+
+---
+
+#### **Summary**
+
+* The pretrained ViT model performed very well on Food Vision Mini
+* It's now saved and ready to be deployed
+* However, its large size (327 MB) may not be suitable for lightweight applications
+
+---
+
+#### **Next Steps**
+
+* **Compare model performance vs size**:
+
+  * Is the increased accuracy of the ViT worth the added size?
+* **Explore lighter alternatives**:
+
+  * Use smaller models like EfficientNet variants
+  * Consider model compression techniques (e.g., quantization, pruning)
+
+---
