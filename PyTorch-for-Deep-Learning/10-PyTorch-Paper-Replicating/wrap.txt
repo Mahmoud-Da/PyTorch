@@ -4511,3 +4511,142 @@ Equation 4 completes the puzzle with a simple classifier head applied to the cla
 The next step is implementing the `forward()` method to tie everything together.
 
 ---
+
+*** 259. Bringing Our Own Vision Transformer to Life Part 2: The Forward Method ***
+## **Lecture Summary: Implementing the `forward()` Method for the Vision Transformer (ViT)**
+
+---
+
+### **Objective**
+
+Implement the `forward()` method to complete the ViT architecture. This method processes an input image through all previously defined components of the Vision Transformer model.
+
+---
+
+### **Step-by-Step Walkthrough**
+
+#### **1. Determine Batch Size**
+
+* Extract batch size from the input tensor `x`.
+
+-------------------code----------------------
+batch_size = x.shape[0]
+-------------------code----------------------
+
+#### **2. Expand Class Token Across Batch**
+
+* Expand the class token embedding to match the batch size.
+* This ensures each image in the batch has its own copy of the class token.
+
+-------------------code----------------------
+class_token = self.class_embedding.expand(batch_size, -1, -1)
+-------------------code----------------------
+
+* `-1` means infer the size automatically.
+
+#### **3. Apply Patch Embedding**
+
+* Convert image into patch embeddings (Equation 1).
+
+-------------------code----------------------
+x = self.patch_embedding(x)
+-------------------code----------------------
+
+#### **4. Concatenate Class Token and Patch Embeddings**
+
+* Concatenate class token to the beginning of the patch embeddings along the sequence dimension.
+
+-------------------code----------------------
+x = torch.cat((class_token, x), dim=1)
+-------------------code----------------------
+
+* Final shape: `(batch_size, num_patches + 1, embedding_dim)`
+
+#### **5. Add Position Embeddings**
+
+* Add learnable positional embeddings to token embeddings.
+
+-------------------code----------------------
+x = x + self.position_embedding
+-------------------code----------------------
+
+#### **6. Apply Embedding Dropout**
+
+* Apply dropout after adding positional embeddings (per the paper).
+
+-------------------code----------------------
+x = self.embedding_dropout(x)
+-------------------code----------------------
+
+#### **7. Pass Through Transformer Encoder**
+
+* Feed the embedded input through stacked Transformer encoder blocks (Equations 2 and 3).
+
+-------------------code----------------------
+x = self.transformer_encoder(x)
+-------------------code----------------------
+
+#### **8. Extract Class Token Output**
+
+* Only the output corresponding to the class token is passed to the classifier.
+* This is the first token in the sequence (index 0).
+
+-------------------code----------------------
+x = self.classifier(x[:, 0])
+-------------------code----------------------
+
+* The classifier contains a `LayerNorm` followed by a `Linear` projection (Equation 4).
+
+#### **9. Return Final Output**
+
+* The output `x` now contains the logits for each class.
+
+---
+
+### **Final Forward Method Outline**
+
+-------------------code----------------------
+def forward(self, x):
+    batch_size = x.shape[0]
+    class_token = self.class_embedding.expand(batch_size, -1, -1)
+    x = self.patch_embedding(x)
+    x = torch.cat((class_token, x), dim=1)
+    x = x + self.position_embedding
+    x = self.embedding_dropout(x)
+    x = self.transformer_encoder(x)
+    x = self.classifier(x[:, 0])
+    return x
+-------------------code----------------------
+
+---
+
+### **Recap**
+
+By implementing the `forward()` method, the complete ViT architecture is now functional. Here's what has been accomplished:
+
+* **Equation 1:** Patch embedding and addition of class token and position embeddings.
+* **Equations 2 & 3:** Transformer encoder blocks (Multi-head self-attention and MLP).
+* **Equation 4:** Classification head using only the class token.
+* **Result:** A fully defined ViT model capable of classifying input images.
+
+---
+
+### **Next Steps**
+
+* Instantiate the model:
+
+-------------------code----------------------
+vit = VisionTransformer()
+-------------------code----------------------
+
+* Test the model by passing sample data through it and checking the output shape:
+
+-------------------code----------------------
+sample_input = torch.randn(32, 3, 224, 224)  # Batch of 32 images
+output = vit(sample_input)
+print(output.shape)  # Expected: (32, num_classes)
+-------------------code----------------------
+
+* Optionally, use `torchsummary` or similar tools to inspect the model architecture.
+
+---
