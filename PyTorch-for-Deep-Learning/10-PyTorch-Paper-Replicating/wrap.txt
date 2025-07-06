@@ -5468,3 +5468,121 @@ train_dataloader_pretrained, test_dataloader_pretrained, class_names = create_da
 | Compare Performance             | Versus custom ViT trained from scratch |
 
 ---
+
+*** 267. Training a Pretrained ViT Feature Extractor Model for Food Vision Mini ***
+### **Lecture Notes: Training and Evaluating a Pretrained ViT Feature Extractor**
+
+---
+
+#### **Section 10.5: Train Pretrained ViT on Food Vision Mini**
+
+**Objective**: Use a pretrained Vision Transformer (ViT) as a feature extractor to classify images from a small dataset (Food Vision Mini).
+
+---
+
+##### **1. Setup**
+
+* **Loss function**: `CrossEntropyLoss` (standard for multi-class classification)
+* **Optimizer**: `torch.optim.Adam(pretrained_vit.parameters(), lr=1e-3)`
+
+  * Only the head (classifier) parameters are trainable
+* **Epochs**: 10
+* **Training function**: `engine.train(...)`
+
+-------------------code----------------------
+pretrained_vit_results = engine.train(
+    model=pretrained_vit,
+    train_dataloader=train_dataloader_pretrained,
+    test_dataloader=test_dataloader_pretrained,
+    optimizer=optimizer,
+    loss_fn=loss_fn,
+    epochs=10,
+    device=device
+)
+-------------------code----------------------
+
+---
+
+##### **2. Training Outcome**
+
+* Training and evaluation completed **significantly faster** than training from scratch.
+* Achieved **very high accuracy quickly**:
+
+  * Training accuracy > 95%
+  * Test accuracy peaked at around **94%**
+* Iteration time dropped from **5.4s (custom model)** to **3.3s (pretrained)**
+
+---
+
+##### **3. Performance Comparison**
+
+| Metric                      | Custom ViT   | Pretrained ViT                     |
+| --------------------------- | ------------ | ---------------------------------- |
+| Training Accuracy           | 26%          | 95%+                               |
+| Test Accuracy               | \~26%        | \~94%                              |
+| Training Time per Iteration | 5.40 sec     | 3.30 sec                           |
+| Model Structure             | From scratch | Feature extractor with frozen base |
+
+**Conclusion**: The **pretrained ViT model dramatically outperforms** the custom-trained ViT model, both in **speed and accuracy**.
+
+---
+
+#### **Section 10.6: Plot Loss Curves**
+
+* Use `plot_loss_curves()` to visualize training and test loss and accuracy.
+
+-------------------code----------------------
+from helper_functions import plot_loss_curves
+plot_loss_curves(pretrained_vit_results)
+-------------------code----------------------
+
+* **Loss Curves Analysis**:
+
+  * Training and test loss decrease as expected
+  * Accuracies increase accordingly
+  * Still some gap between training and test loss (mild overfitting), but **far better** than previous results
+
+---
+
+#### **Key Takeaway: The Power of Transfer Learning**
+
+* With **very limited data and compute**, transfer learning:
+
+  * Achieved **state-of-the-art-like results**
+  * Required **minimal code** (less than 20 lines for the core)
+  * Enabled fast experimentation and learning
+
+---
+
+#### **Suggestions for Further Improvement**
+
+1. **Add more data**
+
+   * Always a key driver of better generalization
+2. **Try different pretrained weights**
+
+   * For example, try **SWAG** weights (a more recent variation trained with advanced techniques)
+3. **Explore other pretrained model libraries**:
+
+   * TorchVision
+   * Hugging Face Hub
+   * TIMM (PyTorch Image Models)
+   * Papers with Code
+
+---
+
+#### **Next Steps**
+
+##### **Section 10.6: Save the Best Model**
+
+* Save the trained pretrained ViT model to a file so it can be used or deployed later.
+
+-------------------code----------------------
+torch.save(pretrained_vit.state_dict(), "pretrained_vit_feature_extractor.pth")
+-------------------code----------------------
+
+##### **Upcoming**: Inspect the model file size
+
+* Although the model performs best, its **large size** may be a bottleneck for deployment.
+
+---
