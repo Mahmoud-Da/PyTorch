@@ -5368,3 +5368,103 @@ pretrained_vit.heads = nn.Linear(in_features=768, out_features=3).to(device)
 | Train & Compare         | Evaluate against custom-trained ViT         |
 
 ---
+
+*** 266. Preparing Data to Be Used with a Pretrained ViT ***
+### **Lecture Notes: Preparing Data and Training a Pretrained Vision Transformer**
+
+---
+
+#### **Section 10.1: Why Use a Pretrained Model?**
+
+* **Motivation**:
+
+  * Dataset size is limited (e.g., **only 125 images**).
+  * Using a pretrained model is **faster and more practical** than collecting more data.
+  * Limited training resources (e.g., **a single GPU**).
+  * Goal: **Achieve better results more quickly** using pretrained knowledge from large-scale datasets.
+
+---
+
+#### **Section 10.2: Preparing a Pretrained ViT for Food Vision Mini**
+
+* We've adapted `ViT_B_16` (Vision Transformer Base with 16x16 patches) for our custom task.
+* Turned it into a **feature extractor** by:
+
+  * Freezing all parameters.
+  * Replacing the classifier head with a new `nn.Linear(768, 3)` to match our 3 classes.
+
+---
+
+#### **Section 10.3: Preparing Data for a Pretrained ViT**
+
+* When using a **pretrained model**, **input data must match the format** used during the model's original training.
+* For `ViT_B_16`, we retrieve its **standard transforms** from TorchVision:
+
+-------------------code----------------------
+vit_transforms = pretrained_vit_weights.transforms()
+-------------------code----------------------
+
+* These transforms include:
+
+  * Resize
+  * CenterCrop
+  * Normalization with ImageNet mean and std
+  * Proper image shape and pixel range
+
+* These built-in transforms ensure compatibility with the model's expectations.
+
+---
+
+#### **Section 10.3.1: Setting Up Data Loaders**
+
+* Use `create_dataloaders()` from the modular PyTorch setup.
+* Apply `vit_transforms` to both training and test datasets.
+
+-------------------code----------------------
+train_dataloader_pretrained, test_dataloader_pretrained, class_names = create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=vit_transforms,
+    batch_size=32
+)
+-------------------code----------------------
+
+* **Note**: We can likely use a **larger batch size** with the pretrained model.
+
+  * Reason: Only **2,300 trainable parameters** (vs. 86 million in full model).
+  * Fewer computations → lower memory usage.
+
+---
+
+#### **Section 10.4: Training the Pretrained ViT Feature Extractor**
+
+* Data is now ready.
+* Next step: Train the **pretrained ViT model** with frozen base and a new classification head.
+
+---
+
+#### **Challenge: Write the Training Code**
+
+* The training loop should look similar to the one used for the custom ViT model.
+* Key points:
+
+  * Use the **pretrained ViT feature extractor model**.
+  * Use the **new dataloaders** with `vit_transforms`.
+  * Use a **standard loss function** (e.g., `CrossEntropyLoss`) and **Adam optimizer** (only on head parameters).
+  * Ensure the model and data are on the correct device (CPU/GPU).
+
+---
+
+### **Summary**
+
+| Step                            | Description                            |
+| ------------------------------- | -------------------------------------- |
+| Use Pretrained ViT (`vit_b_16`) | Loaded with ImageNet weights           |
+| Replace Classifier Head         | `nn.Linear(768, 3)`                    |
+| Freeze Backbone Parameters      | Prevent gradient updates               |
+| Apply Pretrained Transforms     | Resize, normalize, etc.                |
+| Create New DataLoaders          | Use Food Vision Mini data              |
+| Train Feature Extractor         | Use standard training loop             |
+| Compare Performance             | Versus custom ViT trained from scratch |
+
+---
