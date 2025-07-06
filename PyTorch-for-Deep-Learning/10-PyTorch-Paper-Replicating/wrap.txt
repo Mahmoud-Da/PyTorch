@@ -5776,3 +5776,111 @@ print(f"Pretrained ViT model size: {pretrained_model_size:.2f} MB")
 * Final takeaway: choose the model that best balances **accuracy, size, speed**, and **deployment constraints** for your use case.
 
 ---
+
+*** 270. Making Predictions on a Custom Image with Our Pretrained ViT ***
+### **Lecture Notes: Final Custom Prediction and Project Wrap-Up**
+
+---
+
+#### **Recap of Previous Concepts**
+
+* We evaluated trade-offs between a **large model** (pretrained ViT) and a **smaller model** (EfficientNet B2):
+
+  * **ViT** delivered the **best test performance** on Food Vision Mini.
+  * However, it was **11x larger** in file size (327MB vs. 29MB).
+  * Larger model may be **harder to deploy** and **slower at inference**, especially in real-time or resource-constrained settings.
+
+---
+
+### **Predicting on a Custom Image with the Pretrained ViT Model**
+
+#### **Objective**
+
+* Test our best-performing pretrained model on a real custom image: `pizza-dad.jpg`.
+
+#### **Steps Followed**
+
+1. Reused previous code for custom image prediction.
+2. Loaded the **pretrained ViT feature extractor** (`pretrained_vit`).
+3. Preprocessed the image using the appropriate **transformations**.
+4. Ran inference to predict the class.
+
+#### **Result**
+
+* The model predicted **pizza** with **very high confidence (\~0.988)**.
+* This confirms that the model:
+
+  * Was trained correctly.
+  * Generalizes well to new images.
+  * Can be used in real applications.
+
+---
+
+### **Milestone Summary**
+
+You have now successfully:
+
+1. **Replicated the Vision Transformer (ViT) architecture from scratch**, using only the research paper as guidance.
+2. Discovered that training from scratch on limited data yields **suboptimal results**.
+3. Improved performance drastically by leveraging **transfer learning**:
+
+   * Used pretrained ViT from `torchvision.models`.
+   * Froze the base layers and only trained a **custom classifier head**.
+4. Achieved:
+
+   * **Best test loss** seen so far.
+   * High prediction confidence on custom image.
+5. Learned to evaluate **practical trade-offs** between:
+
+   * Model accuracy
+   * File size
+   * Deployment constraints
+
+---
+
+### **Next Steps and Deployment Considerations**
+
+* Think about where and how your model will be used:
+
+  * Web apps
+  * Mobile apps
+  * Edge devices
+* Consider:
+
+  * **Speed**
+  * **File size limits**
+  * **Hardware capabilities**
+* In the next section, you'll explore **model deployment** (e.g., similar to `nutrafol.app`).
+
+---
+
+### **Suggested Exercises**
+
+1. **Custom Prediction Extension**:
+
+   * Try running the pretrained model on your own images (pizza, steak, sushi).
+   * Experiment with misclassified examples.
+
+2. **Class Extension Challenge**:
+
+   * Extend the model to include **more food classes** beyond pizza, steak, and sushi.
+   * Consider collecting a larger dataset or using datasets like **Food101**.
+
+3. **Retrain with Equal Data**:
+
+   * Retrain ViT using only **20% of the data** to fairly compare with EfficientNet B2.
+
+4. **Model Size Experimentation**:
+
+   * Try using smaller ViT variants (e.g., `vit_small_patch16_224`) or compressed models.
+
+---
+
+### **Main Takeaways**
+
+* **Transfer learning is powerful**, especially with limited data and compute.
+* **Pretrained models** like ViT can outperform custom models with minimal fine-tuning.
+* **Model performance is not just about accuracy**—consider speed, size, and deployment environment.
+* With the right tools and workflow, you can go from research paper to practical application quickly and efficiently.
+
+---
