@@ -345,3 +345,140 @@ Model runs on powerful remote servers (e.g., AWS, Google Cloud, Azure) accessed 
   * Offline (batch inference)
 
 ---
+
+
+*** 275. How Is My Model Going to Function? ***
+### **Lecture Summary: How is My Model Going to Function? (Online vs Offline Inference)**
+
+---
+
+#### **Recap**
+
+Previously, we explored the **deployment location** of models:
+
+* **On-device (Edge)** vs **Cloud**
+
+Now, we move to the question:
+
+### **"How is my model going to function?"**
+
+The two main options are:
+
+* **Online (Real-Time)**
+* **Offline (Batch / Asynchronous)**
+
+---
+
+### **1. Online (Real-Time) Inference**
+
+#### **Definition**:
+
+Predictions are returned **immediately** or with minimal delay when data is input.
+
+#### **Characteristics**:
+
+* Also called **synchronous prediction**
+* Used in applications where immediate response is required
+
+#### **Examples**:
+
+* **FoodVision Mini**: User uploads an image, model immediately classifies it (e.g., pizza, steak, sushi)
+* **Fraud Detection**: Credit card transactions are classified as legitimate or fraudulent instantly
+* **Spam Detection**: Emails or messages are scanned upon arrival
+* **Real-Time Translation**: Services like Google Translate return results instantly
+* **Self-Driving Cars**: Obstacle detection must happen instantly for safety
+
+#### **Benefits**:
+
+* Fast user experience
+* Critical in real-time decision-making
+* Essential for safety in high-stakes systems (e.g., autonomous vehicles)
+
+#### **Limitations**:
+
+* Requires low-latency infrastructure
+* Can be limited by available compute (especially on-device)
+* Needs high system reliability and uptime
+
+---
+
+### **2. Offline (Batch / Asynchronous) Inference**
+
+#### **Definition**:
+
+Predictions are returned **after a delay**, often on a schedule or in large groups.
+
+#### **Characteristics**:
+
+* Also called **asynchronous or batch prediction**
+* Often scheduled (e.g., every 10 minutes, hourly, daily)
+* Operates on **multiple samples at once**
+
+#### **Examples**:
+
+* **Apple Photos**: Sorts photos into categories (e.g., beach, family) when phone is charging
+* **YouTube Recommendations**: Could be updated hourly or daily based on user behavior
+* **YouTube Video Indexing**: Extracts topics or tags from uploaded videos in the background
+* **Model Training**: Done offline in batch using large datasets
+
+#### **Benefits**:
+
+* Optimized for high throughput
+* Efficient use of resources (batch processing is generally cheaper per prediction)
+* Can be done during off-peak hours (e.g., while phone is idle or charging)
+
+#### **Limitations**:
+
+* Predictions not immediate
+* Not suitable for real-time decision-making
+* Can result in outdated or delayed outputs
+
+---
+
+### **Comparative Summary: Online vs Offline Inference**
+
+| Feature           | Online (Real-Time)                          | Offline (Batch / Asynchronous)        |
+| ----------------- | ------------------------------------------- | ------------------------------------- |
+| **Speed**         | Fast, low-latency                           | Slower, delayed                       |
+| **Use Case Fit**  | Real-time response needed                   | Response can be delayed               |
+| **Compute Style** | Single or few inputs at a time              | Many inputs at once (batch)           |
+| **Optimization**  | For low latency                             | For high throughput                   |
+| **Examples**      | Fraud detection, FoodVision Mini, Translate | YouTube recommendations, Apple Photos |
+| **Best For**      | Immediate predictions                       | Bulk processing, background tasks     |
+
+---
+
+### **Design Consideration**
+
+Choose **online** when:
+
+* The user expects or needs instant feedback
+* Delay negatively impacts user experience or safety
+
+Choose **offline** when:
+
+* You’re processing large amounts of data
+* Immediate output isn’t necessary
+* System resource usage needs to be optimized
+
+---
+
+### **Mixed Approach**
+
+Just like with **cloud vs edge**, you can **combine online and offline**:
+
+* **Online for inference**, **offline for training**
+* **Fallback systems**: On-device model runs first; if uncertain, sends to cloud for more accurate offline processing
+
+---
+
+### **Additional Resource**
+
+The table and ideas are adapted from the book:
+**"Designing Machine Learning Systems"** by Chip Huyen
+
+* Chapter 7 is especially useful for understanding ML deployment strategies
+
+This book is also listed under **Resources for Machine Learning and Deep Learning Engineering** in the course’s extended curriculum.
+
+---
