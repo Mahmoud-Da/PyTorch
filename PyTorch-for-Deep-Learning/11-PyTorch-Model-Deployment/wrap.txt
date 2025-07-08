@@ -214,3 +214,134 @@ When planning to deploy a machine learning model, consider the following:
 Answering these questions helps guide design choices for infrastructure, user experience, and scalability.
 
 ---
+
+
+*** 274. Where Is My Model Going to Go? ***
+### **Lecture Summary: Deployment Locations — On Device (Edge) vs Cloud**
+
+#### **Recap of Key Deployment Questions**
+
+1. **What is my most ideal ML deployment scenario?**
+
+   * High accuracy (works every time)
+   * High speed (as close to real-time as possible)
+
+2. **Where is my model going to go?**
+
+   * On-device (edge)
+   * Cloud
+
+3. **How is my model going to function?**
+
+   * Online (real-time)
+   * Offline (batch)
+
+---
+
+### **Deep Dive: Where is My Model Going to Go?**
+
+#### **1. On-Device / Edge Deployment**
+
+##### **Definition**:
+
+Model runs directly on the user's hardware (e.g., smartphone, car, IoT device).
+
+##### **Use Cases**:
+
+* **FoodVision Mini**: User takes a photo on their smartphone, prediction is made instantly.
+* **Tesla Autopilot**: Model needs to detect obstacles in real time, with no time for cloud round-trips.
+* **iOS Features**: Text detection, subject selection from photos, etc., done locally for better experience.
+
+##### **Advantages**:
+
+* **Low latency**: No need to send data over the network.
+* **Offline capability**: Works without internet.
+* **Privacy**: Data does not leave the device.
+
+##### **Disadvantages**:
+
+* **Limited compute**: Smaller models are needed due to hardware constraints.
+* **Limited storage**: Can't deploy large models easily.
+* **Device-specific tailoring**: May need different builds for iOS vs Android.
+
+##### **Extra Example**:
+
+* Deploying a PyTorch model to a **Raspberry Pi** for live camera-based inference.
+
+---
+
+#### **2. Cloud Deployment**
+
+##### **Definition**:
+
+Model runs on powerful remote servers (e.g., AWS, Google Cloud, Azure) accessed over the internet.
+
+##### **Use Cases**:
+
+* Handling large, resource-intensive models.
+* Centralized inference for multiple clients via APIs.
+* Training large models using distributed systems.
+
+##### **Advantages**:
+
+* **Scalable compute**: Use large models and powerful GPUs/TPUs.
+* **Centralized maintenance**: Deploy once, use anywhere.
+* **Ecosystem integration**: Easily fits into existing cloud-based workflows.
+* **Uniform interface**: Can serve models via APIs to multiple platforms.
+
+##### **Disadvantages**:
+
+* **Latency**: Data has to be sent to the server and back, which causes delay.
+* **Privacy risks**: Data must leave the user's device.
+* **Cost**: If not managed, cloud compute costs can grow rapidly (e.g., auto-scaling misuse).
+
+##### **Example Workflow**:
+
+* Deploy model as an **API**.
+* Another program sends input data to the API and receives prediction results.
+
+---
+
+### **On-Device vs Cloud: Trade-offs**
+
+| Feature           | On-Device / Edge            | Cloud                                    |
+| ----------------- | --------------------------- | ---------------------------------------- |
+| **Latency**       | Very low                    | Higher due to network round-trips        |
+| **Privacy**       | High (data stays on device) | Lower (data sent over the internet)      |
+| **Compute Power** | Limited                     | Virtually unlimited                      |
+| **Scalability**   | Device-specific             | Easily scalable via cloud infrastructure |
+| **Offline Use**   | Possible                    | Not possible                             |
+| **Model Size**    | Needs to be small           | Can be large and complex                 |
+| **Cost**          | Low (once deployed)         | Potentially high if not managed properly |
+
+---
+
+### **Additional Notes and Resources**
+
+* Many systems **combine both** approaches:
+
+  * Inference on device for speed and privacy.
+  * Training and advanced processing in the cloud for power and scale.
+
+* Tools and Tutorials Mentioned:
+
+  * **ONNX Runtime in Browser**: Run ML models in-browser.
+  * **PyTorch on Raspberry Pi**: On-device deployment example.
+  * **Hugging Face, AWS, Google Cloud**: Cloud deployment options.
+
+* Extra Reading:
+
+  * PyTorch blog: Deploying to Raspberry Pi
+  * Article: Moving ML inference from the cloud to the edge (by Joe Christian Burgum)
+  * Section 9 of the course notebook: Links to additional deployment resources
+
+---
+
+### **Next Topic Teaser**
+
+* The next focus will be: **How is my model going to function?**
+
+  * Online (real-time inference)
+  * Offline (batch inference)
+
+---
