@@ -610,3 +610,107 @@ These are available in the course's **extra curriculum section** under PyTorch d
 * You’ll likely encounter different tools depending on the project, team, or company you work in.
 
 ---
+
+*** 277. What We Are Going to Cover ***
+## **Lecture Summary: Deploying the FoodVision Mini Model**
+
+---
+
+### **Recap**
+
+In the previous videos, we discussed various **tools and platforms** for deploying machine learning models. These tools vary depending on two key questions:
+
+1. **Where will the model be deployed?** (e.g., cloud, device)
+2. **How will the model function?** (e.g., real-time or batch)
+
+The tools introduced include:
+
+* **On-device/Edge Deployment**: Google ML Kit, Apple Core ML
+* **Cloud Deployment**: Google Cloud Vertex AI, AWS SageMaker, Azure ML, Hugging Face Spaces + Gradient
+* **API Deployment**: FastAPI, TorchServe
+* **Cross-platform**: ONNX and ONNX Web Runtime
+
+Each tool has a specific use case and benefits, and **they are not mutually exclusive**.
+
+---
+
+### **Transition to Practical Work**
+
+Now that we've covered the theory and tools, it’s time to **put it all into practice** by deploying a real project:
+
+## **Project: Deploying FoodVision Mini**
+
+---
+
+### **Objective**
+
+Deploy the **FoodVision Mini** model as a **web app** that works both in the **browser** and **on mobile**.
+
+---
+
+### **Demonstration Highlights**
+
+* The instructor showcases a working version of the app on a **mobile phone**.
+* The user takes a photo of food (e.g., sushi), which is then passed to the model.
+* The model runs inference and returns the **correct prediction** (e.g., sushi, steak, pizza).
+* A web version of the app is available on **Hugging Face Spaces**, where users can upload an image and instantly get predictions.
+
+---
+
+### **Deployment Scenario for FoodVision Mini**
+
+* **Platform**: On device (mobile) and online (web)
+* **Functionality**: Real-time (immediate predictions)
+* **Current performance**: Functional, but room for improvement in speed
+
+---
+
+### **Deployment Plan Overview**
+
+Here’s what we’ll be doing in this deployment section:
+
+1. **Setup**
+
+   * Import and reuse existing code from earlier sections
+   * Prepare the environment
+
+2. **Introduce PyTorch Deployment**
+
+   * Apply previously discussed deployment concepts
+   * Turn theory into code
+
+3. **Deploy FoodVision Mini**
+
+   * Build a usable **web app** from the trained model
+   * Host the app on a public platform (e.g., Hugging Face Spaces)
+
+4. **Act Like a Machine Learning Engineer**
+
+   * Share the deployed app with others
+   * Begin thinking like a production-ready ML developer
+
+5. **Experimentation Continues**
+
+   * Enhance the app by testing other models such as:
+
+     * **EfficientNet B2**
+     * **Vision Transformer (ViT) feature extractor**
+   * Continue iterating and refining the deployment
+
+6. **Surprise Finale**
+
+   * A final surprise at the end of the project
+   * No spoilers revealed yet
+
+---
+
+### **Summary**
+
+We are now shifting from **planning and tool selection** into **hands-on deployment**. You will:
+
+* Use PyTorch and your trained model
+* Create a real web app
+* Deploy it to share with others
+* Learn how to transition from machine learning developer to machine learning engineer
+
+---
