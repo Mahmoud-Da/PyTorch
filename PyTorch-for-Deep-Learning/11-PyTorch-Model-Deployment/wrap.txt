@@ -793,3 +793,70 @@ We are now shifting from **planning and tool selection** into **hands-on deploym
 
 **Next Step**: Attempt to load the dataset as shown and proceed to the next video for further steps in deploying the model.
 
+
+*** 279. Downloading a Dataset for Food Vision Mini ***
+# PyTorch Model Deployment – Part 2: Preparing the Dataset
+
+## 1. File System Structure in Google Colab
+
+* The course scripts are located in the `content/going_modular` directory.
+* These scripts were cloned from the course’s GitHub repository and include helper functions and modular code needed throughout the deployment process.
+
+## 2. Background Context
+
+* In previous videos:
+
+  * A **Vision Transformer (ViT)** was trained in Section 8 (PyTorch Paper Replicating).
+  * An **EfficientNetV2** model was trained in Section 7 (PyTorch Experiment Tracking).
+* Issue identified: The Vision Transformer was trained on **10%** of the data, while EfficientNetV2 was trained on **20%**.
+* To make a **fair comparison**, both models should be evaluated on the **same data subset**.
+
+## 3. Goal of This Step
+
+* Download the **20% Pizza, Steak, and Sushi** subset of the **Food101** dataset.
+* Use this unified dataset to re-train and compare both ViT and EfficientNetV2 models under consistent conditions.
+* This will help determine the best-performing model for deployment in the **FoodVision Mini** use case.
+
+## 4. Downloading the Dataset
+
+* Use the `download_data()` function stored in `helper_functions.py` (originally written in Section 7).
+* This function automates:
+
+  * Downloading the zipped dataset
+  * Extracting it to the appropriate folder structure
+* The dataset is downloaded from the course’s GitHub repo.
+
+### Code Location
+
+* `download_data()` is located in:
+  `helper_functions.py`
+  (Previously created during the PyTorch Experiment Tracking section)
+
+## 5. Setting Up Paths for Training and Testing
+
+* After extracting the dataset:
+
+  * Training directory:
+    `data/pizza_steak_sushi_20_percent/train`
+  * Testing directory:
+    `data/pizza_steak_sushi_20_percent/test`
+* These paths will be used to initialize the data loaders in the next step.
+
+## 6. Repetition and Practice
+
+* The process of:
+
+  * Defining dataset paths
+  * Creating data loaders
+  * Preparing models
+    has been practiced multiple times throughout the course.
+* Repetition is emphasized as a way to build confidence and fluency in the deployment workflow.
+
+## 7. What’s Next
+
+* Before beginning model deployment, a final experiment will be run:
+
+  * **Compare EfficientNetV2 and Vision Transformer (ViT)** on the same 20% subset
+  * Determine which model is better suited for deployment in the current context
+
+---
