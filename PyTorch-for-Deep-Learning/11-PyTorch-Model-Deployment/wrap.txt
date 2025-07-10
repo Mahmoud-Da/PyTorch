@@ -1099,3 +1099,131 @@ summary(model, input_size=(1, 3, 224, 224))
 This improves code modularity and reusability, following the same practices used in earlier course sections.
 
 ---
+
+*** 282. Create a Function to Make an EffNetB2 Feature Extractor Model and Transforms ***
+# PyTorch Model Deployment – Part 5: EfficientNetB2 Feature Extractor Function
+
+## 1. Recap
+
+* Previously, we manually created an EfficientNetB2 feature extractor.
+* The challenge was to convert this into a reusable function called `create_efficientnetb2_model`.
+* This function should return:
+
+  * A pretrained **EfficientNetB2 model** (with a custom classification head)
+  * The associated **data transforms**
+
+---
+
+## 2. Function Overview
+
+### Function Name
+
+-------------------code----------------------
+def create_efficientnetb2_model(seed=42, num_classes=3):
+-------------------code----------------------
+
+### Parameters
+
+* `seed`: Random seed for reproducibility (default = 42)
+* `num_classes`: Number of output classes (default = 3 for pizza, steak, sushi)
+
+---
+
+## 3. Steps Performed in the Function
+
+### A. Load Pretrained Weights and Transforms
+
+-------------------code----------------------
+from torchvision.models import efficientnet_b2, EfficientNet_B2_Weights
+
+weights = EfficientNet_B2_Weights.DEFAULT
+transforms = weights.transforms()
+-------------------code----------------------
+
+* `weights.DEFAULT` ensures the best available pretrained parameters
+* `weights.transforms()` provides the correct preprocessing steps
+
+### B. Create the Model
+
+-------------------code----------------------
+model = efficientnet_b2(weights=weights)
+-------------------code----------------------
+
+### C. Freeze Base Model Layers
+
+-------------------code----------------------
+for param in model.parameters():
+    param.requires_grad = False
+-------------------code----------------------
+
+* Prevents updates to pretrained layers (makes it a feature extractor)
+
+### D. Customize the Classifier Head
+
+-------------------code----------------------
+import torch.nn as nn
+import torch
+
+torch.manual_seed(seed)
+
+model.classifier = nn.Sequential(
+    nn.Dropout(p=0.3, inplace=True),
+    nn.Linear(in_features=1408, out_features=num_classes, bias=True)
+)
+-------------------code----------------------
+
+* Dropout layer to prevent overfitting
+* Output layer adjusted to match number of target classes
+
+### E. Return Outputs
+
+-------------------code----------------------
+return model, transforms
+-------------------code----------------------
+
+---
+
+## 4. Verifying the Function
+
+### Creating a Model and Transforms
+
+-------------------code----------------------
+model, transforms = create_efficientnetb2_model(num_classes=3, seed=42)
+-------------------code----------------------
+
+### Inspecting the Transforms
+
+-------------------code----------------------
+print(transforms)
+-------------------code----------------------
+
+* Displays cropping, resizing, mean, and std normalization used during training
+
+### Verifying Model Structure
+
+-------------------code----------------------
+from torchinfo import summary
+summary(model, input_size=(1, 3, 224, 224))
+-------------------code----------------------
+
+* Confirms:
+
+  * All base layers are frozen
+  * Output layer is correctly set to 3 classes
+  * Total trainable parameters = 4,227
+
+---
+
+## 5. Result
+
+* A clean, reusable, and parameterized function to generate an EfficientNetB2 feature extractor
+* Makes it easy to instantiate multiple models without repeating code
+
+---
+
+## 6. Next Step
+
+* In the next video, the focus will be on turning the dataset into **PyTorch DataLoaders**
+* You are encouraged to try implementing that part ahead of time if you want to practice
+
+---
