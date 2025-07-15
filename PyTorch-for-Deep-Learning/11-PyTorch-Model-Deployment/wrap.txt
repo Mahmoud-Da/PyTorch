@@ -482,3 +482,131 @@ The table and ideas are adapted from the book:
 This book is also listed under **Resources for Machine Learning and Deep Learning Engineering** in the course’s extended curriculum.
 
 ---
+
+
+*** 276. Some Tools and Places to Deploy Machine Learning Models ***
+## **Lecture Summary: Tools and Platforms for Machine Learning Model Deployment**
+
+---
+
+### **Recap**
+
+In the previous videos, we answered:
+
+* **Where will my model go?** (Device vs. Cloud)
+* **How will my model function?** (Online vs. Offline)
+
+Now, we explore:
+
+## **What tools and platforms are available to deploy machine learning models?**
+
+---
+
+### **1. On-Device / Mobile / Edge Deployment Tools**
+
+These tools are used when the model runs directly on the user’s device (e.g., phone, embedded system), offering low latency and often greater privacy.
+
+#### **a. Google ML Kit**
+
+* For Android apps or cross-platform mobile development
+* Integrates ML models into mobile apps
+* Useful for tasks like image labeling, face detection, OCR
+
+#### **b. Apple Core ML**
+
+* Apple's framework for running ML models on iOS/macOS devices
+* Requires converting models from PyTorch or TensorFlow using `coremltools`
+* Enables real-time on-device inference
+
+---
+
+### **2. Cloud Deployment Platforms**
+
+These are ideal when you need scalable, centralized model access with more compute power.
+
+#### **a. Google Cloud Vertex AI**
+
+* Managed ML platform on Google Cloud
+* Supports training, deployment, and monitoring
+
+#### **b. Amazon SageMaker**
+
+* AWS’s end-to-end ML deployment suite
+* Highly integrated with AWS services
+
+#### **c. Microsoft Azure Machine Learning**
+
+* Microsoft’s ML platform for training and deployment
+* Often used in enterprise settings
+
+#### **d. Hugging Face + Gradient**
+
+* Hugging Face offers `Spaces` for easy deployment
+* `Gradient` by Paperspace integrates with Hugging Face and supports cloud GPU inference
+
+---
+
+### **3. General-Purpose API Deployment Tools**
+
+These are used when deploying a model as a web-accessible API.
+
+#### **a. FastAPI**
+
+* Lightweight Python web framework for building RESTful APIs
+* Suitable for exposing ML models through endpoints
+* Simple, quick to prototype
+
+#### **b. TorchServe**
+
+* PyTorch’s native deployment framework
+* Designed specifically for serving PyTorch models
+* More robust and feature-rich than FastAPI for ML use cases
+* Supports both eager and TorchScript models
+
+#### **TorchScript**:
+
+* A way to convert PyTorch models into a scriptable format
+* Enables deployment in environments **without Python**
+
+---
+
+### **4. ONNX (Open Neural Network Exchange)**
+
+* **Open standard** for machine learning model interoperability
+* Allows converting and running models across frameworks (e.g., PyTorch → ONNX → TensorFlow)
+* Use case: Deploying models in environments like **browsers**, **mobile devices**, or **hardware accelerators**
+* **ONNX Web Runtime**: Run ONNX models directly in the browser (JavaScript/WebAssembly support)
+
+---
+
+### **5. Extra Resources**
+
+The lecture references several additional guides and tools:
+
+* **Apple Core ML Tools**: For converting PyTorch models to `.mlmodel` for Apple devices
+* **Hugging Face Spaces**: For fast app demos using Gradio or Streamlit
+* **ONNX Runtime in Browsers**: Powerful for deploying models in web apps
+* **Blog Articles**:
+
+  * *Deploying a PyTorch model to the edge with Raspberry Pi*
+  * *Moving ML inference from Cloud to Edge* by Joe Christian Burgum
+
+These are available in the course's **extra curriculum section** under PyTorch deployment resources.
+
+---
+
+### **Key Takeaways**
+
+* The best deployment tool or platform **depends on your use case**:
+
+  * For **mobile** apps → Use Core ML or ML Kit
+  * For **scalable, cloud-based access** → Use Vertex AI, SageMaker, or Azure
+  * For **fast prototyping APIs** → Use FastAPI
+  * For **production-grade serving** → Use TorchServe
+  * For **cross-platform or browser deployment** → Use ONNX
+
+* Each of these tools requires **different levels of setup and infrastructure knowledge**.
+
+* You’ll likely encounter different tools depending on the project, team, or company you work in.
+
+---
