@@ -714,3 +714,82 @@ We are now shifting from **planning and tool selection** into **hands-on deploym
 * Learn how to transition from machine learning developer to machine learning engineer
 
 ---
+
+*** 278. Getting Setup to Code ***
+# PyTorch Model Deployment - Lecture Notes
+
+## 1. Introduction to Model Deployment
+
+* **Model Deployment**: The process of making a trained machine learning model available to others — either people or other programs — for inference or integration into applications.
+* This session begins transitioning from theory into practical implementation using **Google Colab**.
+
+## 2. Notebook Setup
+
+* Create a new notebook titled:
+  `PyTorch_model_deployment_video`
+* This notebook corresponds to **Studio #9: PyTorch Model Deployment** from the course curriculum.
+* Access related resources:
+
+  * Book version of the notebook
+  * Associated slides (linked in the notebook)
+  * Discussion tab for Q\&A
+
+## 3. Runtime Settings
+
+* Set the runtime to use **CPU**.
+* Initial sections are streamlined since environment setup and data loading have been covered in earlier chapters.
+
+## 4. Notebook Sections
+
+### 0. Get Set Up
+
+* Ensure required versions of libraries are installed:
+
+  * `torch >= 1.12`
+  * `torchvision >= 0.13`
+* Use an import block with a `try-except` to check and install if necessary.
+
+### 1. Getting Data
+
+* The dataset: A 20% subset of the **Food101 dataset**, specifically filtered to include only:
+
+  * Pizza
+  * Steak
+  * Sushi
+* This subset is referred to as **FoodVision Mini**.
+* Reminder: Since the model is not yet trained in the current notebook, data preparation is essential.
+
+## 5. Cloning Previous Code
+
+* Clone the GitHub repository that contains previous code and utility functions:
+
+  * Particularly the **Going Modular** section
+  * Scripts include:
+
+    * Data loading APIs
+    * Training and evaluation engines
+    * Utility functions
+* These modularized Python scripts allow reuse and avoid code repetition — a common practice in both machine learning and general software engineering.
+
+## 6. Navigating the Cloned Repo
+
+* Use `ls` commands to verify folder structure and script locations.
+* Nested directories may require checking the path to access relevant scripts correctly.
+
+## 7. Device-Agnostic Setup
+
+* Write a small code snippet to check if **CUDA (GPU)** is available.
+* Set the `device` variable accordingly:
+
+  * Use `cuda` if available
+  * Default to `cpu` otherwise
+
+## 8. Data Loading
+
+* The final task in this section: loading the dataset using pre-written functions from earlier chapters.
+* Code for this is provided in the `getting_data` section of the notebook.
+
+---
+
+**Next Step**: Attempt to load the dataset as shown and proceed to the next video for further steps in deploying the model.
+
