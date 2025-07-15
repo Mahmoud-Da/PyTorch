@@ -117,3 +117,100 @@ The next lecture will cover:
 * **Types of Machine Learning Deployments**
 
 ---
+
+*** 273. Three Questions to Ask for Machine Learning Model Deployment ***
+### **Lecture Summary: Types of Machine Learning Model Deployment Scenarios**
+
+#### **Recap of Previous Concepts**
+
+* **Why Deploy ML Models?**
+
+  * To test them in the **real world** (the fourth dataset).
+  * While training, validation, and test metrics are useful, **real-world performance** is what truly matters.
+  * Deployment reveals **errors not seen during development**.
+
+* **Updated PyTorch Workflow**
+
+  * Original steps: Data → Model → Train → Evaluate → Save
+  * New final step: **Deploy and Monitor**
+
+* **ML Engineering vs ML Research**
+
+  * ML Research: Build and test models.
+  * ML Engineering: **Make models accessible** to others, includes building infrastructure for deployment and monitoring.
+
+* **ML Ops (Machine Learning Operations)**
+
+  * Extension of ML workflow to include **production-ready deployment and monitoring**.
+  * Helps bridge the gap between research and practical use.
+
+---
+
+### **Three Key Questions to Guide Deployment**
+
+#### **1. What is my most ideal machine learning model deployment scenario?**
+
+* **Ideal scenario for FoodVision Mini**:
+
+  * Works **every time** (100% accurate)
+  * Works at **speed of light** (real-time response)
+* While perfection isn’t practical, setting an ideal goal helps **design the system accordingly**.
+
+#### **2. Where is my model going to go?**
+
+* **Deployment Location Options**:
+
+  * **On-device (Edge)**
+
+    * Model runs on the user’s device (e.g., smartphone).
+    * Fast and private.
+    * Requires smaller models due to limited compute.
+  * **Cloud**
+
+    * Model runs on remote servers accessed over the internet.
+    * Allows more complex models due to high compute power.
+    * May have network latency but is scalable.
+
+> In practice, many systems use **both**: a small on-device model for quick predictions, and a fallback to a cloud model for more accurate results.
+
+#### **3. How is my model going to function?**
+
+* **Function Modes**:
+
+  * **Online (Real-time)**
+
+    * Model gives predictions instantly as data is received.
+    * Example: Take a photo of food → Get prediction immediately.
+  * **Offline (Batch)**
+
+    * Model processes data in groups at a later time.
+    * Example: Upload 10 photos → Get results after an hour.
+
+> Again, both modes are often combined. Training usually happens **offline**, while predictions are often made **online**.
+
+---
+
+### **Deployment Design Considerations**
+
+* **Prediction Pipeline vs Training Pipeline**:
+
+  * **Prediction pipeline** is usually online (real-time inference).
+  * **Training pipeline** is offline (batch processing).
+* **Device Limitations**:
+
+  * On-device models must be optimized for memory and speed.
+  * Cloud models can be larger but introduce latency.
+
+---
+
+### **Conclusion**
+
+When planning to deploy a machine learning model, consider the following:
+
+1. **Ideal Scenario**: How perfect do you want the experience to be (e.g., speed, accuracy)?
+2. **Deployment Target**: Will the model run on-device or in the cloud?
+3. **Function Mode**: Should it work in real-time or in batches?
+
+Answering these questions helps guide design choices for infrastructure, user experience, and scalability.
+
+---
