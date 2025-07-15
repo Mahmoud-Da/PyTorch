@@ -1282,3 +1282,109 @@ create_dataloaders(
 The instructor encourages attempting the setup independently before proceeding with the guided walkthrough in the next video.
 
 ---
+
+*** 284. Training Our EffNetB2 Feature Extractor and Inspecting the Loss Curves ***
+## Lecture Summary: Training EfficientNet B2 Feature Extractor
+
+### 1. **Recap**
+
+* In the previous video, data loaders were prepared for the **EfficientNet B2 (FNet B2)** feature extractor.
+* The current goal is to **train** the model using a pre-written training function from `engine.py`.
+
+---
+
+### 2. **Setting Up the Training Environment**
+
+#### a. **Imports**
+
+* From `going_modular.engine.py`, import the training function.
+* This file contains reusable training and evaluation functions.
+
+#### b. **Loss Function**
+
+* Since this is a **multi-class classification** task, use:
+
+  -------------------code----------------------
+  torch.nn.CrossEntropyLoss()
+  -------------------code----------------------
+
+#### c. **Optimizer**
+
+* Use the **Adam optimizer**:
+
+  -------------------code----------------------
+  torch.optim.Adam(params=model.parameters(), lr=1e-3)
+  -------------------code----------------------
+
+#### d. **Device Setup**
+
+* Use **device-agnostic code**:
+
+  -------------------code----------------------
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  -------------------code----------------------
+
+---
+
+### 3. **Training Configuration**
+
+#### a. **Model**
+
+* Use the **EfficientNet B2 feature extractor**.
+* Train and test data loaders must use **transforms compatible with EfficientNet B2**.
+
+#### b. **Epochs**
+
+* Based on prior experiment tracking results (e.g. from Weights & Biases), **10 epochs** gives a strong result without long training times.
+* Can increase later if needed.
+
+#### c. **Training Execution**
+
+* Train the model using the training function from `engine.py`.
+* Results after 6 epochs on a Tesla P100 GPU: **around 97% test accuracy**.
+
+---
+
+### 4. **Performance Interpretation**
+
+* **Model Accuracy**: \~97% test accuracy — excellent result for deployment.
+* **Training Time**: \~6 seconds per epoch on GPU.
+* **Generalization**: Test accuracy is slightly higher than training accuracy, suggesting good generalization without overfitting.
+* **Hardware Note**: GPU type (e.g. Tesla P100) affects training time.
+
+---
+
+### 5. **Visualizing Performance**
+
+#### a. **Plotting Loss Curves**
+
+* Use helper function from `helper_functions.py`:
+
+  -------------------code----------------------
+  plot_loss_curves(results)
+  -------------------code----------------------
+* Results show:
+
+  * Training loss decreasing
+  * Test loss decreasing
+  * Accuracy increasing
+  * **Test loss < Training loss** — may suggest potential for further improvement with extended training
+
+#### b. **Model Evaluation**
+
+* Visualization confirms training is successful and stable.
+* If desired, training could be extended and **data augmentation** added for further improvement.
+
+---
+
+### 6. **Next Steps**
+
+* Possible extensions:
+
+  * Train for more epochs
+  * Add **TrivialAugment** or other data augmentation techniques
+* Immediate next step:
+
+  * **Collect model statistics** for comparison with future experiments
+
+---
