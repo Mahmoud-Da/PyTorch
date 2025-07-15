@@ -1227,3 +1227,58 @@ summary(model, input_size=(1, 3, 224, 224))
 * You are encouraged to try implementing that part ahead of time if you want to practice
 
 ---
+
+*** 283. Creating DataLoaders for EffNetB2 ***
+## Lecture Summary: Preparing Data for EfficientNet B2 Feature Extractor
+
+### 1. **Recap**
+
+* In the previous video, a function was created to prepare an **EfficientNet B2** feature extractor and its corresponding transforms using the **TorchVision models**.
+* The EfficientNet B2 model is **pre-trained on ImageNet** and is suitable for applying to the **Food Vision Mini** dataset.
+* If results are promising, the model may be deployed.
+
+### 2. **Preparing the Data**
+
+* The next step is to **prepare the data** specifically for EfficientNet B2.
+* This process is simplified by using pre-written utility functions from the `going_modular` directory.
+
+### 3. **Using the `create_dataloaders` Function**
+
+* Found in `going_modular/data_setup.py`.
+* The function `create_dataloaders()` is used to:
+
+  * Load **training and testing datasets**.
+  * Apply the **EfficientNet B2 transforms**.
+  * Return **class names**.
+
+#### Required Arguments:
+
+-------------------code----------------------
+create_dataloaders(
+    train_dir=path_to_training_data,
+    test_dir=path_to_test_data,
+    transform=efficientnet_b2_transforms,
+    batch_size=32
+)
+-------------------code----------------------
+
+### 4. **Checking the Data Loaders**
+
+* After creation, check:
+
+  * `len(train_dataloader)` – Number of training batches.
+  * `len(test_dataloader)` – Number of testing batches.
+  * `class_names` – Should include the three classes: `pizza`, `steak`, `sushi`.
+
+### 5. **What's Next**
+
+* The next section (3.3) involves **training the model**.
+* You’ll need to:
+
+  * Define a **loss function**.
+  * Set up an **optimizer**.
+  * Use a **training function** from `engine.py`.
+
+The instructor encourages attempting the setup independently before proceeding with the guided walkthrough in the next video.
+
+---
