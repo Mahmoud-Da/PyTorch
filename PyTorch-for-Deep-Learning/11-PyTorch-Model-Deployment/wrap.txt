@@ -1,0 +1,119 @@
+*** 272. What is Machine Learning Model Deployment - Why Deploy a Machine Learning Model ***
+### **Lecture Summary: What is Machine Learning Model Deployment?**
+
+#### **Definition**
+
+Machine Learning (ML) model deployment is the process of **making your machine learning model available to someone or something else**.
+
+#### **Explanation with Examples**
+
+* **Example 1: Image Classification (FoodVision Mini)**
+
+  * Input: Food images
+  * Model: Classifies images into categories like pizza, sushi, steak.
+  * Output: Allows a **person** (user) to interact with the model via a mobile app.
+
+* **Example 2: Credit Card Fraud Detection**
+
+  * Input: Financial transaction data
+  * Model: XGBoost model determines if a transaction is fraudulent.
+  * Output: Used by **another system** (e.g., backend services, databases) to approve or reject transactions.
+
+> Models can interact with both people and systems depending on the use case.
+
+#### **Why Deploy ML Models?**
+
+* **Real-world utility**: It's not enough for a model to work in a notebook—it should be usable in practice.
+
+* **Philosophical idea**:
+
+  > If a machine learning model never leaves a notebook, does it really exist?
+
+* Most models are trained and tested on:
+
+  * Training set
+  * Validation set
+  * Test set
+
+* But there is a **fourth dataset**:
+
+  * **The real world** — the ultimate test for a model.
+
+#### **Real-world Testing and Feedback Loop**
+
+* To truly evaluate a model, it must be deployed in the real world.
+* Real-world issues may not be present in training or test data.
+* After deployment:
+
+  1. Monitor the model
+  2. Detect issues
+  3. Collect new data
+  4. Update the model
+  5. Redeploy
+
+This creates a **feedback loop** essential for continuous improvement.
+
+---
+
+### **Extended ML Workflow**
+
+Traditional steps:
+
+1. Get data ready
+2. Build or use a pre-trained model
+3. Define loss function and optimizer
+4. Train the model
+5. Evaluate the model
+6. Save and reload the model
+
+**New step added**:
+
+* **Step X: Deploy and Monitor the Model**
+
+  * Make the model accessible
+  * Monitor real-world performance
+  * Adjust the model as needed
+
+---
+
+### **Beyond Just Modeling**
+
+ML Engineering is not only about building models:
+
+* It includes **building infrastructure** to support data preprocessing, deployment, and model updates.
+* One key component is **deployment code**.
+
+---
+
+### **ML Ops (Machine Learning Operations)**
+
+* ML Ops is a set of practices to:
+
+  * **Deploy**
+  * **Maintain**
+    machine learning models in **production environments**.
+
+* Focus areas:
+
+  * Reliability
+  * Efficiency
+  * Scalability
+
+---
+
+### **Resources for Learning ML Ops**
+
+The lecture recommends several resources, including:
+
+* Books and courses focused on ML Engineering and ML Ops
+* PyTorch Extra Resources notebook for practical guidance
+
+---
+
+### **Next Topic Preview**
+
+The next lecture will cover:
+
+* **Types of Machine Learning Deployments**
+
+---
