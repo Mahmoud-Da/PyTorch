@@ -860,3 +860,111 @@ We are now shifting from **planning and tool selection** into **hands-on deploym
   * Determine which model is better suited for deployment in the current context
 
 ---
+
+*** 280. Outlining Our Food Vision Mini Deployment Goals and Modelling Experiments ***
+# PyTorch Model Deployment – Part 3: Experiment Planning for FoodVision Mini
+
+## 1. Recap
+
+* In the previous video, we prepared the **Pizza, Steak, Sushi 20% dataset** for use in our **FoodVision Mini** deployment experiments.
+* Now, the focus shifts to defining a clear plan for model training and deployment based on this dataset.
+
+---
+
+## 2. Emphasis on Experimentation
+
+* A key principle emphasized throughout the course:
+  **"Experiment, experiment, experiment."**
+* Despite reaching **Milestone Project 3**, experimentation remains crucial for refining models before deployment.
+
+---
+
+## 3. Three Key Questions for Deployment
+
+These are the foundational questions for any machine learning deployment project:
+
+1. **What is my most ideal machine learning model deployment scenario?**
+2. **Where is my model going to go?**
+3. **How is my model going to function?**
+
+These questions serve as guidelines — you may not have complete answers in advance, but they help define the deployment strategy.
+
+---
+
+## 4. Defining the Ideal Use Case
+
+### **FoodVision Mini – Ideal Model Characteristics**
+
+**A. Performs Well**
+
+* Goal: Achieve **at least 95% accuracy**
+* Since we are dealing with only 3 classes (pizza, steak, sushi), high accuracy is achievable and expected.
+* Lower accuracy (e.g., 50%) would be nearly equivalent to random guessing and is unacceptable.
+
+**B. Performs Fast**
+
+* Target: **Real-time inference speed**
+* Real-time defined as:
+
+  * **30+ FPS (frames per second)**
+  * Corresponds to **≤ 33 milliseconds (ms)** per prediction
+  * Latency = Time it takes to return a prediction
+
+---
+
+## 5. Deployment Goals Summary
+
+| Metric     | Target                           |
+| ---------- | -------------------------------- |
+| Accuracy   | ≥ 95%                            |
+| Latency    | ≤ 33 milliseconds per prediction |
+| Throughput | ≥ 30 predictions per second      |
+
+---
+
+## 6. Planned Experiments
+
+To determine the best model for deployment, two feature extractor models will be trained on the **same 20% dataset**:
+
+### **Model Candidates**
+
+1. **EfficientNetB2 Feature Extractor**
+
+   * Previously trained and evaluated in Section 7
+   * Known for strong performance and relatively good speed
+
+2. **Vision Transformer (ViT) Feature Extractor**
+
+   * Built in Section 8
+   * Known for high accuracy, but may be slower
+
+### **Evaluation Criteria**
+
+* Both models will be evaluated on:
+
+  * Accuracy
+  * Speed (FPS / latency)
+* The **model closest to the deployment goals** will be selected.
+
+**Note**: Speed may be prioritized over absolute accuracy in practical deployment.
+Example:
+
+* A model with 90% accuracy and 25 FPS may be preferred over a model with 98% accuracy and only 2 FPS.
+
+---
+
+## 7. Strategy for Practical Deployment
+
+* Avoid training too many models endlessly.
+* Focus on **deploying quickly** and **iterating later** if needed.
+* Limiting experiments helps prevent analysis paralysis.
+
+---
+
+## 8. Next Steps
+
+* Build the **EfficientNetB2 feature extractor** using the same data as a first step.
+* You are encouraged to try building it yourself using the code from Section 7 as reference.
+* In upcoming videos, the full process will be demonstrated step by step.
+
+---
