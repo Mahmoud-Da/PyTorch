@@ -1476,3 +1476,78 @@ The instructor encourages attempting the setup independently before proceeding w
     * Data augmentation (e.g. **TrivialAugment**)
 
 ---
+
+
+*** 286. Getting the Size of Our EffNetB2 Model in Megabytes ***
+
+## Lecture Summary: Inspecting the Size of the Saved EfficientNet B2 Model
+
+### 1. **Recap**
+
+* In the previous video, the **pre-trained EfficientNet B2 feature extractor** model was saved to file.
+* The model file includes the **state dictionary** and is intended for deployment.
+* A challenge was posed: **inspect the size** of the saved model and reflect on why model size matters in deployment scenarios.
+
+---
+
+### 2. **Why Model Size Matters**
+
+#### a. **Deployment Considerations**
+
+* **Model size** affects deployability, especially on:
+
+  * Mobile apps
+  * Web-based platforms
+  * Edge devices
+* Devices with **limited compute or storage** may be unable to run large models.
+
+#### b. **Practical Implications**
+
+* A model must not only perform well but also fit the **constraints of the target environment**.
+* Model size, performance, and latency are all key metrics to evaluate before deployment.
+
+---
+
+### 3. **Measuring Model File Size in Python**
+
+#### a. **Using `pathlib`**
+
+-------------------code----------------------
+from pathlib import Path
+
+model_path = Path("models/09_pretrained_fnet_b2_feature_extractor_pizza_steak_sushi.pth")
+model_size_bytes = model_path.stat().st_size
+model_size_mb = round(model_size_bytes / (1024 ** 2), 2)
+print(f"Model size: {model_size_mb} MB")
+-------------------code----------------------
+
+#### b. **Result**
+
+* Output:
+
+  -------------------code----------------------
+  Model size: 29.8 MB
+  -------------------code----------------------
+
+---
+
+### 4. **Summary of Findings**
+
+* The **EfficientNet B2 feature extractor**:
+
+  * Achieves **\~97% test accuracy**
+  * Has a **model size of 29.8 MB**
+* These stats are essential for later **model comparisons**, especially when evaluating:
+
+  * Size vs. accuracy trade-offs
+  * Model latency
+  * Suitability for deployment
+
+---
+
+### 5. **Next Step**
+
+* In the next video, all key statistics (accuracy, size, etc.) will be compiled into a **summary dictionary**.
+* This will allow for a **direct comparison** with other models (e.g. Vision Transformer) to select the best candidate for deployment.
+
+---
