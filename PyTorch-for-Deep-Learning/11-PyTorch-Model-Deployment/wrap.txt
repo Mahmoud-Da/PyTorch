@@ -1388,3 +1388,91 @@ The instructor encourages attempting the setup independently before proceeding w
   * **Collect model statistics** for comparison with future experiments
 
 ---
+
+*** 285. Saving Our EffNetB2 Model to File ***
+## Lecture Summary: Saving the EfficientNet B2 Feature Extractor Model
+
+### 1. **Recap**
+
+* In the previous lecture, the **EfficientNet B2 feature extractor** was trained.
+* The model achieved over **95% test accuracy**, satisfying the initial performance goal.
+* With more training and proper **data augmentation**, performance could improve further.
+
+---
+
+### 2. **Saving the Trained Model**
+
+#### a. **Why Save the Model?**
+
+* A model must be saved to a file for:
+
+  * **Deployment**
+  * **Reusability** without retraining
+  * **Version tracking** for experiments
+
+#### b. **Using `save_model()` from `utils.py`**
+
+* Import the `utils` module from `going_modular`:
+
+  -------------------code----------------------
+  from going_modular import utils
+  -------------------code----------------------
+
+* Use the `save_model()` function:
+
+  -------------------code----------------------
+  utils.save_model(
+      model=model, 
+      target_dir="models", 
+      model_name="09_pretrained_fnet_b2_feature_extractor_pizza_steak_sushi.pth"
+  )
+  -------------------code----------------------
+
+* This function:
+
+  * Saves the model to the `models/` directory
+  * Stores it under a descriptive filename for easy identification
+
+* The function is defined in:
+
+  -------------------code----------------------
+  going_modular/utils.py
+  -------------------code----------------------
+
+---
+
+### 3. **Inspecting the Saved Model File**
+
+#### Challenge 1: Check Model File Size
+
+* **Task**: Check the size of the saved model file in **megabytes**.
+* **Why it matters**:
+
+  * Affects **deployment speed**
+  * Impacts **download/load time** on the client side
+  * Influences **storage costs** and **memory usage**
+  * Relevant when deploying to **edge devices or mobile**
+
+#### Challenge 2: Reflect on Model Size in Deployment Context
+
+* Think about:
+
+  * What trade-offs are involved between **model size** and **performance**
+  * Whether the current model size is suitable for **FoodVision Mini** use cases
+  * If smaller models or quantization might be needed in future steps
+
+---
+
+### 4. **Summary and Next Steps**
+
+* The model has been successfully saved using a helper function.
+* You are now ready to:
+
+  * Inspect model size
+  * Begin preparing for deployment
+  * Continue testing and optimizing with experiments like:
+
+    * Extended training
+    * Data augmentation (e.g. **TrivialAugment**)
+
+---
