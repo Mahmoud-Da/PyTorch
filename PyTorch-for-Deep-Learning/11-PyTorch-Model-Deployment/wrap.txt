@@ -1648,3 +1648,126 @@ Compare:
 * Parameter count
 
 ---
+
+*** 288. Creating a Vision Transformer Feature Extractor Model ***
+### **Lecture Summary: Creating a Vision Transformer (ViT) Feature Extractor**
+
+---
+
+#### **1. Background**
+
+* In the previous lesson, statistics were collected for the EfficientNet B2 model.
+* Now, the same steps will be repeated using a **ViT feature extractor**.
+* The goal: compare both models in terms of size, performance, and practicality for deployment.
+
+---
+
+#### **2. Choosing the ViT Variant**
+
+* ViT comes in multiple variants:
+
+  * `vit_b_16` (base, patch size 16)
+  * `vit_b_32` (base, patch size 32)
+  * `vit_l_16` (large)
+  * `vit_h_14` (huge)
+* Chosen model: **ViT Base (vit\_b\_16)** with patch size 16.
+* Note: Larger models (e.g., ViT Huge) have better performance but are significantly heavier, making them harder to deploy.
+
+---
+
+#### **3. Creating the ViT Feature Extractor Function**
+
+##### **Function Signature**
+
+-------------------code----------------------
+def create_vit_model(num_classes=3, seed=42):
+-------------------code----------------------
+
+##### **Steps Inside the Function**
+
+1. **Load Pre-trained Weights**
+
+   * Uses weights from `torchvision.models.ViT_B_16_Weights.DEFAULT`.
+
+2. **Obtain Associated Transforms**
+
+   * Extracts transforms from the pre-trained weights to ensure consistent input formatting.
+
+3. **Initialize Model**
+
+   -------------------code----------------------
+   model = torchvision.models.vit_b_16(weights=weights)
+   -------------------code----------------------
+
+4. **Freeze Base Layers**
+
+   -------------------code----------------------
+   for param in model.parameters():
+       param.requires_grad = False
+   -------------------code----------------------
+
+5. **Modify Output Head**
+
+   * Set random seed for reproducibility.
+   * Replace the head with a new linear classifier:
+
+     -------------------code----------------------
+     model.heads = nn.Sequential(
+         nn.Linear(in_features=768, out_features=num_classes)
+     )
+     -------------------code----------------------
+
+6. **Return**
+
+   * Returns the customized model and the associated transforms:
+
+     -------------------code----------------------
+     return model, transforms
+     -------------------code----------------------
+
+---
+
+#### **4. Testing the Function**
+
+-------------------code----------------------
+vit, vit_transforms = create_vit_model()
+-------------------code----------------------
+
+* Validates that the model and transforms are properly created.
+* The transforms show similar normalization parameters to EfficientNet B2, because both models are trained on ImageNet.
+
+---
+
+#### **5. Model Summary**
+
+* Input size set to `(3, 224, 224)` for consistency.
+* Outputs a detailed summary of the ViT model.
+
+##### **Key Observations**
+
+* **Total Parameters:** 85,800,963
+* **Trainable Parameters:** \~2,300
+
+  * Only the final classification head is trainable.
+  * All other layers are frozen, consistent with feature extraction.
+
+---
+
+#### **6. Next Step**
+
+* Prepare **data loaders** for the ViT feature extractor.
+* Similar code and structure to the data loaders used with EfficientNet B2.
+* Task: attempt to implement data loaders yourself before the next video.
+
+---
+
+### **Conclusion**
+
+You now have a ViT feature extractor ready with:
+
+* Pre-trained frozen base
+* Custom classification head
+* Matching transforms
+* Summary confirming the setup
+
+In the next step, data loading and training will proceed similarly to the EfficientNet B2 pipeline.
