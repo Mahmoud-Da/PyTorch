@@ -2810,3 +2810,146 @@ effnetb2_avg_time_per_pred = round(effnetb2_test_pred_df["time_for_pred"].mean()
 * Still acceptable for many deployment scenarios but not real-time on current hardware.
 
 ---
+
+
+*** 296. Making and Timing Predictions with ViT ***
+### **Lecture Notes: Making and Timing Predictions with ViT (Milestone Project 3)**
+
+#### **Objective**
+
+* Perform the same evaluation for **ViT feature extractor** as we did for **EfficientNet B2**.
+* Compare:
+
+  * Accuracy.
+  * Average prediction time.
+* Append results to model statistics for later analysis.
+
+---
+
+### **Steps Taken**
+
+#### **1. Purpose**
+
+* Test ViT feature extractor on the **test dataset** using `pred_and_store` function.
+* Return a **list of prediction dictionaries** for analysis.
+
+---
+
+#### **2. Running Predictions with ViT**
+
+* Define:
+
+  * `vit_test_preds = pred_and_store(test_data_paths, vit, vit_transforms, class_names, device="cpu")`
+
+* **Reason for hardcoding to CPU**:
+
+  * Deployment environments may lack GPU support.
+  * GPUs require explicit setup.
+  * Exercise later: compare CPU vs GPU performance.
+
+* Observation during execution:
+
+  * ViT seems **slower** than EfficientNet B2 on CPU.
+
+---
+
+#### **3. Inspect Predictions**
+
+* Preview first two predictions:
+
+  * `vit_test_preds[:2]`
+* Convert predictions into **pandas DataFrame**:
+
+-------------------code----------------------
+import pandas as pd
+vit_test_pred_df = pd.DataFrame(vit_test_preds)
+-------------------code----------------------
+
+* Inspect:
+
+  * `vit_test_pred_df.head()`
+  * Check accuracy: `vit_test_pred_df["correct"].value_counts()`
+
+---
+
+#### **4. Accuracy Comparison**
+
+* ViT: **148/150 correct** (\~**98.5% accuracy**).
+* EfficientNet B2: **145/150 correct** (\~**97% accuracy**).
+* ViT performs **slightly better in accuracy**.
+
+---
+
+#### **5. Average Prediction Time**
+
+* Compute:
+
+-------------------code----------------------
+vit_avg_time_per_pred = round(vit_test_pred_df["time_for_pred"].mean(), 4)
+print(vit_avg_time_per_pred)
+-------------------code----------------------
+
+* Result:
+
+  * **ViT average time per prediction > EfficientNet B2**.
+  * Still under 1 second but **not near real-time** (30ms target).
+
+---
+
+#### **6. Observations**
+
+* ViT takes **longer** than EfficientNet B2.
+* Possible reasons:
+
+  * **Architecture differences**:
+
+    * ViT uses transformer-based attention (computationally heavier).
+    * EfficientNet B2 is optimized for efficiency.
+* Prediction speed depends heavily on hardware.
+
+  * On GPU, results will differ (exercise: test CPU vs GPU).
+
+---
+
+#### **7. Store Results in Stats Dictionary**
+
+* Append CPU average time for ViT:
+
+-------------------code----------------------
+vit_stats["time_per_pred_cpu"] = vit_avg_time_per_pred
+-------------------code----------------------
+
+* Do the same for EfficientNet B2:
+
+-------------------code----------------------
+effnetb2_stats["time_per_pred_cpu"] = effnetb2_avg_time_per_pred
+-------------------code----------------------
+
+* Now we have both model stats for comparison.
+
+---
+
+### **Final Step**
+
+* Combine `vit_stats` and `effnetb2_stats` into a **DataFrame** for side-by-side comparison.
+* Example:
+
+-------------------code----------------------
+comparison_df = pd.DataFrame([effnetb2_stats, vit_stats], index=["EfficientNetB2", "ViT"])
+print(comparison_df)
+-------------------code----------------------
+
+---
+
+### **Summary of Findings**
+
+| Model           | Accuracy | Avg Time per Prediction (CPU) |
+| --------------- | -------- | ----------------------------- |
+| EfficientNet B2 | \~97%    | \~0.120s (120ms)              |
+| ViT             | \~98.5%  | Higher than 0.120s (slower)   |
+
+* Both models perform well in accuracy.
+* Neither meets the **30ms real-time goal** on CPU.
+* Next exercise: **Compare CPU vs GPU performance**.
+
+---
