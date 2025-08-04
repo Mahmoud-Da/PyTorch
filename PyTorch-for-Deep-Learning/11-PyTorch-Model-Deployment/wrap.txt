@@ -1551,3 +1551,100 @@ print(f"Model size: {model_size_mb} MB")
 * This will allow for a **direct comparison** with other models (e.g. Vision Transformer) to select the best candidate for deployment.
 
 ---
+
+*** 287. Collecting Important Statistics and Performance Metrics for Our EffNetB2 Model ***
+### **Lecture Summary: EfficientNet B2 Feature Extractor Statistics**
+
+#### **1. Why Model Size Matters**
+
+* We calculated the size of the saved EfficientNet B2 (FNet B2) feature extractor in megabytes.
+* Importance:
+
+  * Deployment constraints: model must fit and run on the target device.
+  * Helps in comparing models for practical deployment scenarios.
+
+---
+
+#### **2. Collecting Model Statistics**
+
+To better compare models later, a dictionary is created to store relevant statistics:
+
+* **Test Loss**
+* **Test Accuracy**
+* **Model Size (in MB)**
+* **Number of Parameters**
+
+---
+
+#### **3. Counting Parameters**
+
+* Code used:
+
+  -------------------code----------------------
+  total_params = sum([torch.numel(param) for param in fnet_b2.parameters()])
+  -------------------code----------------------
+
+* Result:
+
+  * EfficientNet B2 has **7,705,221 parameters**.
+* Rationale:
+
+  * More parameters usually imply more computations and potentially slower inference times.
+  * This metric gives insight into model complexity and efficiency.
+
+---
+
+#### **4. Creating a Dictionary for Model Stats**
+
+A Python dictionary was created to store all the relevant statistics:
+
+-------------------code----------------------
+fnet_b2_results = {
+    "test_loss": ...,
+    "test_accuracy": ...,
+    "num_parameters": total_params,
+    "model_size_MB": fnet_b2_model_size
+}
+-------------------code----------------------
+
+
+* These values are collected manually because there are only two modeling experiments.
+* For larger-scale experiments, consider tools like:
+
+  * TensorBoard
+  * Weights & Biases
+  * Other experiment tracking platforms
+
+---
+
+#### **5. Upcoming Challenge**
+
+You are now tasked with **repeating the same process** but using a **Vision Transformer (ViT) feature extractor** instead of EfficientNet B2:
+
+**Steps:**
+
+1. Create a ViT feature extractor function.
+2. Extract and calculate:
+
+   * Test loss and accuracy
+   * Model size
+   * Number of parameters
+3. Store these in a similar dictionary structure.
+
+**Hint:**
+Refer to the earlier project where a ViT feature extractor was created (PyTorch paper replication section).
+
+---
+
+### **Goal**
+
+Compare:
+
+* EfficientNet B2 feature extractor vs. ViT feature extractor
+  Using:
+* Accuracy
+* Loss
+* Model size
+* Parameter count
+
+---
