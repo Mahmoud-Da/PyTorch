@@ -1771,3 +1771,96 @@ You now have a ViT feature extractor ready with:
 * Summary confirming the setup
 
 In the next step, data loading and training will proceed similarly to the EfficientNet B2 pipeline.
+
+
+*** 289. Creating DataLoaders for Our ViT Feature Extractor Model ***
+### **Lecture Summary: Creating Data Loaders for ViT Feature Extractor**
+
+---
+
+#### **1. Objective**
+
+* Load custom dataset (pizza, steak, sushi) into **data loaders** compatible with the **ViT feature extractor**.
+* Ensure that the **data transforms match** the format expected by the pre-trained ViT model.
+
+---
+
+#### **2. Key Consideration: Data Transforms**
+
+* Since ViT was pre-trained on **ImageNet**, the input data must follow the same preprocessing (e.g., image size, normalization).
+* The ViT model's transform (`vit_transforms`) ensures input consistency.
+
+---
+
+#### **3. Creating Data Loaders**
+
+* Reuses a utility function `create_dataloaders()` from the **Going Modular** section.
+
+##### **Function Call Example**
+
+-------------------code----------------------
+from going_modular.data_setup import create_dataloaders
+
+train_dataloader_vit, test_dataloader_vit, class_names = create_dataloaders(
+    train_dir=train_dir,
+    test_dir=test_dir,
+    transform=vit_transforms,
+    batch_size=32
+)
+-------------------code----------------------
+
+* **Inputs:**
+
+  * `train_dir`, `test_dir`: Paths to the training and testing directories.
+  * `vit_transforms`: Transforms tied to the ViT pre-trained weights.
+  * `batch_size`: Set to 32, but can be adjusted.
+
+---
+
+#### **4. Verifying the Data Loaders**
+
+* Confirm functionality by inspecting the length of the data loaders and printing the class names:
+
+-------------------code----------------------
+print(len(train_dataloader_vit))
+print(len(test_dataloader_vit))
+print(class_names)
+-------------------code----------------------
+
+* **Expected Output:**
+
+  * Should be similar to EfficientNet B2 data loader output.
+  * The main difference: using `vit_transforms` instead of `fnet_b2_transforms`.
+
+---
+
+#### **5. Behind the Scenes**
+
+* The helper function `create_dataloaders()` handles:
+
+  * Dataset creation using `ImageFolder`
+  * Applying transforms
+  * Wrapping in `DataLoader` for training
+
+---
+
+#### **6. Next Step: Training the ViT Feature Extractor**
+
+* Transition to model training using the ViT feature extractor and data loaders just created.
+
+---
+
+#### **Challenge**
+
+* Before watching the next video:
+
+  * Try training the model yourself.
+  * Aim to generate **loss and accuracy curves** similar to those created during the EfficientNet B2 experiment.
+
+---
+
+### **Summary**
+
+* You now have functional `train_dataloader_vit` and `test_dataloader_vit` for your ViT feature extractor.
+* Input data is formatted correctly using `vit_transforms`.
+* You're ready to train the ViT model and compare it with EfficientNet B2.
