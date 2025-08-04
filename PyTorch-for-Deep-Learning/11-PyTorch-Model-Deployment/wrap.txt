@@ -2400,3 +2400,266 @@ Steps inside the loop for each image:
 * Actual timing tests will confirm trade-offs.
 
 ---
+
+*** 294. Creating a Function to Make and Time Predictions with Our Models ***
+
+## **Lecture Notes: Implementing `pred_and_store` Function for Prediction Timing**
+
+---
+
+### **1. Objective**
+
+* Build a **comprehensive function (`pred_and_store`)** to:
+
+  * Measure **latency per sample** for **ViT** and **EfficientNet B2**.
+  * Store **prediction details** for each image in the test dataset.
+* Purpose:
+
+  * Compare inference speed between the two models.
+  * Gather additional evaluation metrics for analysis.
+
+---
+
+### **2. Imports and Setup**
+
+* **Required Libraries**:
+
+  * `from PIL import Image` – Open images.
+  * `from pathlib import Path` – Handle file paths.
+  * `import torch` – Model and tensor operations.
+  * `from timeit import default_timer as timer` – Measure inference time.
+  * `from tqdm.auto import tqdm` – Progress bar.
+  * `from typing import List, Dict` – Type hints for clarity.
+
+---
+
+### **3. Function Design: `pred_and_store`**
+
+* **Goal**: Return a **list of dictionaries**, one per test image.
+* **Parameters**:
+
+  * `paths`: List of image file paths.
+  * `model`: Trained PyTorch model.
+  * `transform`: Preprocessing transforms for model.
+  * `class_names`: List of class labels.
+  * `device`: Defaults to `cuda` if available, else `cpu`.
+
+---
+
+### **4. Steps to Implement the Function**
+
+#### **Step 1: Function Header and Device Setup**
+
+-------------------code----------------------
+def pred_and_store(
+    paths: List[Path],
+    model: torch.nn.Module,
+    transform,
+    class_names: list,
+    device: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+) -> List[Dict]:
+-------------------code----------------------
+
+---
+
+#### **Step 2: Initialize Data Structure**
+
+* Create an empty list to store prediction results:
+
+-------------------code----------------------
+pred_list = []
+-------------------code----------------------
+
+---
+
+#### **Step 3: Loop Through Image Paths**
+
+* Use `tqdm` for progress visualization:
+
+-------------------code----------------------
+for path in tqdm(paths):
+-------------------code----------------------
+
+---
+
+#### **Step 4: Create Empty Dictionary per Sample**
+
+* Initialize a dictionary to store details for each image:
+
+-------------------code----------------------
+predict = {}
+-------------------code----------------------
+
+---
+
+#### **Step 5: Extract Metadata from File Path**
+
+* Store:
+
+  * **Image path**.
+  * **Ground truth class** (from parent directory name).
+
+-------------------code----------------------
+predict["image_path"] = str(path)
+class_name = path.parent.stem
+predict["class_name"] = class_name
+-------------------code----------------------
+
+---
+
+#### **Step 6: Start Timer**
+
+-------------------code----------------------
+start_time = timer()
+-------------------code----------------------
+
+---
+
+#### **Step 7: Open Image**
+
+-------------------code----------------------
+image = Image.open(path)
+-------------------code----------------------
+
+---
+
+#### **Step 8: Apply Transforms and Move to Device**
+
+* Add batch dimension and send to target device:
+
+-------------------code----------------------
+image_transformed = transform(image).unsqueeze(0).to(device)
+-------------------code----------------------
+
+---
+
+#### **Step 9: Prepare Model for Inference**
+
+* Send model to device and set evaluation mode:
+
+-------------------code----------------------
+model = model.to(device).eval()
+-------------------code----------------------
+
+---
+
+#### **Step 10: Perform Forward Pass**
+
+* Enable inference mode:
+
+-------------------code----------------------
+with torch.inference_mode():
+    pred_logit = model(image_transformed)
+-------------------code----------------------
+
+* Compute **prediction probabilities**:
+
+-------------------code----------------------
+pred_probabilities = torch.softmax(pred_logit, dim=1)
+-------------------code----------------------
+
+* Find **predicted label and class**:
+
+-------------------code----------------------
+pred_label = torch.argmax(pred_probabilities, dim=1).cpu()
+pred_class = class_names[pred_label]
+-------------------code----------------------
+
+---
+
+#### **Step 11: Store Predictions in Dictionary**
+
+* **Prediction probability** (max value):
+
+-------------------code----------------------
+predict["pred_prob"] = round(pred_probabilities.max().cpu().item(), 4)
+-------------------code----------------------
+
+* **Predicted class**:
+
+-------------------code----------------------
+predict["pred_class"] = pred_class
+-------------------code----------------------
+
+---
+
+#### **Step 12: End Timer and Store Time**
+
+-------------------code----------------------
+end_time = timer()
+predict["time_for_pred"] = round(end_time - start_time, 4)
+-------------------code----------------------
+
+---
+
+#### **Step 13: Check Correctness**
+
+-------------------code----------------------
+predict["correct"] = (class_name == pred_class)
+-------------------code----------------------
+
+---
+
+#### **Step 14: Append Dictionary to List**
+
+-------------------code----------------------
+pred_list.append(predict)
+-------------------code----------------------
+
+---
+
+#### **Step 15: Return Results**
+
+-------------------code----------------------
+return pred_list
+-------------------code----------------------
+
+---
+
+### **5. Expected Output**
+
+* A list of dictionaries like:
+
+-------------------code----------------------
+[
+  {
+    "image_path": "...",
+    "class_name": "steak",
+    "pred_class": "steak",
+    "pred_prob": 0.9823,
+    "time_for_pred": 0.0345,
+    "correct": True
+  },
+  ...
+]
+-------------------code----------------------
+
+---
+
+### **6. Next Steps**
+
+* Use this function on:
+
+  * **EfficientNet B2 model**.
+  * **ViT model**.
+* Calculate:
+
+  * **Average prediction time per sample**.
+  * Compare against **performance metrics**.
+* Store in each model’s **statistics dictionary**:
+
+  * `avg_prediction_time`.
+
+---
+
+#### **Key Takeaways**
+
+* This function combines:
+
+  * Timing.
+  * Prediction accuracy.
+  * Confidence scores.
+  * Organized output for analysis.
+* Essential for evaluating **trade-off between speed and accuracy** before deployment.
+
+---
