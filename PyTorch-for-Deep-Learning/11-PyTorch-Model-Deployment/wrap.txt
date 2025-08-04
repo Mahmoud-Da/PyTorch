@@ -1864,3 +1864,108 @@ print(class_names)
 * You now have functional `train_dataloader_vit` and `test_dataloader_vit` for your ViT feature extractor.
 * Input data is formatted correctly using `vit_transforms`.
 * You're ready to train the ViT model and compare it with EfficientNet B2.
+
+
+
+*** 290. Training Our ViT Feature Extractor Model and Inspecting Its Loss Curves ***
+### **Lecture Notes: Training ViT Feature Extractor for FoodVision Mini**
+
+---
+
+#### **Overview**
+
+* Goal: Train a **Vision Transformer (ViT)** feature extractor and compare its performance with the **EfficientNet B2** feature extractor on the same dataset.
+* Final objective: Deploy the model that best satisfies the FoodVision Mini project requirements.
+
+---
+
+### **Steps & Key Details**
+
+#### **1. Training Plan**
+
+* Train **ViT feature extractor** on FoodVision Mini dataset.
+* Compare performance metrics against **EfficientNet B2**.
+* Deploy the better-performing model.
+
+---
+
+#### **2. Training Setup**
+
+* **Training Functionality:** Use modularized code (`engine` module).
+* **Optimizer:**
+
+  * Use **Adam** optimizer from `torch.optim`.
+  * Parameters: only the trainable parameters of the feature extractor (≈ 2,300).
+  * Learning rate: `1e-3` (default).
+* **Loss Function:**
+
+  * **CrossEntropyLoss** (for multi-class classification).
+* **Reproducibility:**
+
+  * Set random seeds for consistent results.
+  * Focus on trends rather than exact matching numbers.
+
+    * **Expected trend:** Test accuracy ↑, Test loss ↓.
+
+---
+
+#### **3. Training Configuration**
+
+* Model: **ViT feature extractor**.
+* Training DataLoader: **train\_dataloader\_vit** (data preprocessed to match ViT pretraining format).
+* Testing DataLoader: **test\_dataloader\_vit**.
+* Epochs: **10** (same as EfficientNet B2 for fair comparison).
+* Device: Set to **current device (GPU if available)**.
+
+---
+
+#### **4. Training Performance**
+
+* Speed: \~5–6 seconds per epoch (\~1 minute total).
+* Results:
+
+  * Test Accuracy: **\~97–98%**.
+  * Test Loss: Low, performing better than EfficientNet B2.
+* Hardware: **Tesla P100 GPU (16 GB VRAM)** used for this run.
+
+---
+
+#### **5. Comparison with EfficientNet B2**
+
+* Both models trained for **10 epochs**.
+* Similar per-epoch training time (\~6 seconds).
+* ViT achieved **higher accuracy (\~98.5%)** compared to EfficientNet B2.
+
+---
+
+### **Loss Curves**
+
+* Plotted using `plot_loss_curves(results)`.
+* Observations:
+
+  * Textbook loss curves.
+  * Training loss slightly **higher than test loss**:
+
+    * Indicates potential for further improvement with more epochs or data augmentation.
+
+---
+
+### **Next Steps & Recommendations**
+
+* Extend training to **20 epochs** to further reduce test loss and increase accuracy.
+* Experiment with **data augmentation** for better generalization.
+* Save the trained ViT model (same process as EfficientNet B2).
+
+---
+
+#### **Additional Resources**
+
+* For more on **ideal loss curves**: Refer to *PyTorch Custom Datasets - Section 8*.
+
+---
+
+#### **Key Takeaway**
+
+The ViT feature extractor achieved **state-of-the-art accuracy (\~98.5%)** on the FoodVision Mini dataset, outperforming EfficientNet B2. It is a strong candidate for deployment.
+
+---
