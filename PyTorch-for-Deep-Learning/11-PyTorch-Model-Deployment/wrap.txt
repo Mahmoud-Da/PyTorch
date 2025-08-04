@@ -3201,3 +3201,117 @@ print(comparison_df)
 * Bring Food Vision Mini to life.
 
 ---
+
+*** 299. Gradio Overview and Installation ***
+## **Food Vision Mini – Deploying with Gradio**
+
+### **Current Status**
+
+* **Chosen Model:** EfficientNetB2 (FNet B2).
+* **Reason for Choice:**
+
+  * Meets most deployment criteria:
+
+    * **Good performance** (slightly lower accuracy than ViT but acceptable).
+    * **Faster inference speed**.
+    * **Smaller model size footprint**.
+* **Limitation:** Not as fast as desired on Google Colab CPU.
+* **Goal:** Deploy Food Vision Mini as an interactive demo for real-world usage.
+
+---
+
+### **Possible Inference Speed Improvements (Optional Extensions)**
+
+* **PyTorch performance tuning:**
+  Search: *Improve PyTorch model inference speed* → Use the **PyTorch Performance Tuning Guide**.
+* **PyTorch XLA (Accelerated Linear Algebra):**
+  Optimizes CPU/GPU inference.
+* **OpenVINO Toolkit:**
+  Convert PyTorch model for optimized CPU inference.
+* Links for these optimizations are provided in the extra curriculum.
+
+---
+
+### **Deployment Plan**
+
+* Use **Gradio** (a library for creating machine learning demos with web interfaces).
+* **Objective:**
+  Build a **friendly web interface** for Food Vision Mini so anyone can access it online.
+
+---
+
+### **What is Gradio?**
+
+* **Definition:**
+  Gradio is the fastest way to demo your machine learning model with a user-friendly web interface.
+* **Purpose:**
+  Allows you to:
+
+  * Create an interface for model inputs and outputs.
+  * Share the demo easily online.
+* **Common Use:**
+  Many ML research teams publish interactive demos using Gradio on platforms like **Hugging Face Spaces**.
+* Example: Salesforce research paper “BLIP” integrates a demo with Gradio on Hugging Face.
+
+---
+
+### **Goal for Food Vision Mini**
+
+* Build a demo similar to those on Hugging Face Spaces:
+
+  * **Input:** Food image.
+  * **Model:** EfficientNetB2 feature extractor.
+  * **Output:** Prediction (Pizza, Steak, or Sushi).
+
+---
+
+### **Gradio Overview**
+
+* **Workflow:**
+  Inputs → Model/Function → Outputs.
+* **For Food Vision Mini:**
+
+  * Inputs: Food images.
+  * Model: Pre-trained EfficientNetB2.
+  * Outputs: Predicted food class.
+* **Other Possible Components in Gradio:**
+
+  * Text, images, audio, video, sliders, checkboxes, etc.
+* **Example:**
+
+  * Text input → Model → Generated image (e.g., Stable Diffusion demos).
+
+---
+
+### **Steps to Start Using Gradio**
+
+1. **Install Gradio:**
+
+   -------------------code----------------------
+   !pip install gradio
+   -------------------code----------------------
+
+   Confirm installation (e.g., version 3.1.7 in this case).
+
+2. **Understand Gradio Structure:**
+
+   * Inputs and Outputs: Define UI components.
+   * Function: Connects input data to output predictions.
+
+3. **Explore Documentation:**
+   [Gradio Docs](https://gradio.app/docs) for:
+
+   * Input components (Image, Text, Audio, etc.).
+   * Output components (Label, Image, DataFrame, etc.).
+
+---
+
+### **Next Steps**
+
+* Implement Gradio demo for **Food Vision Mini**:
+
+  * Upload image → Model → Output prediction label.
+* Deploy on **Hugging Face Spaces** for public access.
+* Later, enhance UI and test performance.
+
+---
