@@ -1969,3 +1969,117 @@ print(class_names)
 The ViT feature extractor achieved **state-of-the-art accuracy (\~98.5%)** on the FoodVision Mini dataset, outperforming EfficientNet B2. It is a strong candidate for deployment.
 
 ---
+
+
+
+*** 291. Saving Our ViT Feature Extractor and Inspecting Its Size ***
+### **Lecture Notes: Saving and Evaluating ViT Feature Extractor**
+
+---
+
+#### **Overview**
+
+* We successfully trained the **ViT feature extractor** with excellent results on the **Pizza, Steak, and Sushi (20%) dataset**.
+* Next steps:
+
+  * Save the trained ViT model.
+  * Check its size and compare it with **EfficientNet B2**.
+  * Prepare for deployment by considering model size and performance trade-offs.
+  * Collect feature extractor statistics for comparison.
+
+---
+
+### **1. Why Save the Model?**
+
+* Purpose:
+
+  * Quickly deploy a working model.
+  * Future improvements can be added after initial deployment.
+
+---
+
+### **2. Saving the ViT Feature Extractor**
+
+* Use helper function from **`going_modular/utils.py`**:
+
+  * **`utils.save_model(model, target_dir, model_name)`**
+* Required parameters:
+
+  * `model`: The trained ViT feature extractor.
+  * `target_dir`: Directory to store the model (e.g., `models/`).
+  * `model_name`: Suggested naming convention:
+
+    -------------------code----------------------
+    pre_trained_vit_feature_extractor_pizza_steak_sushi_20_percent.pth
+    -------------------code----------------------
+* After saving:
+
+  * The **models directory** now contains:
+
+    * `efficientnet_b2_feature_extractor.pth`
+    * `vit_feature_extractor.pth`
+
+---
+
+### **3. Check Model Size**
+
+* Why it matters:
+
+  * Larger models require more storage and compute resources.
+  * May affect deployment options (e.g., mobile devices, embedded systems).
+* Steps:
+
+  * Use `os.stat()` to get file size in bytes.
+  * Convert to MB by dividing by 1,000,000.
+* Results:
+
+  * **ViT model size:** \~327 MB
+  * **EfficientNet B2 model size:** \~29 MB
+* Key Insight:
+
+  * ViT performs better but is **\~11 times larger** than EfficientNet B2.
+  * Deployment decision should consider device compute/storage limitations.
+
+---
+
+### **4. Deployment Considerations**
+
+* If compute resources are **unlimited**, use the best-performing model.
+* If deploying to:
+
+  * **Mobile devices** or **small computers** (e.g., Raspberry Pi):
+
+    * Large models like ViT might be impractical.
+    * EfficientNet B2 could be a better trade-off.
+
+---
+
+### **5. Next Steps: Collect Feature Extractor Statistics**
+
+* Purpose:
+
+  * Enable **direct comparison** between models.
+* Metrics to collect (same for both ViT and EfficientNet B2):
+
+  * **Test Loss**
+  * **Test Accuracy**
+  * **Number of Trainable Parameters**
+  * **Model Size**
+* These will be used for:
+
+  * Comparison charts.
+  * Final deployment decision.
+
+---
+
+### **Key Takeaways**
+
+* ViT feature extractor:
+
+  * **High accuracy (\~98.5%)** but large size (**327 MB**).
+* EfficientNet B2:
+
+  * **Smaller size (29 MB)** but slightly lower performance.
+* Deployment decisions should balance **accuracy vs model size**.
+
+---
