@@ -2663,3 +2663,150 @@ return pred_list
 * Essential for evaluating **trade-off between speed and accuracy** before deployment.
 
 ---
+
+*** 295. Making and Timing Predictions with EffNetB2 ***
+
+### **Lecture Notes: Making and Timing Predictions with EfficientNet B2 (Section 5.2)**
+
+#### **Objective**
+
+* Evaluate **prediction speed** (latency) of models to satisfy real-time performance goals.
+* Compare **EfficientNet B2** and **ViT** feature extractors.
+* Target: **\~30ms per prediction (≈ real-time)**.
+
+---
+
+### **Steps Taken**
+
+#### **1. Purpose**
+
+* Build and use the `pred_and_store` function to:
+
+  * Make predictions.
+  * Measure latency per sample.
+  * Return results in a **list of dictionaries** for easy analysis.
+
+---
+
+#### **2. Key Considerations**
+
+* **Device**:
+
+  * Hardcode predictions to **CPU** because:
+
+    * Deployment environments (mobile, web) may not have GPUs.
+    * GPU availability needs explicit setup.
+    * GPUs are often on high-cost, larger devices.
+* **Transforms**:
+
+  * Each model must use its **own transforms**:
+
+    * EfficientNet B2 → `effnetb2_transforms`.
+    * ViT → `vit_transforms`.
+  * Incorrect transforms will cause prediction discrepancies.
+
+---
+
+#### **3. Running Predictions with EfficientNet B2**
+
+* Use the `pred_and_store` function with:
+
+  * **Test data paths**.
+  * **EfficientNet B2 model**.
+  * **EfficientNet B2 transforms**.
+  * **Class names**: `["pizza", "steak", "sushi"]`.
+  * **Device**: CPU.
+* Execution:
+
+  * Predictions successful.
+  * Speed: \~**8.87 instances/sec**.
+* Goal vs Result:
+
+  * Goal: 30ms per image (\~33 instances/sec).
+  * Actual: Slower than goal.
+
+---
+
+#### **4. Inspecting Predictions**
+
+* **Structure**:
+
+  * List of dictionaries (one per prediction):
+
+    * `image_path`
+    * `ground_truth`
+    * `prediction_probability`
+    * `predicted_class`
+    * `time_per_prediction`
+    * `correct` (boolean)
+* Advantages:
+
+  * Easy to convert into **pandas DataFrame** for analysis.
+
+---
+
+#### **5. Convert to DataFrame**
+
+-------------------code----------------------
+import pandas as pd
+
+effnetb2_test_pred_df = pd.DataFrame(effnetb2_test_preds)
+-------------------code----------------------
+
+* Columns:
+
+  * `image_path`
+  * `class_name`
+  * `prediction_probability`
+  * `pred_class`
+  * `time_for_pred`
+  * `correct`
+
+---
+
+#### **6. Evaluation**
+
+* **Accuracy**:
+
+  * Correct predictions: `145/150` (\~97%).
+* **Average Latency**:
+
+-------------------code----------------------
+effnetb2_avg_time_per_pred = round(effnetb2_test_pred_df["time_for_pred"].mean(), 4)
+-------------------code----------------------
+
+* Result: \~**0.120 sec (120ms)** per image.
+* This is **3–4× slower** than the 30ms goal.
+
+---
+
+#### **7. Hardware Impact**
+
+* Prediction time varies based on **hardware**:
+
+  * Faster CPU/GPU → faster predictions.
+* Current test: **Google Colab CPU** (unknown exact specs).
+* Local PC (Intel i9): \~**0.031 sec (31ms)** per image (closer to goal).
+* Google Colab: \~**0.1396 sec (139ms)** (slower).
+
+---
+
+### **Challenge**
+
+* Repeat the same process for **ViT feature extractor**:
+
+  * Use **ViT model** and **ViT transforms**.
+  * Compare average prediction time to **EfficientNet B2**.
+
+---
+
+### **Summary of Findings**
+
+* **EfficientNet B2 on CPU**:
+
+  * Accuracy: \~97%.
+  * Avg time: \~120ms per image (slower than 30ms target).
+* Prediction times depend heavily on **compute hardware**.
+* Still acceptable for many deployment scenarios but not real-time on current hardware.
+
+---
