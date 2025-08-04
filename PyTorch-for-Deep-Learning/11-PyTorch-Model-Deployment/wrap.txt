@@ -3315,3 +3315,145 @@ print(comparison_df)
 * Later, enhance UI and test performance.
 
 ---
+
+*** 300. Gradio Function Outline ***
+## **Food Vision Mini – Preparing for Deployment with Gradio**
+
+### **Context**
+
+* **Previous Activity:** Tested Stable Diffusion demo on Hugging Face to illustrate text-to-image generation.
+* **Observation:** Model works by mapping large datasets of images and text, allowing text-based image generation.
+  Not the main focus here, but demonstrates the goal of **deploying ML models with a user interface**.
+
+---
+
+### **Why Create a Demo?**
+
+* **Purpose:**
+
+  * Allow others to try the model and test it in real-world scenarios.
+  * Deployment is as important as training for practical ML applications.
+* **Reasoning:**
+
+  * Results in a notebook ≠ real-world usability.
+  * Real-world testing happens when users interact with the model via a UI.
+* **Deployment Goal:**
+  Inputs → ML Model → Outputs.
+
+---
+
+### **Current Setup for Food Vision Mini**
+
+* **Inputs:** Food images.
+* **Model:** EfficientNetB2 (chosen for best balance of performance and inference speed).
+* **Outputs:** Predicted food label (e.g., Steak, Sushi, Pizza) and **prediction time** (optional for evaluation).
+
+---
+
+### **Gradio Overview**
+
+* **What is Gradio?**
+  A Python library for creating ML demos with web interfaces.
+* **Core Concept:**
+  Inputs → Function/Model → Outputs.
+* **Flexibility:**
+  Supports multiple input/output types:
+
+  * Images
+  * Text
+  * Video
+  * Audio
+  * Tabular data
+  * Numeric values
+* **Key Class:** `gr.Interface`
+
+  * **Parameters:**
+
+    * `fn` → The callable function that performs inference.
+    * `inputs` → Type of input component (e.g., `Image`).
+    * `outputs` → Type of output component (e.g., `Label`).
+
+---
+
+### **Steps for Building the Demo**
+
+1. **Ensure Model Runs on CPU:**
+
+   * Hugging Face Spaces (free tier) runs on CPU by default.
+   * Move model and parameters explicitly to CPU:
+
+     -------------------code----------------------
+     model.to("cpu")
+     -------------------code----------------------
+   * Check that all tensors and parameters are on the same device.
+
+2. **Create the Prediction Function (`predict`):**
+
+   * **Goal:** Map an input image to:
+
+     * Food class predictions (as a dictionary of class: probability).
+     * Prediction time (float).
+   * **Function Design:**
+
+     -------------------code----------------------
+     def predict(image) -> Tuple[Dict[str, float], float]:
+         # 1. Start timer
+         # 2. Transform image for EfficientNetB2
+         # 3. Set model to evaluation mode
+         # 4. Make prediction
+         # 5. Create dictionary {label: probability}
+         # 6. Calculate prediction time
+         # 7. Return (dictionary, time)
+     -------------------code----------------------
+
+3. **Expected Dictionary Output Example:**
+
+   -------------------code----------------------
+   {
+       "Steak": 0.85,
+       "Pizza": 0.10,
+       "Sushi": 0.05
+   }
+   -------------------code----------------------
+
+4. **Logic Breakdown of `predict` function:**
+
+   * **Start timer.**
+   * **Preprocess image:**
+
+     * Resize, normalize for EfficientNetB2.
+   * **Forward pass:**
+
+     * Use `torch.no_grad()` for inference.
+     * Get probabilities via `torch.softmax`.
+   * **Map predictions to class labels.**
+   * **Calculate and return:**
+
+     * Prediction dictionary.
+     * Prediction time.
+
+---
+
+### **Challenge for Implementation**
+
+* Fill in the function based on provided structure:
+
+  * Convert comments into working code.
+* Output should be:
+
+  * Dictionary of class probabilities.
+  * Prediction time in seconds.
+
+---
+
+### **Next Steps**
+
+* Implement the `predict` function.
+* Connect this function to a **Gradio interface**:
+
+  * Inputs → `gr.inputs.Image()`.
+  * Outputs → `gr.outputs.Label()` and possibly `gr.outputs.Text()` for time.
+* Test the demo locally.
+* Deploy the demo on Hugging Face Spaces.
+
+---
