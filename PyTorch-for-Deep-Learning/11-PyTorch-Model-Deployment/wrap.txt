@@ -3055,3 +3055,149 @@ print(comparison_df)
 * **EfficientNetB2 meets deployment goals better** for Food Vision Mini.
 
 ---
+
+
+*** 298. Visualizing the Performance vs Speed Trade-off ***
+
+## **Food Vision Mini – Speed vs Performance Visualization**
+
+### **Context Recap**
+
+* Previous decision: **EfficientNetB2 (FNet B2)** chosen over **ViT** because:
+
+  * Faster prediction time.
+  * Smaller model size footprint.
+  * Slightly lower accuracy than ViT, but still very good.
+* Reason: For Food Vision Mini, we prioritize **fast inference and smaller size** over marginal accuracy gains.
+* Note: Decision is **context-specific**.
+
+---
+
+### **Objective**
+
+* Visualize **speed vs performance trade-off** between FNet B2 and ViT.
+* Use a **Matplotlib scatter plot**:
+
+  * **X-axis**: Time per prediction (seconds) on CPU.
+  * **Y-axis**: Test accuracy (%).
+  * **Dot size**: Represents model size (MB).
+  * **Colors**: Different for each model.
+
+---
+
+### **Steps to Create Visualization**
+
+#### **1. Create Scatter Plot**
+
+* Import Matplotlib:
+
+  -------------------code----------------------
+  import matplotlib.pyplot as plt
+  -------------------code----------------------
+* Set up figure and axes:
+
+  -------------------code----------------------
+  fig, ax = plt.subplots(figsize=(12, 8))
+  -------------------code----------------------
+* Plot data:
+
+  -------------------code----------------------
+  scatter = ax.scatter(
+      x=df["time_per_pred_cpu"],
+      y=df["test_acc"],
+      c=["blue", "orange"],   # FNet B2 and ViT
+      s=df["model_size"]      # Size proportional to model size
+  )
+  -------------------code----------------------
+
+---
+
+#### **2. Add Titles and Labels**
+
+* Title:
+
+  -------------------code----------------------
+  "Food Vision Mini: Inference Speed vs Performance"
+  -------------------code----------------------
+* X-axis:
+
+  -------------------code----------------------
+  "Prediction Time per Image (seconds)"
+  -------------------code----------------------
+* Y-axis:
+
+  -------------------code----------------------
+  "Test Accuracy (%)"
+  -------------------code----------------------
+* Set font sizes for better readability.
+* Add grid for clarity.
+
+---
+
+#### **3. Annotate Data Points**
+
+* Label the two points with their model names:
+
+  -------------------code----------------------
+  for index, row in df.iterrows():
+      ax.annotate(row["model"], 
+                  (row["time_per_pred_cpu"] + 0.06, row["test_acc"] + 0.03),
+                  fontsize=12)
+  -------------------code----------------------
+* Adjust position slightly to prevent overlap.
+
+---
+
+#### **4. Add Legend for Model Size**
+
+* Use scatter element to create legend:
+
+  -------------------code----------------------
+  handles, labels = scatter.legend_elements(prop="sizes", alpha=0.5)
+  ax.legend(handles, labels, loc="lower right", title="Model Size (MB)", fontsize=12)
+  -------------------code----------------------
+
+---
+
+#### **5. Save and Share Plot**
+
+* Save figure:
+
+  -------------------code----------------------
+  plt.savefig("foodvision_inference_speed_vs_performance.png")
+  -------------------code----------------------
+* Purpose: Present results to team, justify choice of EfficientNetB2.
+
+---
+
+### **Key Observations from Visualization**
+
+* **Ideal position**: Top-left (highest accuracy, lowest latency).
+* **ViT**:
+
+  * Slightly higher accuracy.
+  * Much slower inference.
+  * Larger model size.
+* **FNet B2**:
+
+  * Nearly same accuracy (\~97%).
+  * Much faster.
+  * Much smaller size.
+* Trade-off: **Speed > Marginal accuracy gain** for this use case.
+
+---
+
+### **Performance vs Speed Trade-off**
+
+* Larger models = higher accuracy but slower inference.
+* EfficientNetB2 provides a **better balance** for mobile/resource-limited deployment.
+* Neither model reaches the **30ms goal**, but FNet B2 is closer.
+
+---
+
+### **Next Steps**
+
+* Build **interface/demo** to deploy EfficientNetB2 feature extractor.
+* Bring Food Vision Mini to life.
+
+---
