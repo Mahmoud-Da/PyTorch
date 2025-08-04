@@ -2953,3 +2953,105 @@ print(comparison_df)
 * Next exercise: **Compare CPU vs GPU performance**.
 
 ---
+
+
+*** 297. Comparing EffNetB2 and ViT Model Statistics ***
+
+## **Food Vision Mini – Model Deployment Evaluation**
+
+### **Goal**
+
+* **Performance goal:** 95%+ accuracy (achieved by both models).
+* **Deployment goal:** Ideal latency target = **30ms per prediction** (lower is better).
+* Models evaluated: **EfficientNetB2 (FNet B2)** and **Vision Transformer (ViT)**.
+
+---
+
+### **Step 1: Create a Comparison Table**
+
+* Combine statistics from both models into a **DataFrame** for structured comparison:
+
+  -------------------code----------------------
+  df = pd.DataFrame([fnet_b2_stats, vit_stats])
+  df["model"] = ["FNetB2", "ViT"]
+  -------------------code----------------------
+* Convert accuracy to percentages:
+
+  -------------------code----------------------
+  df["test_acc"] = round(df["test_acc"] * 100, 2)
+  -------------------code----------------------
+
+---
+
+### **Step 2: Compare Key Metrics**
+
+| Metric                   | Better Value | Why?                            |
+| ------------------------ | ------------ | ------------------------------- |
+| **Test Loss**            | Lower        | Indicates fewer errors          |
+| **Test Accuracy**        | Higher       | Indicates better accuracy       |
+| **Number of Parameters** | Lower        | Usually faster, smaller size    |
+| **Model Size**           | Lower        | Important for mobile deployment |
+| **Time per Prediction**  | Lower        | Faster inference                |
+
+---
+
+### **Observations**
+
+* **Performance Metrics**:
+
+  * ViT has slightly **better accuracy (\~98.5%)** compared to FNet B2 (\~97%).
+  * ViT has lower test loss (better).
+* **Inference & Size Metrics**:
+
+  * FNet B2 has **far fewer parameters** and **smaller size**, making it better for mobile deployment.
+  * FNet B2 is **faster on CPU** than ViT.
+
+---
+
+### **Deployment Considerations**
+
+* For **mobile or resource-limited environments**, **smaller, faster models** are preferred.
+* If resources were unlimited (e.g., high-end servers), larger models could be considered.
+* Example: Tesla cars still have hardware limits despite high power.
+
+---
+
+### **Hardware Dependency**
+
+* Prediction times vary by CPU/GPU.
+* Goal: **30ms per prediction**.
+* Both models fail to reach this on Google Colab hardware, but FNet B2 is much closer.
+
+---
+
+### **Ratio Analysis (ViT vs FNet B2)**
+
+| Metric                  | Ratio (ViT / FNetB2)         |
+| ----------------------- | ---------------------------- |
+| **Test Loss**           | Slightly better              |
+| **Test Accuracy**       | \~1.01 (ViT slightly better) |
+| **# Parameters**        | \~11× larger                 |
+| **Model Size**          | \~11× larger                 |
+| **Time per Prediction** | \~5.5× slower                |
+
+---
+
+### **Final Decision**
+
+* **Trade-off**: Is ViT’s small accuracy gain worth:
+
+  * 11× more parameters
+  * 11× bigger model size
+  * 5.5× slower prediction time?
+* **Answer**: **No** for our use case (mobile deployment).
+* **Selected Model**: **EfficientNetB2** (FNet B2) → Optimal balance of speed and accuracy.
+
+---
+
+### **Key Takeaways**
+
+* Choose the **fastest model with acceptable accuracy** for resource-constrained environments.
+* ViT is only marginally better in accuracy but far worse in size and speed.
+* **EfficientNetB2 meets deployment goals better** for Food Vision Mini.
+
+---
