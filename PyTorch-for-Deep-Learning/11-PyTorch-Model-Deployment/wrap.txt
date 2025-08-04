@@ -2225,3 +2225,178 @@ The ViT feature extractor achieved **state-of-the-art accuracy (\~98.5%)** on th
   * Measure prediction speed to finalize comparison.
 
 ---
+
+*** 293. Outlining the Steps for Making and Timing Predictions for Our Models ***
+### **Lecture Notes: Measuring Prediction Speed for ViT and EfficientNet B2**
+
+---
+
+#### **Context**
+
+* We have trained two feature extractors for the FoodVision Mini project:
+
+  * **Vision Transformer (ViT)**.
+  * **EfficientNet B2**.
+* Both models meet the first goal:
+
+  * **Performance:** 95%+ test accuracy.
+* Now we evaluate the second goal:
+
+  * **Speed:** Fast inference (ideally \~30 ms per prediction, 30 FPS).
+
+---
+
+### **1. Objective**
+
+* Measure **inference speed** for both models:
+
+  * How long each model takes to make a prediction on a single image.
+* Why this matters:
+
+  * Deployment scenarios (e.g., web apps, mobile apps) require low-latency predictions.
+
+---
+
+### **2. Approach**
+
+* Create a **function** to:
+
+  * Take a list of image paths and a trained PyTorch model.
+  * Loop through all test images.
+  * Apply necessary transforms.
+  * Make predictions.
+  * Record inference time for each prediction.
+* Output:
+
+  * A **list of dictionaries**, where each dictionary contains:
+
+    * Image path.
+    * Ground truth label.
+    * Predicted class.
+    * Prediction probability.
+    * Prediction time.
+    * Whether prediction was correct.
+
+---
+
+### **3. Steps to Measure Prediction Speed**
+
+#### **Step 1: Collect Test Image Paths**
+
+* Use `pathlib.Path` and `glob`:
+
+  -------------------code----------------------
+  from pathlib import Path
+  test_data_paths = list(Path(test_dir).glob("*/*.jpg"))
+  -------------------code----------------------
+* This retrieves all `.jpg` files in `test_dir`.
+
+#### **Step 2: Define the Function `pred_and_store`**
+
+* Inputs:
+
+  * `image_paths` (list of paths).
+  * `model` (trained PyTorch model).
+  * `transform` (image transforms for the model).
+  * `class_names` (list of class labels).
+  * `device` (CPU or GPU).
+* Output:
+
+  * A **list of prediction dictionaries**.
+
+---
+
+### **4. Inside `pred_and_store` Function**
+
+Steps inside the loop for each image:
+
+1. **Create empty prediction dictionary**.
+2. **Extract image path and ground truth class** from file path.
+3. **Start prediction timer**.
+4. **Open the image** using:
+
+   -------------------code----------------------
+   from PIL import Image
+   image = Image.open(path)
+   -------------------code----------------------
+5. **Apply transforms** to prepare image for the model.
+6. **Move model and image to target device** and set model to evaluation mode.
+7. **Enable inference mode** using:
+
+   -------------------code----------------------
+   with torch.inference_mode():
+       output = model(image)
+   -------------------code----------------------
+8. **Forward pass** through the model.
+9. Convert raw logits to:
+
+   * **Prediction probabilities**.
+   * **Predicted class**.
+10. **Add prediction class and probability** to dictionary.
+11. **Stop timer** and record prediction time.
+12. (Optional) Compare **predicted class** with **ground truth**.
+13. Append dictionary to the main list.
+
+---
+
+### **5. Return Value**
+
+* After looping through all images:
+
+  * Return a list of dictionaries:
+
+    -------------------code----------------------
+    [
+      {
+        "image_path": ...,
+        "ground_truth": ...,
+        "predicted_class": ...,
+        "prediction_prob": ...,
+        "prediction_time": ...,
+        "correct": True/False
+      },
+      ...
+    ]
+    -------------------code----------------------
+
+---
+
+### **6. Why a List of Dictionaries?**
+
+* Easy to:
+
+  * Inspect results.
+  * Convert to Pandas DataFrame for analysis.
+  * Export for reporting.
+
+---
+
+### **7. Next Steps**
+
+* Use this function to:
+
+  * Time predictions for **ViT** and **EfficientNet B2**.
+  * Compute **average prediction time** per image.
+* Add `avg_prediction_time` to each model’s statistics dictionary:
+
+  * Alongside:
+
+    * Test loss.
+    * Test accuracy.
+    * Number of parameters.
+    * Model size.
+
+---
+
+### **Key Takeaways**
+
+* Both models perform well, but deployment success also depends on **latency**.
+* EfficientNet B2:
+
+  * Fewer parameters → likely faster.
+* ViT:
+
+  * Higher accuracy but larger size → likely slower.
+* Actual timing tests will confirm trade-offs.
+
+---
