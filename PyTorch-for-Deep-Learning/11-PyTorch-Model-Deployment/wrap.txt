@@ -2083,3 +2083,145 @@ The ViT feature extractor achieved **state-of-the-art accuracy (\~98.5%)** on th
 * Deployment decisions should balance **accuracy vs model size**.
 
 ---
+
+*** 292. Collecting Stats About Our-ViT Feature Extractor ***
+### **Lecture Notes: Comparing ViT and EfficientNet B2 – Parameters and Statistics**
+
+---
+
+#### **Overview**
+
+* Previous achievement:
+
+  * Trained **Vision Transformer (ViT) feature extractor**, which is our best-performing model so far on the Pizza, Steak, and Sushi dataset.
+* Observations:
+
+  * **Model size:** 327 MB for ViT.
+  * **Deployment considerations:**
+
+    * Cloud deployment → size is less critical.
+    * Edge or mobile deployment → size can be a limitation.
+* Next steps:
+
+  * Collect additional model statistics for comparison with EfficientNet B2.
+  * Prepare for prediction latency tests.
+
+---
+
+### **1. Why Collect More Statistics?**
+
+* Goal:
+
+  * Compare models across **accuracy**, **model size**, and **parameter count**.
+  * Understand trade-offs between performance and resource usage.
+* Focus now: **Number of parameters**.
+
+---
+
+### **2. Calculating Total Parameters**
+
+* Formula:
+
+  -------------------code----------------------
+  total_params = sum(torch.numel(param) for param in model.parameters())
+  -------------------code----------------------
+* **Results:**
+
+  * ViT total parameters: **\~86 million**.
+  * EfficientNet B2 total parameters: **\~8 million**.
+* Why it matters:
+
+  * Generally, more parameters → more computations → higher latency.
+  * Larger models often require more compute and memory.
+* Note:
+
+  * This is a general rule of thumb; actual latency should be tested.
+
+---
+
+### **3. Creating a Statistics Dictionary**
+
+* Purpose:
+
+  * Collect and store all key metrics for each model.
+* Metrics to include for **ViT**:
+
+  * `test_loss` → last epoch value.
+  * `test_accuracy` → last epoch value.
+  * `number_of_parameters` → \~86M.
+  * `model_size_mb` → 327 MB.
+* Data source:
+
+  * Training results stored in `results` dictionary from the **train function**.
+* Why store metrics in a dictionary:
+
+  * Makes comparison and future reporting easier.
+  * Useful for experiments and reproducibility.
+* Example structure:
+
+  -------------------code----------------------
+  vit_stats = {
+      "test_loss": results["test_loss"][-1],
+      "test_accuracy": results["test_acc"][-1],
+      "num_parameters": vit_total_params,
+      "model_size_mb": pretrained_vit_model_size
+  }
+  -------------------code----------------------
+
+---
+
+### **4. Comparison with EfficientNet B2**
+
+* EfficientNet B2 stats:
+
+  * **Parameters:** \~8 million.
+  * **Model size:** \~29 MB.
+  * **Accuracy:** \~97% (slightly less than ViT).
+* ViT stats:
+
+  * **Parameters:** \~86 million.
+  * **Model size:** \~327 MB.
+  * **Accuracy:** \~98.5%.
+
+---
+
+### **5. Next Task: Prediction Timing**
+
+* Goal:
+
+  * Check if models satisfy latency requirement:
+
+    * **Target:** \~30 ms per prediction (30 FPS equivalent).
+* Why:
+
+  * Deployment scenario: Fast predictions for real users.
+  * High accuracy is important, but low latency is equally critical.
+* Task:
+
+  * Loop through all samples in the **test dataset**.
+  * Measure average time per prediction for:
+
+    * ViT model.
+    * EfficientNet B2 model.
+* Tools:
+
+  * Timing techniques covered in previous lessons.
+* Future:
+
+  * Add **average prediction time** to the statistics dictionary for both models.
+
+---
+
+### **Key Takeaways**
+
+* ViT is the most accurate model but:
+
+  * Has **10× more parameters** and **11× larger size** than EfficientNet B2.
+* Deployment decision depends on:
+
+  * Accuracy requirement vs resource constraints.
+* Next step:
+
+  * Measure prediction speed to finalize comparison.
+
+---
