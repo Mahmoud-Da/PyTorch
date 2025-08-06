@@ -3878,3 +3878,91 @@ interface.launch(share=True)
 -------------------code----------------------
 
 ---
+
+*** 304. Getting Ready to Deploy Our App Hugging Face Spaces Overview ***
+## **Lecture Notes: Hosting Food Vision Mini Permanently on Hugging Face Spaces**
+
+### **Why Move to Hugging Face Spaces?**
+
+* **Current Limitation**: Gradio demos launched from Google Colab expire after **72 hours**.
+
+  * Example: After expiration → **“No interfaces running right now”** error.
+* Goal: Permanently host the **Food Vision Mini** demo so it can be shared and accessed anytime.
+
+---
+
+### **Section 8: Turning Food Vision Mini Gradio Demo into a Deployable App**
+
+#### **Motivation**
+
+* Our Gradio demo works great locally and in Colab, but temporary URLs are not ideal for:
+
+  * Sharing with friends, stakeholders, or the community.
+  * Building a **machine learning portfolio**.
+* Hugging Face Spaces offers a **simple and free solution** for permanent hosting.
+
+---
+
+### **What is Hugging Face Spaces?**
+
+* **Definition**: A platform to **host and share machine learning apps**.
+* Supports **Gradio** and **Streamlit** for creating interactive demos.
+* Benefits:
+
+  * Showcase projects (like a portfolio).
+  * Collaborate with other developers.
+  * Share demos with a **public link**.
+* Think of it as:
+
+  * **GitHub for ML demos**:
+
+    * GitHub → Code hosting.
+    * Hugging Face Spaces → **ML app hosting**.
+
+---
+
+### **Why Use Hugging Face Spaces?**
+
+* Free and widely adopted in the ML community.
+* Easy integration with **Gradio**.
+* Public hosting for apps without worrying about server setup.
+* Great for:
+
+  * Portfolio building.
+  * Demonstrating skills at conferences or to recruiters.
+  * Sharing with the community.
+
+---
+
+### **Examples of Hosted Demos**
+
+* Popular apps like **Stable Diffusion** run on Hugging Face Spaces.
+* You can browse existing demos at:
+
+  ```
+  https://huggingface.co/spaces
+  ```
+
+---
+
+### **Comparison with GitHub**
+
+* If **GitHub** showcases your coding skills,
+* **Hugging Face Spaces** showcases your **machine learning skills** through interactive apps.
+
+---
+
+### **Next Steps**
+
+By the end of this section, we will:
+
+* Prepare all required files for deployment.
+* Host **Food Vision Mini** permanently on Hugging Face Spaces.
+* Share a link that does **not expire**.
+
+**Target Setup**:
+
+* Code from Google Colab → packaged and uploaded to Hugging Face.
+* Fully functional Gradio app accessible via a permanent link.
+
+---
