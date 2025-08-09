@@ -4117,24 +4117,24 @@ demos/
 
 1. **Import modules**:
 
-   ```python
+   -------------------code----------------------
    import shutil
    from pathlib import Path
-   ```
+   -------------------code----------------------
 2. **Define path**:
 
-   ```python
+   -------------------code----------------------
    food_vision_mini_demo_path = Path("demos/Food_Vision_Mini")
-   ```
+   -------------------code----------------------
 3. **Check if directory exists**:
 
    * If **exists** → remove it with `shutil.rmtree()`.
    * Then recreate it to start fresh.
 4. **Make directory**:
 
-   ```python
+   -------------------code----------------------
    food_vision_mini_demo_path.mkdir(parents=True, exist_ok=True)
-   ```
+   -------------------code----------------------
 
    * `parents=True`: Creates intermediate directories if needed.
    * `exist_ok=True`: Avoids error if directory already exists.
@@ -4154,5 +4154,103 @@ demos/
 * Always start from a clean directory to avoid conflicts.
 * This is the **first step** in assembling the app for deployment.
 * Improvements to structure can be discussed in GitHub discussions.
+
+---
+
+*** 307. Creating an Examples Directory with Example Food Vision Mini Images ***
+## Lecture Notes – Creating Example Images for the Food Vision Mini Demo
+
+### 1. Purpose
+
+* A demo needs example inputs to demonstrate functionality.
+* We will create an **`examples`** folder containing three example images (pizza, steak, sushi).
+* Images will come from the **test set** of the dataset.
+
+### 2. Approach
+
+* Instead of creating and moving files manually, code will automate:
+
+  * Directory creation
+  * File copying from test set
+* This ensures rerunning the notebook recreates the correct structure.
+
+### 3. Steps in Code
+
+#### 3.1 Import Required Modules
+
+-------------------code----------------------
+import shutil  # for high-level file operations (copying, deleting)
+from pathlib import Path  # for working with filesystem paths
+-------------------code----------------------
+
+#### 3.2 Create the `examples` Directory
+
+-------------------code----------------------
+examples_path = Path("demos/Food_Vision_Mini/examples")
+examples_path.mkdir(parents=True, exist_ok=True)
+-------------------code----------------------
+
+* `parents=True`: creates intermediate folders if needed.
+* `exist_ok=True`: avoids errors if folder already exists.
+
+#### 3.3 Select Example Images
+
+* Choose one image each for **pizza**, **steak**, and **sushi** from the test set.
+* Paths are manually picked for visual appeal (could be randomized).
+
+Example:
+
+-------------------code----------------------
+example_images = [
+    Path("path/to/pizza_image.jpg"),
+    Path("path/to/steak_image.jpg"),
+    Path("path/to/sushi_image.jpg")
+]
+-------------------code----------------------
+
+#### 3.4 Copy Images to `examples` Directory
+
+-------------------code----------------------
+for example in example_images:
+    dest = examples_path / example.name
+    print(f"Copying {example} to {dest}")
+    shutil.copy2(src=example, dst=dest)
+-------------------code----------------------
+
+* **`copy2`** preserves file metadata in addition to contents.
+
+#### 3.5 Result
+
+* `demos/Food_Vision_Mini/examples` now contains:
+
+  * `pizza.jpg`
+  * `steak.jpg`
+  * `sushi.jpg`
+
+---
+
+### 4. Preparing Examples for Gradio
+
+* Gradio expects **examples** in the format:
+  `[[path_to_image1], [path_to_image2], [path_to_image3]]`
+* Convert directory contents into this format:
+
+-------------------code----------------------
+examples_list = [
+    [f"examples/{filename}"]
+    for filename in os.listdir(examples_path)
+]
+-------------------code----------------------
+
+* Paths are relative to the `Food_Vision_Mini` directory where `api.py` will be.
+
+---
+
+### 5. Key Notes
+
+* Automating directory and file creation ensures reproducibility.
+* Metadata preservation (`copy2`) is optional but safer.
+* Gradio format requirement: **list of lists**.
+* This step adds another completed component to the demo structure.
 
 ---
