@@ -4089,3 +4089,70 @@ demos/
 * Upload the directory to Hugging Face Spaces and deploy.
 
 ---
+
+
+*** 306. Creating a Food Vision Mini Demo Directory to House Our App Files ***
+
+---
+
+## Lecture Notes – Deploying Food Vision Mini App to Hugging Face Spaces
+
+### 1. Overview
+
+* The goal is to set up a simple project structure for deploying the Food Vision Mini app to Hugging Face Spaces.
+* Structure is intentionally minimal for experimentation.
+* Can be made more complex as projects grow.
+
+### 2. Project Structure Setup
+
+* **Create a `demos` folder** to store app files.
+* Inside `demos`, create a `Food_Vision_Mini` directory.
+
+### 3. Tools Used
+
+* **`shutil`** (imported as `shutil` in Python) — provides high-level file operations.
+* **`pathlib.Path`** — for working with filesystem paths in an object-oriented way.
+
+### 4. Steps in Code
+
+1. **Import modules**:
+
+   ```python
+   import shutil
+   from pathlib import Path
+   ```
+2. **Define path**:
+
+   ```python
+   food_vision_mini_demo_path = Path("demos/Food_Vision_Mini")
+   ```
+3. **Check if directory exists**:
+
+   * If **exists** → remove it with `shutil.rmtree()`.
+   * Then recreate it to start fresh.
+4. **Make directory**:
+
+   ```python
+   food_vision_mini_demo_path.mkdir(parents=True, exist_ok=True)
+   ```
+
+   * `parents=True`: Creates intermediate directories if needed.
+   * `exist_ok=True`: Avoids error if directory already exists.
+5. **Confirm directory contents**:
+
+   * At this stage, directory should be empty.
+
+### 5. Next Steps (Challenge)
+
+* Fill the `Food_Vision_Mini` folder with:
+
+  * **`api.py`** → Contains the Gradio interface and logic to run it.
+  * Other necessary files for the app.
+
+### 6. Key Notes
+
+* Always start from a clean directory to avoid conflicts.
+* This is the **first step** in assembling the app for deployment.
+* Improvements to structure can be discussed in GitHub discussions.
+
+---
