@@ -4431,3 +4431,117 @@ efficientnet_b2_model, efficientnet_b2_transforms = model.create_efficientnet_b2
     * Gradio interface setup
 
 ---
+
+
+*** 310. Turning Our Food Vision Mini Demo App Into a Python Script ***
+
+## **Food Vision Mini – `app.py` Creation & Structure**
+
+### **Goal**
+
+Create a deployable Python application (`app.py`) for Food Vision Mini, ready for deployment on Hugging Face Spaces.
+
+---
+
+## **Overview**
+
+* This file will tie together existing components into a functioning app.
+* Contains **4 major parts**:
+
+  1. **Imports & Class Names Setup**
+  2. **Model & Transforms Preparation**
+  3. **Predict Function**
+  4. **Gradio App + Launch Command**
+
+---
+
+## **1. Imports & Class Names Setup**
+
+* Import dependencies:
+
+  * Model creation: `from model import create_effnetb2_model`
+  * Timing: `import timer`
+  * Type hints: `from typing import Tuple, Dict`
+* Define **class names** (hardcoded list for now).
+
+  * Could later load from file for larger projects.
+* Tip: Often need to run the app to discover missing imports.
+
+---
+
+## **2. Model & Transforms Preparation**
+
+* Use `create_effnetb2_model(num_classes=3)` to create model & transforms.
+* Load saved weights:
+
+  -------------------code----------------------
+  model.load_state_dict(torch.load("model.pth", map_location=torch.device("cpu")))
+  -------------------code----------------------
+* Important:
+
+  * Force loading to CPU to avoid GPU dependency errors on deployment.
+  * File paths must be relative to `FoodVisionMini` directory (app’s context).
+
+---
+
+## **3. Predict Function**
+
+* Purpose: Map **input image → prediction dictionary + prediction time**.
+* Logic:
+
+  * Preprocess image using transforms.
+  * Pass through model → get probabilities.
+  * Return top prediction(s) and computation time.
+* Naming: “predict” is just convention; any callable name works.
+* Matches Gradio interface requirements:
+  Input = image, Output = label(s) or probabilities.
+
+---
+
+## **4. Gradio App + Launch Command**
+
+* Create Gradio interface:
+
+  * Function: `predict`
+  * Inputs: image
+  * Outputs: prediction dictionary
+  * Examples: load dynamically from `examples` directory.
+* Path Handling:
+
+  * Use `os.listdir("examples")` instead of referencing non-existent variables from other scripts.
+* Launch the app with:
+
+  -------------------code----------------------
+  demo.launch()
+  -------------------code----------------------
+
+---
+
+## **Deployment Notes**
+
+* `app.py` runs in the context of the `FoodVisionMini` directory.
+* Hugging Face Spaces will execute `app.py` and require dependencies.
+* Create a `requirements.txt` containing:
+
+  -------------------code----------------------
+  torch
+  torchvision
+  gradio
+  -------------------code----------------------
+* This ensures necessary packages install before app runs.
+
+---
+
+## **Final Project Structure**
+
+-------------------code----------------------
+FoodVisionMini/
+│
+├── model.py
+├── app.py
+├── examples/            # example images
+├── saved_model/         # saved weights
+├── requirements.txt
+-------------------code----------------------
+
+---
