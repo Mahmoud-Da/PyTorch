@@ -3608,3 +3608,108 @@ Prediction time: 0.013s
 * Before creating a **Gradio interface**, add **example images** for users who don’t have one to upload.
 
 ---
+
+
+*** 302. Creating a List of Examples to Pass to Our Gradio Demo ***
+## **Lecture Notes: Creating Example Images and Preparing for Gradio Interface**
+
+### **Overview**
+
+* In the previous step:
+
+  * We built a **predict function** that:
+
+    * Maps food images → predictions using **FNet B2** model (best performing model).
+    * Returns:
+
+      * **Dictionary**: Class → prediction probability.
+      * **Prediction time** (for performance evaluation).
+* Because the output is a dictionary, **Gradio** can easily format it for display.
+* This will adapt automatically if more classes are added.
+* Now, we aim to **create a list of example images** for the Gradio demo.
+
+---
+
+### **Why Create Examples?**
+
+* If users do not have an image ready, examples allow them to try the model.
+* Examples make the interface user-friendly and showcase model performance.
+
+---
+
+### **Step 7.3 – Creating a List of Example Images**
+
+* Gradio accepts **examples** as a parameter in the interface.
+* Format: **list of lists**, where each sub-list represents one set of inputs.
+* Documentation shows that examples can be passed directly in the `Interface` class.
+
+---
+
+#### **Implementation**
+
+* Generate a list of random image file paths from the test dataset.
+* Convert paths to strings (Gradio prefers strings for file paths).
+* Example code:
+
+-------------------code----------------------
+import random
+
+# Assume test_data_paths is already populated with image paths
+example_list = [[str(file_path)] for file_path in random.sample(test_data_paths, k=3)]
+
+print(example_list)
+-------------------code----------------------
+
+**Explanation:**
+
+* `random.sample(test_data_paths, k=3)` → Selects 3 random image paths.
+* `str(file_path)` → Converts POSIX path to string.
+* Wrap in **list of lists**: `[[...]]` as required by Gradio.
+
+---
+
+### **Result**
+
+* `example_list` will look like:
+
+-------------------code----------------------
+[['data/test/steak.jpg'], ['data/test/sushi.jpg'], ['data/test/pizza.jpg']]
+-------------------code----------------------
+
+* Each list contains one image path for the interface.
+
+---
+
+### **Next Challenge**
+
+* **Build a Gradio Interface** using:
+
+  * **Function:** `predict` (maps image → prediction).
+  * **Inputs:** `gr.Image()` (Gradio image component).
+  * **Outputs:** Likely `gr.Label()` or similar (to display class probabilities).
+  * **Examples:** `example_list`.
+
+**Basic Structure:**
+
+-------------------code----------------------
+import gradio as gr
+
+demo = gr.Interface(
+    fn=predict,
+    inputs=gr.Image(type="pil"),
+    outputs=gr.Label(num_top_classes=3),
+    examples=example_list
+)
+
+demo.launch()
+-------------------code----------------------
+
+**Key Notes:**
+
+* Handling **two outputs** (dictionary + prediction time) requires a custom output or `gr.JSON()` for dictionary and `gr.Textbox()` for time.
+* Consider splitting outputs into two separate components:
+
+  * Class probabilities → `gr.Label()`.
+  * Prediction time → `gr.Textbox()`.
+
+---
