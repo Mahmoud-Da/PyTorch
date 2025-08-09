@@ -4254,3 +4254,101 @@ examples_list = [
 * This step adds another completed component to the demo structure.
 
 ---
+
+*** 308. Writing Code to Move Our Saved EffNetB2 Model File ***
+## Lecture Notes – Moving the Trained EfficientNet B2 Model into the Food Vision Mini Demo
+
+### 1. Goal
+
+* Transfer the trained **EfficientNet B2** model from its saved location into the `Food_Vision_Mini` demo directory.
+* Do this **programmatically** rather than manually so that the process can be repeated when rerunning the notebook.
+
+---
+
+### 2. Why This Model?
+
+* Best performing model based on:
+
+  * **Good test performance**
+  * **Faster latency** than the feature extractor on CPU
+
+---
+
+### 3. Steps in Code
+
+#### 3.1 Import Required Modules
+
+-------------------code----------------------
+import shutil  # For moving files
+from pathlib import Path  # For handling file paths
+-------------------code----------------------
+
+#### 3.2 Define Source Path
+
+* **Source** = current saved location of the EfficientNet B2 model file
+  (retrieved from where it was saved earlier in the notebook).
+
+Example:
+
+-------------------code----------------------
+source_path = Path("models/efficientnet_b2_food_vision_mini.pth")
+-------------------code----------------------
+
+#### 3.3 Define Destination Path
+
+* **Destination** = `demos/Food_Vision_Mini/` directory
+* Append model filename to the destination path.
+
+Example:
+
+-------------------code----------------------
+destination_path = Path("demos/Food_Vision_Mini/efficientnet_b2_food_vision_mini.pth")
+-------------------code----------------------
+
+#### 3.4 Attempt to Move Model
+
+-------------------code----------------------
+try:
+    print(f"Attempting to move model from {source_path} to {destination_path}")
+    shutil.move(str(source_path), str(destination_path))
+    print("Model move complete.")
+except FileNotFoundError:
+    print(f"No model found at {source_path}")
+    if destination_path.exists():
+        print(f"Model already exists at {destination_path}")
+-------------------code----------------------
+
+---
+
+### 4. Workflow Logic
+
+1. **Check if model exists at source**
+
+   * If yes → move to destination.
+   * If no → print message indicating no model found.
+2. **Check if model exists at destination**
+
+   * If yes → confirm it was already moved.
+3. This ensures no duplication and allows rerunning the notebook without breaking the workflow.
+
+---
+
+### 5. Outcome
+
+* First run: Model moves from `models/` to `demos/Food_Vision_Mini/`.
+* Subsequent runs:
+
+  * No source file found (already moved).
+  * Script confirms model exists at destination.
+
+---
+
+### 6. Next Step
+
+* Create a **`model.py`** file inside `Food_Vision_Mini` to:
+
+  * Contain the **`create_efficientnet_b2_model`** function.
+  * Load and instantiate the EfficientNet B2 model when needed.
+* For help, refer to PyTorch documentation on saving code to a `.py` file.
+
+---
