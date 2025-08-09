@@ -4352,3 +4352,82 @@ except FileNotFoundError:
 * For help, refer to PyTorch documentation on saving code to a `.py` file.
 
 ---
+
+
+*** 309. Turning Our EffNetB2 Model Creation Function Into a Python Script ***
+## Lecture Notes – Creating `model.py` to Load the EfficientNet B2 Model
+
+### 1. Goal
+
+* Create a **`model.py`** script inside `Food_Vision_Mini` to:
+
+  * Contain the **`create_efficientnet_b2_model`** function.
+  * Load the saved model state dictionary.
+* This allows the model to be reused by other parts of the app (e.g., API).
+
+---
+
+### 2. Process
+
+#### 2.1 Move Function to Script
+
+* Copy the `create_efficientnet_b2_model` function from the notebook.
+* Place it into a new Python file:
+  `demos/Food_Vision_Mini/model.py`
+
+#### 2.2 Writing the File in a Notebook
+
+* Use Jupyter/Colab magic command to save cell content to a file:
+
+-------------------code----------------------
+%%writefile demos/Food_Vision_Mini/model.py
+import torch
+import torchvision
+from torch import nn
+
+def create_efficientnet_b2_model(...):
+    # function definition here
+-------------------code----------------------
+
+* **Why include imports?**
+  Because the script will be standalone, it needs its own dependencies explicitly imported.
+
+---
+
+### 3. Verifying `model.py`
+
+* Test that it can be imported and used:
+
+-------------------code----------------------
+from demos.Food_Vision_Mini import model
+
+efficientnet_b2_model, efficientnet_b2_transforms = model.create_efficientnet_b2_model(...)
+-------------------code----------------------
+
+* Confirm that the model instance loads without errors.
+
+---
+
+### 4. Outcome
+
+* `model.py` is now a reusable module for:
+
+  * Creating the model architecture
+  * Loading the state dictionary
+* This sets the foundation for integrating the model into the API.
+
+---
+
+### 5. Next Step
+
+* Create **`api.py`** inside `Food_Vision_Mini`:
+
+  * Will be the main Gradio app file.
+  * Needs:
+
+    * Import of `create_efficientnet_b2_model` from `model.py`
+    * Function to load examples list
+    * Prediction function for the model
+    * Gradio interface setup
+
+---
