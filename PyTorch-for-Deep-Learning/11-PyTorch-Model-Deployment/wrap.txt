@@ -3939,9 +3939,9 @@ interface.launch(share=True)
 * Popular apps like **Stable Diffusion** run on Hugging Face Spaces.
 * You can browse existing demos at:
 
-  ```
+  -------------------code----------------------
   https://huggingface.co/spaces
-  ```
+  -------------------code----------------------
 
 ---
 
@@ -3964,5 +3964,128 @@ By the end of this section, we will:
 
 * Code from Google Colab → packaged and uploaded to Hugging Face.
 * Fully functional Gradio app accessible via a permanent link.
+
+---
+
+*** 305. Outlining the File Structure of Our Deployed App ***
+## **Lecture Notes: Deploying Gradio App to Hugging Face Spaces**
+
+### **Overview**
+
+* **Previous step**: Learned about Hugging Face Spaces and why it's useful for permanent hosting.
+* **Current goal**: Prepare a proper **file structure** for deploying the Gradio app on Hugging Face Spaces.
+
+---
+
+### **8.2 – Hugging Face Spaces and App Structure**
+
+#### **What is a Hugging Face Space?**
+
+* A **git-based repository** hosted on Hugging Face for deploying ML-powered demos.
+* Stores:
+
+  * **Code** (Python scripts, Gradio/Streamlit apps)
+  * **Models**
+  * **Datasets**
+* Uses:
+
+  * **Git** for version control
+  * **Git LFS (Large File Storage)** for files >10 MB (e.g., model weights, images, videos)
+
+    * EfficientNetB2 model (29 MB) → Requires Git LFS.
+
+---
+
+#### **Key Characteristics**
+
+* Similar to **GitHub**, but specialized for machine learning.
+* Spaces = **Repositories** focused on:
+
+  * Models
+  * Datasets
+  * Interactive demos
+
+---
+
+### **Why is File Structure Important?**
+
+* Hugging Face Spaces automatically deploys your app based on **specific files** in the repository.
+* Default entry point: `app.py` (or `app.ipynb` for notebooks).
+
+---
+
+### **Target File Structure for Deployment**
+
+We will organize everything into a single **demo folder** to make it easy to upload.
+
+**Example structure:**
+
+-------------------code----------------------
+demos/
+└── food_vision_mini/
+    ├── app.py                # Main Gradio app (predict function + interface)
+    ├── model.py              # Model loading logic
+    ├── examples/             # Example images
+    │   ├── example1.jpg
+    │   ├── example2.jpg
+    ├── efficientnet_b2.pth   # Trained model (stored via Git LFS)
+    ├── requirements.txt      # Python dependencies
+    ├── README.md             # Project description and instructions
+-------------------code----------------------
+
+---
+
+#### **Description of Key Files**
+
+* **app.py**:
+
+  * Contains:
+
+    * Gradio interface
+    * `predict()` function
+    * Model inference logic
+* **model.py**:
+
+  * Defines the function to load the model and weights
+* **examples/**:
+
+  * Stores sample images for the demo
+* **efficientnet\_b2.pth**:
+
+  * Model weights (requires Git LFS)
+* **requirements.txt**:
+
+  * Lists dependencies (e.g., torch, torchvision, gradio)
+* **README.md**:
+
+  * Explains the app and provides usage instructions
+
+---
+
+### **Deployment Steps Overview**
+
+1. **Organize files** into the structure above.
+2. Create a **new Hugging Face Space** (requires a free Hugging Face account).
+3. Push the files to the Hugging Face Space repository.
+4. Hugging Face automatically builds and deploys the app.
+
+---
+
+### **Additional Notes**
+
+* **app.py** is the default entry point for Hugging Face Spaces.
+* Similar to modular coding in PyTorch:
+
+  * Keep reusable code (like model loading) in `model.py`.
+  * Keep interface logic in `app.py`.
+
+---
+
+### **Next Steps**
+
+* Build **app.py** with the Gradio interface and prediction function.
+* Create **requirements.txt** for dependencies.
+* Prepare **model.py** to load EfficientNetB2.
+* Upload the directory to Hugging Face Spaces and deploy.
 
 ---
