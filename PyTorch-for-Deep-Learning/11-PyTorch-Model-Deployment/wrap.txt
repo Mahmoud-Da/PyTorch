@@ -3457,3 +3457,154 @@ print(comparison_df)
 * Deploy the demo on Hugging Face Spaces.
 
 ---
+
+
+*** 301. Creating a Predict Function to Map Our Food Vision Mini Inputs to Outputs ***
+## **Lecture Notes: Implementing the Predict Function for Grading Demo**
+
+### **Overview**
+
+* Goal: Create a **workflow** for grading demo that:
+
+  * Inputs **images of food**
+  * Uses a **predict function** to map images → outputs
+  * Outputs:
+
+    * Dictionary of **class names → prediction probabilities**
+    * **Prediction time** (for evaluating model speed)
+
+---
+
+### **Steps to Implement**
+
+#### **1. Start Timer**
+
+-------------------code----------------------
+start_time = time.time()
+-------------------code----------------------
+
+---
+
+#### **2. Transform Input Image**
+
+* Apply **FNet B2 transforms** to the image for compatibility with the model.
+* Add **batch dimension** since images typically lack it:
+
+-------------------code----------------------
+image = fnet_b2_transforms(image).unsqueeze(0)
+-------------------code----------------------
+
+---
+
+#### **3. Model Setup**
+
+* Switch model to **evaluation mode**:
+
+-------------------code----------------------
+fnet_b2.eval()
+-------------------code----------------------
+
+* Enable **inference mode** (no gradients needed):
+
+-------------------code----------------------
+with torch.inference_mode():
+-------------------code----------------------
+
+---
+
+#### **4. Forward Pass & Compute Probabilities**
+
+* Pass transformed image through model:
+
+-------------------code----------------------
+logits = fnet_b2(image)
+-------------------code----------------------
+
+* Apply **Softmax** to get probabilities:
+
+-------------------code----------------------
+pred_probs = torch.softmax(logits, dim=1)
+-------------------code----------------------
+
+---
+
+#### **5. Convert to Dictionary**
+
+* Use class names and probabilities to create a dictionary:
+
+-------------------code----------------------
+pred_dict = {class_names[i]: float(pred_probs[0][i]) for i in range(len(class_names))}
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+{
+  "steak": 0.61,
+  "sushi": 0.30,
+  "pizza": 0.09
+}
+-------------------code----------------------
+
+---
+
+#### **6. Calculate Prediction Time**
+
+-------------------code----------------------
+end_time = time.time()
+pred_time = round(end_time - start_time, 4)
+-------------------code----------------------
+
+---
+
+### **Testing the Predict Function**
+
+1. Get random image from test dataset:
+
+-------------------code----------------------
+test_data_paths = list(Path("test_dir").glob("*/*.jpg"))
+random_image_path = random.sample(test_data_paths, k=1)[0]
+-------------------code----------------------
+
+2. Open image using **PIL**:
+
+-------------------code----------------------
+image = Image.open(random_image_path)
+-------------------code----------------------
+
+3. Call **predict function**:
+
+-------------------code----------------------
+pred, pred_time = predict(image)
+-------------------code----------------------
+
+4. Print results:
+
+-------------------code----------------------
+print(f"Predicting on image at path {random_image_path}")
+print(pred)
+print(f"Prediction time: {pred_time}s")
+-------------------code----------------------
+
+**Example Output:**
+
+-------------------code----------------------
+Predicting on image at path data/test/steak.jpg
+{'pizza': 0.1, 'steak': 0.8, 'sushi': 0.1}
+Prediction time: 0.013s
+-------------------code----------------------
+
+---
+
+### **Observation**
+
+* Model correctly identifies most images (e.g., steak → highest probability).
+* Prediction times are around **0.013s**, which is fast.
+
+---
+
+### **Next Step**
+
+* Before creating a **Gradio interface**, add **example images** for users who don’t have one to upload.
+
+---
