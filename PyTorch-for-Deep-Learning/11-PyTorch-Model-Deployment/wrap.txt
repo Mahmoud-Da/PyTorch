@@ -3713,3 +3713,168 @@ demo.launch()
   * Prediction time → `gr.Textbox()`.
 
 ---
+
+
+*** 303. Bringing Food Vision Mini to Life in a Live Web Application ***
+## **Lecture Notes: Building and Launching the Gradio Interface for Food Vision Mini**
+
+### **Overview**
+
+* Previous step: Created a **list of example images** for Gradio interface.
+* Challenge: Build a **Gradio interface** to:
+
+  * Take image input
+  * Pass through **predict function**
+  * Display prediction results and prediction time
+
+---
+
+### **Step 8 – Setting Up Gradio Interface**
+
+#### **1. Import and Basic Setup**
+
+-------------------code----------------------
+import gradio as gr
+-------------------code----------------------
+
+* Create **interface metadata**:
+
+  * **Title**: Appears above the input
+  * **Description**: Explains what the interface does (supports Markdown)
+  * **Article**: Expanded explanation with links or additional details
+
+Example:
+
+-------------------code----------------------
+title = "Food Vision Mini"
+description = "EfficientNetB2 feature extractor model for classifying images as pizza, steak, or sushi."
+article = "Model built using [PyTorch EfficientNet-B2](https://pytorch.org/vision/stable/models.html)."
+-------------------code----------------------
+
+---
+
+#### **2. Define Gradio Interface Components**
+
+* **Function**: Our `predict()` function
+* **Inputs**: `gr.Image(type="pil")` (accepts images and converts to PIL format)
+* **Outputs**:
+
+  * Predictions → `gr.Label(num_top_classes=3)` (shows top 3 predictions)
+  * Prediction time → `gr.Number(label="Prediction time (seconds)")`
+
+Example:
+
+-------------------code----------------------
+interface = gr.Interface(
+    fn=predict,
+    inputs=gr.Image(type="pil"),
+    outputs=[
+        gr.Label(num_top_classes=3, label="Predictions"),
+        gr.Number(label="Prediction time (seconds)")
+    ],
+    examples=example_list,
+    title=title,
+    description=description,
+    article=article
+)
+-------------------code----------------------
+
+---
+
+#### **3. Add Examples**
+
+* Pass previously created **example\_list**:
+
+-------------------code----------------------
+examples=example_list
+-------------------code----------------------
+
+* Example format:
+
+-------------------code----------------------
+[['data/test/steak.jpg'], ['data/test/sushi.jpg'], ['data/test/pizza.jpg']]
+-------------------code----------------------
+
+---
+
+### **Step 9 – Launch the Gradio Demo**
+
+* Use the `launch()` method:
+
+-------------------code----------------------
+interface.launch(share=True)
+-------------------code----------------------
+
+* **Options**:
+
+  * `share=True`: Generates a public URL (valid for 72 hours)
+  * `debug=True`: Shows errors in Google Colab (if needed)
+
+---
+
+### **Demo Behavior**
+
+* Upload an image OR select from **examples**
+* Model outputs:
+
+  * Top predicted class with probabilities
+  * Prediction time in seconds
+* Examples demonstrate:
+
+  * Sushi → Sushi
+  * Pizza → Pizza
+  * Steak → Steak
+
+---
+
+### **Additional Features**
+
+* **Flagging**:
+
+  * Users can flag incorrect predictions.
+  * Gradio stores flagged examples for model improvement.
+* **Links and Documentation**:
+
+  * Title and article provide resources for further reading.
+
+---
+
+### **Next Step**
+
+* Host the app permanently on **Hugging Face Spaces**.
+* Requirements:
+
+  * Hugging Face account
+  * Integration with Spaces for public deployment
+
+---
+
+#### **Example Full Code**
+
+-------------------code----------------------
+import gradio as gr
+
+# Metadata
+title = "Food Vision Mini"
+description = "EfficientNetB2 model to classify images as pizza, steak, or sushi."
+article = "Model built using [PyTorch EfficientNet-B2](https://pytorch.org/vision/stable/models.html)."
+
+# Gradio interface
+interface = gr.Interface(
+    fn=predict,
+    inputs=gr.Image(type="pil"),
+    outputs=[
+        gr.Label(num_top_classes=3, label="Predictions"),
+        gr.Number(label="Prediction time (seconds)")
+    ],
+    examples=example_list,
+    title=title,
+    description=description,
+    article=article
+)
+
+# Launch
+interface.launch(share=True)
+-------------------code----------------------
+
+---
