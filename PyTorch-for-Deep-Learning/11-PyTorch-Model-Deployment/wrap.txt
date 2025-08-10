@@ -6017,3 +6017,101 @@ At this point, the `food_vision_big` directory should contain:
 * Encouraged to experiment, improve, and share work.
 
 ---
+
+*** 328. PyTorch Mode Deployment: Main Takeaways, Extra-Curriculum and Exercises ***
+# Final Reflections on Food Vision Big Project and Key Takeaways
+
+---
+
+### 1. Congratulations
+
+* Proud of completing the Food Vision Big project.
+* Progressed from fundamentals like predicting a straight line with PyTorch to deploying real computer vision models on the Internet.
+* The deployed model is accessible online and ready to share.
+
+---
+
+### 2. Key Takeaways on Deployment and Modeling
+
+#### Deployment Importance
+
+* Deployment is as important as model training.
+* Once a model works well, the next step is making it accessible for others to use.
+* Deployment enables real-world testing beyond private datasets.
+
+#### Use of Pre-trained Models
+
+* Always check for pre-trained models for your problem (e.g., on Hugging Face, torchvision).
+* Transfer learning with pre-trained models speeds up development and improves performance.
+
+---
+
+### 3. Machine Learning Deployment Questions
+
+* What is the ideal use case for the model?
+* How well and how fast does the model perform?
+* Start with the ideal use case and build backwards.
+
+---
+
+### 4. Deployment Options
+
+* On-device (Edge) deployment for real-time, local inference.
+* Cloud deployment for scalable or heavy compute tasks.
+* Online (real-time) vs. offline (batch) prediction workflows.
+* Hugging Face Spaces and Gradio are great platforms to host and showcase models.
+* Use these platforms to build a machine learning portfolio to demonstrate skills.
+
+---
+
+### 5. Experimentation and Extensions
+
+* Milestone Project 3 involved experimenting with EfficientNet B2 and ViT feature extractors.
+* Worked with 20% of Food 101 dataset initially.
+* Extension idea: train with the full Food 101 dataset to improve accuracy (currently \~57-58% with 20%).
+* Larger datasets may require longer training times.
+
+---
+
+### 6. ML Ops and Engineering Practice
+
+* Deployment is part of Machine Learning Operations (ML Ops).
+* ML Ops extends DevOps and involves:
+
+  * Data collection and storage
+  * Data processing
+  * Model training
+  * Deployment
+  * Monitoring and versioning
+  * More engineering tasks to manage ML lifecycle
+* While not fully covered here, deployment practice is an important ML Ops component.
+
+---
+
+### 7. Further Learning Resources
+
+* PyTorch Extra Resources section in the course eBook contains:
+
+  * Books on machine learning and deep learning
+  * Libraries enhancing PyTorch
+  * Datasets and tools for various ML domains (vision, NLP, speech, recommendation, time series)
+  * Career guidance for ML engineers
+* Recommended reading: recent article on moving ML inference from Cloud to Edge.
+
+---
+
+### 8. Exercises and Additional Materials
+
+* Template notebooks and solution notebooks available.
+* Video walkthroughs of solutions on YouTube.
+* Encouragement to explore extra curriculum resources for deeper understanding.
+
+---
+
+# Summary
+
+* You now have hands-on experience deploying ML models accessible to the public.
+* Keep experimenting, learning, and sharing your work.
+* Deployment bridges the gap between research and real-world application.
+
+---
