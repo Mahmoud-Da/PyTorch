@@ -5586,3 +5586,69 @@ Certainly! Here's your lecture content organized clearly and concisely without a
 * Goal: Deploy Food Vision Big app on Hugging Face Spaces successfully.
 
 ---
+
+*** 322. Downloading an Example Image and Moving Our Food Vision Big Model File ***
+# Filling Out the Food Vision Big Demo Directory
+
+### 1. Purpose
+
+* Prepare the Food Vision Big app for deployment to Hugging Face Spaces.
+* Key step: Add example images to the `examples` directory to showcase the model.
+
+---
+
+### 2. Adding Example Images
+
+* You can add any images to the `examples/` directory.
+* Suggested: Use images belonging to Food101 classes for proper demonstration.
+* Examples include photos of food like ice cream, grilled salmon, garlic bread, or pizza.
+* For consistency, the example used throughout the course is `Pizza Daddy.jpeg`.
+
+---
+
+### 3. Downloading and Moving an Example Image
+
+* Download the example image via a raw link using commands such as `wget`.
+* Move the downloaded image to the `demos/food_vision_big/examples/` directory.
+
+Example shell commands:
+
+-------------------code----------------------
+wget <raw_link_to_pizza_daddy_image>
+mv pizza_daddy.jpeg demos/food_vision_big/examples/
+-------------------code----------------------
+
+* Verify that the image is correctly placed in the `examples` directory.
+
+---
+
+### 4. Moving the Trained Model File
+
+* Move the trained model file (e.g., `food_101_20%.pth`) into the `demos/food_vision_big/` directory.
+* Can be done via file explorer (drag and drop) or command line:
+
+Example shell command:
+
+-------------------code----------------------
+mv models/food_101_20%.pth demos/food_vision_big/
+-------------------code----------------------
+
+* This centralizes the model for the app deployment.
+
+---
+
+### 5. Important Note
+
+* Running the move command multiple times without checks might cause errors.
+* In Food Vision Mini section, code was written to handle such errors gracefully.
+* For now, run the move commands once to avoid issues.
+
+---
+
+### 6. Next Step
+
+* Create a `class_names.txt` file inside the `demos/food_vision_big/` directory.
+* This file will contain all 101 class names corresponding to Food101 classes.
+* Loading class names programmatically from this file helps manage many classes efficiently.
+
+---
