@@ -5312,3 +5312,107 @@ data/food-101/images/<class_name>/*.jpg
 * Later: train on **full dataset** for maximum performance.
 
 ---
+
+
+*** 319. Turning Our Food 101 Datasets into DataLoaders  ***
+## Lecture Notes — Creating DataLoaders for Food Vision Big 20%
+
+### 1. **Recap**
+
+* In the previous lesson, created a **20% subset** of the Food-101 dataset:
+
+  * \~15,000 training images.
+  * \~5,050 testing images.
+* Purpose: **Faster experiments** before using the full dataset.
+* Full dataset training is left as an **extension** for learners.
+
+---
+
+### 2. **Current Goal**
+
+* Train an **EfficientNetB2 feature extractor** on:
+
+  * **15,000+** training images.
+  * **5,050** testing images.
+* Prepare **PyTorch DataLoaders** for the training and testing subsets.
+
+---
+
+### 3. **Why Not Use `create_dataloaders` Function?**
+
+* Previous `create_dataloaders()` function was built for datasets in **folder format**.
+* Current data is already in the form of **`torch.utils.data.Dataset` objects**.
+* Therefore, we use the **traditional PyTorch DataLoader approach** directly.
+
+---
+
+### 4. **Steps to Create DataLoaders**
+
+1. **Import PyTorch**:
+
+   -------------------code----------------------
+   import torch
+   -------------------code----------------------
+
+2. **Set Parameters**:
+
+   -------------------code----------------------
+   BATCH_SIZE = 32
+   -------------------code----------------------
+
+   * If **memory errors** occur, reduce batch size (e.g., halve it).
+
+3. **Create Training DataLoader**:
+
+   -------------------code----------------------
+   train_dataloader_food101_20 = torch.utils.data.DataLoader(
+       dataset=train_data_food101_20,
+       batch_size=BATCH_SIZE,
+       shuffle=True,
+       num_workers=2
+   )
+   -------------------code----------------------
+
+4. **Choosing `num_workers`**:
+
+   * **Experimental** — optimal value depends on hardware.
+   * Common rules of thumb:
+
+     * 2 per CPU core.
+     * Often between **2 and 4**.
+     * `0` = no multiprocessing.
+   * Higher values can give diminishing returns after a certain point.
+
+5. **Create Testing DataLoader**:
+
+   -------------------code----------------------
+   test_dataloader_food101_20 = torch.utils.data.DataLoader(
+       dataset=test_data_food101_20,
+       batch_size=BATCH_SIZE,
+       shuffle=False,
+       num_workers=2
+   )
+   -------------------code----------------------
+
+---
+
+### 5. **Verifying DataLoader Sizes**
+
+* Check the number of batches:
+
+  -------------------code----------------------
+  len(train_dataloader_food101_20)  # ~474 batches
+  len(test_dataloader_food101_20)   # ~158 batches
+  -------------------code----------------------
+
+---
+
+### 6. **Next Step**
+
+* All components are ready for training.
+* In the next stage:
+
+  * Use **`engine.py`** (modular training script) to train **Food Vision Big**.
+  * This will be the **largest model trained so far** in the course.
+
+---
