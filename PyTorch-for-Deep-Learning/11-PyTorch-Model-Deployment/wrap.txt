@@ -5862,3 +5862,70 @@ with open(class_names_path, "r") as f:
   * Pre-trained model weights file
 
 ---
+
+*** 326. Zipping and Downloading Our Food Vision Big App Files ***
+# Finalizing Food Vision Big Demo: Requirements File and Packaging
+
+---
+
+### 1. Context
+
+* Previously created the Food Vision Big `app.py` script — the main application logic for the demo.
+* Now focusing on completing the Food Vision Big folder structure by adding a `requirements.txt` file.
+
+---
+
+### 2. Creating `requirements.txt`
+
+* Food Vision Big uses the **same** requirements as Food Vision Mini because it's essentially a scaled-up version.
+* Create a file at `demos/food_vision_big/requirements.txt`.
+* Add all required dependencies (like `torch`, `torchvision`, `gradio`, etc.) exactly as in Food Vision Mini.
+
+---
+
+### 3. Folder Structure Complete
+
+At this point, the `food_vision_big` directory should contain:
+
+* `app.py` (Gradio app script)
+* `model.py` (model definition)
+* `class_names.txt` (list of 101 class names)
+* `requirements.txt` (dependencies)
+* `examples/` (directory with example images)
+* Pre-trained model weights file
+
+---
+
+### 4. Packaging: Zipping the Folder
+
+* Navigate into the `food_vision_big` directory (inside `demos`).
+* Zip the folder contents (excluding unnecessary files if desired).
+* Example zip command:
+
+  -------------------code----------------------
+  zip -r food_vision_big.zip .
+  -------------------code----------------------
+* Result: `food_vision_big.zip` file ready for download or upload.
+
+---
+
+### 5. Downloading the Zip File
+
+* Can download manually via file browser interface.
+* Or download programmatically (example in Google Colab):
+
+  -------------------code----------------------
+  from google.colab import files
+  files.download('demos/food_vision_big/food_vision_big.zip')
+  -------------------code----------------------
+* Note: On a local machine, manual download or alternative file transfer might be necessary.
+
+---
+
+### 6. Next Step: Deployment
+
+* Challenge: Upload this packaged Food Vision Big demo to Hugging Face Spaces.
+* Follow similar steps used for Food Vision Mini deployment.
+* Reference existing notebooks and instructions as needed.
+
+---
