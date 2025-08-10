@@ -174,3 +174,34 @@
 * Users should check the latest PyTorch 2.0 blog and release notes for updates regarding these caveats.
 
 ---
+
+*** 333. Getting Setup for PyTorch 2 ***
+**Lecture Summary: PyTorch 2.0 Speedups and Environment Verification**
+
+**1. Recap on Torch Compile Speedups**
+
+* Torch Compile API is the main new addition in PyTorch 2.0, providing significant model speedups.
+* Average speed improvements reported:
+
+  * 38% for Torch Image Models (TIM library)
+  * 76% for TorchBench models
+  * 52% for Huggingface Transformer models
+* These speedups are achieved mainly through two techniques:
+
+  * Operator Fusion (fusion of multiple operations to reduce overhead)
+  * Graph Capture (recording computation graphs for faster execution)
+
+**2. Verifying PyTorch 2.0 Installation**
+
+* If working locally, users may need to upgrade PyTorch to version 2.0 to access new features.
+* Google Colab includes PyTorch 2.0 by default.
+* Provided code snippet to check PyTorch version and install/upgrade if necessary.
+* The code also outputs helpful system information for verification.
+
+**3. Next Steps: Gathering GPU Information**
+
+* Upcoming step is to gather detailed GPU characteristics.
+* This is important because PyTorch 2.0’s main speedups (especially via `torch.compile`) are optimized for newer NVIDIA GPUs.
+* Understanding GPU details helps ensure compatibility and performance expectations.
+
+---
