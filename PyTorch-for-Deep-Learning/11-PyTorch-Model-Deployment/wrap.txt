@@ -5929,3 +5929,91 @@ At this point, the `food_vision_big` directory should contain:
 * Reference existing notebooks and instructions as needed.
 
 ---
+
+*** 327. Deploying Food Vision Big to Hugging Face Spaces ***
+# Deploying Food Vision Big to Hugging Face Spaces
+
+---
+
+### 1. Recap
+
+* Downloaded and zipped Food Vision Big app files.
+* Challenge issued to deploy the demo on Hugging Face Spaces.
+
+---
+
+### 2. Deployment Methods on Hugging Face
+
+* **Web UI:** Upload files manually through the Hugging Face Spaces website.
+* **Terminal (Git + Git LFS):** Clone repository locally and push files using Git commands.
+* **Hugging Face Hub Client Library:** Use their Python library to upload and manage files programmatically.
+
+---
+
+### 3. Creating a New Space on Hugging Face
+
+* Log in to your Hugging Face account.
+* Create a new Space (e.g., named `food-vision-big-video`).
+* Choose license (e.g., MIT) and SDK (choose `gradio`).
+* Confirm creation.
+
+---
+
+### 4. Uploading Files via Web UI
+
+* Navigate to the created Space repo page.
+* Upload the following files and folders:
+
+  * `app.py`
+  * `model.py`
+  * `class_names.txt`
+  * `requirements.txt`
+  * `examples/` folder with images
+  * Pre-trained model weights (note: large files handled with Git LFS)
+* **Note:** Uploading directories isn’t directly supported in UI, so use this workaround:
+
+  * Create dummy files inside folders (e.g., `examples/demo-to-delete.txt`) to create the directory structure.
+  * Upload your example images afterward.
+  * Delete the dummy files once the folders exist.
+
+---
+
+### 5. Handling Large Files
+
+* Model weights (\~31.8 MB) are managed with Git LFS on Hugging Face.
+* Uploading may take some time and can show "stored with Git LFS" status.
+
+---
+
+### 6. Building and Running the App
+
+* After uploading all files, the Space will build automatically.
+* Initial build errors are expected if some dependencies or files are missing.
+* Restart the Space (via “Factory reset” or reboot) if it fails to start properly.
+* Once running, the app will be live.
+
+---
+
+### 7. Testing the App
+
+* Test with example image (e.g., `pizza_dad.jpeg`).
+* Try new images, including unusual or non-food images to explore model behavior and limitations.
+
+---
+
+### 8. Extensions and Next Steps
+
+* Consider adding more food classes not in Food 101 dataset with your own images.
+* Handle non-food inputs more gracefully in the app.
+* Use Gradio features like Blocks for more complex UI.
+* Share your experiments on course Discord or GitHub discussions.
+
+---
+
+### 9. Summary
+
+* Successfully deployed the largest Food Vision model yet.
+* Real-world deployment helps identify model strengths and failure cases.
+* Encouraged to experiment, improve, and share work.
+
+---
