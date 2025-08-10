@@ -5008,3 +5008,86 @@ git push
 * This will prepare the model architecture for **Food Vision Big**.
 
 ---
+
+
+*** 316. Preparing an EffNetB2 Feature Extractor Model for Food Vision Big ***
+## Lecture Notes – Food Vision Big Setup
+
+### 1. Recap from Last Video
+
+* Previously deployed **Food Vision Mini** using 3 classes: pizza, steak, sushi.
+* New goal: build **Food Vision Big**, capable of classifying **101 different food categories**.
+* This project will complete **Milestone Project 3** (PyTorch model deployment).
+* Workflow will be similar to Food Vision Mini, but with a larger dataset and more classes.
+
+---
+
+### 2. Model Creation
+
+* Base architecture: **EfficientNet B2 feature extractor**.
+* Reuse the function from earlier (`create_effnetb2_model`) but:
+
+  * Set `num_classes=101` for Food Vision Big.
+* Model Summary:
+
+  * Input shape: unchanged from Food Vision Mini.
+  * Output shape: **101 classes**.
+  * Base layers frozen (feature extractor).
+  * Larger output layer → more trainable parameters compared to the 3-class version.
+
+---
+
+### 3. Data Augmentation & Overfitting Prevention
+
+* **Food 101 dataset**:
+
+  * 101 classes.
+  * Over 100,000 images.
+  * Using the full dataset can lead to **overfitting**.
+* **Overfitting definition**:
+
+  * Training loss < Test loss → model memorizes training set, fails to generalize.
+* **Regularization techniques** to prevent overfitting:
+
+  1. Get more data.
+  2. Simplify the model.
+  3. Use **data augmentation**.
+* **Why data augmentation?**
+
+  * Adds variety to training data artificially.
+  * Forces the model to learn robust features rather than memorizing.
+
+---
+
+### 4. Data Augmentation Approach
+
+* Reference: **Torchvision team training recipes**.
+* Chosen augmentation: **TrivialAugmentWide**.
+* Applied **only to training data**.
+* Testing/Inference data:
+
+  * Use original EfficientNet B2 transforms.
+  * Do not augment to maintain evaluation consistency.
+
+---
+
+### 5. Implementation Steps
+
+1. **Model**
+
+   * Create `EfficientNetB2_Food101` with `num_classes=101`.
+2. **Transforms**
+
+   * Training transforms: `TrivialAugmentWide` + base preprocessing.
+   * Testing transforms: original EfficientNet B2 preprocessing.
+3. **Dataset**
+
+   * Use `torchvision.datasets.Food101` to download dataset.
+   * Option to work with subset for faster experiments.
+4. **Next Steps**
+
+   * Load data into `DataLoader`s.
+   * Train and evaluate Food Vision Big.
+   * Deploy model to Hugging Face Spaces with Gradio.
+
+---
