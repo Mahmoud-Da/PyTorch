@@ -5416,3 +5416,108 @@ data/food-101/images/<class_name>/*.jpg
   * This will be the **largest model trained so far** in the course.
 
 ---
+
+*** 320. Training Food Vision Big: Our Biggest Model Yet! ***
+---
+
+## Training Custom FoodVision Model
+
+Certainly! Here's your lecture content organized clearly and concisely without any emojis:
+
+---
+
+# Training Food Vision Big Model
+
+### 1. Introduction
+
+* This will be the biggest model trained so far.
+* Initial experiment set to **5 epochs**; can increase later if results are good.
+
+---
+
+### 2. Training Setup
+
+* **Optimizer:**
+
+  * Use `torch.optim.Adam` with learning rate (`lr`) = 1e-3.
+
+* **Loss Function:**
+
+  * Use `torch.nn.CrossEntropyLoss` with **label smoothing**.
+  * Label smoothing is a regularization technique that helps prevent overfitting and overconfidence in the model.
+  * It works by softening the target labels, so the model assigns some probability mass to non-target classes, preventing it from becoming too confident on a single class.
+  * Example: Instead of prediction `[0, 0, 0.99, 0, 0]`, label smoothing might produce `[0.01, 0.01, 0.96, 0.01, 0.01]`.
+
+* **Label Smoothing Value:**
+
+  * Use `label_smoothing=0.1` as suggested by the PyTorch and TorchVision teams.
+  * It improves accuracy slightly (based on ImageNet results).
+
+---
+
+### 3. Why Use Label Smoothing?
+
+* Helps avoid overfitting by adding noise to the labels.
+* Makes the model less overconfident and more robust.
+* Particularly useful for datasets with many classes (Food101 has 101 classes).
+
+---
+
+### 4. Training the Model
+
+* Import training engine from `going_modular`.
+* Define optimizer and loss function with label smoothing.
+* Train on 20% of the Food101 dataset for 5 epochs initially.
+* Train and test data loaders: `food_101_20_train` and `food_101_20_test`.
+* Use a GPU if available (example uses Nvidia Tesla P100 on Google Colab Pro).
+
+---
+
+### 5. Training Progress
+
+* Training may take around **15-20 minutes** on Nvidia Tesla P100 (about 5 minutes per epoch).
+* Training accuracy after 1st epoch \~30%, test accuracy \~50%.
+* Goal accuracy to beat: 56.4% (from the original Food101 paper on 100% test data).
+* After 5 epochs, the model reached just under 58% accuracy using only 20% of data, outperforming the original paper's results.
+
+---
+
+### 6. Comparing with Original Paper
+
+* Original Food101 paper trained for 6 days on Nvidia Tesla K20X GPU.
+* Current training took \~18 minutes on much more affordable hardware, showing deep learning progress over the years.
+
+---
+
+### 7. Loss Curves and Model Evaluation
+
+* Use helper function `plot_loss_curves` to visualize training and validation loss.
+* Model shows better validation loss than training loss, indicating good regularization from label smoothing and data augmentation techniques (e.g., trivial augment).
+
+---
+
+### 8. Saving and Loading the Model
+
+* Save model after training using `utils.save_model`.
+* Define a model path, e.g., `"models/fnet_b2_food101.pth"`.
+* Load model for inference by creating a new model instance and loading the saved state dict.
+
+---
+
+### 9. Model Size and Parameters
+
+* Model size: \~30 MB (slightly larger than Food Vision Mini's \~29.8 MB).
+* Increase mainly due to the larger output layer (101 classes vs fewer classes).
+* Total parameters: about 7.7 million, with only \~100,000 more in Food Vision Big compared to Mini.
+* Fast inference time is maintained despite increased size.
+
+---
+
+### 10. Next Steps and Deployment
+
+* Consider deploying Food Vision Big as an app (e.g., Hugging Face Spaces).
+* Replicate deployment steps used for Food Vision Mini with this bigger model.
+* Suggested workflow: create a Gradient app in Google Colab first to ensure it works before full deployment.
+
+---
+
