@@ -5780,3 +5780,85 @@ with open(class_names_path, "r") as f:
 * Aim to integrate this into deployment workflow smoothly.
 
 ---
+
+*** 325. Creating an App Script for Our Food Vision Big Model Gradio Demo ***
+# Building Food Vision Big API App Script (`app.py`)
+
+### 1. Recap
+
+* Created `model.py` script for Food Vision Big demo.
+* Now moving closer to creating `app.py` for Food Vision Big Gradient app as a standalone Python script.
+
+---
+
+### 2. Purpose of `app.py`
+
+* This script will run on Hugging Face Spaces (or any deployment platform).
+* It needs to load the model, process input images, and serve predictions through a UI.
+
+---
+
+### 3. Main Differences from Food Vision Mini App
+
+* Class names are loaded from a `class_names.txt` file instead of a Python list.
+* Model and transforms setup are adjusted for Food Vision Big (101 classes).
+* UI description and app name reflect Food Vision Big.
+
+---
+
+### 4. Steps to Build `app.py`
+
+#### 4.1 Imports and Setup
+
+* Import `gradio` as `gr`.
+* Import `torch`.
+* Import model creation function `create_efficientnet_b2_model` from `model.py`.
+* Import `default_timer` from `timeit` and typing helpers.
+
+#### 4.2 Load Class Names
+
+* Open `class_names.txt` in read mode.
+* Use list comprehension with `.strip()` to clean newline characters.
+* Store in a `class_names` list.
+
+#### 4.3 Model and Transforms Preparation
+
+* Create model and transforms by calling `create_efficientnet_b2_model(num_classes=101)`.
+* Load saved model weights with `model.load_state_dict(torch.load(..., map_location='cpu'))`.
+
+  * Map to CPU because Hugging Face Spaces free tier offers CPU only.
+
+#### 4.4 Define Prediction Function
+
+* Reuse the prediction function from Food Vision Mini (handles preprocessing, inference, and output formatting).
+* Input: image.
+* Output: top predicted classes and their probabilities.
+
+#### 4.5 Define Gradio Interface
+
+* Set title and description for Food Vision Big.
+* Link to text file with all class names for user reference.
+* Load example images from the `examples` directory (e.g., pizza dad).
+* Set `top_k` predictions to 5 (instead of 3 for Mini).
+
+---
+
+### 5. Final Step: Write `requirements.txt`
+
+* List all Python dependencies your app needs (e.g., torch, torchvision, gradio).
+* This file is necessary so Hugging Face Spaces knows what to install.
+
+---
+
+### Summary
+
+* You now have all parts needed for Food Vision Big demo:
+
+  * `model.py` (model architecture and creation)
+  * `app.py` (API app script with Gradio interface)
+  * `class_names.txt` (list of food classes)
+  * `requirements.txt` (dependencies)
+  * `examples/` directory with sample images
+  * Pre-trained model weights file
+
+---
