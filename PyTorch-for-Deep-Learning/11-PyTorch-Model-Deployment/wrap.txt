@@ -5652,3 +5652,75 @@ mv models/food_101_20%.pth demos/food_vision_big/
 * Loading class names programmatically from this file helps manage many classes efficiently.
 
 ---
+
+*** 323. Saving Food 101 Class Names to a Text File and Reading them Back In ***
+# Creating and Using a Class Names Text File for Food Vision Big
+
+### 1. Purpose
+
+* To manage 101 Food101 class names neatly by saving them into a text file instead of embedding directly in code.
+* Helps keep the API code clean and manageable.
+* Python efficiently reads text files, so no performance issues expected.
+
+---
+
+### 2. Saving Class Names to a Text File
+
+* Create a path for the text file in the `food_vision_big_demo` directory.
+* Example path: `demos/food_vision_big/class_names.txt`.
+* Write all class names into this file, one class name per line.
+
+Example Python code snippet:
+
+-------------------code----------------------
+from pathlib import Path
+
+# Define the path for the class names file
+class_names_path = Path("demos/food_vision_big/class_names.txt")
+
+# Example list of class names (food_101_class_names)
+food_101_class_names = ["apple_pie", "baby_back_ribs", "baklava", ...]  # full list here
+
+# Write class names to the text file, one per line
+with open(class_names_path, "w") as f:
+    f.write("\n".join(food_101_class_names))
+-------------------code----------------------
+
+---
+
+### 3. Verifying Saved Class Names
+
+* Open the text file and check that each class name is on a separate line.
+
+---
+
+### 4. Loading Class Names from the Text File
+
+* To use the class names in the app, read the file back into a Python list.
+* Use `strip()` to remove newline characters and any leading/trailing spaces.
+
+Example Python code snippet:
+
+-------------------code----------------------
+with open(class_names_path, "r") as f:
+    loaded_class_names = [line.strip() for line in f.readlines()]
+-------------------code----------------------
+
+* `strip()` ensures clean strings without newline artifacts (`\n`).
+
+---
+
+### 5. Why This Matters
+
+* Loading class names from a text file is cleaner than hardcoding a long list in the API.
+* Facilitates easier updates and maintenance.
+* This is the method planned for use in the API for Food Vision Big.
+
+---
+
+### 6. Next Step
+
+* After completing class names and examples, focus on the model definition file (`model.py`).
+* This was covered in Food Vision Mini; you can try implementing it now or refer back to the previous example.
+
+---
