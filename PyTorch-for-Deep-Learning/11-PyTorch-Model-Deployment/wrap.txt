@@ -5724,3 +5724,59 @@ with open(class_names_path, "r") as f:
 * This was covered in Food Vision Mini; you can try implementing it now or refer back to the previous example.
 
 ---
+
+*** 324. Turning Our EffNetB2 Feature Extractor Creation Function into a Python Script ***
+# Turning Food Vision Big Model into a Python Script & Creating a Gradient App
+
+### 1. Recap
+
+* Previously saved Food101 class names to a text file.
+* Wrote code to read those class names back into a Python list.
+
+---
+
+### 2. Current Goal
+
+* Continue building necessary files for the Food Vision Big demo app.
+* Specifically, create a Python script for the Food Vision Big model (`model.py`).
+
+---
+
+### 3. Creating `model.py` for Food Vision Big
+
+* Reuse the model script from Food Vision Mini because both use the same EfficientNet B2 model architecture.
+* The key difference is adjusting the number of classes (101 for Food Vision Big vs fewer for Mini).
+* The existing `create_fnet_b2_model` function is flexible and supports this change dynamically.
+
+**Steps:**
+
+* Copy the `model.py` file from Food Vision Mini.
+* Rename or save it as `model.py` inside the Food Vision Big demo directory.
+* Update any references from “Food Vision Mini” to “Food Vision Big” as needed.
+* Ensure the number of classes parameter is set to 101.
+
+---
+
+### 4. Verify
+
+* After running the script, check your file system for `food_vision_big/model.py`.
+* Confirm the file is created and ready for use.
+
+---
+
+### 5. Next Step: Create Gradient App Script
+
+* Move on to creating a Gradient app for Food Vision Big (`app.py`).
+* You’ve done this before with Food Vision Mini.
+* Challenge: Turn your Food Vision Mini or Food Vision Big Gradient app code into a Python script.
+* This skips building the demo app directly in Google CoLab and moves closer to deployment on Hugging Face Spaces.
+
+---
+
+### 6. Suggested Approach
+
+* Practice converting notebook cells into standalone Python scripts.
+* Prepare the API app in Python.
+* Aim to integrate this into deployment workflow smoothly.
+
+---
