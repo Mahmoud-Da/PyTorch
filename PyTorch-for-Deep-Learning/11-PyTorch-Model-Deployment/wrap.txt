@@ -4629,3 +4629,121 @@ References:
 * Section 9 of the course: "Deploying Food Vision Mini."
 
 ---
+
+*** 312. Downloading Our Food Vision Mini App Files from Google Colab ***
+## Lecture Notes — Deploying Food Vision Mini to Hugging Face Spaces (Section 9)
+
+### Goal
+
+* Deploy the Food Vision Mini app to Hugging Face Spaces.
+* Share the app publicly so others can classify food images.
+
+---
+
+### Deployment Methods
+
+There are three ways to upload the app to Hugging Face Spaces:
+
+1. **Web Interface (Drag & Drop)**
+2. **Command Line / Terminal** *(focus of this section)*
+3. **Hugging Face Hub Python Library** *(optional/extra)*
+
+Reference:
+
+* For Git basics, see *Git and GitHub FreeCodeCamp crash course*.
+
+---
+
+### Step 9.1 — Preparing Files for Upload
+
+#### 1. Accessing Files
+
+* If working locally → access project files directly.
+* If using **Google Colab**:
+
+  * Need to download the `Food Vision Mini` directory from Colab to your local machine.
+
+#### 2. Project Structure
+
+Inside `food_vision_mini` directory:
+
+* `app.py`
+* `model.py`
+* `requirements.txt`
+* `examples/` folder with example images
+* Pre-trained model file
+* (Optional) `.pycache/` — should be ignored
+
+---
+
+### Step 9.2 — Zipping Files in Google Colab
+
+Purpose: Combine all project files into a single compressed `.zip` file for easy download.
+
+**Why Zip?**
+
+* Compresses files to save space.
+* Bundles multiple files/folders into one for faster transfer.
+
+**Command Example:**
+
+-------------------code----------------------
+cd demos/food_vision_mini
+zip -r food_vision_mini.zip * \
+    -x "*.pt" \
+    -x "*.ipynb" \
+    -x "__pycache__/*"
+-------------------code----------------------
+
+Explanation:
+
+* `cd` → change into the project directory.
+* `zip -r` → recursively include all files/subdirectories.
+* `-x` → exclude certain files:
+
+  * `*.pt` → trained model weights (optional to upload).
+  * `*.ipynb` → Jupyter/Colab notebooks.
+  * `__pycache__/` → Python cache files.
+
+---
+
+### Step 9.3 — Downloading the Zip File
+
+* **Manual Download**: Click the file in Colab’s file browser → “Download”.
+* **Programmatic Download (Colab)**:
+
+-------------------code----------------------
+from google.colab import files
+files.download("demos/food_vision_mini.zip")
+-------------------code----------------------
+
+Note:
+
+* Browser may request permission to download files.
+* Both manual and programmatic methods produce the same `.zip` file.
+
+---
+
+### Step 9.4 — Ready for Upload
+
+Now you have:
+
+* `food_vision_mini.zip` containing:
+
+  * `app.py`
+  * `model.py`
+  * `requirements.txt`
+  * `examples/` images
+* This file can be uploaded to Hugging Face Spaces via:
+
+  1. Web Interface (drag & drop)
+  2. Terminal (Git commands)
+
+---
+
+### Next Steps
+
+* (Optional) Test running the app locally before upload.
+* Next section: Begin uploading the files to Hugging Face Spaces.
+
+---
