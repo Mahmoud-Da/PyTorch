@@ -4747,3 +4747,121 @@ Now you have:
 * Next section: Begin uploading the files to Hugging Face Spaces.
 
 ---
+
+*** 313. Uploading Our Food Vision Mini App to Hugging Face Spaces Programmatically ***
+## **Lecture Notes — Deploying the Food Vision Mini Gradio App to Hugging Face Spaces**
+
+### **1. Context Recap**
+
+* In the last session, the demo Food Vision Mini app was downloaded to the local machine.
+
+* Two download methods were used:
+
+  * Manual download from Google Colab.
+  * Download via code.
+
+* While the app can be run locally, this session focuses on deploying it to **Hugging Face Spaces**.
+
+---
+
+### **2. Running the App Locally (Optional)**
+
+* Local testing is possible before uploading to Hugging Face.
+* The provided steps are based on macOS.
+* Windows users may need alternative steps; share suggestions on GitHub Discussions.
+
+---
+
+### **3. Deploying to Hugging Face Spaces**
+
+#### **Step 1: Create a Hugging Face Account**
+
+* Sign up at Hugging Face.
+* Optionally link with GitHub for code sync.
+
+#### **Step 2: Create a New Space**
+
+* Click **New Space** in Hugging Face.
+* Choose:
+
+  * **Name:** e.g., `FoodVisionMini` or a custom name.
+  * **License:** MIT (common open-source choice).
+  * **SDK:** Gradio (alternatives: Streamlit, static HTML).
+  * **Visibility:** Public.
+* Create the space.
+
+#### **Step 3: Clone the New Space Repository Locally**
+
+-------------------code----------------------
+git clone <HuggingFace-Space-Repo-URL>
+-------------------code----------------------
+
+* Navigate into the cloned repo.
+
+#### **Step 4: Copy App Files into the Repo**
+
+* From the local `Food Vision Mini` folder, copy all files into the cloned repo directory:
+
+-------------------code----------------------
+cp -r ~/Downloads/FoodVisionMini/* .
+-------------------code----------------------
+
+#### **Step 5: Install Git LFS (Large File Storage)**
+
+* Required for files >10MB (e.g., model files).
+
+-------------------code----------------------
+git lfs install
+-------------------code----------------------
+
+* macOS example:
+
+-------------------code----------------------
+brew install git-lfs
+-------------------code----------------------
+
+#### **Step 6: Track Large Files**
+
+-------------------code----------------------
+git lfs track "*.pth"
+git add .gitattributes
+-------------------code----------------------
+
+* Tracks PyTorch model files and other large binary files.
+
+#### **Step 7: Stage and Commit Files**
+
+-------------------code----------------------
+git add *
+git status   # verify files are staged
+git commit -m "Initial commit"
+-------------------code----------------------
+
+#### **Step 8: Push to Hugging Face**
+
+-------------------code----------------------
+git push
+-------------------code----------------------
+
+* Large files will be uploaded via Git LFS.
+* Upload speed depends on internet connection.
+
+---
+
+### **4. After Push**
+
+* Files appear in the Hugging Face Space repo.
+* Space will automatically build:
+
+  * Installs dependencies (e.g., `torch`, `torchvision`, `matplotlib`, `gradio`).
+  * Logs are viewable in the Space’s interface.
+* Once build completes, the app will be live.
+
+---
+
+### **5. Notes**
+
+* Build times vary; model upload may take a few minutes.
+* Interface and build process may change as Hugging Face updates their platform.
+
+---
