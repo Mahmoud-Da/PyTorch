@@ -69,3 +69,32 @@
   * And others.
 
 ---
+
+
+*** 330. What We Are Going to Cover and PyTorch 2 Reference Materials ***
+
+**Lecture Summary: Overview and Setup for PyTorch 2.0 Experiments**
+
+**1. Overview of Lecture Content**
+
+* Introduction to new PyTorch 2.0 features, with a focus on `torch.compile`.
+* Setting up a series of experiments to evaluate PyTorch 2.0 improvements, primarily in speed.
+* Comparing experiment results and discussing further learning resources.
+* Approach: Practical coding-oriented, described as "cooking up code," emphasizing hands-on learning rather than theoretical chemistry-like explanations.
+
+**2. Practical Setup**
+
+* The lecture will take place in Google Colab for easy accessibility and execution.
+* All relevant materials and resources are available on the website learnpytorch.io, specifically under the PyTorch 2.0 introduction section.
+* For additional help, participants can use the GitHub repository linked to the course, where discussions and questions can be posted.
+
+**3. Accessing the Course Notebook**
+
+* The notebook for this session is located in the “Extras” section of the course materials, titled **PyTorch Deep Learning Extras > PyTorch 2.0 Intro**.
+* There is an option to open the notebook directly in Google Colab using the provided button for immediate practice.
+
+**4. Next Steps**
+
+* The instructor will meet learners in a new Colab notebook session to proceed with hands-on coding and experimentation.
+
+
