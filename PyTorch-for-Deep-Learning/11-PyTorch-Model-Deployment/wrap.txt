@@ -4545,3 +4545,87 @@ FoodVisionMini/
 -------------------code----------------------
 
 ---
+
+
+*** 311. Creating a Requirements File for Our Food Vision Mini App ***
+## Lecture Notes — Creating `requirements.txt` for Food Vision Mini
+
+### Purpose of `requirements.txt`
+
+* Defines the software dependencies needed for the Food Vision Mini app.
+* Ensures Hugging Face Spaces installs the correct packages for the app to run.
+* Optional but recommended to specify versions to avoid breaking changes from updates.
+
+---
+
+### Required Packages
+
+1. **torch** – for pre-trained models.
+2. **torchvision** – for transforms and model utilities.
+3. **gradio** – for building the demo interface.
+
+---
+
+### Specifying Versions
+
+* While versions are not strictly required, fixing them helps maintain stability.
+* Versions used in the tutorial:
+
+  * `torch==1.12.0`
+  * `torchvision==0.13.0`
+  * `gradio==3.1.4`
+
+Reason for fixing versions:
+
+* Prevents incompatibility issues if packages update in the future.
+* Guarantees that the app works as tested.
+
+---
+
+### Steps Taken
+
+1. Checked installed versions:
+
+   -------------------code----------------------
+   torch.__version__
+   torchvision.__version__
+   gradio.__version__
+   -------------------code----------------------
+2. Created the file:
+
+   -------------------code----------------------
+   demo/food_vision_mini/requirements.txt
+   -------------------code----------------------
+3. Added the dependencies with versions:
+
+   -------------------code----------------------
+   torch==1.12.0
+   torchvision==0.13.0
+   gradio==3.1.4
+   -------------------code----------------------
+
+---
+
+### Final App Structure Check
+
+* Pre-trained model: **Done**
+* `app.py`: **Done**
+* `model.py`: **Done**
+* Example data: **Done**
+* `requirements.txt`: **Done**
+
+---
+
+### Next Step — Deployment
+
+Two options for uploading the app to Hugging Face Spaces:
+
+1. **Web Interface** — upload files manually.
+2. **Command Line/Terminal** — push files directly via commands.
+
+References:
+
+* Hugging Face Spaces documentation.
+* Section 9 of the course: "Deploying Food Vision Mini."
+
+---
