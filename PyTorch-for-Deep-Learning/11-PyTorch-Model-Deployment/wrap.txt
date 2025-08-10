@@ -5091,3 +5091,117 @@ git push
    * Deploy model to Hugging Face Spaces with Gradio.
 
 ---
+
+*** 317. Downloading the Food 101 Dataset ***
+## Lecture Notes – Downloading and Preparing the Food-101 Dataset for Food Vision Big
+
+### 1. Context
+
+* Goal: Progress from **Food Vision Mini** to **Food Vision Big**.
+* Challenge from previous video: download the **Food-101 dataset**.
+* Dataset structure:
+
+  * **Train split** and **Test split** are separate in TorchVision.
+
+---
+
+### 2. Dataset Setup in Code
+
+**Imports & Data Directory**
+
+-------------------code----------------------
+from torchvision import datasets
+from pathlib import Path
+
+data_dir = Path("data")
+-------------------code----------------------
+
+**Training Data**
+
+* Size: `750 images/class × 101 classes = 75,750 images`
+* Code:
+
+-------------------code----------------------
+train_data = datasets.Food101(
+    root=data_dir,
+    split="train",
+    transform=food101_train_transforms,  # data augmentation
+    download=True
+)
+-------------------code----------------------
+
+* Notes:
+
+  * Uses `food101_train_transforms` (includes augmentation).
+  * Augmentation helps generalization.
+
+**Testing Data**
+
+* Size: `250 images/class × 101 classes = 25,250 images`
+* Code:
+
+-------------------code----------------------
+test_data = datasets.Food101(
+    root=data_dir,
+    split="test",
+    transform=food101_test_transforms,  # no augmentation
+    download=True
+)
+-------------------code----------------------
+
+* Notes:
+
+  * Uses `food101_test_transforms` (no augmentation).
+  * No augmentation for test set → simulates unseen real-world data.
+
+**Total Images:** `75,750 + 25,250 = 101,000 images`
+
+---
+
+### 3. Downloading the Dataset
+
+* TorchVision automatically downloads **and** unzips the dataset.
+* Download time in Colab: \~5–7 minutes (varies by hosting location).
+* Data stored in:
+
+-------------------code----------------------
+data/food-101/images/<class_name>/*.jpg
+-------------------code----------------------
+
+---
+
+### 4. Exploring the Dataset
+
+* `train_data.classes` → list of 101 food categories.
+* Example categories: apple pie, baby back ribs, baklava, beef carpaccio, beet salad, churros, clam chowder, cupcakes, donuts, Eggs Benedict, filet mignon, fish and chips, frozen yogurt, fried rice, guacamole, hamburger, etc.
+* Fun discovery: **Beignet** – a fried pastry from France.
+
+---
+
+### 5. Experimentation Tip
+
+* Full dataset = 101,000 samples → slower training.
+* Suggestion: **create a subset** of the dataset for quick experiments.
+
+  * Benefits:
+
+    * Faster iteration.
+    * Quickly verify model and deployment workflow.
+    * Later, retrain on full dataset for final model.
+
+---
+
+### 6. Generalization to Other Datasets
+
+* The same workflow works for many **TorchVision datasets**.
+* Examples:
+
+  * `Flowers102` for flower classification.
+  * Others available in `torchvision.datasets` for practice.
+* Approach:
+
+  1. Download dataset.
+  2. Apply suitable transforms.
+  3. Train and evaluate models.
+
+---
