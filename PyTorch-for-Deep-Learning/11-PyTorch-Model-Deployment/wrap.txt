@@ -5205,3 +5205,110 @@ data/food-101/images/<class_name>/*.jpg
   3. Train and evaluate models.
 
 ---
+
+*** 318. Creating a Function to Split Our Food 101 Dataset into Smaller Portions ***
+---
+
+## Lecture Notes — Creating a Subset of the Food-101 Dataset
+
+### 1. **Recap & Context**
+
+* Previously downloaded the entire **Food-101** dataset (training & testing data).
+* Dataset now has **101 classes** for the model to learn.
+* This allows broader predictions when deployed.
+* Total images: **\~101,000**.
+
+---
+
+### 2. **Why Create a Subset?**
+
+* Goal: **Faster experimentation** before full-scale training.
+* Never trained a model on *all* of Food-101 before.
+* Use the same approach as **Food Vision Mini** (20% subset).
+* Benefits:
+
+  * Rapid feedback during development.
+  * Allows testing of ideas without full computation cost.
+
+---
+
+### 3. **Short-Term Goal**
+
+* Referenced the original **Food-101 paper** (ETH Zurich).
+
+  * CNN result: **56.4% accuracy** on the test set.
+  * Random forest also used, but paper is \~10 years old.
+* Benchmark: **Beat 56.4% accuracy** using **modern deep learning techniques**.
+* Challenge: Achieve this using **only 20% of the original data**.
+
+---
+
+### 4. **Experimentation Theme**
+
+* Course motto: **"Experiment, experiment, experiment"**.
+* Past experiments:
+
+  * Very small datasets (225 train / 75 test images).
+* Now (Section 9):
+
+  * Creating **Food Vision Big 20%** subset:
+
+    * 15,150 train images (20% of training set).
+    * 5,050 test images (20% of test set).
+
+---
+
+### 5. **Plan for Subset Creation**
+
+* Use PyTorch’s `torch.utils.data.random_split`:
+
+  * Splits a dataset into non-overlapping subsets of specified lengths.
+  * Requirements:
+
+    * Lengths must sum to total dataset size.
+    * Can create 2 or more splits.
+
+---
+
+### 6. **Function: `split_dataset`**
+
+* Parameters:
+
+  * `dataset`: target dataset (e.g., train or test set).
+  * `split_size`: fraction for subset (default = 0.2).
+  * `seed`: random seed for reproducibility (default = 42).
+* Steps:
+
+  1. Calculate `length_1` = int(len(dataset) × split\_size).
+  2. Calculate `length_2` = len(dataset) − length\_1.
+  3. Use `random_split(dataset, [length_1, length_2], generator=manual_seed)`.
+  4. Return `(split_1, split_2)`.
+
+---
+
+### 7. **Application**
+
+* Train data:
+
+  -------------------code----------------------
+  train_data_20 = split_dataset(train_data, split_size=0.2)[0]
+  -------------------code----------------------
+* Test data:
+
+  -------------------code----------------------
+  test_data_20 = split_dataset(test_data, split_size=0.2)[0]
+  -------------------code----------------------
+* Results:
+
+  * Training subset: **15,150 images**.
+  * Testing subset: **5,050 images**.
+
+---
+
+### 8. **Next Steps**
+
+* Train the model on the 20% subset.
+* Evaluate whether accuracy beats the benchmark (56.4%).
+* Later: train on **full dataset** for maximum performance.
+
+---
