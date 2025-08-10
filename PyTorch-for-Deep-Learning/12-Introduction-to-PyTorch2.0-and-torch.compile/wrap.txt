@@ -98,3 +98,44 @@
 * The instructor will meet learners in a new Colab notebook session to proceed with hands-on coding and experimentation.
 
 
+
+*** 331. Getting Started with PyTorch 2 in Google Colab ***
+**Lecture Summary: Setting Up PyTorch 2.0 in Google Colab**
+
+**1. Starting a New Google Colab Notebook**
+
+* Created a new notebook titled **"PyTorch 2 Intro"** with a video tag and a brief descriptive title.
+* Provided links to important reference materials:
+
+  * The main reference notebook.
+  * The official PyTorch 2.0 release notes.
+
+**2. PyTorch 2.0 Release Notes Highlights**
+
+* `torch.compile` is the main new API in PyTorch 2.0. It wraps a model and returns a compiled, optimized version that runs faster under the hood.
+* PyTorch 2.0 is fully backward compatible — all existing PyTorch code will still run without changes.
+* The changes in PyTorch 2.0 are mostly additive, meaning new features are added but existing ones remain valid.
+* This ensures seamless transition for users familiar with previous PyTorch versions.
+
+**3. Environment Setup and Version Check**
+
+* Recorded in April 2023; at that time, Google Colab defaulted to PyTorch 2.0 or newer.
+* Verified PyTorch version in Colab as 2.0.0.
+* Set the runtime hardware accelerator to GPU for better performance.
+* Used Google Colab Pro subscription to access premium GPUs (such as Nvidia A100).
+* Acknowledged that while Pro GPUs offer better speedups, the tutorial is still valid without Pro or with older GPUs.
+
+**4. GPU Details and Compatibility**
+
+* Checked GPU type with `nvidia-smi` — confirmed usage of Nvidia A100, a server-class GPU.
+* PyTorch 2.0 speedups are most significant on newer GPUs like A100.
+* Desktop-class GPUs (e.g., Nvidia RTX 3090) show smaller speed improvements compared to server-class GPUs.
+* The default backend, Torch Inductor, currently supports:
+
+  * CPUs
+  * Nvidia Volta and Ampere architectures (including A100)
+  * AMD GPUs
+* Older Nvidia GPUs and other GPU types are not yet fully supported by Torch Inductor.
+
+---
+
