@@ -4865,3 +4865,89 @@ git push
 * Interface and build process may change as Hugging Face updates their platform.
 
 ---
+
+
+*** 314. Running Food Vision Mini on Hugging Face Spaces and Trying it Out ***
+## **Lecture Notes — Deploying and Debugging the Food Vision Mini App on Hugging Face Spaces**
+
+### **1. Recap**
+
+* Previous step: Pushed Food Vision Mini app files to Hugging Face Spaces.
+* Current step: Monitoring build progress and fixing deployment issues.
+
+---
+
+### **2. Initial Build and Error Encounter**
+
+* Checked build status via refresh — still in progress.
+* First error appeared:
+
+  * **Cause:** `share=True` in `app.py` is not supported in Hugging Face Spaces.
+  * **Fix:** Remove `share=True` when deploying to Spaces.
+
+---
+
+### **3. Fixing the Error**
+
+* Steps taken:
+
+  1. Navigated to **Files and Versions** in Hugging Face Space.
+  2. Edited `app.py` directly in the web interface.
+  3. Removed `share=True` from the `.launch()` method.
+  4. Set `debug=False`.
+  5. Committed the change.
+* Hugging Face automatically rebuilt the app after commit.
+* Subsequent builds were faster due to caching.
+
+---
+
+### **4. Successful Deployment**
+
+* App successfully loaded after rebuild.
+* Tested with:
+
+  * Built-in example images: pizza, steak, sushi.
+  * Custom uploaded image from Dropbox — correctly identified as steak.
+* Encouraged sharing results via:
+
+  * GitHub Discussions
+  * Discord
+
+---
+
+### **5. Embedding the App in a Notebook**
+
+* Goal: Share Hugging Face Space app inside a Jupyter/Colab notebook.
+* Method:
+
+  * Use an **HTML iframe** to embed the app.
+  * URL format:
+
+    -------------------code----------------------
+    https://huggingface.co/spaces/<username>/<repo-name>/embed/<optional-tag>
+    -------------------code----------------------
+* Benefits:
+
+  * Allows others to try the model directly from the notebook.
+  * Ideal for portfolios and project documentation.
+
+---
+
+### **6. Syncing Local Changes**
+
+* Since the Space is a Git repository:
+
+  * Running `git pull` locally updates files with edits made on Hugging Face.
+  * Local edits can be pushed back to Hugging Face.
+
+---
+
+### **7. Key Takeaways**
+
+* Hugging Face Spaces automatically rebuilds on commit.
+* Remove `share=True` for Spaces deployment.
+* Subsequent builds are faster due to caching.
+* Apps can be embedded into notebooks for interactive sharing.
+* Git integration enables local–remote sync.
+
+---
