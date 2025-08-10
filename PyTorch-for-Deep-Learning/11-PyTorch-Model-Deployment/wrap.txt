@@ -4951,3 +4951,60 @@ git push
 * Git integration enables local–remote sync.
 
 ---
+
+
+*** 315. Food Vision Big Project Outline ***
+## Lecture Notes – From Food Vision Mini to Food Vision Big
+
+### 1. Review of Food Vision Mini Deployment
+
+* Successfully deployed **Food Vision Mini** to Hugging Face Spaces.
+* Model tested with example images (pizza, steak, sushi) and custom images.
+* Prediction speed is quick and works well.
+* Current limitation: only classifies **3 categories** (pizza, steak, sushi).
+
+---
+
+### 2. Dataset Background
+
+* **Food Vision Mini** is a subset of the **Food-101** dataset.
+* Food-101 contains **101 food categories**.
+* Sources for Food-101:
+
+  * TensorFlow Datasets
+  * Kaggle
+  * Papers With Code
+  * Hugging Face Datasets
+  * TorchVision
+* Current model uses only 3 out of the 101 possible classes.
+
+---
+
+### 3. Next Step – Food Vision Big
+
+* Goal: Upgrade from **Mini** (3 classes) to **Big** (101 classes).
+* This will be the largest model in the course.
+* Classes include: burger, chicken wings, gnocchi, apple pie, ramen, tacos, gyoza, paella, pancakes, chicken curry, ribs, etc.
+* Plan to follow the same workflow as Mini:
+
+  1. Build the model.
+  2. Train it on the full Food-101 dataset.
+  3. Deploy to Hugging Face Spaces with a Gradio app.
+
+---
+
+### 4. Model Building Plan
+
+* Reuse the **EfficientNetB2 feature extractor** from earlier lessons.
+* Adapt the model to handle **101 output classes** instead of 3.
+* Reference: function `create_efficientnetb2_model()` from earlier (used in Section 3.1 for Mini).
+* Key modification: set output layer to `101` classes.
+
+---
+
+### 5. Student Challenge
+
+* Task: Use the existing model creation function, adjusting the parameters to fit **101 categories**.
+* This will prepare the model architecture for **Food Vision Big**.
+
+---
