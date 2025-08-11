@@ -1332,3 +1332,96 @@ print(f"Test DataLoader: {len(test_dataloader)} batches of size {test_dataloader
 * Keep all other settings the same to ensure valid comparison.
 
 ---
+
+
+
+
+*** 346. Experiment 2 - Single Run with torch.compile ***
+## Lecture Notes – PyTorch 2.0 Experiment Two (`torch.compile`)
+
+### 1. Objective
+
+* **Run Experiment Two**: Train a model using **`torch.compile`**.
+* Compare performance (speed and accuracy) with Experiment One.
+* Dataset: **CIFAR-10**
+* Hardware example: NVIDIA A100 GPU.
+
+---
+
+### 2. Setup and Changes from Experiment One
+
+* Same as Experiment One except:
+
+  * Add `torch.compile(model)` after creating and sending the model to the device.
+  * Measure compilation time.
+  * Keep same:
+
+    * Model architecture (ResNet-50)
+    * Data loaders
+    * Loss function: `CrossEntropyLoss`
+    * Optimizer: Adam (`lr = 0.003`)
+    * Epochs: `5`
+
+**Compilation timing logic:**
+
+-------------------code----------------------
+import time
+compile_start_time = time.time()
+compiled_model = torch.compile(model)
+compile_end_time = time.time()
+compile_time = compile_end_time - compile_start_time
+-------------------code----------------------
+
+---
+
+### 3. Important Notes
+
+* The **first epoch** may take longer because:
+
+  * `torch.compile` performs **graph capture** and **operator fusion**.
+  * Optimizations happen during the first pass through the model.
+* Compilation itself (the line `torch.compile(model)`) is fast; optimization happens in training.
+
+---
+
+### 4. Common Pitfalls and Fixes
+
+* **Device mismatch**: Ensure the compiled model is on the correct device.
+
+  -------------------code----------------------
+  compiled_model.to(device)
+  -------------------code----------------------
+* **Naming errors**: Training the wrong variable can cause zero accuracy.
+
+  * Mistake: `train(compiled_model)` vs `train(compile_model)` (typo).
+  * One-character typos can silently break accuracy without causing code errors in some environments.
+* Use an IDE or linting to catch such issues.
+
+---
+
+### 5. Results (Example on A100 GPU)
+
+| Metric                  | Without Compile   | With Compile                     |
+| ----------------------- | ----------------- | -------------------------------- |
+| Training Epoch 1 Time   | \~75 sec          | Longer (\~1st pass optimization) |
+| Training Subsequent Avg | \~71 sec          | \~63 sec (≈ 10% faster)          |
+| Test Epoch Time         | \~7.69 sec        | Slightly faster                  |
+| Accuracy (Test)         | \~87% (after fix) | \~87%                            |
+
+---
+
+### 6. Observations
+
+* **Speed gain**: \~10% faster training epochs after the first optimization.
+* **Accuracy**: Matches Experiment One after fixing the typo.
+* **Key lesson**: Small coding mistakes can completely change results; always verify with known-good code.
+
+---
+
+### 7. Takeaway
+
+* `torch.compile` offers noticeable speed improvements with minimal code change.
+* Ensure correctness first—speed optimizations are only valuable if the model trains properly.
+* Longer training runs will show more pronounced benefits from `torch.compile`.
+
+---
