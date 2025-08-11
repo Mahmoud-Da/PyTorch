@@ -1231,3 +1231,104 @@ print(f"Test DataLoader: {len(test_dataloader)} batches of size {test_dataloader
   * Use the newly created training/testing loops with timing.
 
 ---
+
+*** 345. Experiment 1 - Single Run without torch.compile ***
+## Lecture Notes – PyTorch 2.0 Experiment One (No `torch.compile`)
+
+### 1. Objective
+
+* Run **Experiment One**: Train a ResNet-50 model **without** `torch.compile`.
+* Focus: **Speed performance** rather than accuracy.
+* Dataset: **CIFAR-10**
+* Hardware example: NVIDIA A100 GPU (settings may vary depending on your GPU).
+
+---
+
+### 2. Experiment Setup
+
+**Model**
+
+* Base model: ResNet-50 (can be replaced with any model).
+* Function used: `create_model()`.
+
+**Data**
+
+* Dataset: CIFAR-10 (already transformed).
+* Batch size: `128` (adjust for hardware).
+* Image size: as required for the model.
+
+**Training Parameters**
+
+* Epochs: `num_epochs = 5`
+* Learning rate: `0.003` (could try `0.001` or other values for tuning).
+* Device: GPU (sent using `model.to(device)`).
+* Loss function: `CrossEntropyLoss` (for multi-class classification).
+* Optimizer: Adam (`lr = learning_rate`).
+
+---
+
+### 3. Training Procedure
+
+1. Create the model:
+
+   -------------------code----------------------
+   model, transforms = create_model()
+   model.to(device)
+   -------------------code----------------------
+2. Define loss and optimizer:
+
+   -------------------code----------------------
+   loss_fn = nn.CrossEntropyLoss()
+   optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+   -------------------code----------------------
+3. Train model with a tracking function to measure:
+
+   * **Training epoch time**
+   * **Testing epoch time**
+4. Save results to a variable:
+   `single_run_no_compile_results = train(...)`
+
+---
+
+### 4. Notes on Performance
+
+* First epoch is usually slower due to:
+
+  * Data loading optimizations
+  * Copying data to GPU
+  * Other behind-the-scenes initialization
+* Test epoch time is much faster than training:
+
+  * No gradient computation
+  * Less data processed
+
+---
+
+### 5. Results (Example on A100 GPU)
+
+* **Total time**: \~7 minutes for 5 epochs
+* **Training epoch time**: \~75 seconds (first epoch slightly longer)
+* **Testing epoch time**: \~7.69 seconds (about 10× faster than training)
+* **Test accuracy**: \~87% (not optimized for SOTA performance)
+
+---
+
+### 6. Takeaways
+
+* The experiment confirms baseline training speed without `torch.compile`.
+* Accuracy was decent but not the focus.
+* Consistent settings are crucial for fair experiment comparison.
+
+---
+
+### 7. Next Step – Experiment Two
+
+* Repeat training with `torch.compile` to compare speed.
+* Modification needed:
+
+  -------------------code----------------------
+  compiled_model = torch.compile(model)
+  -------------------code----------------------
+* Keep all other settings the same to ensure valid comparison.
+
+---
