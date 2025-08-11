@@ -1425,3 +1425,121 @@ compile_time = compile_end_time - compile_start_time
 * Longer training runs will show more pronounced benefits from `torch.compile`.
 
 ---
+
+*** 347. Comparing the Results of Experiment 1 and 2 ***
+## Lecture Notes – Comparing Experiment One and Two (`torch.compile` vs No Compile)
+
+### 1. Objective
+
+* Compare performance of:
+
+  * **Experiment One**: Model without `torch.compile`
+  * **Experiment Two**: Model with `torch.compile`
+* Focus on **training and testing time trends** rather than accuracy.
+
+---
+
+### 2. Converting Results to DataFrames
+
+* Results from both experiments are stored in **dictionaries**.
+* Convert to pandas DataFrames for easier analysis:
+
+-------------------code----------------------
+import pandas as pd
+
+results_df_no_compile = pd.DataFrame(single_run_no_compile_results)
+results_df_compile = pd.DataFrame(single_run_compile_results)
+-------------------code----------------------
+
+* Each DataFrame should have **5 rows** (one per epoch).
+
+---
+
+### 3. Observations from Raw Results
+
+* Both models produce **similar accuracy** (numbers may vary).
+* Main difference: **epoch timing**.
+
+  * **Without compile**: consistent training/testing times.
+  * **With compile**:
+
+    * First epoch takes significantly longer (due to optimization steps like graph capture & operator fusion).
+    * Later epochs are faster.
+
+---
+
+### 4. Visualization Function
+
+* A plotting function was prepared to:
+
+  * Compare **mean training epoch times** and **mean testing epoch times**.
+  * Support **single-run** or **multi-run** experiments.
+  * Save plots to disk for later review.
+* Function parameters:
+
+  * Non-compiled results
+  * Compiled results
+  * `multi_runs` flag (boolean)
+  * Number of runs
+  * Dataset name, model name, image size, batch size
+  * Optional save path
+
+---
+
+### 5. Directory Setup for Saving Plots
+
+-------------------code----------------------
+import os
+dir_to_save_figures = "pytorch2_results/figures"
+os.makedirs(dir_to_save_figures, exist_ok=True)
+-------------------code----------------------
+
+* Ensures results and figures are stored for future reference.
+
+---
+
+### 6. Generating the Comparison Plot
+
+Example usage:
+
+-------------------code----------------------
+plot_mean_epoch_times(
+    results_df_no_compile,
+    results_df_compile,
+    multi_runs=False,
+    save_path=save_path_single_run,
+    save=True
+)
+-------------------code----------------------
+
+* Output: **Bar chart** comparing average training/testing epoch times for both experiments.
+
+---
+
+### 7. Key Findings from Comparison
+
+* **Training time**: Compiled model shows improvement in later epochs, but first epoch delay offsets total gains in a short 5-epoch run.
+* **Testing time**: Slightly longer for compiled model in this small-scale test.
+* Reason: Compilation benefits are more visible in **longer training runs**.
+
+---
+
+### 8. Long-Run Projection
+
+* If training for **600 epochs** (as in some TorchVision SOTA models):
+
+  * Average improvement: \~7 seconds per epoch.
+  * Total savings: `600 × 7 = 4200 seconds ≈ 70 minutes` (note: the transcript says "70 hours" but calculation shows about **1.17 hours**, so check units carefully).
+* Key takeaway: **The longer you train, the more you benefit from `torch.compile`**.
+
+---
+
+### 9. Limitation of Current Results
+
+* Single run with only 5 epochs means:
+
+  * First-epoch compile time dominates.
+  * No significant total time savings visible.
+* Solution: Multi-run experiments (upcoming) will give a clearer view of average speed improvements.
+
+---
