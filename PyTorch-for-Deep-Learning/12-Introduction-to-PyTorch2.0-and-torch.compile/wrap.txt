@@ -1802,3 +1802,109 @@ Before running the experiments, three functions are created to avoid repetitive 
 * Next step is to replicate multi-run experiment with compiled model for comparison.
 
 ---
+
+*** 351. Experiment 4 - Training a Compiled Model for Multiple Runs ***
+# Lecture Notes – Experiment 4: Multiple Runs with Compiled Model
+
+---
+
+### 1. **Recap of Experiment 3**
+
+* Completed three runs of non-compiled model training.
+* Aggregated results showed consistent training and test epoch times (\~7.5 seconds each).
+* Times depend on hardware (A100 GPU with 12 CPUs in this case).
+
+---
+
+### 2. **Setup for Experiment 4**
+
+* Objective: Run multiple training runs using a **compiled** PyTorch model.
+* Key principle:
+
+  * **Compile the model once** before training starts.
+  * Train multiple times on the compiled model to avoid recompilation overhead.
+
+---
+
+### 3. **Implementation Details**
+
+* Create compiled model once using the function `create_compiled_model()`.
+
+* Initialize empty list to store results:
+
+  -------------------code----------------------
+  compiled_results_multiple_runs = []
+  -------------------code----------------------
+
+* Run training loop for multiple runs **without recompiling inside the loop**:
+
+  -------------------code----------------------
+  for i in tqdm(range(num_runs)):
+      print(f"Run {i+1} of {num_runs} for compiled model")
+      results = train_compiled_model(
+          model=compiled_model,
+          epochs=num_epochs,
+          disable_progress_bar=False  # to see progress in this run
+      )
+      compiled_results_multiple_runs.append(results)
+  -------------------code----------------------
+
+* Note:
+
+  * The **first epoch of the first run will be the longest** due to compilation and optimization overhead happening during that epoch.
+  * Subsequent epochs and runs are faster due to caching and optimization done behind the scenes.
+
+---
+
+### 4. **Time and Performance Observations**
+
+* Compilation step itself is very fast (just a line of code).
+* The real optimization happens during the first training epoch.
+* Example timings:
+
+  * First epoch: longest time (around 77 seconds)
+  * Subsequent epochs: about 10% faster than non-compiled model (\~64 seconds vs. \~70.5 seconds)
+* Total runtime for the 3 runs was about 18-19 minutes on an A100 GPU.
+
+---
+
+### 5. **Result Aggregation**
+
+* Convert each run's result dictionary into a DataFrame:
+
+  -------------------code----------------------
+  compile_results_dfs = []
+  for result in compiled_results_multiple_runs:
+      compile_results_dfs.append(pd.DataFrame(result))
+  -------------------code----------------------
+
+* Concatenate all DataFrames into one combined DataFrame:
+
+  -------------------code----------------------
+  compiled_results_df = pd.concat(compile_results_dfs)
+  -------------------code----------------------
+
+* Compute average results by grouping by the epoch index:
+
+  -------------------code----------------------
+  average_compiled_results = compiled_results_df.groupby(compiled_results_df.index).mean()
+  -------------------code----------------------
+
+* This aggregates the metrics across runs to smooth out variability.
+
+---
+
+### 6. **Important Notes**
+
+* The **first epoch overhead** is a known behavior of PyTorch 2.0 compilation due to runtime optimizations.
+* For deployment, **perform warm-up runs** with dummy data to “warm up” the compiled model before production use.
+* This reduces latency spikes on the first real run.
+
+---
+
+### 7. **Next Steps**
+
+* Compare the average epoch times between non-compiled (Experiment 3) and compiled models (Experiment 4).
+* Use plotting functions already defined to visualize and analyze mean epoch times across experiments.
+
+---
