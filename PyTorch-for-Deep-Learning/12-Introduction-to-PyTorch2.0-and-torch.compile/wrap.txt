@@ -1908,3 +1908,55 @@ Before running the experiments, three functions are created to avoid repetitive 
 * Use plotting functions already defined to visualize and analyze mean epoch times across experiments.
 
 ---
+
+
+*** 352. Comparing the Results of Experiment 3 and 4 ***
+# Lecture Notes – Comparing Experiment 3 (Non-Compiled) and Experiment 4 (Compiled) Results and Saving Multi-Run Results
+
+---
+
+### 1. **Recap of Experiment 4**
+
+* Training a compiled model for multiple runs showed that compiling the model once speeds up subsequent epochs.
+* The key is to **compile the model only once at the start**, for both training and inference.
+* Subsequent epochs after the first run are consistently faster.
+
+---
+
+### 2. **Comparing Results of Experiments 3 and 4**
+
+* Reused and adapted previous code to compare multi-run results between non-compiled and compiled models.
+* Set up directories and file paths for saving figures and data.
+* Comparison showed:
+
+  * **Compiled model training epochs are about 5.2% to 5.3% faster on average** compared to non-compiled.
+  * This speedup may increase with larger datasets or longer training periods since the first epoch of the compiled model is slower but subsequent epochs are faster.
+  * Test epoch times did not improve as much; sometimes non-compiled performed slightly better.
+  * Possible reasons: less optimization during testing phase; inference mode might speed up testing.
+  * Training time savings are more critical than testing since training is the bulk of the time spent.
+
+---
+
+### 3. **Saving Multi-Run Results to Files**
+
+* Created directories for saving multi-run results.
+* Saved aggregated data frames for non-compiled and compiled results to CSV files.
+* File names include details such as GPU type, dataset, image size, etc., so filenames may vary depending on environment.
+
+---
+
+### 4. **Summary of Findings**
+
+* Torch.compile does provide **speedups in training epochs**, especially for longer training runs.
+* Initial overhead on the first epoch due to compilation is outweighed when training many epochs.
+* For large models and long training (e.g., state-of-the-art vision models trained for hundreds of epochs), speedups become significant.
+
+---
+
+### 5. **Next Steps and Extensions**
+
+* Future discussions on potential improvements and extensions to this experiment.
+* Ideas include trying mixed precision training (not yet tested here).
+* Encouragement to think creatively about improvements.
+
+---
