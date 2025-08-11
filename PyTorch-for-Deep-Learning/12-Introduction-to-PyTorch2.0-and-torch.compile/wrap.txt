@@ -923,3 +923,116 @@ else:
 * Default behavior changed in PyTorch 1.12 — now **False** by default
 
 ---
+
+*** 342. Downloading the CIFAR10 Dataset ***
+## 2.5 Preparing Datasets
+
+### 1. Background
+
+* In the previous step, **TensorFloat-32 (TF32)** was enabled because the GPU supports:
+
+  * Architecture **Ampere or newer**
+  * Compute capability score **≥ 8.0**
+* TF32 can provide speed improvements by combining:
+
+  * Precision benefits of Float32
+  * Speed benefits of Float16
+
+---
+
+### 2. Dataset Choice
+
+* Using **CIFAR-10** dataset for demonstration:
+
+  * Widely available
+  * Good for benchmarking performance improvements
+  * 60,000 images in total
+
+    * 50,000 for training
+    * 10,000 for testing
+  * 10 categories of images
+  * Original size: 32×32 pixels
+* For this exercise:
+
+  * Images will be resized to **224×224**
+  * Purpose: maximize GPU utilization by using larger input data
+
+---
+
+### 3. Why CIFAR-10?
+
+* Convenient to download using `torchvision.datasets`
+* Allows quick performance comparisons
+* If speed improvements are noticeable here, they may translate to other datasets
+* Easy to run repeatedly in environments like Google Colab
+
+---
+
+### 4. Downloading the Dataset
+
+**Code Example:**
+
+-------------------code----------------------
+import torchvision
+from torchvision import transforms
+
+# Define transforms
+train_transforms = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor()
+])
+
+# Training dataset
+train_dataset = torchvision.datasets.CIFAR10(
+    root=".",
+    train=True,
+    download=True,
+    transform=train_transforms
+)
+
+# Test dataset
+test_dataset = torchvision.datasets.CIFAR10(
+    root=".",
+    train=False,
+    download=True,
+    transform=train_transforms
+)
+-------------------code----------------------
+
+**Notes:**
+
+* `root="."` stores data in the current directory
+* If using Google Colab:
+
+  * Data is deleted when the session ends
+  * Downloading programmatically ensures reproducibility
+* `download=True` ensures dataset is fetched if not already present
+* `transform` applies preprocessing (resize, normalization, etc.)
+
+---
+
+### 5. Dataset Properties
+
+* **Training dataset length**: 50,000 samples
+* **Test dataset length**: 10,000 samples
+* Sample inspection:
+
+-------------------code----------------------
+image, label = train_dataset[0]
+print(image.shape)  # Expected: (3, 224, 224) → 3 channels (RGB)
+print(label)        # Integer label (0–9)
+-------------------code----------------------
+
+---
+
+### 6. Next Step — Creating Data Loaders
+
+* Data loaders handle:
+
+  * Batching
+  * Shuffling (for training)
+  * Efficient loading via multiple workers
+* Use the `batch_size` defined earlier in the notebook or programmatically
+* Will be created in **Section 2.6**
+
+---
