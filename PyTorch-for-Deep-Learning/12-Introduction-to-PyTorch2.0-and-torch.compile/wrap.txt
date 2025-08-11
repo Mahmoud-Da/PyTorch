@@ -488,3 +488,118 @@ torch.set_default_device("cpu")
 
 duplicated lecture 
 
+
+*** 338. Creating a Function to Setup Our Model and Transforms ***
+## PyTorch 2.0 — Model Creation, Transforms, and Relative Speedups
+
+### 1. Recap of Experiment Setup
+
+* **Four experiments** with the same:
+
+  * Model
+  * Dataset
+  * Batch size
+  * Image size
+* Two main variations:
+
+  1. **Single run** (5 epochs once) vs. **Multi run** (3 × 5 epochs, averaged)
+  2. **With** vs. **without** `torch.compile`
+* **Objective:** Compare training and testing speed between compiled and uncompiled runs.
+
+---
+
+### 2. Model Choice and Source
+
+* Using **ResNet-50** from `torchvision.models`
+* Pretrained weights available:
+
+  * `ResNet50_Weights.IMAGENET1K_V2`
+  * `ResNet50_Weights.DEFAULT` (best available)
+* Other models can be substituted for experimentation.
+
+---
+
+### 3. Transforms
+
+* **Transforms** are preprocessing steps required for the model’s expected input.
+* These come bundled with the model weights.
+* If using a pretrained model, the input data must be transformed in the same way the model’s training data was prepared.
+
+---
+
+### 4. Creating the Model and Counting Parameters
+
+**Example process:**
+
+1. Load weights from `torchvision.models.resnet50`.
+2. Get transforms from `weights.transforms()`.
+3. Create model with `torchvision.models.resnet50(weights=...)`.
+
+**Parameter counting:**
+
+-------------------code----------------------
+total_params = sum(p.numel() for p in model.parameters())
+# Trainable parameters only:
+trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+-------------------code----------------------
+
+**Observation for ResNet-50:**
+
+* Total parameters: **25,557,032**
+
+---
+
+### 5. Why Count Parameters? — Relative Speedups in PyTorch 2.0
+
+* **Larger models** (more parameters) make better use of GPU parallelism.
+* Example (illustrative only, not actual timings):
+
+  * 1M parameters → 10 minutes training time
+  * 25M parameters → 20 minutes training time
+    (25× parameters, but not 25× slower)
+* **Reason:** GPUs perform many calculations in parallel.
+* **Implication:** Relative speedups with `torch.compile` are more noticeable for larger models.
+
+---
+
+### 6. Function for Model and Transforms
+
+-------------------code----------------------
+def create_model(num_classes=10):
+    """
+    Create a ResNet-50 model with appropriate transforms.
+    Adjusts final layer for given number of classes.
+    Returns (model, transforms).
+    """
+    weights = torchvision.models.ResNet50_Weights.DEFAULT
+    transforms = weights.transforms()
+
+    model = torchvision.models.resnet50(weights=weights)
+    model.fc = torch.nn.Linear(in_features=2048, out_features=num_classes)
+
+    return model, transforms
+-------------------code----------------------
+
+* **`num_classes` default:** 10 (for CIFAR-10 dataset)
+* CIFAR-10 classes: airplane, automobile, bird, cat, dog, frog, horse, ship, truck.
+
+---
+
+### 7. Testing the Function
+
+* Call:
+
+  -------------------code----------------------
+  model, transforms = create_model()
+  -------------------code----------------------
+* Check transforms to confirm resizing, cropping, and normalization steps.
+
+---
+
+### 8. Key Takeaways
+
+* **Consistency** in model, data, batch size, and transforms is essential for fair benchmarking.
+* ResNet-50 is a strong baseline due to its size, popularity, and pretrained availability.
+* Larger models can reveal more substantial relative speed improvements with `torch.compile`.
+
+---
