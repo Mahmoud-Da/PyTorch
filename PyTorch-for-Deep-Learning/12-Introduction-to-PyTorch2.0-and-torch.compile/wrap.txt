@@ -139,3 +139,38 @@
 
 ---
 
+*** 332. PyTorch 2.0 - 30 Second Intro ***
+**Lecture Summary: Quick Overview of PyTorch 2.0 Core Upgrade**
+
+**1. Recap on Hardware and Speedups**
+
+* PyTorch 2.0 speed improvements are most notable on newer, server-class GPUs such as Nvidia A100.
+* If using older or less powerful GPUs (e.g., without Google Colab Pro), the speedups may be less significant, but the code will still run fine.
+
+**2. Backward Compatibility and Familiarity**
+
+* PyTorch 2.0 is fully backward compatible with PyTorch 1.x versions.
+* Existing PyTorch 1.x code, including model definitions and training routines, continue to work as before.
+
+**3. Main New Feature: `torch.compile`**
+
+* Example:
+
+  * Define a model as usual, e.g., `model = torchvision.models.resnet50()`
+  * Wrap the model with `torch.compile(model)` to get an optimized compiled version.
+* The compiled model is a normal PyTorch model enhanced with optimizations that improve speed.
+* Training and testing code remains unchanged; the compilation step simply replaces the original model with the compiled one.
+
+**4. Compatibility with Models**
+
+* PyTorch 2.0 aims to support *all* models, meaning `torch.compile` should work with virtually any PyTorch model.
+* This broad compatibility is a key design goal.
+
+**5. Current Caveats and Limitations**
+
+* Some features, such as model exporting after compilation, currently have limitations.
+* Exporting compiled models for deployment might not work on all devices yet.
+* The PyTorch development team is aware and plans to address these issues in future releases.
+* Users should check the latest PyTorch 2.0 blog and release notes for updates regarding these caveats.
+
+---
