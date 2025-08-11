@@ -1156,3 +1156,78 @@ print(f"Test DataLoader: {len(test_dataloader)} batches of size {test_dataloader
   * Store timing results in a dictionary for later analysis
 
 ---
+
+*** 344. Preparing Training and Testing Loops with Timing Steps for PyTorch 2.0 timing ***
+## Lecture Notes – Creating Training & Testing Loops with Timing
+
+### 1. Objective
+
+* Create **training** and **testing** loops.
+* Add **timing functionality** for each step to measure how long training/testing takes.
+
+---
+
+### 2. Reference Material
+
+* Code based on **Going Modular** section.
+* Previous videos covered the **PyTorch training loop**:
+
+  * `model.train()`
+  * Forward pass
+  * Calculate loss
+  * `optimizer.zero_grad()`
+  * `loss.backward()`
+  * `optimizer.step()`
+* PyTorch 2.0 is the focus here, with some slight differences.
+
+---
+
+### 3. Changes from the Original Version
+
+* **Import**:
+
+  * `import time`
+* **Training loop modifications**:
+
+  * Start timer at the beginning of the training epoch:
+    `train_epoch_start_time = time.time()`
+  * End timer at the end of the training epoch:
+    `train_epoch_end_time = time.time()`
+  * Calculate total time:
+    `train_epoch_time = train_epoch_end_time - train_epoch_start_time`
+* **Testing loop modifications**:
+
+  * Same process as above but for the testing epoch.
+* **Results dictionary**:
+
+  * Updated to include `train_time` and `test_time`.
+* **Print statements**:
+
+  * Output `Train epoch time` and `Test epoch time` after each run.
+
+---
+
+### 4. Special Notes
+
+* **Inference mode issue**:
+
+  * Encountered problems using `torch.inference_mode()` in PyTorch 2.0 testing loop.
+  * Used `torch.no_grad()` instead.
+  * If `inference_mode` works in the future, it’s due to a PyTorch 2.0 update.
+* **Code Source**:
+
+  * Adapted from Section 2.7 of the course material, breaking the “no copy” rule for clarity and efficiency.
+
+---
+
+### 5. Next Step
+
+* Proceed to **Section 3**: Timing models across a single run.
+* **Experiment 1**:
+
+  * Train model **without** `torch.compile`
+  * Run for **5 epochs**
+  * Data & data loaders already prepared.
+  * Use the newly created training/testing loops with timing.
+
+---
