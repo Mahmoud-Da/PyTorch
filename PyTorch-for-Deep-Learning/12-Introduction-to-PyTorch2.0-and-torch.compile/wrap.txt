@@ -1036,3 +1036,123 @@ print(label)        # Integer label (0–9)
 * Will be created in **Section 2.6**
 
 ---
+
+*** 343. Creating Training and Test DataLoaders ***
+## 2.6 Creating Data Loaders
+
+### 1. Recap
+
+* Previously:
+
+  * Downloaded the **CIFAR-10** dataset (a classic ML/computer vision dataset)
+  * Prepared images (resized to 224×224, transformed into tensors)
+* Next:
+
+  * Convert datasets into **DataLoaders** for efficient batching and loading
+
+---
+
+### 2. Purpose of DataLoaders
+
+* DataLoaders:
+
+  * Handle **batching** of data
+  * **Shuffle** data for training to avoid memorization of order
+  * Use multiple **CPU workers** to load data in parallel
+  * Feed data efficiently to the **GPU**
+
+---
+
+### 3. Number of Workers
+
+* **Definition**: Number of CPU cores/threads used for loading data in parallel
+* **Goal**: Increase data loading speed to avoid GPU idle time
+* **General practices**:
+
+  * Set `num_workers` to the **CPU count** for maximum parallelism
+  * Example:
+
+    -------------------code----------------------
+    import os
+    NUM_WORKERS = os.cpu_count()
+    -------------------code----------------------
+* **Caveat**:
+
+  * Performance may **not always scale** with more workers
+  * General rule of thumb:
+
+    * Around **4× number of GPUs** is often sufficient
+    * Example: 1 GPU → 4 workers may be enough
+  * Best to **experiment** for optimal value on your hardware
+* **Google Colab note**:
+
+  * CPU count can vary:
+
+    * Free tier may have \~2 CPUs
+    * Pro/Premium tier can have 12+ CPUs
+
+---
+
+### 4. Creating DataLoaders
+
+**Code Example:**
+
+-------------------code----------------------
+from torch.utils.data import DataLoader
+
+# Training DataLoader
+train_dataloader = DataLoader(
+    dataset=train_dataset,
+    batch_size=128,       # Adjustable depending on GPU memory
+    shuffle=True,         # Shuffle training data
+    num_workers=NUM_WORKERS
+)
+
+# Test DataLoader
+test_dataloader = DataLoader(
+    dataset=test_dataset,
+    batch_size=128,       # Same batch size for test
+    shuffle=False,        # No need to shuffle for evaluation
+    num_workers=NUM_WORKERS
+)
+-------------------code----------------------
+
+---
+
+### 5. Verifying DataLoader Setup
+
+**Example:**
+
+-------------------code----------------------
+print(f"Using {NUM_WORKERS} workers to load data")
+
+print(f"Train DataLoader: {len(train_dataloader)} batches of size {train_dataloader.batch_size}")
+print(f"Test DataLoader: {len(test_dataloader)} batches of size {test_dataloader.batch_size}")
+-------------------code----------------------
+
+* CIFAR-10 specifics with batch size 128:
+
+  * Training set: \~391 batches
+  * Test set: \~79 batches
+* Dataset:
+
+  * 60,000 total images
+  * Image size after resize: 224×224
+
+---
+
+### 6. Next Step — Training and Evaluation Loops
+
+* Create:
+
+  * **Training loop** for forward + backward passes
+  * **Testing loop** for evaluation
+* Enhancement:
+
+  * Time the training and testing steps
+  * Compare performance with and without `torch.compile`
+* Output:
+
+  * Store timing results in a dictionary for later analysis
+
+---
