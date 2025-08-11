@@ -1614,3 +1614,80 @@ plot_mean_epoch_times(
 * Note: Longer training will take significant time on full ResNet-50 + CIFAR-10 (224×224).
 
 ---
+
+
+*** 349. Preparing Functions for Experiment 3 and 4  ***
+## Lecture Notes – Preparing for Experiment 3 & 4
+
+### 1. **Context**
+
+* Previous work: Saved single-run results and took a break before continuing.
+* Current task: Rerun the Colab notebook (repeats existing code) and prepare for **Experiment 3** and **Experiment 4**.
+
+---
+
+### 2. **Purpose of New Functions**
+
+Before running the experiments, three functions are created to avoid repetitive code.
+
+#### Function 1: **`create_and_train_non_compiled_model()`**
+
+* For **Experiment 3** (multiple runs with non-compiled model).
+* Encapsulates:
+
+  * Model creation.
+  * Model training (similar to Experiment 1 but inside a function).
+* Parameters include:
+
+  * `epochs`, `disable_progress_bar`, `learning_rate`, `device`.
+* Returns: Training results.
+* Reasoning: Encapsulating avoids rewriting training code for each run.
+
+#### Function 2: **`create_compiled_model()`**
+
+* For **Experiment 4** (multiple runs with compiled model).
+* Creates and compiles the model **once**.
+* Returns: Compiled model.
+* Reasoning:
+
+  * In PyTorch 2.0, `torch.compile()` optimizes the model behind the scenes.
+  * The first epoch is usually slower because of compilation.
+  * Compiling once prevents repeated overhead during multiple runs.
+
+#### Function 3: **`train_compiled_model()`**
+
+* Trains an **already compiled** model for a single run.
+* Can be looped for multiple runs.
+* Returns: Training results.
+* Key note: Compilation is done ahead of time; this function focuses only on training.
+
+---
+
+### 3. **Experiment Plans**
+
+#### Experiment 3:
+
+* Model: Non-compiled ResNet-50.
+* Runs: 3 runs × 5 epochs.
+* Goal: Measure average performance over multiple runs.
+
+#### Experiment 4:
+
+* Model: Compiled ResNet-50.
+* Runs: 3 runs × 5 epochs.
+* Compilation done once before all runs.
+* Goal: Check if compiled model speeds up across runs once compilation cost is avoided.
+
+---
+
+### 4. **Important Observations**
+
+* First epoch of a compiled model is slower due to PyTorch optimization.
+* Subsequent epochs are faster, especially with longer training.
+* Saving results:
+
+  * Useful for comparing across hardware.
+  * Performance will differ depending on GPU used.
+* Speedups should be more noticeable in multi-run or longer training scenarios.
+
+---
