@@ -1691,3 +1691,114 @@ Before running the experiments, three functions are created to avoid repetitive 
 * Speedups should be more noticeable in multi-run or longer training scenarios.
 
 ---
+
+*** 350. Experiment 3 - Training a Non-Compiled Model for Multiple Runs ***
+# Lecture Notes – Running Experiment 3: Multiple Runs with Non-Compiled Model
+
+---
+
+### 1. **Context and Motivation**
+
+* Previous code was “hacky” — now refactored into clean functions.
+* Goal: Run **Experiment 3** (multiple runs, no compile) efficiently with simple function calls.
+* Experiment 3 setup:
+
+  * Non-compiled model
+  * 3 runs × 5 epochs
+* Purpose:
+
+  * Check for outliers or hardware warming effects that might have skewed previous single-run results.
+  * Verify consistency by averaging multiple runs.
+
+---
+
+### 2. **Implementation: Running Multiple Runs**
+
+* Initialize an empty list to store results:
+  `non_compile_results_multiple_runs = []`
+
+* Run training loop with a progress bar (`tqdm`):
+
+  -------------------code----------------------
+  for i in tqdm(range(num_runs)):
+      print(f"Run {i+1} of {num_runs} for non compiled model")
+      results = create_and_train_non_compiled_model(epochs=num_epochs, disable_progress_bar=True)
+      non_compile_results_multiple_runs.append(results)
+  -------------------code----------------------
+
+* Notes on progress bars:
+
+  * Progress bars exist on multiple levels (train step, test step, full training).
+  * `disable_progress_bar=True` reduces verbosity during multiple runs for clarity.
+  * This keeps only the overall epoch progress visible, suppressing detailed inner step bars.
+
+---
+
+### 3. **Time Considerations**
+
+* Multiple runs multiply training time linearly.
+* Example:
+
+  * Single run \~7 minutes on Nvidia A100
+  * Three runs \~20 minutes (approximate, hardware dependent)
+* Reminder: Models take time to train, especially larger ones like ResNet-50.
+
+---
+
+### 4. **After Running Multiple Runs**
+
+* Confirm three sets of results collected (one per run).
+
+* Convert each run's result dictionary to a DataFrame:
+
+  -------------------code----------------------
+  dfs = []
+  for result in non_compile_results_multiple_runs:
+      dfs.append(pd.DataFrame(result))
+  -------------------code----------------------
+
+* Concatenate DataFrames into a single DataFrame for all runs:
+
+  -------------------code----------------------
+  combined_df = pd.concat(dfs)
+  -------------------code----------------------
+
+* This creates a DataFrame with all epochs from all runs.
+
+---
+
+### 5. **Analyzing Results**
+
+* Check consistency of train and test epoch times across runs (should be similar).
+
+* Calculate average per epoch across all runs:
+
+  -------------------code----------------------
+  average_results = combined_df.groupby(combined_df.index).mean()
+  -------------------code----------------------
+
+* This groups by epoch index and computes the mean metrics, smoothing out run-to-run variability.
+
+---
+
+### 6. **Next Step: Experiment 4**
+
+* Challenge: Run multiple runs with **compiled** model.
+* Use the previously defined functions:
+
+  * `create_compiled_model()` (compile once)
+  * `train_compiled_model()` (train multiple times on the compiled model)
+* Expectation:
+
+  * Compare average run times and performance.
+  * Check if compilation speeds up training over multiple runs by avoiding repeated compilation overhead.
+
+---
+
+# Summary
+
+* Running multiple runs helps validate results and reduce variance.
+* Function-based approach makes experimentation neat and efficient.
+* Next step is to replicate multi-run experiment with compiled model for comparison.
+
+---
