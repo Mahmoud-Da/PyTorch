@@ -810,3 +810,116 @@ transforms.CenterCrop(image_size)
 * Principle applies beyond PyTorch 2.0 — relevant to all GPU workloads.
 
 ---
+
+*** 341. Getting More Potential Speedups with TensorFloat-32 ***
+## TensorFloat-32 (TF32) in PyTorch
+
+### 1. Overview
+
+* **TF32** = **TensorFloat-32**
+* Developed by **NVIDIA** to bridge:
+
+  * **Float32** (higher precision)
+  * **Float16** (faster computation)
+* Combines:
+
+  * Accuracy benefits of Float32
+  * Speed benefits of Float16
+
+---
+
+### 2. Recap of Float32 vs Float16
+
+* **Float32**:
+
+  * Represents numbers with 32 bits
+  * More precision → more accurate models
+  * Slower computation due to more bits to process
+* **Float16**:
+
+  * Represents numbers with 16 bits
+  * Less precision → potential accuracy trade-off
+  * Faster computation due to fewer bits
+
+---
+
+### 3. Why TF32 Exists
+
+* Goal: **Balance precision and speed** in GPU computations
+* TF32:
+
+  * Uses Float32’s *range*
+  * Uses reduced precision similar to Float16 (10 bits instead of 23 bits)
+* Often improves **training speed** without major accuracy loss
+
+---
+
+### 4. Hardware Requirements
+
+* Available on NVIDIA GPUs with architecture **Ampere (2020)** or newer
+* Example: **A100 GPU** (available in Google Colab Pro at time of recording)
+* GPU compatibility can be checked via its compute capability score:
+
+  * **TF32 support**: `score >= 8.0`
+
+---
+
+### 5. TF32 in PyTorch
+
+* By default:
+
+  * **PyTorch ≤ 1.11**: `torch.backends.cuda.matmul.allow_tf32 = True`
+  * **PyTorch ≥ 1.12**: Default set to **False**
+
+    * Reason: Consistency across hardware and avoiding unexpected result differences
+* Can be enabled manually for matrix multiplications on CUDA:
+
+  -------------------code----------------------
+  import torch
+  torch.backends.cuda.matmul.allow_tf32 = True
+  -------------------code----------------------
+
+---
+
+### 6. Checking and Enabling TF32
+
+**Example check:**
+
+-------------------code----------------------
+import torch
+
+cc_major, cc_minor = torch.cuda.get_device_capability()
+score = cc_major + cc_minor / 10
+print(f"Using GPU with score {score}")
+
+if score >= 8.0:
+    print("Enabling TensorFloat-32")
+    torch.backends.cuda.matmul.allow_tf32 = True
+else:
+    print("TensorFloat-32 not available on this GPU")
+-------------------code----------------------
+
+---
+
+### 7. When to Use TF32
+
+* Use TF32 when:
+
+  * You want potential speedups in matrix multiplication-heavy models (e.g., neural networks)
+  * Your GPU supports Ampere architecture or newer
+* Avoid or test carefully if:
+
+  * You require bitwise reproducibility across different hardware
+  * You see accuracy differences that matter for your application
+
+---
+
+### 8. Key Takeaways
+
+* **TF32** is a hardware-level optimization by NVIDIA
+* Provides a middle ground between Float32 precision and Float16 speed
+* Can be enabled in PyTorch for matrix multiplication on supported GPUs
+* Check compatibility before enabling
+* Default behavior changed in PyTorch 1.12 — now **False** by default
+
+---
