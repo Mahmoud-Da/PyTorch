@@ -1543,3 +1543,74 @@ plot_mean_epoch_times(
 * Solution: Multi-run experiments (upcoming) will give a clearer view of average speed improvements.
 
 ---
+
+*** 348. Saving the Results of Experiment 1 and 2 ***
+## Lecture Notes – Saving Single Run Results & Preparing for Multi-Run Experiments
+
+### 1. **Previous Experiment Recap**
+
+* Compared results of:
+
+  * **Experiment 1:** Single run (5 epochs) with non-compiled model.
+  * **Experiment 2:** Single run (5 epochs) with compiled model.
+* Setup:
+
+  * **Hardware:** Nvidia A100 (Google Colab Pro)
+  * **Dataset:** CIFAR-10
+  * **Model:** ResNet-50
+  * **Image size:** 224 × 224
+  * **Batch size:** 128
+* **Observation:**
+
+  * For short runs (5 epochs), non-compiled model slightly outperformed compiled model.
+  * With **longer runs**, compiled model is expected to perform better.
+  * Results vary significantly depending on **hardware**.
+
+---
+
+### 2. **Why Save Results Programmatically**
+
+* Ensures comparison is possible **regardless of hardware**.
+* Results stored with **GPU details** for reproducibility.
+* Data will be saved to CSV for later analysis.
+
+---
+
+### 3. **Saving Single Run Results**
+
+* Directory:
+  `pytorch_2_results/single_run_results/`
+* Files saved:
+
+  * Non-compiled results CSV.
+  * Compiled results CSV.
+* Example filename format:
+
+  -------------------code----------------------
+  cifar10_resnet50_nvidia_a100_40GB_non_compiled.csv
+  -------------------code----------------------
+* Also save **figure outputs** for visual comparison.
+
+---
+
+### 4. **Cross-Hardware Insights**
+
+* Author tested multiple GPUs.
+* Speedups from `torch.compile` are more **noticeable on A100** compared to consumer GPUs.
+
+---
+
+### 5. **Next Steps**
+
+#### a. **Multi-Run Experiments**
+
+* **Experiment 3:** 3 runs × 5 epochs (non-compiled).
+* **Experiment 4:** 3 runs × 5 epochs (compiled).
+* Purpose: See if compiled model catches up or surpasses non-compiled over multiple runs.
+
+#### b. **Optional Extension**
+
+* Train compiled model for **25 epochs** to confirm performance improvements.
+* Note: Longer training will take significant time on full ResNet-50 + CIFAR-10 (224×224).
+
+---
