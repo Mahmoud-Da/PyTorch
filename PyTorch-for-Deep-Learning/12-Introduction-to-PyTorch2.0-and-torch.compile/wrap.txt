@@ -712,3 +712,101 @@ def create_model(num_classes=10):
 Next step: Write code to check GPU memory limits programmatically (instead of only using `nvidia-smi`).
 
 ---
+
+*** 340. Setting the Batch Size and Data Size Programmatically ***
+## GPU Memory Utilization and Dynamic Batch/Image Sizing in PyTorch
+
+### 1. Core Principle
+
+* **Relative speedups** are most noticeable when **a large portion of the GPU is in use**.
+* As datasets and models grow, they may not fit on a single GPU (e.g., NVIDIA A100).
+* This is a **universal principle** — not specific to PyTorch 2.0:
+
+  * Applies to all PyTorch versions
+  * Applies to all GPU-based models
+  * Goal: Use as much GPU capacity as possible
+
+---
+
+### 2. Why Check GPU Memory Programmatically
+
+* The more GPU memory available:
+
+  * The larger the **batch size** can be
+  * The larger the **dataset/image size** can be
+* Avoids trial-and-error crashes from CUDA out-of-memory errors.
+* Enables adaptive settings based on hardware.
+
+---
+
+### 3. Measuring GPU Memory in PyTorch
+
+**Method:** `torch.cuda.mem_get_info()`
+
+* Returns `(free_memory, total_memory)` in bytes.
+* **Free memory** = `total_memory - used_memory`
+* Convert bytes to gigabytes for readability:
+
+  -------------------code----------------------
+  free_gb = free_memory * 1e-9
+  total_gb = total_memory * 1e-9
+  -------------------code----------------------
+* Use these values to decide training parameters.
+
+---
+
+### 4. Example: Dynamic Batch and Image Size
+
+**Logic:**
+
+* If **free memory ≥ 16 GB**:
+
+  * `batch_size = 128`
+  * `image_size = 224`
+* Else:
+
+  * `batch_size = 32`
+  * `image_size = smaller value` (e.g., 128–192)
+* Values should be tuned per hardware and dataset.
+
+**Why:**
+
+* Large batch sizes and image sizes increase GPU utilization.
+* Smaller sizes prevent memory overflow.
+
+---
+
+### 5. Adjusting Data Transforms
+
+When `image_size` changes, update preprocessing transforms accordingly:
+
+-------------------code----------------------
+transforms.Resize(image_size)
+transforms.CenterCrop(image_size)
+-------------------code----------------------
+
+* Ensures input dimensions match what the model expects.
+* Prevents shape mismatch errors.
+
+---
+
+### 6. Hardware-Specific Values
+
+* Example: On NVIDIA A100 (40 GB memory), free memory ≈ 41 GB → batch size 128 is safe.
+* On smaller GPUs, values must be reduced to avoid OOM errors.
+* Always adapt settings to:
+
+  * GPU total memory
+  * Dataset size
+  * Model architecture
+
+---
+
+### 7. Key Takeaways
+
+* Use programmatic memory checks to set batch/image sizes dynamically.
+* Always update transforms when data dimensions change.
+* Avoid fixed hyperparameters that don’t scale across hardware.
+* Principle applies beyond PyTorch 2.0 — relevant to all GPU workloads.
+
+---
