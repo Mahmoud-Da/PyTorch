@@ -483,3 +483,8 @@ torch.set_default_device("cpu")
 3. Prepare experiments 1–4 for timing comparison.
 
 ---
+
+*** 337 ***
+
+duplicated lecture 
+
