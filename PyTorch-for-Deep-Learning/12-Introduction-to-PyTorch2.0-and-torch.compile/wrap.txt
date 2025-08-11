@@ -279,3 +279,112 @@
 * If using cloud environments (Google Colab Pro, AWS, etc.), GPU type impacts results.
 
 ---
+
+*** 335. Setting the Default Device in PyTorch 2 ***
+## PyTorch 2.0 — Globally Setting Devices
+
+### 1. Context Recap
+
+* Previous lecture: Checked GPU details.
+* Example GPU: **NVIDIA A100** (Compute Capability 8.0) on Google Colab Pro.
+* PyTorch 2.0 speed-up features work best on GPUs with **capability ≥ 8.0** and **data center class** GPUs.
+* GPUs below 8.0 still work, but with less noticeable improvements.
+
+---
+
+### 2. Recommended GPU Resource
+
+* **Blog**: “Which GPU for Deep Learning” by **Tim Dettmer**.
+* Covers:
+
+  * How GPUs work.
+  * Different architectures.
+  * Pros and cons of various models.
+  * Performance per dollar.
+  * Flowchart for GPU selection.
+* Regularly updated with new GPU information.
+
+---
+
+### 3. Traditional Device Setting
+
+* Previously: Set device for tensors/models manually with `.to(device)`.
+
+  -------------------code----------------------
+  tensor.to(device)
+  model.to(device)
+  -------------------code----------------------
+* This could be repetitive and tedious.
+
+---
+
+### 4. New PyTorch 2.0 Feature: `set_default_device`
+
+* Introduces **context manager** and **global device setting**.
+* **Benefit**: Automatically places new tensors/models on the target device without calling `.to()`.
+
+---
+
+#### 4.1 Using a Context Manager
+
+-------------------code----------------------
+import torch
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+with torch.device(device):
+    layer = torch.nn.Linear(20, 20)
+    print(layer.weight.device)  # cuda:0
+    data = torch.randn(128, 20)
+    print(data.device)          # cuda:0
+-------------------code----------------------
+
+* All objects created inside the `with` block are placed on the chosen device.
+* Requires **PyTorch ≥ 2.0**.
+
+---
+
+#### 4.2 Setting a Global Default Device
+
+-------------------code----------------------
+import torch
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+torch.set_default_device(device)
+
+layer = torch.nn.Linear(20, 20)
+print(layer.weight.device)  # cuda:0
+
+data = torch.randn(128, 20)
+print(data.device)          # cuda:0
+-------------------code----------------------
+
+* All subsequent PyTorch objects (created after this call) are placed on the chosen device.
+* Also requires **PyTorch ≥ 2.0**.
+
+---
+
+#### 4.3 Switching Back to CPU
+
+-------------------code----------------------
+torch.set_default_device("cpu")
+-------------------code----------------------
+
+* Reverts default device to CPU.
+* Useful for debugging or running parts of code without GPU.
+
+---
+
+### 5. Advantages
+
+* Reduces repetitive `.to()` calls.
+* Improves **code readability** and **quality of life** for PyTorch users.
+* Especially useful in large projects where most tensors/models share the same device.
+
+---
+
+### 6. Next Step
+
+* Prepare experiments to measure **speed improvements** from `torch.compile`.
+
+---
