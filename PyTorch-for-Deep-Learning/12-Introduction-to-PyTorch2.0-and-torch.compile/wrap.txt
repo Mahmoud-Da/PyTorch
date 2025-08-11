@@ -388,3 +388,98 @@ torch.set_default_device("cpu")
 * Prepare experiments to measure **speed improvements** from `torch.compile`.
 
 ---
+
+
+*** 336. Discussing the Experiments We Are Going to Run for PyTorch 2 ***
+## PyTorch 2.0 — Torch Compile Speed Testing
+
+### 1. Context Recap
+
+* Previous lecture:
+
+  * **Setting device globally** (`torch.set_default_device`)
+  * **Setting device with context manager** (`with torch.device(...)`)
+* Now focusing on **torch.compile** — a major PyTorch 2.0 feature promising speed improvements.
+
+---
+
+### 2. GPU Considerations
+
+* Testing uses **NVIDIA A100** (Compute Capability 8.0) on Google Colab Pro.
+* PyTorch 2.0 works on all GPUs that support previous PyTorch versions.
+* **Speed improvements** are most noticeable on:
+
+  * GPUs with **Compute Capability ≥ 8.0**
+  * Data center class GPUs (e.g., A100, H100).
+
+---
+
+### 3. Experiment Design
+
+**Goal:** Compare training/testing speed **with** and **without** `torch.compile`.
+**Focus:** Speed only — **not** accuracy or performance metrics.
+
+#### 3.1 Model and Dataset
+
+* Model: **ResNet-50** (from `torchvision`)
+* Dataset: **CIFAR-10** (from `torchvision`)
+* Image size: **224×224** (upsampled from CIFAR-10's default smaller size)
+* Batch size: **128** (adjustable if GPU memory is limited)
+
+#### 3.2 Experiments Overview
+
+1. **Single run** without `torch.compile`
+2. **Single run** with `torch.compile`
+3. **Multi-run average** without `torch.compile`
+
+   * Repeat experiment 1 three times, run for 5 epochs each.
+4. **Multi-run average** with `torch.compile`
+
+   * Repeat experiment 2 three times, run for 5 epochs each.
+
+**Note:**
+
+* Large batch size and image size used to maximize GPU utilization and better observe speedups.
+* If GPU memory is smaller than the A100’s **40 GB**, reduce batch size and/or image size.
+
+---
+
+### 4. Why This Setup?
+
+* ResNet-50 is a convolutional neural network (CNN).
+* PyTorch team benchmarks also use **A100**, **batch size 128**, and **image size 224**.
+* Possible extension: test **transformer-based models** for potentially greater relative speedups.
+
+---
+
+### 5. Key Parameters
+
+| Parameter          | Value     | Notes                       |
+| ------------------ | --------- | --------------------------- |
+| Model              | ResNet-50 | From `torchvision`          |
+| Dataset            | CIFAR-10  | From `torchvision`          |
+| Image Size         | 224×224   | Increased for more GPU load |
+| Batch Size         | 128       | Adjust for smaller GPUs     |
+| Epochs (multi-run) | 5         | Per run                     |
+| Runs (multi-run)   | 3         | For averaging               |
+
+---
+
+### 6. GPU Memory Check
+
+* Command to check:
+
+  -------------------code----------------------
+  nvidia-smi
+  -------------------code----------------------
+* Example output for A100: **40 GB** (40,960 MB).
+
+---
+
+### 7. Next Steps in Code
+
+1. **Import dependencies** (boilerplate code).
+2. **Create model** and **set transforms** using `torchvision` 0.14+ model & weights API.
+3. Prepare experiments 1–4 for timing comparison.
+
+---
