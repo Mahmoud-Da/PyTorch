@@ -1,0 +1,71 @@
+*** 329. Introduction to PyTorch 2.0 ***
+**Lecture Summary: Introduction to PyTorch 2.0**
+
+**1. Overview of PyTorch 2.0 Release**
+
+* PyTorch 2.0 officially released, with the primary improvement focused on speed.
+* The key new feature is `torch.compile`, a backward-compatible function that compiles models to optimize performance.
+* After creating a model, passing it to `torch.compile` returns a compiled model that offers speed improvements during training and inference, especially on newer GPUs.
+
+**2. Performance Gains**
+
+* PyTorch tested `torch.compile` on 163 open-source models (from Huggingface Transformers, timm, Torchvision, and TorchBench).
+* Tests used mixed precision (automatic mixed precision, Float16) and Float32 training.
+* Results showed an average speed increase of 43% in training on Nvidia A100 GPUs.
+* Personal benchmarks showed:
+
+  * Larger batch and data sizes benefit more from `torch.compile`.
+  * The first training epoch is slower, but subsequent epochs run faster.
+  * Speed improvements observed were about 10% on local RTX 40 and A100 GPUs.
+* Further exploration needed with mixed precision training, transformer architectures, and longer training runs, where bigger gains are expected.
+
+**3. Technologies Behind `torch.compile`**
+
+* `torch.compile` integrates several components:
+
+  * Torch Dynamo
+  * Aot Autograd
+  * Torch Inductor
+* Two main optimization techniques it offers:
+
+  1. **Fusion (Operator Fusion)**
+  2. **Graph Capture (Graph Tracing)**
+
+**4. Fusion (Operator Fusion)**
+
+* Fusion combines multiple operations into fewer operations to reduce overhead.
+* Modern GPUs have very high compute power; the bottleneck is often memory bandwidth (speed of moving data between CPU and GPU).
+* Fusion minimizes how often intermediate results are written to and read from memory, reducing bandwidth costs.
+* Analogy:
+
+  * Without fusion: Adding ingredients one by one and blending repeatedly.
+  * With fusion: Adding all ingredients first, then blending once — more efficient.
+
+**5. Graph Capture (Graph Tracing)**
+
+* Graph capture records the sequence of operations in advance.
+* Without it, operations are interpreted and executed one-by-one, causing overhead.
+* Analogy:
+
+  * Without graph capture: Driving in a new area, thinking about every turn as you go.
+  * With graph capture: Driving in your own neighborhood, knowing the route ahead of time.
+* Upfront time is spent recording the graph, but later executions are faster.
+
+**6. Additional Resources**
+
+* For a deeper understanding of fusion, memory bandwidth, and overhead, see "Making Deep Learning Go BR from First Principles" by Horace Hare.
+
+**7. Other Notable PyTorch 2.0 Features**
+
+* Faster Transformers is now stable, improving transformer-style model speed.
+* Universal device setup introduced via a context manager or global setting.
+* Enhanced Metal Performance Shaders improve PyTorch support on Mac.
+* Domain-specific library upgrades in:
+
+  * Torchvision
+  * Torchtext
+  * Torchrec
+  * Torchaudio
+  * And others.
+
+---
