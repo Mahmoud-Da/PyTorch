@@ -603,3 +603,112 @@ def create_model(num_classes=10):
 * Larger models can reveal more substantial relative speed improvements with `torch.compile`.
 
 ---
+
+*** 339. Discussing How to Get Better Relative Speedups for Training Models ***
+## PyTorch 2.0 — Improving Relative Speedups
+
+### 1. Function Recap
+
+* **`create_model`**:
+
+  * Creates a **ResNet-50** model
+  * Applies **ImageNet transforms** matching pretrained weights
+* Purpose: Provide both model and transforms in one step
+
+---
+
+### 2. Key Idea — GPU Utilization and Relative Speedups
+
+* **Relative speedups** are most noticeable when **a large portion of the GPU is in use**.
+* **Bandwidth costs** (data transfer from CPU to GPU) are a major training bottleneck.
+* **Operator Fusion**:
+
+  * Combines multiple operations into one to reduce memory writes/reads
+  * Reduces bandwidth usage
+* **Graph Capture**:
+
+  * Records the computation graph ahead of time
+  * Avoids repeatedly looking up operations during execution
+  * Not directly about bandwidth, but improves execution efficiency
+
+---
+
+### 3. Practical Guidelines for Better GPU Usage
+
+**General principle:** Keep as much data as possible on the GPU and avoid unnecessary transfers.
+
+#### 3.1 Increase Batch Size
+
+* Standard training often uses **batch size = 32**.
+* Larger GPUs allow **larger batches**: 128, 256, 512, etc.
+* Multiples of 8 are recommended (for hardware alignment).
+* Larger batches mean:
+
+  * More data processed per GPU operation
+  * Better parallelism
+
+#### 3.2 Increase Data Size
+
+* Instead of small images (e.g., 32×32), use larger ones:
+
+  * 224×224 (common for ImageNet models)
+  * 336×336 for higher resolution tasks
+* Can also increase **embedding sizes** for non-image data.
+
+#### 3.3 Increase Model Size
+
+* Move from smaller models (\~1M parameters) to larger ones (10M+ parameters).
+* Today’s "small" models may still benefit from larger GPU workloads.
+
+#### 3.4 Decrease Data Transfer
+
+* Transfer only what’s needed to the GPU.
+* Use **operator fusion** to avoid intermediate CPU-GPU transfers.
+* Prefetch and load data efficiently.
+
+---
+
+### 4. Why Bigger Workloads Can Still Be Faster (Relative Gains)
+
+* Increasing batch size, model size, and image size **does not increase training time linearly**.
+* Example (illustrative):
+
+  * Small model, small batch → 10 minutes
+  * Larger model, larger batch → more data, but only 2× training time due to parallel GPU computation
+* **GPU parallelism** allows more work in the same time window.
+
+---
+
+### 5. Visualization Example
+
+* Small workload: 1 block of data → 10 minutes
+* Larger workload: 6× data, 2 GPUs → only 2× time, due to parallel processing
+
+---
+
+### 6. Further Reading
+
+* Sebastian Raschka’s blog:
+
+  * How plain PyTorch 2.0 can go from **21.3 minutes → 1.8 minutes**
+  * Focus on batching, model scaling, and minimizing data transfer
+
+---
+
+### 7. Summary of Strategies for Better Relative Speedups
+
+* **Increase**:
+
+  * Batch size
+  * Data size
+  * Model size
+* **Decrease**:
+
+  * CPU–GPU data transfers
+* Aim: Maximize GPU computation, minimize idle/wait time.
+
+---
+
+Next step: Write code to check GPU memory limits programmatically (instead of only using `nvidia-smi`).
+
+---
