@@ -205,3 +205,77 @@
 * Understanding GPU details helps ensure compatibility and performance expectations.
 
 ---
+
+*** 334. Getting Info from Our GPUs and Seeing if They're Capable of Using PyTorch 2 ***
+## PyTorch 2.0 GPU Compatibility and Performance Notes
+
+### 1. PyTorch 2.0 Key Feature
+
+* **Main feature**: `torch.compile` — optimizes models via **fusion** and **graph capture**.
+* Works **best** on **newer NVIDIA GPUs**.
+
+---
+
+### 2. What is a "Newer" NVIDIA GPU?
+
+* Determined by **Compute Capability** score.
+* **Higher score = newer and more capable GPU**.
+
+**Examples:**
+
+* **A100**: Compute Capability 8.0
+* **H100**: Compute Capability 9.0
+* **L4**: Compute Capability 8.9
+* **T4**: Compute Capability 7.5
+* **V100**: Compute Capability 7.0
+* **RTX 4090**: Consumer GPU, high performance.
+* **RTX 3090**: Consumer GPU, good but not as capable as data center GPUs.
+* **Titan RTX**: 7.5
+
+---
+
+### 3. Minimum Recommended Compute Capability
+
+* **8.0 or higher** → can leverage most PyTorch 2.0 speed features.
+* **Below 8.0** → PyTorch 2.0 still works (backwards compatible) but speed improvements may be smaller.
+
+---
+
+### 4. Desktop vs Data Center GPUs
+
+* **Desktop Class**: GPUs like RTX 3090 (consumer hardware).
+* **Data Center Class**: GPUs like A100, H100 (enterprise/cloud hardware).
+* **Same architecture** (e.g., Ampere) ≠ same performance.
+
+  * Data center GPUs often have **extra hardware capabilities** for higher performance.
+
+---
+
+### 5. Checking GPU Compatibility
+
+**Method:**
+
+1. Check **NVIDIA GPU compatibility list** online.
+2. Or use PyTorch's built-in function:
+
+   -------------------code----------------------
+   torch.cuda.get_device_capability()
+   -------------------code----------------------
+
+   * Returns a tuple: `(major, minor)`
+   * Example: `(8, 0)` → Compute Capability 8.0
+
+**Logic:**
+
+* If capability ≥ 8.0 → PyTorch 2.0 speed features fully available.
+* If < 8.0 → Features still work, but speed gains are smaller.
+
+---
+
+### 6. Caveats and Performance Notes
+
+* Data center GPUs usually yield **greater speedups** than desktop GPUs.
+* Even GPUs with the **same architecture** may differ in performance due to hardware design.
+* If using cloud environments (Google Colab Pro, AWS, etc.), GPU type impacts results.
+
+---
